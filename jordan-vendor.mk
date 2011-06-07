@@ -202,3 +202,46 @@ PRODUCT_COPY_FILES += \
 #extra
 PRODUCT_COPY_FILES += \
 	vendor/motorola/jordan/media/Moto.ogg:system/media/audio/ringtones/Moto.ogg
+
+#vsuite
+PRODUCT_COPY_FILES += \
+	vendor/motorola/jordan/app/VSuiteApp.apk:system/app/VSuiteApp.apk \
+	vendor/motorola/jordan/etc/nuance/vsuite_config.xml:system/etc/nuance/vsuite_config.xml \
+	vendor/motorola/jordan/lib/libvsuite_mot_vs32_cmb103.so:system/lib/libvsuite_mot_vs32_cmb103.so \
+	vendor/motorola/jordan/tts/nuance/img_dede.bin:system/tts/nuance/img_dede.bin \
+	vendor/motorola/jordan/tts/nuance/img_engb.bin:system/tts/nuance/img_engb.bin \
+	vendor/motorola/jordan/tts/nuance/img_enus.bin:system/tts/nuance/img_enus.bin \
+	vendor/motorola/jordan/tts/nuance/img_eses.bin:system/tts/nuance/img_eses.bin \
+	vendor/motorola/jordan/tts/nuance/img_esmx.bin:system/tts/nuance/img_esmx.bin \
+	vendor/motorola/jordan/tts/nuance/img_frca.bin:system/tts/nuance/img_frca.bin \
+	vendor/motorola/jordan/tts/nuance/img_frfr.bin:system/tts/nuance/img_frfr.bin \
+	vendor/motorola/jordan/tts/nuance/img_itit.bin:system/tts/nuance/img_itit.bin \
+	vendor/motorola/jordan/tts/nuance/img_ptbr.bin:system/tts/nuance/img_ptbr.bin \
+	vendor/motorola/jordan/tts/nuance/lvr_dede.bin:system/tts/nuance/lvr_dede.bin \
+	vendor/motorola/jordan/tts/nuance/lvr_engb.bin:system/tts/nuance/lvr_engb.bin \
+	vendor/motorola/jordan/tts/nuance/lvr_enus.bin:system/tts/nuance/lvr_enus.bin \
+	vendor/motorola/jordan/tts/nuance/lvr_eses.bin:system/tts/nuance/lvr_eses.bin \
+	vendor/motorola/jordan/tts/nuance/lvr_esmx.bin:system/tts/nuance/lvr_esmx.bin \
+	vendor/motorola/jordan/tts/nuance/lvr_frca.bin:system/tts/nuance/lvr_frca.bin \
+	vendor/motorola/jordan/tts/nuance/lvr_frfr.bin:system/tts/nuance/lvr_frfr.bin \
+	vendor/motorola/jordan/tts/nuance/lvr_itit.bin:system/tts/nuance/lvr_itit.bin \
+	vendor/motorola/jordan/tts/nuance/lvr_ptbr.bin:system/tts/nuance/lvr_ptbr.bin \
+	vendor/motorola/jordan/tts/nuance/prm_dede.bin:system/tts/nuance/prm_dede.bin \
+	vendor/motorola/jordan/tts/nuance/prm_engb.bin:system/tts/nuance/prm_engb.bin \
+	vendor/motorola/jordan/tts/nuance/prm_enus.bin:system/tts/nuance/prm_enus.bin \
+	vendor/motorola/jordan/tts/nuance/prm_eses.bin:system/tts/nuance/prm_eses.bin \
+	vendor/motorola/jordan/tts/nuance/prm_esmx.bin:system/tts/nuance/prm_esmx.bin \
+	vendor/motorola/jordan/tts/nuance/prm_frca.bin:system/tts/nuance/prm_frca.bin \
+	vendor/motorola/jordan/tts/nuance/prm_frfr.bin:system/tts/nuance/prm_frfr.bin \
+	vendor/motorola/jordan/tts/nuance/prm_itit.bin:system/tts/nuance/prm_itit.bin \
+	vendor/motorola/jordan/tts/nuance/prm_ptbr.bin:system/tts/nuance/prm_ptbr.bin \
+	vendor/motorola/jordan/tts/nuance/str_dede.bin:system/tts/nuance/str_dede.bin \
+	vendor/motorola/jordan/tts/nuance/str_engb.bin:system/tts/nuance/str_engb.bin \
+	vendor/motorola/jordan/tts/nuance/str_enus.bin:system/tts/nuance/str_enus.bin \
+	vendor/motorola/jordan/tts/nuance/str_eses.bin:system/tts/nuance/str_eses.bin \
+	vendor/motorola/jordan/tts/nuance/str_esmx.bin:system/tts/nuance/str_esmx.bin \
+	vendor/motorola/jordan/tts/nuance/str_frca.bin:system/tts/nuance/str_frca.bin \
+	vendor/motorola/jordan/tts/nuance/str_frfr.bin:system/tts/nuance/str_frfr.bin \
+	vendor/motorola/jordan/tts/nuance/str_itit.bin:system/tts/nuance/str_itit.bin \
+	vendor/motorola/jordan/tts/nuance/str_ptbr.bin:system/tts/nuance/str_ptbr.bin
+
