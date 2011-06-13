@@ -37,7 +37,7 @@ loglevel 3
 
     mkdir /system
     mkdir /data 0771 system system
-    mkdir /cache 0771 system cache
+    mkdir /cache 0775 system cache
 
 #    mkdir /config 0500 root root
 
@@ -55,7 +55,7 @@ loglevel 3
     mkdir /mnt/asec  0700 root system
     mount tmpfs tmpfs /mnt/asec mode=0755,gid=1000
 
-    mkdir /sd-ext 0771 system system
+    mkdir /sd-ext 771 system sdcard_rw
 
     # Filesystem image public mount points.
     mkdir /mnt/obb 0700 root system
@@ -131,6 +131,7 @@ loglevel 3
     chown system cache /cache
     chmod 0771 /cache
     mkdir /cache/download 0777 system cache
+    mount tmpfs tmpfs /cache/download
 
     # This may have been created by the recovery system with odd permissions
     chown system cache /cache/recovery
@@ -344,6 +345,14 @@ on property:persist.service.adb.enable=1
 
 on property:persist.service.adb.enable=0
     stop adbd
+
+on property:service.adb.tcp.port=5555
+    stop adbd
+    start adbd
+
+on property:service.adb.tcp.port=-1
+    stop adbd
+    start adbd
 
 service servicemanager /system/bin/servicemanager
     class pre-zygote_services

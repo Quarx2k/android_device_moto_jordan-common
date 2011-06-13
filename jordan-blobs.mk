@@ -40,27 +40,30 @@ PRODUCT_COPY_FILES += \
 
 #Bootmenu
 PRODUCT_COPY_FILES += \
-	device/motorola/jordan/init.mapphone_umts.rc:system/bootmenu/2nd-init/init.mapphone_umts.rc \
-	device/motorola/jordan/init.rc:system/bootmenu/2nd-init/init.rc \
+	device/motorola/jordan/profiles/standard/init.rc:system/bootmenu/2nd-init/init.rc \
+	device/motorola/jordan/profiles/standard/init.mapphone_umts.rc:system/bootmenu/2nd-init/init.mapphone_umts.rc \
+	device/motorola/jordan/profiles/ramdisk-cache/init.rc:system/bootmenu/2nd-boot/init.rc \
+	device/motorola/jordan/profiles/ramdisk-cache/init.mapphone_umts.rc:system/bootmenu/2nd-boot/init.mapphone_umts.rc \
 	device/motorola/jordan/proprietary/bootmenu/binary/adbd:system/bootmenu/binary/adbd \
 	device/motorola/jordan/proprietary/bootmenu/binary/logwrapper.bin:system/bootmenu/binary/logwrapper.bin \
 	device/motorola/jordan/proprietary/bootmenu/binary/logwrapper.bin:system/bin/logwrapper.bin \
+	device/motorola/jordan/proprietary/bootmenu/binary/lsof.static:system/bootmenu/binary/lsof \
+	device/motorola/jordan/proprietary/bootmenu/binary/2nd-boot:system/bootmenu/binary/2nd-boot \
 	device/motorola/jordan/proprietary/bootmenu/config/bootmenu_bypass:system/bootmenu/config/bootmenu_bypass \
 	device/motorola/jordan/proprietary/bootmenu/config/default.prop:system/bootmenu/config/default.prop \
 	device/motorola/jordan/proprietary/bootmenu/config/default_bootmode.conf:system/bootmenu/config/default_bootmode.conf \
 	device/motorola/jordan/proprietary/bootmenu/config/overclock.conf:system/bootmenu/config/overclock.conf \
 	device/motorola/jordan/proprietary/bootmenu/ext/su:system/bootmenu/ext/su \
 	device/motorola/jordan/proprietary/bootmenu/ext/Superuser.apk:system/bootmenu/ext/Superuser.apk \
-	device/motorola/jordan/proprietary/bootmenu/images/icon_error.png:system/bootmenu/images/icon_error.png \
-	device/motorola/jordan/proprietary/bootmenu/images/icon_installing.png:system/bootmenu/images/icon_installing.png \
-	device/motorola/jordan/proprietary/bootmenu/images/indeterminate1.png:system/bootmenu/images/indeterminate1.png \
-	device/motorola/jordan/proprietary/bootmenu/images/indeterminate2.png:system/bootmenu/images/indeterminate2.png \
-	device/motorola/jordan/proprietary/bootmenu/images/indeterminate3.png:system/bootmenu/images/indeterminate3.png \
-	device/motorola/jordan/proprietary/bootmenu/images/indeterminate4.png:system/bootmenu/images/indeterminate4.png \
-	device/motorola/jordan/proprietary/bootmenu/images/indeterminate5.png:system/bootmenu/images/indeterminate5.png \
-	device/motorola/jordan/proprietary/bootmenu/images/indeterminate6.png:system/bootmenu/images/indeterminate6.png \
-	device/motorola/jordan/proprietary/bootmenu/images/progress_empty.png:system/bootmenu/images/progress_empty.png \
-	device/motorola/jordan/proprietary/bootmenu/images/progress_fill.png:system/bootmenu/images/progress_fill.png \
+	external/bootmenu/images/background.png:system/bootmenu/images/background.png \
+	external/bootmenu/images/indeterminate1.png:system/bootmenu/images/indeterminate1.png \
+	external/bootmenu/images/indeterminate2.png:system/bootmenu/images/indeterminate2.png \
+	external/bootmenu/images/indeterminate3.png:system/bootmenu/images/indeterminate3.png \
+	external/bootmenu/images/indeterminate4.png:system/bootmenu/images/indeterminate4.png \
+	external/bootmenu/images/indeterminate5.png:system/bootmenu/images/indeterminate5.png \
+	external/bootmenu/images/indeterminate6.png:system/bootmenu/images/indeterminate6.png \
+	external/bootmenu/images/progress_empty.png:system/bootmenu/images/progress_empty.png \
+	external/bootmenu/images/progress_fill.png:system/bootmenu/images/progress_fill.png \
 	device/motorola/jordan/proprietary/bootmenu/recovery/res/keys:system/bootmenu/recovery/res/keys \
 	device/motorola/jordan/proprietary/bootmenu/recovery/res/images/icon_error.png:system/bootmenu/recovery/res/images/icon_error.png \
 	device/motorola/jordan/proprietary/bootmenu/recovery/res/images/icon_done.png:system/bootmenu/recovery/res/images/icon_done.png \
@@ -74,7 +77,6 @@ PRODUCT_COPY_FILES += \
 	device/motorola/jordan/proprietary/bootmenu/recovery/res/images/progress_empty.png:system/bootmenu/recovery/res/images/progress_empty.png \
 	device/motorola/jordan/proprietary/bootmenu/recovery/res/images/progress_fill.png:system/bootmenu/recovery/res/images/progress_fill.png \
 	device/motorola/jordan/proprietary/bootmenu/recovery/res/images/icon_clockwork.png:system/bootmenu/recovery/res/images/icon_clockwork.png \
-	device/motorola/jordan/proprietary/bootmenu/recovery/sbin/adbd:system/bootmenu/recovery/sbin/adbd \
 	device/motorola/jordan/proprietary/bootmenu/recovery/sbin/e2fsck:system/bootmenu/recovery/sbin/e2fsck \
 	device/motorola/jordan/proprietary/bootmenu/recovery/sbin/fix_permissions:system/bootmenu/recovery/sbin/fix_permissions \
 	device/motorola/jordan/proprietary/bootmenu/recovery/sbin/killrecovery.sh:system/bootmenu/recovery/sbin/killrecovery.sh \
@@ -86,7 +88,6 @@ PRODUCT_COPY_FILES += \
 	device/motorola/jordan/proprietary/bootmenu/recovery/sbin/mke2fs.bin:system/bootmenu/recovery/sbin/mke2fs.bin \
 	device/motorola/jordan/proprietary/bootmenu/recovery/sbin/tune2fs:system/bootmenu/recovery/sbin/tune2fs \
 	device/motorola/jordan/proprietary/bootmenu/recovery/sbin/tune2fs.bin:system/bootmenu/recovery/sbin/tune2fs.bin \
-	device/motorola/jordan/proprietary/bootmenu/binary/lsof.static:system/bootmenu/binary/lsof \
 	device/motorola/jordan/proprietary/bootmenu/recovery/recovery.fstab:system/bootmenu/recovery/recovery.fstab \
 	device/motorola/jordan/proprietary/bootmenu/script/2nd-init.sh:system/bootmenu/script/2nd-init.sh \
 	device/motorola/jordan/proprietary/bootmenu/script/2nd-boot.sh:system/bootmenu/script/2nd-boot.sh \
