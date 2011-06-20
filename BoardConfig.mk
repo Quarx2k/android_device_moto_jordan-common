@@ -51,9 +51,9 @@ BOARD_GLOBAL_CFLAGS += -DHAVE_FM_RADIO
 # Wifi related defines
 BOARD_WPA_SUPPLICANT_DRIVER := CUSTOM
 WPA_SUPPLICANT_VERSION      := VER_0_6_X
-BOARD_WLAN_DEVICE           := wl1271
-BOARD_SOFTAP_DEVICE         := wl1271
+BOARD_WLAN_DEVICE           := tiwlan0
 WIFI_DRIVER_MODULE_PATH     := "/system/lib/modules/tiwlan_drv.ko"
+BOARD_WLAN_TI_STA_DK_ROOT   := system/wlan/ti/wilink_6_1
 WIFI_DRIVER_MODULE_NAME     := tiwlan_drv
 WIFI_FIRMWARE_LOADER        := wlan_loader
 
@@ -72,12 +72,6 @@ BOARD_FLASH_BLOCK_SIZE := 131072
 BOARD_CUSTOM_RECOVERY_KEYMAPPING:= ../../device/motorola/jordan/recovery_ui.c
 BOARD_HAS_NO_MISC_PARTITION := true
 BOARD_RECOVERY_IGNORE_BOOTABLES := true
-BOARD_DATA_DEVICE := /dev/block/mmcblk1p25
-BOARD_DATA_FILESYSTEM := ext3
-BOARD_SYSTEM_DEVICE := /dev/block/mmcblk1p21
-BOARD_SYSTEM_FILESYSTEM := ext3
-BOARD_CACHE_DEVICE := /dev/block/mmcblk1p24
-BOARD_CACHE_FILESYSTEM := ext3
 BOARD_HAS_SMALL_RECOVERY := true
 #TARGET_RECOVERY_UI_LIB := librecovery_ui_sholes librecovery_ui_generic
 #TARGET_RECOVERY_UPDATER_LIBS += librecovery_updater_generic
