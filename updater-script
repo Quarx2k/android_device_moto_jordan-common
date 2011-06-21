@@ -5,7 +5,7 @@ show_progress(0.100000, 5);
 run_program("/tmp/backuptool.sh", "backup");
 show_progress(0.100000, 5);
 delete_recursive("/system/");
-show_progress(0.800000, 30);
+show_progress(0.800000, 25);
 package_extract_dir("system", "/system");
 show_progress(0.100000, 5);
 symlink("busybox", "/system/xbin/[", "/system/xbin/[[",
@@ -25,6 +25,7 @@ symlink("busybox", "/system/xbin/[", "/system/xbin/[[",
         "/system/xbin/false", "/system/xbin/fdisk", "/system/xbin/fgrep",
         "/system/xbin/find", "/system/xbin/fold", "/system/xbin/free",
         "/system/xbin/freeramdisk", "/system/xbin/fuser", "/system/xbin/getopt",
+        "/system/xbin/groups",
         "/system/xbin/grep", "/system/xbin/gunzip", "/system/xbin/gzip",
         "/system/xbin/head", "/system/xbin/hexdump", "/system/xbin/id",
         "/system/xbin/ifconfig", "/system/xbin/insmod", "/system/xbin/install",
@@ -83,6 +84,7 @@ symlink("toolbox", "/system/bin/cat", "/system/bin/cmp",
         "/system/bin/vmstat", "/system/bin/watchprops",
         "/system/bin/wipe");
 symlink("bootmenu", "/system/bin/logwrapper");
+symlink("logwrapper.bin","/system/xbin/logwrapper","/system/xbin/logwrapper.bin");
 package_extract_file("system/bin/bootmenu", "/system/bootmenu/binary/bootmenu");
 set_perm_recursive(0, 0, 0755, 0644, "/system");
 set_perm_recursive(0, 0, 0755, 0755, "/system/bootmenu/binary/");
