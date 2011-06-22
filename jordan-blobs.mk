@@ -48,6 +48,7 @@ PRODUCT_COPY_FILES += \
 	device/motorola/jordan/proprietary/bootmenu/binary/logwrapper.bin:system/bootmenu/binary/logwrapper.bin \
 	device/motorola/jordan/proprietary/bootmenu/binary/logwrapper.bin:system/bin/logwrapper.bin \
 	device/motorola/jordan/proprietary/bootmenu/binary/lsof.static:system/bootmenu/binary/lsof \
+	device/motorola/jordan/proprietary/bootmenu/binary/2nd-init.179:system/bootmenu/binary/2nd-init \
 	device/motorola/jordan/proprietary/bootmenu/binary/2nd-boot:system/bootmenu/binary/2nd-boot \
 	device/motorola/jordan/proprietary/bootmenu/config/bootmenu_bypass:system/bootmenu/config/bootmenu_bypass \
 	device/motorola/jordan/proprietary/bootmenu/config/default.prop:system/bootmenu/config/default.prop \
