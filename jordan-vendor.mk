@@ -59,6 +59,7 @@ PRODUCT_COPY_FILES += \
 	vendor/motorola/jordan/lib/libril-moto-umts-1.so:system/lib/libril-moto-umts-1.so \
 	vendor/motorola/jordan/lib/librilswitch.so:system/lib/librilswitch.so \
 	vendor/motorola/jordan/lib/libsmapi.so:system/lib/libsmapi.so \
+	vendor/motorola/jordan/lib/libusc.so:system/lib/libusc.so \
 	vendor/motorola/jordan/lib/hw/gralloc.omap3.so:system/lib/hw/gralloc.omap3.so \
 	vendor/motorola/jordan/lib/hw/gps.jordan.so:system/lib/hw/gps.jordan.so \
 	vendor/motorola/jordan/lib/dsp/baseimage.dof:system/lib/dsp/baseimage.dof \

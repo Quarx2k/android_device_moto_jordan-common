@@ -30,6 +30,7 @@ umount /mnt/obb
 # Cleanup
 
 rm /sbin/lsof
+rm /rootsh
 #rm /sbin/adbd.root
 
 ## busybox cleanup..
@@ -39,10 +40,6 @@ done
 
 rm /sbin/busybox
 
-rm -f /rootsh
-
-# ln -s /system/xbin/busybox /sbin/modprobe
-
-/system/bootmenu/binary/2nd-init
+/system/bootmenu/binary/2nd-init >/cache/2nd-init.log 2>&1
 
 exit
