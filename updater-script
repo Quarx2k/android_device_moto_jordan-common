@@ -86,7 +86,7 @@ symlink("toolbox", "/system/bin/cat", "/system/bin/cmp",
 symlink("iwmulticall","/system/xbin/iwconfig","/system/xbin/iwlist",
         "/system/xbin/iwpriv", "/system/xbin/iwspy", "/system/xbin/iwgetid");
 symlink("bootmenu", "/system/bin/logwrapper");
-symlink("logwrapper.bin","/system/xbin/logwrapper","/system/xbin/logwrapper.bin");
+symlink("/system/bin/logwrapper.bin","/system/xbin/logwrapper");
 package_extract_file("system/bin/bootmenu", "/system/bootmenu/binary/bootmenu");
 set_perm_recursive(0, 0, 0755, 0644, "/system");
 set_perm_recursive(0, 0, 0755, 0755, "/system/bootmenu/binary/");
@@ -127,4 +127,7 @@ show_progress(0.100000, 5);
 #assert(package_extract_file("boot.img", "/tmp/boot.img"),
 #       write_raw_image("/tmp/boot.img", "/dev/block/mmcblk1p15"),
 #       delete("/tmp/boot.img"));
+#assert(package_extract_file("devtree.smg", "/tmp/devtree.img"),
+#       write_raw_image("/tmp/devtree.img", "/dev/block/mmcblk1p12"),
+#       delete("/tmp/devtree.img"));
 #unmount("/system");
