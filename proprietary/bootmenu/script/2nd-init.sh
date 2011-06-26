@@ -1,4 +1,4 @@
-#!/sbin/sh
+
 
 ######## BootMenu Script
 ######## Execute [2nd-init] Menu
@@ -30,7 +30,6 @@ umount /mnt/obb
 # Cleanup
 
 rm /sbin/lsof
-rm /rootsh
 #rm /sbin/adbd.root
 
 ## busybox cleanup..
@@ -40,6 +39,6 @@ done
 
 rm /sbin/busybox
 
-/system/bootmenu/binary/2nd-init >/cache/2nd-init.log 2>&1
+/system/bootmenu/binary/2nd-init >/tmp/2nd-init.log 2>&1
 
 exit
