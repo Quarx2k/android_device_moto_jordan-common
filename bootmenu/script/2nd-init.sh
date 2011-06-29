@@ -19,7 +19,7 @@ cp -r -f /system/bootmenu/2nd-init/* /
 chmod 755 /*.rc
 chmod 755 /system/bootmenu/binary/2nd-init
 
-
+# ??
 umount /acct
 umount /mnt/asec
 umount /dev/cpuctl
@@ -30,7 +30,6 @@ umount /mnt/obb
 # Cleanup
 
 rm /sbin/lsof
-#rm /sbin/adbd.root
 
 ## busybox cleanup..
 for cmd in $(/sbin/busybox --list); do
@@ -38,10 +37,6 @@ for cmd in $(/sbin/busybox --list); do
 done
 
 rm /sbin/busybox
-
-rm -f /rootsh
-
-# ln -s /system/xbin/busybox /sbin/modprobe
 
 /system/bootmenu/binary/2nd-init
 
