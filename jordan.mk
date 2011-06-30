@@ -73,7 +73,6 @@ PRODUCT_PACKAGES += \
 	librs_jni \
 	tiwlan.ini \
 	dspexec \
-	Stk \
 	libbridge \
 	overlay.omap3 \
 	wlan_cu \
@@ -96,7 +95,6 @@ PRODUCT_PACKAGES += \
 	libVendor_ti_omx \
 	libLCML \
 	libOMX_Core \
-	gps.jordan \
 	sensors.jordan \
 	lights.jordan \
 	libcamera \
