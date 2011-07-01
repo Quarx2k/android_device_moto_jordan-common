@@ -22,7 +22,6 @@ PRODUCT_COPY_FILES += \
 
 #etc
 PRODUCT_COPY_FILES += \
-	device/motorola/jordan/recovery.fstab:system/etc/recovery.fstab \
 	device/motorola/jordan/proprietary/etc/init.d/05mountsd:system/etc/init.d/05mountsd \
 	device/motorola/jordan/proprietary/etc/profile:system/etc/profile \
 	device/motorola/jordan/proprietary/etc/sysctl.conf:system/etc/sysctl.conf \
