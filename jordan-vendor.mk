@@ -244,3 +244,21 @@ PRODUCT_COPY_FILES += \
 	vendor/motorola/jordan/tts/nuance/str_itit.bin:system/tts/nuance/str_itit.bin \
 	vendor/motorola/jordan/tts/nuance/str_ptbr.bin:system/tts/nuance/str_ptbr.bin
 
+#MTP
+PRODUCT_COPY_FILES += \
+	vendor/motorola/jordan/app/MediaSync.apk:system/app/MediaSync.apk \
+	vendor/motorola/jordan/bin/mtpd:system/bin/mtpd \
+	vendor/motorola/jordan/lib/libjanus.so:system/lib/libjanus.so \
+	vendor/motorola/jordan/lib/libmetainfo.so:system/lib/libmetainfo.so \
+	vendor/motorola/jordan/lib/lib/motdrm1.so:system/lib/lib/motdrm1.so \
+	vendor/motorola/jordan/lib/lib/mtp_jni.so:system/lib/libmtp_jni.so \
+	vendor/motorola/jordan/lib/lib/mtpstack.so:system/lib/libmtpstack.so \
+	vendor/motorola/jordan/lib/lib/nativedrm1.so:system/lib/libnativedrm1.so \
+	vendor/motorola/jordan/lib/lib/wmdrmdependency.so:system/lib/libwmdrmdependency.so
+
+#AT command interface
+PRODUCT_COPY_FILES += \
+	vendor/motorola/jordan/app/AtCmd.apk:system/app/AtCmd.apk \
+	vendor/motorola/jordan/lib/libmot_atcmd.so:system/lib/libmot_atcmd.so \
+	vendor/motorola/jordan/lib/libmot_atcmd_mflex.so:system/libmot_atcmd_mflex.so
+
