@@ -336,6 +336,14 @@ on property:persist.service.adb.enable=1
 on property:persist.service.adb.enable=0
     stop adbd
 
+on property:service.adb.tcp.port=5555
+    stop adbd
+    start adbd
+
+on property:service.adb.tcp.port=-1
+    stop adbd
+    start adbd
+
 service servicemanager /system/bin/servicemanager
     class pre-zygote_services
     user system
