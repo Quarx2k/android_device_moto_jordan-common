@@ -32,7 +32,7 @@ TARGET_NO_PREINSTALL := true
 TARGET_BOOTLOADER_BOARD_NAME := jordan
 
 # Override cyanogen squisher to customize our update zip package
-TARGET_CUSTOM_RELEASETOOL := "device/motorola/jordan/releasetools/squisher"
+TARGET_CUSTOM_RELEASETOOL := ./device/motorola/jordan/releasetools/squisher
 
 # Board properties
 TARGET_BOARD_PLATFORM := omap3
@@ -53,6 +53,7 @@ BOARD_WLAN_DEVICE           := wl1271
 WIFI_DRIVER_MODULE_PATH     := "/system/lib/modules/tiwlan_drv.ko"
 WIFI_DRIVER_MODULE_NAME     := tiwlan_drv
 WIFI_FIRMWARE_LOADER        := wlan_loader
+PRODUCT_WIRELESS_TOOLS      := true
 
 BOARD_USE_YUV422I_DEFAULT_COLORFORMAT := true
 BOARD_EGL_CFG := device/motorola/jordan/egl.cfg
