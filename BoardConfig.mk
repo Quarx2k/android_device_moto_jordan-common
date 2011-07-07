@@ -31,8 +31,10 @@ TARGET_NO_BOOTLOADER := true
 TARGET_NO_PREINSTALL := true
 TARGET_BOOTLOADER_BOARD_NAME := jordan
 
-#Board properties
+# Override cyanogen squisher to customize our update zip package
+TARGET_CUSTOM_RELEASETOOL := "device/motorola/jordan/releasetools/squisher"
 
+# Board properties
 TARGET_BOARD_PLATFORM := omap3
 TARGET_CPU_ABI := armeabi-v7a
 TARGET_CPU_ABI2 := armeabi
@@ -44,18 +46,11 @@ OMAP_ENHANCEMENT := true
 COMMON_GLOBAL_CFLAGS += -DOMAP_ENHANCEMENT
 COMMON_GLOBAL_CFLAGS += -DTARGET_OMAP3
 
-
 # Wifi related defines
 BOARD_WPA_SUPPLICANT_DRIVER := CUSTOM
 WPA_SUPPLICANT_VERSION      := VER_0_6_X
-WIFI_DRIVER_MODULE_PATH     := "/system/lib/modules/tiwlan_drv.ko"
-
-#BOARD_WLAN_DEVICE           := tiwlan0
-#BOARD_WLAN_TI_STA_DK_ROOT   := system/wlan/ti/wilink_6_1
-
 BOARD_WLAN_DEVICE           := wl1271
-BOARD_SOFTAP_DEVICE         := wl1271
-
+WIFI_DRIVER_MODULE_PATH     := "/system/lib/modules/tiwlan_drv.ko"
 WIFI_DRIVER_MODULE_NAME     := tiwlan_drv
 WIFI_FIRMWARE_LOADER        := wlan_loader
 

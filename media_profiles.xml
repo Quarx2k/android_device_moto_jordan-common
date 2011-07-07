@@ -109,7 +109,7 @@
                    bitRate="8000000"
                    width="848"
                    height="480"
-                   frameRate="24" />
+                   frameRate="30" />
 
             <Audio codec="aac"
                    bitRate="96000"
