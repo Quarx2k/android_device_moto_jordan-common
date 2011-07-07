@@ -153,6 +153,9 @@ else
 	if [ "$TARGET_PRODUCT" = "cyanogen_jordan" ]; then
 		MODVERSION=`sed -n -e'/ro\.modversion/s/^.*CyanogenMod-//p' $REPACK/ota/system/build.prop`
 		OUTFILE=$OUT/cm$MODVERSION.zip
+		if [ "$CYANOGEN_WITH_GOOGLE" = "1" ]; then
+			OUTFILE=$OUT/cm$MODVERSION.ggl.zip
+		fi
 	fi
 fi
 
