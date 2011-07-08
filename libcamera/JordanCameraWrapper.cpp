@@ -258,6 +258,7 @@ JordanCameraWrapper::setParameters(const CameraParameters& params)
      * so if it's larger than 0, we can be sure the value was parsed properly
      */
     mVideoMode = pars.getInt("cam-mode") > 0;
+    pars.remove("cam-mode");
 
     pars.getPreviewSize(&width, &height);
     if (width == 848 && height == 480) {
