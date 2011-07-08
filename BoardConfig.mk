@@ -31,8 +31,10 @@ TARGET_NO_BOOTLOADER := true
 TARGET_NO_PREINSTALL := true
 TARGET_BOOTLOADER_BOARD_NAME := jordan
 
-#Board properties
+# Override cyanogen squisher to customize our update zip package
+TARGET_CUSTOM_RELEASETOOL := ./device/motorola/jordan/releasetools/squisher
 
+# Board properties
 TARGET_BOARD_PLATFORM := omap3
 TARGET_CPU_ABI := armeabi-v7a
 TARGET_CPU_ABI2 := armeabi
