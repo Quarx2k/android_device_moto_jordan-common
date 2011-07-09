@@ -32,9 +32,6 @@ ro.cwm.forbid_format=/misc,/radio,/boot,/recovery,/pds,/system
 # BatteryLight while charging, enabled by default.
 ro.battery_light=true
 
-# Device gets 1% battery from charge_counter
-ro.product.use_charge_counter=1
-
 # declare we're using Usb.apk
 ro.usb.use_custom_service=1
 
