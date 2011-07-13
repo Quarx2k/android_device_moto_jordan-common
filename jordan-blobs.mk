@@ -23,6 +23,7 @@ PRODUCT_COPY_FILES += \
 #etc
 PRODUCT_COPY_FILES += \
 	device/motorola/jordan/proprietary/etc/init.d/05mountsd:system/etc/init.d/05mountsd \
+	device/motorola/jordan/proprietary/etc/init.d/07multitouch:system/etc/init.d/07multitouch \
 	device/motorola/jordan/proprietary/etc/profile:system/etc/profile \
 	device/motorola/jordan/proprietary/etc/sysctl.conf:system/etc/sysctl.conf \
 	device/motorola/jordan/proprietary/etc/busybox.fstab:system/etc/fstab \
