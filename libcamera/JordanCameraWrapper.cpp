@@ -112,10 +112,13 @@ deviceCardMatches(const char *device, const char *matchCard)
 JordanCameraWrapper::JordanCameraWrapper(int cameraId) :
     mMotoInterface(g_motoOpenCameraHardware(cameraId)),
     mVideoMode(false),
+<<<<<<< HEAD
     mNotifyCb(NULL),
     mDataCb(NULL),
     mDataCbTimestamp(NULL),
     mCbUserData(NULL),
+=======
+>>>>>>> cyanogen/gingerbread
     mCameraType(CAM_UNKNOWN)
 {
     struct v4l2_capability caps;
