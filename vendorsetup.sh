@@ -20,5 +20,23 @@
 # In particular, you can add lunch options with the add_lunch_combo
 # function: add_lunch_combo generic-eng
 
+if [ "${TARGET_PRODUCT}" = "cyanogen_jordan" ]; then
+
+echo Product found : ${TARGET_PRODUCT}, setting custom env.
+
+# faster build
+export USE_CCACHE=1
+
+# default build
+export CYANOGEN_NIGHTLY=true
+
+# this type of build include kernel and dont backup modules & settings
+#export CYANOGEN_RELEASE=1
+
+# to change output filename
+#export CYANOGEN_NIGHTLY_BOOT=179
+
+fi
+
 add_lunch_combo generic_jordan-userdebug
 
