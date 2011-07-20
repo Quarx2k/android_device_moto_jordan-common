@@ -48,8 +48,3 @@ echo 18 > /sys/class/leds/lcd-backlight/brightness
 
 /system/bootmenu/binary/2nd-init
 
-<<<<<<< HEAD
-
-exit
-=======
->>>>>>> 50515f0b47b119e25b38a2e5ae703e4fc58d009e
