@@ -59,7 +59,6 @@ PRODUCT_COPY_FILES += \
 	device/motorola/jordan/bootmenu/config/bootmenu_bypass:system/bootmenu/config/bootmenu_bypass \
 	device/motorola/jordan/bootmenu/config/default.prop:system/bootmenu/config/default.prop \
 	device/motorola/jordan/bootmenu/config/default_bootmode.conf:system/bootmenu/config/default_bootmode.conf \
-	device/motorola/jordan/bootmenu/config/multitouch.conf:system/bootmenu/config/multitouch.conf \
 	device/motorola/jordan/bootmenu/config/overclock.conf:system/bootmenu/config/overclock.conf \
 	device/motorola/jordan/bootmenu/ext/su:system/bootmenu/ext/su \
 	device/motorola/jordan/bootmenu/images/background.png:system/bootmenu/images/background.png \
@@ -84,6 +83,8 @@ PRODUCT_COPY_FILES += \
 	device/motorola/jordan/bootmenu/recovery/res/images/progress_empty.png:system/bootmenu/recovery/res/images/progress_empty.png \
 	device/motorola/jordan/bootmenu/recovery/res/images/progress_fill.png:system/bootmenu/recovery/res/images/progress_fill.png \
 	device/motorola/jordan/bootmenu/recovery/res/images/icon_clockwork.png:system/bootmenu/recovery/res/images/icon_clockwork.png \
+	device/motorola/jordan/bootmenu/recovery/sbin/dedupe:system/bootmenu/recovery/sbin/dedupe \
+	device/motorola/jordan/bootmenu/recovery/sbin/dump_image:system/bootmenu/recovery/sbin/dump_image \
 	device/motorola/jordan/bootmenu/recovery/sbin/e2fsck:system/bootmenu/recovery/sbin/e2fsck \
 	device/motorola/jordan/bootmenu/recovery/sbin/fix_permissions:system/bootmenu/recovery/sbin/fix_permissions \
 	device/motorola/jordan/bootmenu/recovery/sbin/killrecovery.sh:system/bootmenu/recovery/sbin/killrecovery.sh \
