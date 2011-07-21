@@ -42,5 +42,14 @@ protected:
         virtual bool a2dpUsedForSonification() const { return true; }
 #endif
 
+#ifdef HAVE_FM_RADIO
+
+        virtual status_t setDeviceConnectionState(AudioSystem::audio_devices device,
+                                                  AudioSystem::device_connection_state state,
+                                                  const char *device_address);
+
+        void resetFm(AudioSystem::audio_devices device);
+#endif
+
 };
 };
