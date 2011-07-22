@@ -44,11 +44,3 @@ ro.product.use_charge_counter=1
 # use default multitouch configuration
 ro.input.multitouch_points=2
 
-
-# disables asset purging, which is known to
-# cause very slow dalvik garbage collection
-persist.sys.purgeable_assets=0
-
-# better performances ?
-persist.sys.use_dithering=1
-
