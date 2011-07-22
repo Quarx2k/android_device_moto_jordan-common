@@ -345,11 +345,11 @@ on property:service.adb.tcp.port=-1
     start adbd
 
 on property:persist.input.multitouch_points=2
-    rmmod defy_more
+    exec modprobe -r defy_more
 
 on property:persist.input.multitouch_points=5
-    modprobe -r defy_more
-    /etc/init.d/90multitouch
+    exec modprobe -r defy_more
+    exec /etc/init.d/90multitouch
 
 service servicemanager /system/bin/servicemanager
     class pre-zygote_services
