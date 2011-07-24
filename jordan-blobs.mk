@@ -49,8 +49,13 @@ PRODUCT_COPY_FILES += \
 	device/motorola/jordan/profiles/standard/ueventd.rc:system/bootmenu/2nd-init/ueventd.rc \
 	device/motorola/jordan/profiles/standard/init:system/bootmenu/2nd-init/init \
 	device/motorola/jordan/profiles/standard/sbin/ueventd:system/bootmenu/2nd-init/sbin/ueventd \
-	device/motorola/jordan/profiles/froyo/init.rc:system/bootmenu/2nd-boot/init.rc \
-	device/motorola/jordan/profiles/froyo/init.mapphone_umts.rc:system/bootmenu/2nd-boot/init.mapphone_umts.rc \
+	device/motorola/jordan/profiles/backup/init.rc:system/bootmenu/2nd-boot/init.rc \
+	device/motorola/jordan/profiles/backup/init.mapphone_umts.rc:system/bootmenu/2nd-boot/init.mapphone_umts.rc \
+	device/motorola/jordan/profiles/backup/ueventd.rc:system/bootmenu/2nd-boot/ueventd.rc \
+	device/motorola/jordan/profiles/backup/init:system/bootmenu/2nd-boot/init \
+	device/motorola/jordan/profiles/backup/sbin/ueventd:system/bootmenu/2nd-boot/sbin/ueventd \
+	device/motorola/jordan/profiles/froyo/init.rc:system/bootmenu/froyo/init.rc \
+	device/motorola/jordan/profiles/froyo/init.mapphone_umts.rc:system/bootmenu/froyo/init.mapphone_umts.rc \
 	device/motorola/jordan/bootmenu/binary/adbd:system/bootmenu/binary/adbd \
 	device/motorola/jordan/bootmenu/binary/logwrapper.bin:system/bootmenu/binary/logwrapper.bin \
 	device/motorola/jordan/bootmenu/binary/logwrapper.bin:system/bin/logwrapper.bin \
@@ -84,6 +89,9 @@ PRODUCT_COPY_FILES += \
 	device/motorola/jordan/bootmenu/recovery/res/images/progress_empty.png:system/bootmenu/recovery/res/images/progress_empty.png \
 	device/motorola/jordan/bootmenu/recovery/res/images/progress_fill.png:system/bootmenu/recovery/res/images/progress_fill.png \
 	device/motorola/jordan/bootmenu/recovery/res/images/icon_clockwork.png:system/bootmenu/recovery/res/images/icon_clockwork.png \
+	device/motorola/jordan/bootmenu/recovery/sbin/badblocks:system/bootmenu/recovery/sbin/badblocks \
+	device/motorola/jordan/bootmenu/recovery/sbin/dedupe:system/bootmenu/recovery/sbin/dedupe \
+	device/motorola/jordan/bootmenu/recovery/sbin/dump_image:system/bootmenu/recovery/sbin/dump_image \
 	device/motorola/jordan/bootmenu/recovery/sbin/e2fsck:system/bootmenu/recovery/sbin/e2fsck \
 	device/motorola/jordan/bootmenu/recovery/sbin/fix_permissions:system/bootmenu/recovery/sbin/fix_permissions \
 	device/motorola/jordan/bootmenu/recovery/sbin/killrecovery.sh:system/bootmenu/recovery/sbin/killrecovery.sh \
@@ -91,6 +99,7 @@ PRODUCT_COPY_FILES += \
 	device/motorola/jordan/bootmenu/recovery/sbin/parted:system/bootmenu/recovery/sbin/parted \
 	device/motorola/jordan/bootmenu/recovery/sbin/postrecoveryboot.sh:system/bootmenu/recovery/sbin/postrecoveryboot.sh \
 	device/motorola/jordan/bootmenu/recovery/sbin/recovery:system/bootmenu/recovery/sbin/recovery_stable \
+	device/motorola/jordan/bootmenu/recovery/sbin/resize2fs:system/bootmenu/recovery/sbin/resize2fs \
 	device/motorola/jordan/bootmenu/recovery/sbin/sdparted:system/bootmenu/recovery/sbin/sdparted \
 	device/motorola/jordan/bootmenu/recovery/sbin/mke2fs:system/bootmenu/recovery/sbin/mke2fs \
 	device/motorola/jordan/bootmenu/recovery/sbin/mke2fs.bin:system/bootmenu/recovery/sbin/mke2fs.bin \
