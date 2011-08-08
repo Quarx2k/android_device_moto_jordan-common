@@ -42,4 +42,4 @@ ro.mtp_available=0
 ro.product.use_charge_counter=1
 
 # use up to 5 multitouch points
-ro.input.multitouch_points=5
+persist.input.multitouch_points=5
