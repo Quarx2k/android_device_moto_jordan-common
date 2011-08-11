@@ -11,7 +11,5 @@
 
     <!-- LED Flashlight -->
     <bool name="has_led_flash">true</bool>
-    <!-- Auto Backlight -->
-    <bool name="light_decrease_enabled">true</bool>
 
 </resources>
