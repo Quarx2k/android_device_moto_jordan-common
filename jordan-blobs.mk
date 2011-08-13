@@ -109,6 +109,7 @@ PRODUCT_COPY_FILES += \
 	device/motorola/jordan/bootmenu/script/adbd.sh:system/bootmenu/script/adbd.sh \
 	device/motorola/jordan/bootmenu/script/bootmode_clean.sh:system/bootmenu/script/bootmode_clean.sh \
 	device/motorola/jordan/bootmenu/script/cdrom.sh:system/bootmenu/script/cdrom.sh \
+	device/motorola/jordan/bootmenu/script/nand.sh:system/bootmenu/script/nand.sh \
 	device/motorola/jordan/bootmenu/script/overclock.sh:system/bootmenu/script/overclock.sh \
 	device/motorola/jordan/bootmenu/script/post_bootmenu.sh:system/bootmenu/script/post_bootmenu.sh \
 	device/motorola/jordan/bootmenu/script/pre_bootmenu.sh:system/bootmenu/script/pre_bootmenu.sh \
@@ -125,4 +126,5 @@ PRODUCT_COPY_FILES += \
 	device/motorola/jordan/bootmenu/modules/cpufreq_smartass.ko:system/bootmenu/ext/modules/cpufreq_smartass.ko \
 	device/motorola/jordan/bootmenu/modules/cpufreq_userspace.ko:system/bootmenu/ext/modules/cpufreq_userspace.ko \
 	device/motorola/jordan/bootmenu/modules/overclock_defy.ko:system/bootmenu/ext/modules/overclock_defy.ko \
-	device/motorola/jordan/bootmenu/modules/symsearch.ko:system/bootmenu/ext/modules/symsearch.ko
+	device/motorola/jordan/bootmenu/modules/symsearch.ko:system/bootmenu/ext/modules/symsearch.ko\
+
