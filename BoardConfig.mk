@@ -94,7 +94,7 @@ BOARD_NEVER_UMOUNT_SYSTEM := true
 
 # Override cyanogen squisher to customize our update zip package
 TARGET_CUSTOM_RELEASETOOL := ./device/motorola/jordan/releasetools/squisher
-
+BOARD_CUSTOM_USB_CONTROLLER := ../../device/motorola/jordan/UsbController.cpp
 
 # In nighly builds only
 ifndef CYANOGEN_RELEASE
