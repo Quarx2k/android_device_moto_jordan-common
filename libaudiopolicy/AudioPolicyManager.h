@@ -42,6 +42,7 @@ protected:
         virtual bool a2dpUsedForSonification() const { return true; }
 #endif
 
+
 #ifdef HAVE_FM_RADIO
 
         virtual status_t setDeviceConnectionState(AudioSystem::audio_devices device,
@@ -49,7 +50,11 @@ protected:
                                                   const char *device_address);
 
         void resetFm(AudioSystem::audio_devices device);
+
+#ifdef OMAP_ENHANCEMENT
+	virtual status_t setFMRxActive(bool state);
 #endif
 
 };
-};
+
+}; //namespace

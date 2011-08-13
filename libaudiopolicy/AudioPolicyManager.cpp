@@ -41,6 +41,7 @@ extern "C" void destroyAudioPolicyManager(AudioPolicyInterface *interface)
     delete interface;
 }
 
+
 #ifdef HAVE_FM_RADIO
 
 status_t AudioPolicyManager::setDeviceConnectionState(AudioSystem::audio_devices device,
@@ -106,6 +107,14 @@ void AudioPolicyManager::resetFm(AudioSystem::audio_devices device)
     setOutputDevice(mHardwareOutput, newDevice);
 }
 
+#endif
+
+
+
+#ifdef OMAP_ENHANCEMENT
+status_t AudioPolicyManager::setFMRxActive(bool status) {
+    return NO_ERROR;
+}
 #endif
 
 
