@@ -58,11 +58,7 @@ on post-fs
     exec /system/bin/logwrapper echo pds Overclocking...
 
 # Create basic filesystem structure
-<<<<<<< HEAD
     # We chown/chmod /pds 	again so because mount is run as root + defaults
-=======
-    # We chown/chmod /pds again so because mount is run as root + defaults
->>>>>>> 2b0c7140ae7a592eabaeb5aec1ba6d94f66980bc
     chown system system /pds
     chmod 0775 /pds
     mkdir /pds/comm_drv 0770 radio radio
@@ -229,11 +225,7 @@ on boot
     setprop net.tcp.buffersize.umts 64000,128000,256000,4096,16384,110208
     setprop net.tcp.buffersize.edge 16384,35040,65536,4096,16384,35040
 
-<<<<<<< HEAD
-# Enable panic on softlockup
-=======
     # Enable panic on softlockup
->>>>>>> 2b0c7140ae7a592eabaeb5aec1ba6d94f66980bc
     write /proc/sys/kernel/softlockup_panic 1
 
     # Start services
@@ -292,20 +284,7 @@ service gkisystem /system/bin/gkisystem
     socket location_shim stream 660 radio system
     socket gpshal_socket stream 660 radio system
     socket opprofdaemon stream 660 radio system
-<<<<<<< HEAD
-    #socket gkilog_sock stream 660 radio radio
     group radio system mot_accy mot_secclkd
-    #onrestart exec /system/bin/gki_pd_notifier
-#service rild_tcmd /system/bin/rild_tcmd
-=======
-    # socket gkilog_sock stream 660 radio radio
-    group radio system mot_accy mot_secclkd
-    # onrestart exec /system/bin/gki_pd_notifier
-# service rild_tcmd /system/bin/rild_tcmd
->>>>>>> 2b0c7140ae7a592eabaeb5aec1ba6d94f66980bc
-#    socket rild_tcmd stream 0660 radio mot_tcmd
-#    user radio
-#    group radio
 service battd /system/bin/battd
     socket battdsock stream 0660 mot_accy mot_accy
     user root
@@ -392,18 +371,10 @@ service wlan_loader /system/bin/wlan_loader -f /system/etc/wifi/fw_wlan1271.bin 
     disabled
     oneshot
 service wpa_supplicant /system/bin/wpa_supplicant -Dtiwlan0 -itiwlan0 -c/data/misc/wifi/wpa_supplicant.conf
-<<<<<<< HEAD
-
-# we will start as root and wpa_supplicant will switch to user wifi
-# after setting up the capabilities required for WEXT
-# user wifi
-# group wifi inet keystore
-=======
     # we will start as root and wpa_supplicant will switch to user wifi
     # after setting up the capabilities required for WEXT
     # user wifi
     # group wifi inet keystore
->>>>>>> 2b0c7140ae7a592eabaeb5aec1ba6d94f66980bc
     socket wpa_tiwlan0 dgram 660 wifi wifi
     disabled
     oneshot
@@ -427,14 +398,6 @@ service baseimage /system/bin/dspexec -v -T /system/lib/dsp/baseimage.dof
 service pvrsrv /system/bin/pvrsrvinit
     user root
     oneshot
-<<<<<<< HEAD
-#service pppd /system/bin/pppd silent ipparam dun plugin /system/lib/libpppd_plugin.so
-=======
-# service pppd /system/bin/pppd silent ipparam dun plugin /system/lib/libpppd_plugin.so
->>>>>>> 2b0c7140ae7a592eabaeb5aec1ba6d94f66980bc
-#    user root
-#    disabled
-#    oneshot
 service locDrv /system/bin/brcm_guci_drv -config /system/etc/gpsconfig.xml
     user radio
     group radio inet sdcard_rw
