@@ -16,7 +16,7 @@ LOCAL_STATIC_LIBRARIES := libunz libcutils libc
 #LOCAL_CFLAGS := -Ikernel/include
 
 LOCAL_C_INCLUDES := external/zlib
-LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_TAGS := eng
 LOCAL_MODULE:= charge_only_mode
 
 LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT_SBIN)
