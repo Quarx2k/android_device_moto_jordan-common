@@ -20,6 +20,7 @@ PRODUCT_COPY_FILES += \
 	device/motorola/jordan/recovery.fstab:system/etc/recovery.fstab \
 	device/motorola/jordan/prebuilt/etc/init.d/01sysctl:system/etc/init.d/01sysctl \
 	device/motorola/jordan/prebuilt/etc/init.d/05mountsd:system/etc/init.d/05mountsd \
+	device/motorola/jordan/prebuilt/etc/init.d/10dnsconf:system/etc/init.d/10dnsconf \
 	device/motorola/jordan/prebuilt/etc/init.d/90multitouch:system/etc/init.d/90multitouch \
 	device/motorola/jordan/prebuilt/etc/profile:system/etc/profile \
 	device/motorola/jordan/prebuilt/etc/sysctl.conf:system/etc/sysctl.conf \
@@ -108,6 +109,8 @@ PRODUCT_COPY_FILES += \
 	device/motorola/jordan/bootmenu/script/2nd-boot.sh:system/bootmenu/script/2nd-boot.sh \
 	device/motorola/jordan/bootmenu/script/adbd.sh:system/bootmenu/script/adbd.sh \
 	device/motorola/jordan/bootmenu/script/bootmode_clean.sh:system/bootmenu/script/bootmode_clean.sh \
+	device/motorola/jordan/bootmenu/script/cdrom.sh:system/bootmenu/script/cdrom.sh \
+	device/motorola/jordan/bootmenu/script/data.sh:system/bootmenu/script/data.sh \
 	device/motorola/jordan/bootmenu/script/overclock.sh:system/bootmenu/script/overclock.sh \
 	device/motorola/jordan/bootmenu/script/post_bootmenu.sh:system/bootmenu/script/post_bootmenu.sh \
 	device/motorola/jordan/bootmenu/script/pre_bootmenu.sh:system/bootmenu/script/pre_bootmenu.sh \
@@ -115,6 +118,8 @@ PRODUCT_COPY_FILES += \
 	device/motorola/jordan/bootmenu/script/recovery.sh:system/bootmenu/script/recovery.sh \
 	device/motorola/jordan/bootmenu/script/recovery_stable.sh:system/bootmenu/script/recovery_stable.sh \
 	device/motorola/jordan/bootmenu/script/recoveryexit.sh:system/bootmenu/script/recoveryexit.sh \
+	device/motorola/jordan/bootmenu/script/sdcard.sh:system/bootmenu/script/sdcard.sh \
+	device/motorola/jordan/bootmenu/script/system.sh:system/bootmenu/script/system.sh \
 	device/motorola/jordan/bootmenu/modules/cpufreq_conservative.ko:system/bootmenu/ext/modules/cpufreq_conservative.ko \
 	device/motorola/jordan/bootmenu/modules/cpufreq_interactive.ko:system/bootmenu/ext/modules/cpufreq_interactive.ko \
 	device/motorola/jordan/bootmenu/modules/cpufreq_ondemand.ko:system/bootmenu/ext/modules/cpufreq_ondemand.ko \
@@ -123,4 +128,5 @@ PRODUCT_COPY_FILES += \
 	device/motorola/jordan/bootmenu/modules/cpufreq_smartass.ko:system/bootmenu/ext/modules/cpufreq_smartass.ko \
 	device/motorola/jordan/bootmenu/modules/cpufreq_userspace.ko:system/bootmenu/ext/modules/cpufreq_userspace.ko \
 	device/motorola/jordan/bootmenu/modules/overclock_defy.ko:system/bootmenu/ext/modules/overclock_defy.ko \
-	device/motorola/jordan/bootmenu/modules/symsearch.ko:system/bootmenu/ext/modules/symsearch.ko
+	device/motorola/jordan/bootmenu/modules/symsearch.ko:system/bootmenu/ext/modules/symsearch.ko \
+
