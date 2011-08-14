@@ -1,4 +1,5 @@
 # Copyright 2005 The Android Open Source Project
+ifeq ($(TARGET_BOOTLOADER_BOARD_NAME),jordan)
 
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
@@ -13,4 +14,4 @@ LOCAL_SHARED_LIBRARIES := libcutils libc
 
 include $(BUILD_EXECUTABLE)
 
-
+endif 
