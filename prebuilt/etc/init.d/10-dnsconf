@@ -1,8 +1,12 @@
 #!/system/xbin/ash
 
 # copy dnsmasq.conf to data wifi if it doesnt exists...
-[ -f /data/misc/wifi/dns.conf || cp /system/etc/wifi/dnsmasq.conf /data/misc/wifi/dns.conf
+if [ ! -f /data/misc/wifi/dns.conf ]; then
 
-chown wifi.wifi /data/misc/wifi/dns.conf
-chmod 666 /data/misc/wifi/dns.conf
+  cp /system/etc/wifi/dnsmasq.conf /data/misc/wifi/dns.conf
+
+  chown wifi.wifi /data/misc/wifi/dns.conf
+  chmod 666 /data/misc/wifi/dns.conf
+
+fi
 
