@@ -1,5 +1,5 @@
 #
-# system.prop for generic sdk
+# system.prop for jordan
 #
 
 rild.libpath=/system/lib/librilswitch.so
@@ -11,7 +11,11 @@ ro.sf.lcd_density=240
 
 # Default network type.
 # 3 -> GSM/WCDMA (auto mode, according to PRL)
-ro.telephony.default_network=3
+# ro.telephony.default_network=3
+
+# The interfaces to get DNS data from when using mobile data
+# Comma-separated
+mobiledata.interfaces=rmnet0,rmnet1,rmnet2,rmnet3,rmnet4,gannet0
 
 # The interfaces to get DNS data from when using mobile data
 # Comma-separated
@@ -34,12 +38,12 @@ ro.opengles.version = 131072
 dalvik.vm.heapsize=40m
 
 # Forbid format of these partitions in mount menu :
-ro.cwm.forbid_format=/misc,/radio,/boot,/recovery,/pds,/system
+ro.cwm.forbid_format=/misc,/boot,/recovery,/pds,/system
 
 # BatteryLight while charging, enabled by default.
 ro.battery_light=true
 
-# declare we're using Usb.apk
+# Usb mode selection Settings (Usb.apk)
 ro.usb.use_custom_service=1
 
 # default USB mode is 'none'
@@ -50,3 +54,6 @@ ro.product.use_charge_counter=1
 
 # use up to 5 multitouch points
 persist.input.multitouch_points=5
+
+# required for future java part (common omap3/4)
+com.ti.omap_enhancement=1
