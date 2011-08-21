@@ -92,11 +92,7 @@ loglevel 3
     write /dev/cpuctl/bg_non_interactive/cpu.shares 52
 
 on fs
-<<<<<<< HEAD
-# mount mmc partitions
-=======
     # mount mmc partitions
->>>>>>> 2b0c7140ae7a592eabaeb5aec1ba6d94f66980bc
     # Mount /system rw first to give the filesystem a chance to save a checkpoint
     mount ext3 mmc@system /system ro remount
     mount ext3 mmc@cache /cache nosuid nodev noatime nodiratime barrier=0  
@@ -184,6 +180,9 @@ on post-fs
 
     chown system system /mnt/sdcard
     chmod 0777 /mnt/sdcard
+
+    # copy hostapd configuration
+    copy /system/etc/wifi/softap/hostapd.conf /data/misc/wifi/hostapd.conf
 
     # create dalvik-cache and double-check the perms
     mkdir /data/dalvik-cache 0771 system system
@@ -304,11 +303,8 @@ on boot
     # Include extra init file
     import /system/etc/init.local.rc
 
-<<<<<<< HEAD
-# Run sysinit
-=======
+
     # Run sysinit
->>>>>>> 2b0c7140ae7a592eabaeb5aec1ba6d94f66980bc
     exec /system/bin/sysinit
     class_start default
 
@@ -348,18 +344,6 @@ on property:service.adb.tcp.port=-1
     stop adbd
     start adbd
 
-on property:persist.input.multitouch_points=2
-<<<<<<< HEAD
-    exec rmmod defy_more
-
-on property:persist.input.multitouch_points=5
-    exec modprobe -r defy_more
-=======
-    exec sh /etc/init.d/90multitouch
-
-on property:persist.input.multitouch_points=5
->>>>>>> 2b0c7140ae7a592eabaeb5aec1ba6d94f66980bc
-    exec sh /etc/init.d/90multitouch
 
 service servicemanager /system/bin/servicemanager
     user system
@@ -465,22 +449,17 @@ service dumpstate /system/bin/dumpstate -s
     disabled
     oneshot
 
-service ap_fmloader /system/bin/logwrapper /system/bin/wlan_loader -f /system/etc/wifi/fw_tiwlan_ap.bin -i /system/etc/wifi/tiwlan_ap.ini -e /pds/wifi/nvs_map.bin
+service wlan_ap_loader /system/bin/logwrapper /system/bin/tiap_loader -f /system/etc/wifi/fw_tiwlan_ap.bin -i /system/etc/wifi/tiwlan_ap.ini -e /pds/wifi/nvs_map.bin
     disabled
     oneshot
 
-service ap_fmloader_rfmd /system/bin/logwrapper /system/bin/wlan_loader -f /system/etc/wifi/fw_tiwlan_ap_rfmd.bin -i /system/etc/wifi/tiwlan_ap_rfmd.ini -e /pds/wifi/nvs_map.bin
+service wlan_ap_loader_rfmd /system/bin/logwrapper /system/bin/tiap_loader -f /system/etc/wifi/fw_tiwlan_ap_rfmd.bin -i /system/etc/wifi/tiwlan_ap_rfmd.ini -e /pds/wifi/nvs_map.bin
     disabled
     oneshot
 
-<<<<<<< HEAD
-#service hostapd /system/bin/logwrapper /system/bin/Hostapd -d /data/misc/wifi/hostapd.conf
-=======
-# service hostapd /system/bin/logwrapper /system/bin/Hostapd -d /data/misc/wifi/hostapd.conf
->>>>>>> 2b0c7140ae7a592eabaeb5aec1ba6d94f66980bc
-#    socket hostapd_tiwlan0 dgram 660 wifi wifi
-#    disabled
-#    oneshot
+service hostapd /system/bin/logwrapper /system/bin/hostap -d /data/misc/wifi/hostapd.conf
+    disabled
+    oneshot
 
 service dnsmasq /system/bin/logwrapper /system/bin/dnsmasq -C/data/misc/wifi/dns.conf -k
     group wifi

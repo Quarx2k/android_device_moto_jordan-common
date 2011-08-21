@@ -47,7 +47,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	ro.telephony.call_ring.delay=3000 \
 	ro.url.safetylegal=http://www.motorola.com/staticfiles/Support/legal/?model=MB525 \
 	ro.setupwizard.enable_bypass=1 \
-	ro.default_usb_mode=4 \
 	ro.media.dec.jpeg.memcap=20000000 \
 	ro.media.dec.aud.wma.enabled=1 \
 	ro.media.dec.vid.wmv.enabled=1 \
@@ -66,8 +65,10 @@ PRODUCT_COPY_FILES += \
 	frameworks/base/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
 	frameworks/base/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
 	frameworks/base/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
-	frameworks/base/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml \
+	frameworks/base/data/etc/android.hardware.sensor.accelerometer.xml:system/etc/permissions/android.hardware.sensor.accelerometer.xml \
+	frameworks/base/data/etc/android.hardware.sensor.compass.xml:system/etc/permissions/android.hardware.sensor.compass.xml \
 	frameworks/base/data/etc/android.hardware.sensor.light.xml:system/etc/permissions/android.hardware.sensor.light.xml \
+	frameworks/base/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml \
 	frameworks/base/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
 	frameworks/base/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml
 
@@ -104,7 +105,7 @@ PRODUCT_PACKAGES += \
 	iwmulticall \
 	hostap \
 	hostapd.conf \
-	hostapdcli \
+	libhostapdcli \
 	bootmenu \
 	Usb \
 	su

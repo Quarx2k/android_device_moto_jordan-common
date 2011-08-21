@@ -13,15 +13,30 @@ LOCAL_SRC_FILES:= \
 	main.c
 
 LOCAL_STATIC_LIBRARIES := libunz libcutils libc
+<<<<<<< HEAD
 #LOCAL_CFLAGS := -Ikernel/include
+=======
+>>>>>>> cdefy/gingerbread
 
 LOCAL_C_INCLUDES := external/zlib
 LOCAL_MODULE_TAGS := eng
 LOCAL_MODULE:= charge_only_mode
 
+<<<<<<< HEAD
 LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT_SBIN)
 LOCAL_UNSTRIPPED_PATH := $(TARGET_ROOT_OUT_SBIN_UNSTRIPPED)
 
+=======
+
+# default is /system/bin or /sbin in boot.img
+ifeq ($(BOARD_USES_BOOTMENU),)
+
+LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT_SBIN)
+LOCAL_UNSTRIPPED_PATH := $(TARGET_ROOT_OUT_SBIN_UNSTRIPPED)
+
+endif
+
+>>>>>>> cdefy/gingerbread
 include $(BUILD_EXECUTABLE)
 
 endif 

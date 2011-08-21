@@ -13,7 +13,8 @@
 # limitations under the License.
 
 PRODUCT_COPY_FILES += \
-	device/motorola/jordan/qwerty.kl:system/usr/keylayout/qwerty.kl 
+	device/motorola/jordan/prebuilt/usr/qwerty.kl:system/usr/keylayout/qwerty.kl \
+	device/motorola/jordan/prebuilt/usr/cpcap.kl:system/usr/keylayout/cpcap-key.kl \
 
 #etc
 PRODUCT_COPY_FILES += \
@@ -25,12 +26,12 @@ PRODUCT_COPY_FILES += \
 	device/motorola/jordan/prebuilt/etc/profile:system/etc/profile \
 	device/motorola/jordan/prebuilt/etc/sysctl.conf:system/etc/sysctl.conf \
 	device/motorola/jordan/prebuilt/etc/busybox.fstab:system/etc/fstab \
+	device/motorola/jordan/prebuilt/etc/wifi/dnsmasq.conf:system/etc/wifi/dnsmasq.conf \
 	device/motorola/jordan/prebuilt/lib/modules/modules.alias:system/lib/modules/modules.alias \
 	device/motorola/jordan/prebuilt/lib/modules/modules.dep:system/lib/modules/modules.dep
 
 #prebuilt binaries (for buggy versions)
 PRODUCT_COPY_FILES += \
-	device/motorola/jordan/prebuilt/bin/dnsmasq:system/bin/dnsmasq \
 	device/motorola/jordan/prebuilt/bin/iptables:system/bin/iptables \
 
 ifdef CYANOGEN_RELEASE
@@ -114,7 +115,6 @@ PRODUCT_COPY_FILES += \
 	device/motorola/jordan/bootmenu/script/overclock.sh:system/bootmenu/script/overclock.sh \
 	device/motorola/jordan/bootmenu/script/post_bootmenu.sh:system/bootmenu/script/post_bootmenu.sh \
 	device/motorola/jordan/bootmenu/script/pre_bootmenu.sh:system/bootmenu/script/pre_bootmenu.sh \
-	device/motorola/jordan/bootmenu/script/reboot_command.sh:system/bootmenu/script/reboot_command.sh \
 	device/motorola/jordan/bootmenu/script/recovery.sh:system/bootmenu/script/recovery.sh \
 	device/motorola/jordan/bootmenu/script/recovery_stable.sh:system/bootmenu/script/recovery_stable.sh \
 	device/motorola/jordan/bootmenu/script/recoveryexit.sh:system/bootmenu/script/recoveryexit.sh \
