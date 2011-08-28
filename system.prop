@@ -30,6 +30,13 @@ wifi.hotspot.ti = 1
 # This is a 16.16 fixed point number
 ro.opengles.version = 131072
 
+# Enable Jpeg HW decoder for images > 300 kb (disabled, buggy)
+jpeg.libskiahw.decoder.enable=0
+jpeg.libskiahw.decoder.thresh=300000
+
+# Disable Jpeg HW encoder
+jpeg.libskiahw.encoder.enable=0
+
 # This is a high density device with more memory, so larger vm heaps for it.
 dalvik.vm.heapsize=40m
 
@@ -39,16 +46,8 @@ ro.cwm.forbid_format=/misc,/boot,/recovery,/pds,/system
 # BatteryLight while charging, enabled by default.
 ro.battery_light=true
 
-# Usb mode selection Settings (Usb.apk)
+# Tell UsbService that we're using Usb.apk
 ro.usb.use_custom_service=1
-# default USB mode is 'none'
-ro.default_usb_mode=5
-# disable MTP only mode
-ro.mtp_available=0
-# disable RNDIS mode
-ro.rndis_available=0
-# and also modem mode
-ro.modem_available=0
 
 # use 1% battery steps
 ro.product.use_charge_counter=1
