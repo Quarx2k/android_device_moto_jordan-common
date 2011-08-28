@@ -19,6 +19,7 @@ loglevel 3
     export SD_EXT_DIRECTORY /mnt/sdcard-ext
     export ASEC_MOUNTPOINT /mnt/asec
     export LOOP_MOUNTPOINT /mnt/obb
+    export DSP_PATH /system/lib/dsp
     export BOOTCLASSPATH /system/framework/core.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/core-junit.jar
 
 # Backward compatibility
@@ -343,13 +344,6 @@ on property:service.adb.tcp.port=5555
 on property:service.adb.tcp.port=-1
     stop adbd
     start adbd
-
-on property:persist.input.multitouch_points=2
-    exec modprobe -r defy_more
-
-on property:persist.input.multitouch_points=5
-    exec modprobe -r defy_more
-    exec sh /etc/init.d/90multitouch
 
 service servicemanager /system/bin/servicemanager
     user system
