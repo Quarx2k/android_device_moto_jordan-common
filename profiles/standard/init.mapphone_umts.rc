@@ -214,11 +214,10 @@ service start_commdrv /system/bin/sh /system/etc/motorola/comm_drv/commdrv_fs.sh
     user radio
     group radio system cache
 service gkisystem /system/bin/gkisystem
-    class_start pre-zygote_services
     socket location_shim stream 660 radio system
     socket gpshal_socket stream 660 radio system
     socket opprofdaemon stream 660 radio system
-    group radio system net_admin net_raw
+    group root system net_admin net_raw
 service battd /system/bin/battd
     socket battdsock stream 0660 root system
     user root
