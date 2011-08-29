@@ -93,10 +93,10 @@ loglevel 3
 on fs
     # mount mmc partitions
     # Mount /system rw first to give the filesystem a chance to save a checkpoint
-    mount ext3 mmc@system /system ro remount
-    mount ext3 mmc@cache /cache nosuid nodev noatime nodiratime barrier=0
-    mount ext3 mmc@userdata /data nosuid nodev noatime nodiratime barrier=0
-    mount ext3 mmc@pds /pds nosuid nodev noatime nodiratime barrier=1
+    mount ext3 /dev/block/mmcblk1p21 /system ro remount
+    mount ext3 /dev/block/mmcblk1p24 /cache nosuid nodev noatime nodiratime barrier=0
+    mount ext3 /dev/block/mmcblk1p25 /data nosuid nodev noatime nodiratime barrier=0
+    mount ext3 /dev/block/mmcblk1p7 /pds nosuid nodev noatime nodiratime barrier=1
 
 on post-fs
     # once everything is setup, no need to modify /
