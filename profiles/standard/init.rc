@@ -15,7 +15,6 @@ loglevel 3
     export ANDROID_ASSETS /system/app
     export ANDROID_DATA /data
     export EXTERNAL_STORAGE /mnt/sdcard
-    export EXTERNAL_ALT_STORAGE /mnt/sdcard-ext
     export SD_EXT_DIRECTORY /mnt/sdcard-ext
     export ASEC_MOUNTPOINT /mnt/asec
     export LOOP_MOUNTPOINT /mnt/obb
@@ -25,12 +24,11 @@ loglevel 3
 # Backward compatibility
     symlink /system/etc /etc
     symlink /sys/kernel/debug /d
+    symlink /data/tmp /tmp
 
 # create mountpoints
     mkdir /mnt 0775 root system
     mkdir /mnt/sdcard 0000 system system
-    mkdir /mnt/sdcard-ext 0000 system system
-    symlink /data/tmp /tmp
 
 # Create cgroup mount point for cpu accounting
     mkdir /acct
@@ -39,14 +37,12 @@ loglevel 3
 
 # Backwards Compat - XXX: Going away in G*
     symlink /mnt/sdcard /sdcard
-    symlink /mnt/sdcard-ext /sdcard-ext
 
     mkdir /system
     mkdir /data 0771 system system
-    mkdir /cache 0770 system cache
+    mkdir /cache 0771 system cache
     mkdir /config 0500 root root
     mkdir /pds 0755 root root
-
     # Directory for putting things only root should see.
     mkdir /mnt/secure 0700 root root
 
@@ -64,6 +60,8 @@ loglevel 3
     # Filesystem image public mount points.
     mkdir /mnt/obb 0700 root system
     mount tmpfs tmpfs /mnt/obb mode=0755,gid=1000
+
+    mkdir /sd-ext 0771 system system
 
     write /proc/sys/kernel/panic_on_oops 1
     write /proc/sys/kernel/hung_task_timeout_secs 0
@@ -96,9 +94,9 @@ on fs
     # mount mmc partitions
     # Mount /system rw first to give the filesystem a chance to save a checkpoint
     mount ext3 mmc@system /system ro remount
-    mount ext3 mmc@cache /cache nosuid nodev noatime nodiratime barrier=0  
+    mount ext3 mmc@cache /cache nosuid nodev noatime nodiratime barrier=0
     mount ext3 mmc@userdata /data nosuid nodev noatime nodiratime barrier=0
-    mount ext3 mmc@pds /pds nosuid nodev noatime nodiratime barrier=1 
+    mount ext3 mmc@pds /pds nosuid nodev noatime nodiratime barrier=1
 
 on post-fs
     # once everything is setup, no need to modify /
@@ -129,26 +127,23 @@ on post-fs
 
     # Same reason as /data above
     chown system cache /cache
-    chmod 0770 /cache
-
-    chown system misc /misc
-    chmod 0770 /misc
+    chmod 0771 /cache
 
     # This may have been created by the recovery system with odd permissions
     chown system cache /cache/recovery
     chmod 0770 /cache/recovery
 
-    # change permissions on vmallocinfo so we can grab it from bugreports
+    #change permissions on vmallocinfo so we can grab it from bugreports
     chown root log /proc/vmallocinfo
     chmod 0440 /proc/vmallocinfo
 
-    # change permissions on kmsg & sysrq-trigger so bugreports can grab kthread stacks
+    #change permissions on kmsg & sysrq-trigger so bugreports can grab kthread stacks
     chown root system /proc/kmsg
     chmod 0440 /proc/kmsg
     chown root system /proc/sysrq-trigger
     chmod 0220 /proc/sysrq-trigger
 
-    # create basic filesystem structure
+# create basic filesystem structure
     mkdir /data/misc 01771 system misc
     mkdir /data/misc/bluetoothd 0770 bluetooth bluetooth
     mkdir /data/misc/bluetooth 0770 system system
@@ -160,30 +155,12 @@ on post-fs
     mkdir /data/misc/wifi 0770 wifi wifi
     chmod 0770 /data/misc/wifi
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
-    mkdir /data/misc/wifi/hostapd.sockets 0770 wifi wifi
-    mkdir /data/misc/wifi/sockets 0770 wifi wifi
-    mkdir /data/misc/dhcp 0770 dhcp dhcp
-    mkdir /data/local 0771 mot_tcmd shell
-    mkdir /data/local/tmp 0771 mot_tcmd shell
-    mkdir /data/local/12m 0771 mot_tcmd shell
-    mkdir /data/local/12m/batch 0771 mot_tcmd shell
-    chown mot_tcmd shell /data/local
-    chown mot_tcmd shell /data/local/12m
-    chown mot_tcmd shell /data/local/12m/batch
-    chown mot_tcmd shell /data/local/tmp
+    mkdir /data/local 0771 shell shell
+    mkdir /data/local/tmp 0771 shell shell
     mkdir /data/data 0771 system system
     mkdir /data/app-private 0771 system system
     mkdir /data/app 0771 system system
     mkdir /data/property 0700 root root
-    mkdir /data/tmp 0777 system system
-
-    mkdir /data/dropbear 0755 root shell
-
-    chown system system /mnt/sdcard
-    chmod 0777 /mnt/sdcard
-
-    # copy hostapd configuration
-    copy /system/etc/wifi/softap/hostapd.conf /data/misc/wifi/hostapd.conf
 
     # create dalvik-cache and double-check the perms
     mkdir /data/dalvik-cache 0771 system system
@@ -200,20 +177,32 @@ on post-fs
     chown root root /cache/lost+found
     chmod 0770 /cache/lost+found
 
+    # allow net_raw to have access to /dev/socket directory
+    chown root net_raw /dev/socket
+    chmod 0775 /dev/socket
+
+    # allow system to modify cpufreq control files
+    chown root system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    chown root system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+    chown root system /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+
 on boot
-    # basic network init
+# basic network init
     ifup lo
     hostname localhost
     domainname localdomain
 
-    # set RLIMIT_NICE to allow priorities from 19 to -20
+# set RLIMIT_NICE to allow priorities from 19 to -20
     setrlimit 13 40 40
 
-    # set RLIMIT_NOFILE to allow maximum num of file open to be 2048
+# set RLIMIT_NOFILE to allow maximum num of file open to be 2048
     setrlimit 7 2048 2048
 
-    # Define the oom_adj values for the classes of processes that can be
-    # killed by the kernel.  These are used in ActivityManagerService.
+# Define the oom_adj values for the classes of processes that can be
+# killed by the kernel.  These are used in ActivityManagerService.
     setprop ro.FOREGROUND_APP_ADJ 0
     setprop ro.VISIBLE_APP_ADJ 1
     setprop ro.PERCEPTIBLE_APP_ADJ 2
@@ -224,8 +213,8 @@ on boot
     setprop ro.HIDDEN_APP_MIN_ADJ 7
     setprop ro.EMPTY_APP_ADJ 15
 
-    # Define the memory thresholds at which the above process classes will
-    # be killed.  These numbers are in pages (4k).
+# Define the memory thresholds at which the above process classes will
+# be killed.  These numbers are in pages (4k).
     setprop ro.FOREGROUND_APP_MEM 2048
     setprop ro.VISIBLE_APP_MEM 3072
     setprop ro.PERCEPTIBLE_APP_MEM 4096
@@ -236,10 +225,10 @@ on boot
     setprop ro.HIDDEN_APP_MEM 7168
     setprop ro.EMPTY_APP_MEM 8192
 
-    # Write value must be consistent with the above properties.
-    # Note that the driver only supports 6 slots, so we have combined some of
-    # the classes into the same memory level; the associated processes of higher
-    # classes will still be killed first.
+# Write value must be consistent with the above properties.
+# Note that the driver only supports 6 slots, so we have combined some of
+# the classes into the same memory level; the associated processes of higher
+# classes will still be killed first.
     write /sys/module/lowmemorykiller/parameters/adj 0,1,2,4,7,15
 
     write /proc/sys/vm/overcommit_memory 1
@@ -279,7 +268,6 @@ on boot
     chown system system /sys/class/leds/red/brightness
     chown system system /sys/class/leds/green/brightness
     chown system system /sys/class/leds/blue/brightness
-    chown media media /sys/class/leds/af-led/brightness
     chown system system /sys/class/leds/red/device/grpfreq
     chown system system /sys/class/leds/red/device/grppwm
     chown system system /sys/class/leds/red/device/blink
@@ -293,20 +281,20 @@ on boot
     chown system system /sys/kernel/ipv4/tcp_rmem_max
     chown root radio /proc/cmdline
 
-    # Define TCP buffer sizes for various networks
-    # ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
-    setprop net.tcp.buffersize.default 65536,131072,262144,65536,131072,262144
+# Define TCP buffer sizes for various networks
+#   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
+    setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208
     setprop net.tcp.buffersize.wifi    4095,87380,110208,4096,16384,110208
     setprop net.tcp.buffersize.umts    4094,87380,110208,4096,16384,110208
     setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
     setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
 
-    # Include extra init file
+# Include extra init file
     import /system/etc/init.local.rc
 
-
-    # Run sysinit
+# Run sysinit
     exec /system/bin/sysinit
+
     class_start default
 
 ## Daemon processes to be run by init.
@@ -364,10 +352,9 @@ service ril-daemon /system/bin/rild
     socket rild stream 660 root radio
     socket rild-debug stream 660 radio system
     user root
-    group radio cache inet misc audio sdcard_rw system mot_secclkd mot_accy
+    group radio cache inet misc audio sdcard_rw net_admin net_raw
 
 service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
-    class zygote_services
     socket zygote stream 666
     onrestart write /sys/android_power/request_state wake
     onrestart write /sys/power/state on
@@ -448,21 +435,3 @@ service dumpstate /system/bin/dumpstate -s
     socket dumpstate stream 0660 shell log
     disabled
     oneshot
-
-service wlan_ap_loader /system/bin/logwrapper /system/bin/tiap_loader -f /system/etc/wifi/fw_tiwlan_ap.bin -i /system/etc/wifi/tiwlan_ap.ini -e /pds/wifi/nvs_map.bin
-    disabled
-    oneshot
-
-service wlan_ap_loader_rfmd /system/bin/logwrapper /system/bin/tiap_loader -f /system/etc/wifi/fw_tiwlan_ap_rfmd.bin -i /system/etc/wifi/tiwlan_ap_rfmd.ini -e /pds/wifi/nvs_map.bin
-    disabled
-    oneshot
-
-service hostapd /system/bin/logwrapper /system/bin/hostap -d /data/misc/wifi/hostapd.conf
-    disabled
-    oneshot
-
-service dnsmasq /system/bin/logwrapper /system/bin/dnsmasq -C/data/misc/wifi/dns.conf -k
-    group wifi
-    disabled
-    oneshot
-
