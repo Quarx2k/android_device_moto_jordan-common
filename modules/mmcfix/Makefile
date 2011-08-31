@@ -1,6 +1,5 @@
-#
-# Makefile for MMC-fix module
-#
+#Module
 
-obj-m				+= mmcfix.o
-mmcfix-objs			:= mmc-fix.o hook.o
+obj-m                           += mmcfix.o
+mmcfix-objs                     := mmc-fix.o hook.o
+
