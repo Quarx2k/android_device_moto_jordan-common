@@ -8,7 +8,6 @@ rm -f $REPACK/ota/system/xbin/irssi
 
 mkdir -p $REPACK/ota/system/bootmenu/2nd-init/sbin
 mkdir -p $REPACK/ota/system/etc/terminfo/x
-mkdir -p $REPACK/ota/system/etc/terminfo/x/xterm
 cp $REPACK/ota/system/etc/terminfo/l/linux $REPACK/ota/system/etc/terminfo/x/xterm
 
 # prebuilt boot, devtree, logo & updater-script
