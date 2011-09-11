@@ -1,5 +1,5 @@
 /*
- * symsearch: - looks up also for unexproted symbols in the kernel
+ * symsearch: - looks up for unexported kernel symbols
  *
  * Copyright (C) 2010 Skrilax_CZ
  * GPL
@@ -89,6 +89,14 @@
 	{ \
 		printk(KERN_INFO #module ": Could not find symbol: " #name ".\n"); \
 		return -EBUSY; \
+	}
+
+#define SYMSEARCH_BIND_FUNCTION_TO_NORET(module,name,sym) \
+	sym = (sym##_fp)lookup_symbol_address(#name); \
+	if(!sym) \
+	{ \
+		printk(KERN_INFO #module ": Could not find symbol: " #name ".\n"); \
+		return; \
 	}
 
 //hijacking function

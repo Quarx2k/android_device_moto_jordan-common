@@ -13,9 +13,10 @@ export PATH=/sbin:/system/xbin:/system/bin
 #usleep 100000
 #echo 0 > /sys/class/leds/green/brightness
 
-
-rm /*.rc
+mount -o remount,rw /
+rm -r -f /*.rc
 cp -r -f /system/bootmenu/2nd-init/* /
+ln -s /init /sbin/ueventd
 chmod 755 /*.rc
 chmod 4755 /system/bootmenu/binary/2nd-init
 

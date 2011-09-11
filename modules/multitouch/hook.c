@@ -89,8 +89,8 @@ int unhook(struct hook_info *hi) {
 
 int hook_init(void) {
 	int i;
-	SYMSEARCH_BIND_FUNCTION_TO(dsifix, kallsyms_lookup_name, pkallsyms_lookup_name);
-	SYMSEARCH_BIND_FUNCTION_TO(dsifix, kallsyms_lookup, pkallsyms_lookup);
+	SYMSEARCH_BIND_FUNCTION_TO(multitouch, kallsyms_lookup_name, pkallsyms_lookup_name);
+	SYMSEARCH_BIND_FUNCTION_TO(multitouch, kallsyms_lookup, pkallsyms_lookup);
 	lock_kernel();
 	for (i = 0; g_hi[i].newfunc; ++i) {
 		hook(&g_hi[i]);

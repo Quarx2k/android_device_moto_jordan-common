@@ -39,8 +39,6 @@ TARGET_ARCH_VARIANT := armv7-a-neon
 TARGET_GLOBAL_CFLAGS += -mtune=cortex-a8
 TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a8
 TARGET_OMAP3 := true
-OMAP_ENHANCEMENT := true
-COMMON_GLOBAL_CFLAGS += -DOMAP_ENHANCEMENT
 COMMON_GLOBAL_CFLAGS += -DTARGET_OMAP3
 
 # Wifi related defines
@@ -73,10 +71,7 @@ HARDWARE_OMX := true
 BUILD_WITH_TI_AUDIO := 1
 BUILD_PV_VIDEO_ENCODERS := 1
 BUILD_JPEG_DECODER := 1
-<<<<<<< HEAD
-=======
 BUILD_JPEG_ENCODER := 1
->>>>>>> cdefy/gingerbread
 
 BOARD_USE_USB_MASS_STORAGE_SWITCH := true
 BOARD_NO_RGBX_8888 := true
@@ -97,7 +92,10 @@ BOARD_NEVER_UMOUNT_SYSTEM := true
 
 # Override cyanogen squisher to customize our update zip package
 TARGET_CUSTOM_RELEASETOOL := ./device/motorola/jordan/releasetools/squisher
-BOARD_CUSTOM_USB_CONTROLLER := ../../device/motorola/jordan/UsbController.cpp
+
+
+# Jordan requires the common boot hijack
+TARGET_NEEDS_MOTOROLA_HIJACK := true
 
 # In nighly builds only
 ifndef CYANOGEN_RELEASE
