@@ -217,14 +217,6 @@ service akmd2 /system/bin/akmd2
     user compass
     group compass misc input
 
-# MTP daemon
-service mtpd /system/bin/mtpd
-    socket mtpd stream 600 system system
-    user media
-    group media net_admin net_raw
-    disabled
-    oneshot
-
 # Wifi services
 service wlan_loader /system/bin/wlan_loader -f /system/etc/wifi/fw_wlan1271.bin -i /system/etc/wifi/tiwlan.ini -e /pds/wifi/nvs_map.bin
     disabled
