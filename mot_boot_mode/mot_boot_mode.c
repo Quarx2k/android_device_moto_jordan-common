@@ -69,8 +69,8 @@ int boot_reason_charge_only(void)
         }
     }
 
-    return reason == MOTO_PU_REASON_CHARGER;
-    //  || reason == MOTO_PU_REASON_USB_CABLE;
+    return reason == MOTO_PU_REASON_CHARGER
+        || reason == MOTO_PU_REASON_USB_CABLE;
 }
 
 /********************************************************************
