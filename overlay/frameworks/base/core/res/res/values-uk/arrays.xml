@@ -20,8 +20,8 @@
 
     <!-- Defines the shutdown options shown in the reboot dialog. -->
     <array name="shutdown_reboot_options">
-        <item>Redémarrer</item>
-        <item>Recovery</item>
+        <item>Перезавантажити</item>
+        <item>Реж. відновлення</item>
         <item>Bootmenu</item>
     </array>
 

@@ -20,7 +20,7 @@
 
     <!-- Defines the shutdown options shown in the reboot dialog. -->
     <array name="shutdown_reboot_options">
-        <item>Redémarrer</item>
+        <item>Uruchom ponownie</item>
         <item>Recovery</item>
         <item>Bootmenu</item>
     </array>
