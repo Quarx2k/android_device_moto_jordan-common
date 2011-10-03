@@ -16,12 +16,13 @@
 ** limitations under the License.
 */
 -->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-<!-- These resources are around just to allow their values to be customized
-     for different hardware and product builds. -->
-<resources>
-
-	<!-- Wide media profile available -->
-	<bool name="supportsWideProfile">true</bool>
+    <!-- Defines the shutdown options shown in the reboot dialog. -->
+    <array name="shutdown_reboot_options">
+        <item>Перезавантажити</item>
+        <item>Реж. відновлення</item>
+        <item>Bootmenu</item>
+    </array>
 
 </resources>
