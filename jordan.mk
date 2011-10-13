@@ -100,7 +100,10 @@ PRODUCT_PACKAGES += \
 	su
 
 # for jpeg hw encoder/decoder
-# PRODUCT_PACKAGES += libskiahw libOMX.TI.JPEG.Encoder libOMX.TI.JPEG.decoder
+PRODUCT_PACKAGES += libskiahw libOMX.TI.JPEG.Encoder libOMX.TI.JPEG.decoder
+
+# video post processor
+PRODUCT_PACKAGES += libOMX.TI.VPP
 
 # hw video prepost processor (require dsp lib)
 # PRODUCT_PACKAGES += libOMX.TI.VPP
