@@ -53,6 +53,7 @@ PRODUCT_WIRELESS_TOOLS      := true
 BOARD_SOFTAP_DEVICE         := wl1271
 AP_CONFIG_DRIVER_WILINK     := true
 WIFI_DRIVER_FW_AP_PATH      := "/system/etc/wifi/fw_tiwlan_ap.bin"
+WPA_SUPPL_APPROX_USE_RSSI   := true
 
 
 BOARD_USE_YUV422I_DEFAULT_COLORFORMAT := true
@@ -60,6 +61,7 @@ BOARD_EGL_CFG := device/motorola/jordan/egl.cfg
 BOARD_CUSTOM_USB_CONTROLLER := ../../device/motorola/jordan/UsbController.cpp
 
 BOARD_HAVE_BLUETOOTH := true
+BOARD_CUSTOM_BLUEDROID := ../../../device/motorola/jordan/bluedroid.c
 
 BOARD_BOOTIMAGE_MAX_SIZE := $(call image-size-from-data-size,0x00280000)
 BOARD_RECOVERYIMAGE_MAX_SIZE := $(call image-size-from-data-size,0x00500000)
@@ -68,12 +70,13 @@ BOARD_USERDATAIMAGE_MAX_SIZE := $(call image-size-from-data-size,0x04ac0000)
 BOARD_FLASH_BLOCK_SIZE := 131072
 
 HARDWARE_OMX := true
+TARGET_USE_OMX_RECOVERY := true
 BUILD_WITH_TI_AUDIO := 1
 BUILD_PV_VIDEO_ENCODERS := 1
 
 BOARD_USE_USB_MASS_STORAGE_SWITCH := true
 BOARD_NO_RGBX_8888 := true
-
+BOARD_USE_KINETO_COMPATIBILITY := true
 
 # Changes related to bootmenu
 BOARD_USES_BOOTMENU := true
