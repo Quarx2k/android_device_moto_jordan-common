@@ -5,7 +5,7 @@
 
 export PATH=/sbin:/system/xbin:/system/bin
 CONFIG_FILE="/system/bootmenu/config/overclock.conf"
-MODULE_DIR="/system/bootmenu/ext/modules"
+MODULE_DIR="/system/lib/modules"
 SCALING_GOVERNOR="/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"
 
 #############################################################
