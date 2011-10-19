@@ -75,7 +75,7 @@
          USB interfaces.  If the device doesn't want to support tething over USB this should
          be empty.  An example would be "usb.*" -->
     <string-array translatable="false" name="config_tether_usb_regexs">
-      <item>usb1</item> 
+      <item>usb1</item>
     </string-array>
 
     <!-- List of regexpressions describing the interface (if any) that represent tetherable
@@ -344,5 +344,4 @@
     <string-array name="config_vendorServices">
         <item>/system/framework/com.motorola.android.location.jar:com.android.server.LocationProxyService</item>
     </string-array>
-
 </resources>

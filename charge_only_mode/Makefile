@@ -12,4 +12,3 @@ exe:
 
 copy:
 	adb push ${TOP}/out/target/product/${PRODUCT}/obj/EXECUTABLES/charge_only_mode_intermediates/charge_only_mode /system/bin/
-

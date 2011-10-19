@@ -40,10 +40,8 @@ $BB chmod -R +x /sbin
 
 # replace /sbin/adbd..
 cp -f /system/bootmenu/binary/adbd /sbin/adbd.root
-
 $BB chmod 4755 /sbin/adbd.root
 $BB chown 0.0 /sbin/adbd.root
-
 
 ## missing system files
 [ ! -c /dev/tty0 ]  && ln -s /dev/tty /dev/tty0
