@@ -3,7 +3,7 @@
 
 # Delete unwanted apps
 rm -f $REPACK/ota/system/app/RomManager.apk
-rm -f $REPACK/ota/system/xbin/irssi
+# rm -f $REPACK/ota/system/xbin/irssi
 
 mkdir -p $REPACK/ota/system/etc/terminfo/x
 cp $REPACK/ota/system/etc/terminfo/l/linux $REPACK/ota/system/etc/terminfo/x/xterm
