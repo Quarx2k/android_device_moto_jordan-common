@@ -111,9 +111,6 @@ PRODUCT_PACKAGES += DroidSSHd
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
 
-# use hdpi artwork where available
-PRODUCT_LOCALES += hdpi
-
 PRODUCT_COPY_FILES += \
 	device/motorola/jordan/vold.fstab:system/etc/vold.fstab
 
@@ -146,8 +143,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
         packages/wallpapers/LivePicker/android.software.live_wallpaper.xml:/system/etc/permissions/android.software.live_wallpaper.xml
 
-
 $(call inherit-product, build/target/product/full_base.mk)
+
+# Should be after the full_base include, which loads languages_full
+PRODUCT_LOCALES += hdpi
 
 PRODUCT_NAME := generic_jordan
 PRODUCT_DEVICE := MB525
