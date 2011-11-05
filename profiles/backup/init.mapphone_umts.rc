@@ -10,15 +10,8 @@ on post-fs
 
     symlink /dev/ttyGS0 /dev/acm0
 
-# Create mountpoints and mount tmp
-    mkdir /pds 0775 system system
-
-    mkdir /tmp
-    mount ramfs ramfs /tmp size=2m gid=1000
-    chmod 0777 /tmp
-
 # Mount tmp, we dont have swap, use ramfs which can grow if required
-    mkdir /tmp 0700 root root
+    mkdir /tmp
     mount ramfs ramfs /tmp size=512k relatime
     chmod 0777 /tmp
     chown system system /tmp
