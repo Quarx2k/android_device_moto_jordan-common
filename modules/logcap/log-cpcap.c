@@ -26,14 +26,13 @@
 #include <linux/moduleparam.h>
 
 #include <linux/device.h>
-#include <linux/earlysuspend.h>
 #include <linux/proc_fs.h>
 #include <linux/vmalloc.h>
-#include <asm/uaccess.h>
 
 #include <linux/spi/cpcap.h>
 
 #include "hook.h"
+#include "regs-cpcap.h"
 #include "../symsearch/symsearch.h"
 
 #define TAG "logcap"
@@ -89,6 +88,7 @@ static bool hooked = false;
 
 SYMSEARCH_DECLARE_FUNCTION_STATIC(
 	int, _cpcap_direct_misc_write, unsigned short reg, unsigned short value, unsigned short mask);
+
 
 /*
  * sub /proc/<reg>/prop r/w
@@ -173,7 +173,7 @@ int cpcap_regacc_read(struct cpcap_device *cpcap, enum cpcap_reg reg, unsigned s
 	memcpy(&val, value_ptr, sizeof(val));
 	if (log_enable && reg < log_reg_max && reg > log_reg_min) {
 
-		DBG("read  REG 0x" REG_FMT "(%d.) 0x%4x\n", (unsigned int) reg, reg, val);
+		DBG("read  REG 0x" REG_FMT "(%d.) 0x%4x  %s\n", (unsigned int) reg, reg, val, capcap_regname(reg));
 
 		if (log_enable & L_PROC) {
 
@@ -194,11 +194,12 @@ int cpcap_regacc_write(struct cpcap_device *cpcap, enum cpcap_reg reg, unsigned 
 	int ret = 0;
 	//unsigned short val=0;
 	st_logcap_reg *rst;
-
+/*
 	if (reg == 0x9e && value == 0x7f) {
 		value = 0x3f;
 		printk(KERN_INFO TAG": rewrited to 0x" REG_FMT "(%d.) set/mask %4x/%4x\n", (unsigned int) reg, reg, value, mask);
 	}
+*/
 	ret = HOOK_INVOKE(cpcap_regacc_write, cpcap, reg, value, mask);
 	wr_count ++;
 
@@ -206,7 +207,7 @@ int cpcap_regacc_write(struct cpcap_device *cpcap, enum cpcap_reg reg, unsigned 
 
 	if (log_enable && reg < log_reg_max && reg > log_reg_min) {
 
-		DBG("write REG 0x" REG_FMT "(%d.) set/mask %4x/%4x\n", (unsigned int) reg, reg, value, mask);
+		DBG("write REG 0x" REG_FMT "(%d.) set/mask %4x/%4x  %s\n", (unsigned int) reg, reg, value, mask, capcap_regname(reg));
 
 		if (log_enable & L_PROC) {
 
@@ -281,7 +282,7 @@ static int proc_map_read(char *page, char **start, off_t offset, int count, int 
 	for (r=0; r<MAX_REGS; r++) if (store->r[r].reg) {
 
 		state = (0xff & (unsigned int) store->r[r].last_value);
-		wr += scnprintf(page + wr, count - wr, REG_FMT ":%04x:%x\n", (unsigned int) r, store->r[r].mask_wr, state);
+		wr += scnprintf(page + wr, count - wr, REG_FMT ":%s:%04x:%x\n", (unsigned int) r, capcap_regname(r), store->r[r].mask_wr, state);
 	}
 
 	if (wr <= offset + count) *eof=1;
@@ -320,6 +321,8 @@ static int __init logcap_init(void) {
 
 	proc_entry = create_proc_read_entry("log_enable", 0666, proc_root, proc_log_enable_read, NULL);
 	proc_entry->write_proc = proc_log_enable_write;
+
+	if (log_enable & L_DMESG) capcap_dumpnames();
 
 	hook_init();
 	hooked = true;
@@ -371,7 +374,7 @@ module_init(logcap_init);
 module_exit(logcap_exit);
 
 MODULE_ALIAS(TAG);
-MODULE_VERSION("1.0");
+MODULE_VERSION("1.1");
 MODULE_DESCRIPTION("Log the cpcap registers read/write");
 MODULE_AUTHOR("Tanguy Pruvot, CyanogenDefy");
 MODULE_LICENSE("GPL");
