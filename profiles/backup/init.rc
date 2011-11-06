@@ -323,7 +323,7 @@ on property:ro.secure=0
     start console
 
 # adbd is controlled by the persist.service.adb.enable system property
-service adbd /sbin/adbd
+service adbd /system/bin/adbd
     disabled
 
 # adbd on at boot in emulator
@@ -336,13 +336,11 @@ on property:persist.service.adb.enable=1
 on property:persist.service.adb.enable=0
     stop adbd
 
+# adb over network
 on property:service.adb.tcp.port=5555
-    stop adbd
-    start adbd
-
+    restart adbd
 on property:service.adb.tcp.port=-1
-    stop adbd
-    start adbd
+    restart adbd
 
 service servicemanager /system/bin/servicemanager
     user system
