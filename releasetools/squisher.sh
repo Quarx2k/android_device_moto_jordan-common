@@ -19,4 +19,5 @@ cp -f $ANDROID_BUILD_TOP/device/motorola/jordan/updater-script $REPACK/ota/META-
 #fi
 cp -f $ANDROID_BUILD_TOP/out/target/product/jordan/root/init $REPACK/ota/system/bootmenu/2nd-init/init
 cp -f $ANDROID_BUILD_TOP/out/target/product/jordan/root/init.rc $REPACK/ota/system/bootmenu/2nd-init/init.rc
+cp -f $ANDROID_BUILD_TOP/out/target/product/jordan/root/sbin/adbd $REPACK/ota/system/bin/adbd
 
