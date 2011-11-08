@@ -24,7 +24,6 @@
 
 #include <linux/module.h>
 #include <linux/moduleparam.h>
-
 #include <linux/device.h>
 #include <linux/proc_fs.h>
 #include <linux/vmalloc.h>
@@ -38,9 +37,6 @@
 #define TAG "logcap"
 struct proc_dir_entry *proc_root;
 
-#define BUF_SIZE 32
-static char *buf=NULL;
-
 #define MAX_REGS 0x100
 #define REG_FMT "%02x"
 
@@ -52,7 +48,6 @@ typedef struct {
 	unsigned short mask_wr;
 	struct proc_dir_entry* proc_value;
 	unsigned short last_value;
-	//struct cpcap_device *cpcap;
 } st_logcap_reg;
 
 typedef struct {
@@ -82,6 +77,7 @@ MODULE_PARM_DESC(log_reg_max, "Last register to log (default max)");
 static int rd_count = 0;
 static int wr_count = 0;
 
+static char buf[32];
 static bool hooked = false;
 
 #define DBG(format, ...) if (log_enable & L_DMESG) printk(KERN_DEBUG TAG ": " format, ## __VA_ARGS__)
@@ -118,7 +114,7 @@ static int proc_reg_val_write(struct file *filp, const char __user *buffer, unsi
 	unsigned short val=0;
 	st_logcap_reg* reg = data;
 
-	if (!len || len >= BUF_SIZE)
+	if (!len || len >= sizeof(buf))
 		return -ENOSPC;
 	if (copy_from_user(buf, buffer, len))
 		return -EFAULT;
@@ -140,14 +136,14 @@ static int proc_reg_val_write(struct file *filp, const char __user *buffer, unsi
 		printk(KERN_INFO TAG": checked val=0x%x\n", val);
 
 	} else
-		printk(KERN_ERR TAG": wrong parameter !\n");
+		printk(KERN_ERR TAG": wrong parameter, missing hexa prefix (0x....) !\n");
 
 	return len;
 }
 
 void map_rep(st_logcap_reg *rst, enum cpcap_reg reg) {
 
-	scnprintf(buf, BUF_SIZE, REG_FMT, reg);
+	scnprintf(buf, sizeof(buf), REG_FMT, reg);
 	rst->proc_dir = proc_mkdir(buf, proc_root);
 
 	rst->proc_mask = create_proc_read_entry("mask", 0444, rst->proc_dir, &proc_reg_mask_read, rst);
@@ -173,14 +169,13 @@ int cpcap_regacc_read(struct cpcap_device *cpcap, enum cpcap_reg reg, unsigned s
 	memcpy(&val, value_ptr, sizeof(val));
 	if (log_enable && reg < log_reg_max && reg > log_reg_min) {
 
-		DBG("read  REG 0x" REG_FMT "(%d.) 0x%4x  %s\n", (unsigned int) reg, reg, val, capcap_regname(reg));
+		DBG("read  %10s(0x"REG_FMT") 0x%04x\n", capcap_regname(reg), (unsigned int) reg, val);
 
 		if (log_enable & L_PROC) {
 
 			rst = &store->r[reg];
 			if (!rst->reg) {
 				map_rep(rst, reg);
-				//rst->cpcap = cpcap;
 				//store->last_cpcap = cpcap;
 			}
 		}
@@ -192,7 +187,6 @@ int cpcap_regacc_read(struct cpcap_device *cpcap, enum cpcap_reg reg, unsigned s
 
 int cpcap_regacc_write(struct cpcap_device *cpcap, enum cpcap_reg reg, unsigned short value, unsigned short mask) {
 	int ret = 0;
-	//unsigned short val=0;
 	st_logcap_reg *rst;
 /*
 	if (reg == 0x9e && value == 0x7f) {
@@ -207,30 +201,19 @@ int cpcap_regacc_write(struct cpcap_device *cpcap, enum cpcap_reg reg, unsigned 
 
 	if (log_enable && reg < log_reg_max && reg > log_reg_min) {
 
-		DBG("write REG 0x" REG_FMT "(%d.) set/mask %4x/%4x  %s\n", (unsigned int) reg, reg, value, mask, capcap_regname(reg));
+		DBG("write %10s(0x"REG_FMT") set/mask %4x/%04x\n", capcap_regname(reg), (unsigned int) reg, value, mask);
 
 		if (log_enable & L_PROC) {
 
 			rst = &store->r[reg];
 			if (!rst->reg) {
 				map_rep(rst, reg);
-				//rst->cpcap = cpcap;
-				//store->last_cpcap = cpcap;
 			}
 		}
 	}
-    rst = &store->r[reg];
+	rst = &store->r[reg];
 	rst->mask_wr |= mask;
-/*
-	printk(KERN_DEBUG TAG": last=%4x\n", (unsigned int) rst->last_value);
-	printk(KERN_DEBUG TAG": new=%4x mask=%4x\n", (unsigned int) val, mask);
-	//bits to turn on
-	rst->last_value |= (val & mask);
-	printk(KERN_DEBUG TAG": bits on=%4x\n", (unsigned int) rst->last_value);
-	//bits to turn off
-	rst->last_value &= (val ^ mask);
-	printk(KERN_DEBUG TAG": bits off=%4x\n", (unsigned int) rst->last_value);
-*/
+
 	return ret;
 }
 
@@ -259,7 +242,7 @@ static int proc_log_enable_read(char *buffer, char **start, off_t offset, int co
 static int proc_log_enable_write(struct file *filp, const char __user *buffer, unsigned long len, void *data) {
 
 	int enable=0;
-	if (!len || len >= BUF_SIZE)
+	if (!len || len >= sizeof(buf))
 		return -ENOSPC;
 	if (copy_from_user(buf, buffer, len))
 		return -EFAULT;
@@ -306,8 +289,6 @@ struct hook_info g_hi[] = {
 
 static int __init logcap_init(void) {
 	struct proc_dir_entry *proc_entry;
-
-	buf = (char *)vmalloc(BUF_SIZE);
 
 	printk(KERN_DEBUG TAG": allocate storage for %d registers, %d bytes\n", MAX_REGS, sizeof(ar_logcap_regs));
 	store = vmalloc(sizeof(ar_logcap_regs));
@@ -359,22 +340,19 @@ static void __exit logcap_exit(void) {
 			rst->proc_value = NULL;
 		}
 
-		scnprintf(buf, BUF_SIZE, REG_FMT, r);
+		scnprintf(buf, sizeof(buf), REG_FMT, r);
 		remove_proc_entry(buf, proc_root);
-		//rst->cpcap = NULL;
 		rst->reg = 0;
 	}
 	vfree(store);
 	remove_proc_entry(TAG, NULL);
-
-	vfree(buf);
 }
 
 module_init(logcap_init);
 module_exit(logcap_exit);
 
 MODULE_ALIAS(TAG);
-MODULE_VERSION("1.1");
+MODULE_VERSION("1.2");
 MODULE_DESCRIPTION("Log the cpcap registers read/write");
 MODULE_AUTHOR("Tanguy Pruvot, CyanogenDefy");
 MODULE_LICENSE("GPL");
