@@ -60,6 +60,3 @@ persist.sys.multitouch=2
 
 # Shutter sound enabled
 persist.sys.camera-mute=0
-
-# enable adbd during first boot (for dalvik cache problems)
-persist.service.adb.enable=1
