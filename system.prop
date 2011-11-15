@@ -55,6 +55,9 @@ ro.mot.hidden_keyboards=evfwd
 # This defines the min duration between two pointer event in ms
 ro.min_pointer_dur=10
 
+# Brightness scaling of the button backlight
+persist.sys.button_brightness=100
+
 # Tell UsbService that we're using Usb.apk
 ro.usb.use_custom_service=1
 
