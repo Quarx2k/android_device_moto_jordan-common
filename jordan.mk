@@ -23,8 +23,8 @@ $(call inherit-product, device/common/gps/gps_eu_supl.mk)
 
 ## (1) First, the most specific values, i.e. the aspects that are specific to GSM
 
-## (2) Also get non-open-source files if available
-$(call inherit-product-if-exists, vendor/motorola/jordan/jordan-vendor.mk)
+## (2) Also get non-open-source files if available (made after in full_jordan.mk)
+## $(call inherit-product-if-exists, vendor/motorola/jordan/jordan-vendor.mk)
 
 ## (3)  Finally, the least specific parts, i.e. the non-GSM-specific aspects
 PRODUCT_PROPERTY_OVERRIDES += \
