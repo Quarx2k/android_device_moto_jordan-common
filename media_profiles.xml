@@ -92,7 +92,7 @@
                    channels="1" />
         </EncoderProfile>
 -->
-        <EncoderProfile quality="wide" fileFormat="mp4" duration="30">
+ <!--       <EncoderProfile quality="wide" fileFormat="mp4" duration="30">
             <Video codec="m4v"
                    bitRate="3500000"
                    width="848"
@@ -103,7 +103,7 @@
                    bitRate="96000"
                    sampleRate="44100"
                    channels="1" />
-        </EncoderProfile>
+        </EncoderProfile>-->
 
         <EncoderProfile quality="high" fileFormat="mp4" duration="30">
             <Video codec="m4v"
@@ -118,7 +118,7 @@
                    channels="1" />
         </EncoderProfile>
 
-        <EncoderProfile quality="low" fileFormat="3gp" duration="30">
+        <EncoderProfile quality="low" fileFormat="mp4" duration="30">
             <Video codec="h263"
                    bitRate="200000"
                    width="320"
