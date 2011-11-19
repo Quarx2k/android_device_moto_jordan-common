@@ -16,6 +16,7 @@ LOCAL_SHARED_LIBRARIES := \
 LOCAL_STATIC_LIBRARIES := libaudiopolicybase
 
 LOCAL_MODULE:= libaudiopolicy
+LOCAL_MODULE_TAGS := optional
 
 ifeq ($(BOARD_HAVE_BLUETOOTH),true)
   LOCAL_CFLAGS += -DWITH_A2DP

@@ -90,17 +90,19 @@
     </string-array>
 
     <!-- Regex array of allowable upstream ifaces for tethering - for example if you want
-         tethering on a new interface called "foo2" add <item>"foo\\d"</item> to the array -->
+         tethering on a new interface called "foo2" add <item>"foo\\d"</item> to the array
     <string-array translatable="false" name="config_tether_upstream_regexs">
         <item>rmnet\\d</item>
         <item>tiwlan\\d</item>
     </string-array>
+ICS -->
 
     <!-- Boolean indicating if we require the use of DUN on mobile for tethering.
          Note that this defaults to false so that if you move to a carrier that
          hasn't configured anything tethering will still work.  If you'd rather
-         make the device untetherable on unconfigured devices, set to true -->
+         make the device untetherable on unconfigured devices, set to true 
     <bool translatable="false" name="config_tether_dun_required">false</bool>
+ICS -->
 
     <!-- String containing the apn value for tethering.  May be overriden by secure settings
          TETHER_DUN_APN.  Value is a comma separated series of strings:
@@ -295,14 +297,14 @@
          from the touch driver.  This code exists for one particular device,
          and should not be enabled for any others.  Hopefully in the future
          it will be removed when the lower-level touch driver generates better
-         data. -->
+         data. 
     <bool name="config_filterTouchEvents">false</bool>
-
+ICS -->
     <!-- Enables special filtering code in the framework for raw touch events
          from the touch driver. This code exists for one particular device,
-         and should not be enabled for any others. -->
+         and should not be enabled for any others. 
     <bool name="config_filterJumpyTouchEvents">false</bool>
-
+ICS -->
     <!-- Component name of the default wallpaper. This will be ImageWallpaper if not
          specified -->
     <string name="default_wallpaper_component">@null</string>
@@ -335,13 +337,15 @@
 
     <bool name="config_animateScreenLights">true</bool>
 
-    <!-- Allows the light sensor to be ignored when flashlight is on -->
+    <!-- Allows the light sensor to be ignored when flashlight is on 
     <bool name="config_flashlight_affects_lightsensor">false</bool>
-
-    <!-- Enables SIP on WIFI only -->
+ICS -->
+    <!-- Enables SIP on WIFI only
     <bool name="config_sip_wifi_only">false</bool>
 
     <string-array name="config_vendorServices">
         <item>/system/framework/com.motorola.android.location.jar:com.android.server.LocationProxyService</item>
     </string-array>
+ICS -->
+
 </resources>

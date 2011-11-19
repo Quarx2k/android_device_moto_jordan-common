@@ -11,7 +11,6 @@ show_progress(0.750000, 35);
 package_extract_dir("system", "/system");
 show_progress(0.050000, 2);
 run_program("/sbin/touch","/system/firstboot");
-run_program("/sbin/mkdir","/system/vendor");
 symlink("busybox", "/system/xbin/[", "/system/xbin/[[",
         "/system/xbin/arp", "/system/xbin/ash", "/system/xbin/awk",
         "/system/xbin/base64", "/system/xbin/basename", "/system/xbin/bbconfig",
@@ -104,6 +103,7 @@ symlink("iwmulticall","/system/xbin/iwconfig","/system/xbin/iwlist",
         "/system/xbin/iwpriv", "/system/xbin/iwspy", "/system/xbin/iwgetid");
 symlink("bootmenu", "/system/bin/logwrapper");
 symlink("/system/bin/logwrapper.bin","/system/xbin/logwrapper");
+symlink("/system/bin/busybox", "/system/bin/sh");
 package_extract_file("system/bin/bootmenu", "/system/bootmenu/binary/bootmenu");
 set_perm_recursive(0, 0, 0755, 0644, "/system");
 set_perm_recursive(0, 0, 0755, 0755, "/system/bootmenu/binary/");

@@ -61,12 +61,14 @@ PRODUCT_COPY_FILES += \
 	frameworks/base/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
 	frameworks/base/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml
 
+#TO FIX for ICS
+#PRODUCT_PACKAGES += overlay.omap3 libaudiopolicy libcamera
+
 PRODUCT_PACKAGES += \
 	librs_jni \
 	tiwlan.ini \
 	dspexec \
 	libbridge \
-	overlay.omap3 \
 	wlan_cu \
 	libtiOsLib \
 	wlan_loader \
@@ -85,23 +87,25 @@ PRODUCT_PACKAGES += \
 	libOMX.TI.Video.encoder \
 	libLCML \
 	libOMX_Core \
-	libcamera \
-	libaudiopolicy \
 	iwmulticall \
 	hostap \
 	hostapd.conf \
 	libhostapdcli \
 	bootmenu \
+	static_busybox \
 	hijack_boot_2nd-init \
 	DefyParts \
 	Usb \
 	su
 
 # for jpeg hw encoder/decoder
-# PRODUCT_PACKAGES += libskiahw libOMX.TI.JPEG.Encoder libOMX.TI.JPEG.decoder
+PRODUCT_PACKAGES += libskiahw libOMX.TI.JPEG.Encoder libOMX.TI.JPEG.decoder
 
-# hw video prepost processor (require dsp lib)
-# PRODUCT_PACKAGES += libOMX.TI.VPP
+# video post processor
+PRODUCT_PACKAGES += libOMX.TI.VPP
+
+# Add DroidSSHd (dropbear) Management App - tpruvot/android_external_droidsshd @ github
+PRODUCT_PACKAGES += DroidSSHd
 
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
@@ -144,6 +148,6 @@ $(call inherit-product, build/target/product/full_base.mk)
 # Should be after the full_base include, which loads languages_full
 PRODUCT_LOCALES += hdpi
 
-PRODUCT_NAME := generic_jordan
+PRODUCT_NAME := full_jordan
 PRODUCT_DEVICE := MB525
 
