@@ -61,9 +61,12 @@ PRODUCT_COPY_FILES += \
 	frameworks/base/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
 	frameworks/base/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml
 
-#TO FIX for ICS
+# TO FIX for ICS
 #PRODUCT_PACKAGES += overlay.omap3 libaudiopolicy libcamera
+PRODUCT_PACKAGES += hwcomposer.default
+PRODUCT_PACKAGES += libaudioutils audio.a2dp.default
 
+#Common packages (gingerbread/ics)
 PRODUCT_PACKAGES += \
 	librs_jni \
 	tiwlan.ini \
@@ -142,6 +145,14 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
         packages/wallpapers/LivePicker/android.software.live_wallpaper.xml:/system/etc/permissions/android.software.live_wallpaper.xml
 
+# ICS USB Packages
+PRODUCT_PACKAGES += com.android.future.usb.accessory
+
+PRODUCT_COPY_FILES := \
+        frameworks/base/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml \
+        frameworks/base/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
+
+######################################################################################################################################
 
 $(call inherit-product, build/target/product/full_base.mk)
 

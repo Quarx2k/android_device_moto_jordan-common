@@ -6,8 +6,8 @@ rm -f $REPACK/ota/system/app/RomManager.apk
 # rm -f $REPACK/ota/system/xbin/irssi
 
 # these scripts are not required
-rm $REPACK/ota/system/etc/init.d/03firstboot
-rm $REPACK/ota/system/etc/init.d/04modules
+rm -f $REPACK/ota/system/etc/init.d/03firstboot
+rm -f $REPACK/ota/system/etc/init.d/04modules
 
 # add an empty script to prevent logcat errors (moto init.rc)
 touch $REPACK/ota/system/bin/mount_ext3.sh
@@ -31,4 +31,8 @@ cp -f $ANDROID_BUILD_TOP/out/target/product/jordan/root/sbin/adbd $REPACK/ota/sy
 
 # use the static busybox in bootmenu, this helps a lot on incomplete roms and ics
 cp -f $ANDROID_BUILD_TOP/out/target/product/jordan/utilities/busybox $REPACK/ota/system/bootmenu/binary/busybox
+
+# ics: to fix later
+cp -f $REPACK/ota/system/lib/hw/hwcomposer.default.so $REPACK/ota/system/lib/hw/hwcomposer.jordan.so
+cp -f $REPACK/ota/system/lib/hw/gralloc.default.so $REPACK/ota/system/lib/hw/gralloc.omap3.so
 
