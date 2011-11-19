@@ -192,44 +192,54 @@ on property:service.adb.tcp.port=-1
     restart adbd
 
 service usbd /system/bin/usbd
+    class main
     user root
 service nvm-daemon /system/bin/nvm_daemon
+    class main
     user root
     group radio
 service start_commdrv /system/bin/sh /system/etc/motorola/comm_drv/commdrv_fs.sh
+    class main
     oneshot
     user radio
     group radio system cache
 service gkisystem /system/bin/gkisystem
+    class main
     socket location_shim stream 660 radio system
     socket gpshal_socket stream 660 radio system
     socket opprofdaemon stream 660 radio system
     group radio system
 service battd /system/bin/battd
+    class main
     socket battdsock stream 660 root system
     user root
     group system
     oneshot
 service ssmgrd /system/bin/ssmgrd
+    class main
     group radio input system
     oneshot
 
 # Bluetooth services.
 service hciattach /system/bin/hciattach -n -t 10 /dev/ttyS1 texasalt 3000000 flow
+    class main
     user bluetooth
     group bluetooth net_bt_admin
     disabled
 
 # Ecompass daemon
 service akmd2 /system/bin/akmd2
+    class main
     user compass
     group compass misc input
 
 # Wifi services
 service wlan_loader /system/bin/wlan_loader -f /system/etc/wifi/fw_wlan1271.bin -i /system/etc/wifi/tiwlan.ini -e /pds/wifi/nvs_map.bin
+    class main
     disabled
     oneshot
 service wpa_supplicant /system/bin/wpa_supplicant -Dtiwlan0 -itiwlan0 -c/data/misc/wifi/wpa_supplicant.conf
+    class main
     socket wpa_tiwlan0 dgram 660 wifi wifi
     disabled
     oneshot
@@ -237,26 +247,33 @@ service wlan_ap_loader /system/bin/logwrapper /system/bin/tiap_loader -f /system
     disabled
     oneshot
 service hostapd /system/bin/logwrapper /system/bin/hostap -d /data/misc/wifi/hostapd.conf
+    class main
     disabled
     oneshot
 service dhcpcd_tiwlan0 /system/bin/dhcpcd -ABKL tiwlan0
+    class main
     disabled
     oneshot
 service iprenew_tiwlan0 /system/bin/dhcpcd -n
+    class main
     disabled
     oneshot
 
 service baseimage /system/bin/dspexec -v -T /system/lib/dsp/baseimage.dof
+    class main
     user media
     group media graphics
     oneshot
 service pvrsrv /system/bin/pvrsrvinit
+    class main
     user root
     oneshot
 service locDrv /system/bin/brcm_guci_drv -config /system/etc/gpsconfig.xml
+    class main
     user radio
     group radio inet sdcard_rw
 service fmradio /system/bin/fmradioserver
+    class main
     disabled
     user system
     group bluetooth net_bt_admin net_raw net_admin misc
