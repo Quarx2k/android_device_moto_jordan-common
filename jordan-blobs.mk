@@ -12,15 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-PREBUILT_DEVICE = device/motorola/jordan/prebuilt
+DEVICE_PREBUILT := device/motorola/jordan/prebuilt
 
 PRODUCT_COPY_FILES += \
-        ${PREBUILT_DEVICE}/etc/terminfo/l/linux:system/etc/terminfo/l/linux \
-        ${PREBUILT_DEVICE}/etc/terminfo/x/xterm:system/etc/terminfo/x/xterm \
-	${PREBUILT_DEVICE}/usr/keychars/cpcap-key.kcm.bin:system/usr/keychars/cpcap-key.kcm.bin \
-	${PREBUILT_DEVICE}/usr/keychars/qtouch-touchscreen.kcm.bin:system/usr/keychars/qtouch-touchscreen.kcm.bin \
-	${PREBUILT_DEVICE}/usr/keychars/qwerty.kcm.bin:system/usr/keychars/qwerty.kcm.bin \
-	${PREBUILT_DEVICE}/usr/keychars/qwerty2.kcm.bin:system/usr/keychars/qwerty2.kcm.bin \
+        $(DEVICE_PREBUILT)/etc/terminfo/l/linux:system/etc/terminfo/l/linux \
+        $(DEVICE_PREBUILT)/etc/terminfo/x/xterm:system/etc/terminfo/x/xterm \
+	$(DEVICE_PREBUILT)/usr/keychars/cpcap-key.kcm.bin:system/usr/keychars/cpcap-key.kcm.bin \
+	$(DEVICE_PREBUILT)/usr/keychars/qtouch-touchscreen.kcm.bin:system/usr/keychars/qtouch-touchscreen.kcm.bin \
+	$(DEVICE_PREBUILT)/usr/keychars/qwerty.kcm.bin:system/usr/keychars/qwerty.kcm.bin \
+	$(DEVICE_PREBUILT)/usr/keychars/qwerty2.kcm.bin:system/usr/keychars/qwerty2.kcm.bin \
 
 #key layouts, names must fit the ones in /proc/bus/input/devices, qwerty.kl is the fallback one.
 PRODUCT_COPY_FILES += \
