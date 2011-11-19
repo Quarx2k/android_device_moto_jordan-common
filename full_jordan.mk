@@ -37,6 +37,8 @@ PRODUCT_PROPERTY_OVERRIDES := \
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)
 $(call inherit-product, device/motorola/jordan/jordan.mk)
 $(call inherit-product-if-exists, vendor/ti/proprietary/omap3/ti-omap3-vendor.mk)
+# Also get non-open-source files if available
+$(call inherit-product-if-exists, vendor/motorola/jordan/jordan-vendor.mk)
 
 PRODUCT_NAME := full_jordan
 PRODUCT_DEVICE := jordan
