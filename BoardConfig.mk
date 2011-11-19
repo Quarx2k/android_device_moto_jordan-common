@@ -115,3 +115,17 @@ ifndef CYANOGEN_RELEASE
 
 endif
 
+## ICS specifics
+
+TARGET_USERIMAGES_USE_EXT4 := false
+
+# CM9
+BOARD_CUSTOM_RECOVERY_KEYMAPPING:= ../../device/motorola/jordan/recovery_keys.c
+
+ENABLE_SENSORS_COMPAT := true
+TARGET_PROXIMITY_SENSOR_LIMIT := 0x1F
+
+TARGET_ARCH_VARIANT_CPU := cortex-a8
+TARGET_ARCH_VARIANT_FPU := neon
+COMMON_GLOBAL_CFLAGS += -funsafe-math-optimizations
+

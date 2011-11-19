@@ -13,6 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+<!-- ICS
 
 <resources>
     <string-array translatable="false" name="voice_quality_entries">
@@ -28,4 +29,6 @@
         <item>Crisp</item>
         <item>Bright</item>
     </string-array>
+
+ICS -->
 </resources>
