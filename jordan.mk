@@ -24,7 +24,7 @@ $(call inherit-product, device/common/gps/gps_eu_supl.mk)
 ## (1) First, the most specific values, i.e. the aspects that are specific to GSM
 
 ## (2) Also get non-open-source files if available (made after in full_jordan.mk)
-## $(call inherit-product-if-exists, vendor/motorola/jordan/jordan-vendor.mk)
+$(call inherit-product-if-exists, vendor/motorola/jordan/jordan-vendor.mk)
 
 ## (3)  Finally, the least specific parts, i.e. the non-GSM-specific aspects
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -58,12 +58,14 @@ PRODUCT_COPY_FILES += \
 	frameworks/base/data/etc/android.hardware.sensor.compass.xml:system/etc/permissions/android.hardware.sensor.compass.xml \
 	frameworks/base/data/etc/android.hardware.sensor.light.xml:system/etc/permissions/android.hardware.sensor.light.xml \
 	frameworks/base/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml \
-	frameworks/base/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
-	frameworks/base/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml
+	frameworks/base/data/etc/android.hardware.touchscreen.xml:system/etc/permissions/android.hardware.touchscreen.xml \
+
+#	frameworks/base/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
+#	frameworks/base/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml
 
 # TO FIX for ICS
 #PRODUCT_PACKAGES += overlay.omap3 libaudiopolicy libcamera
-PRODUCT_PACKAGES += hwcomposer.default
+PRODUCT_PACKAGES += hwcomposer.default libGLESv2 libEGL libGLESv1_CM
 PRODUCT_PACKAGES += libaudioutils audio.a2dp.default
 
 #Common packages (gingerbread/ics)
@@ -148,7 +150,7 @@ PRODUCT_COPY_FILES += \
 # ICS USB Packages
 PRODUCT_PACKAGES += com.android.future.usb.accessory
 
-PRODUCT_COPY_FILES := \
+PRODUCT_COPY_FILES += \
         frameworks/base/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml \
         frameworks/base/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
 
