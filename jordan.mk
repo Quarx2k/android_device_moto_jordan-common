@@ -66,7 +66,7 @@ PRODUCT_COPY_FILES += \
 # TO FIX for ICS
 #PRODUCT_PACKAGES += overlay.omap3 libaudiopolicy libcamera
 PRODUCT_PACKAGES += hwcomposer.default libGLESv2 libEGL libGLESv1_CM
-PRODUCT_PACKAGES += libaudioutils audio.a2dp.default
+PRODUCT_PACKAGES += libaudioutils audio.a2dp.default liba2dp
 
 #Common packages (gingerbread/ics)
 PRODUCT_PACKAGES += \
