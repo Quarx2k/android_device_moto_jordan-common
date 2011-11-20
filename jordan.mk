@@ -85,8 +85,6 @@ PRODUCT_PACKAGES += \
 	libOMX.TI.Video.encoder \
 	libLCML \
 	libOMX_Core \
-	sensors.jordan \
-	lights.jordan \
 	libcamera \
 	libaudiopolicy \
 	iwmulticall \
@@ -94,6 +92,7 @@ PRODUCT_PACKAGES += \
 	hostapd.conf \
 	libhostapdcli \
 	bootmenu \
+	static_busybox \
 	hijack_boot_2nd-init \
 	DefyParts \
 	Usb \

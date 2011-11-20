@@ -27,8 +27,8 @@
 #include <linux/smp_lock.h>
 
 //FIX ME (dynamic module name)
-#define MODULE_NAME "multitouch"
-#define MODULE_TAG multitouch
+#define MODULE_NAME "logcap"
+#define MODULE_TAG logcap
 
 //#define DEBUG_HOOK
 #ifdef DEBUG_HOOK
@@ -54,8 +54,8 @@ int hook(struct hook_info *hi) {
 			hi->target = (unsigned int*)pkallsyms_lookup_name(hi->targetName);
 		}
 		if ( !hi->target ) {
-			P("Target address is not defined and targetName(%s) cannot be found.\n", hi->targetName ?
-					hi->targetName : "");
+			P("Target address is not defined and targetName(%s) cannot be found.\n", 
+				hi->targetName ? hi->targetName : "");
 			return -1;
 		}
 		ptargetName = hi->targetName;
@@ -93,8 +93,8 @@ int unhook(struct hook_info *hi) {
 
 int hook_init(void) {
 	int i;
-	SYMSEARCH_BIND_FUNCTION_TO(multitouch, kallsyms_lookup_name, pkallsyms_lookup_name);
-	SYMSEARCH_BIND_FUNCTION_TO(multitouch, kallsyms_lookup, pkallsyms_lookup);
+	SYMSEARCH_BIND_FUNCTION_TO(logcap, kallsyms_lookup_name, pkallsyms_lookup_name);
+	SYMSEARCH_BIND_FUNCTION_TO(logcap, kallsyms_lookup, pkallsyms_lookup);
 	lock_kernel();
 	for (i = 0; g_hi[i].newfunc; ++i) {
 		hook(&g_hi[i]);
