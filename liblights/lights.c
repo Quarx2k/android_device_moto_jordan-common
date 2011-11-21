@@ -246,7 +246,7 @@ set_light_battery(struct light_device_t* dev,
             /* not pure green -> charging -> use charge LED */
             g_charge_led_active = 1;
         }
-        if (g_charge_led_active || strcmp(prop, "off")) {
+        if (g_charge_led_active || !strcmp(prop, "off")) {
             memset(&g_battery, 0, sizeof(g_battery));
         }
     }
