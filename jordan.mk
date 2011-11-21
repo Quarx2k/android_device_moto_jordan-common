@@ -92,6 +92,7 @@ PRODUCT_PACKAGES += \
 	libOMX.TI.Video.encoder \
 	libLCML \
 	libOMX_Core \
+	libfnc \
 	iwmulticall \
 	hostap \
 	hostapd.conf \
