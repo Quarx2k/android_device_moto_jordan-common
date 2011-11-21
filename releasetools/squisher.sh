@@ -26,7 +26,7 @@ if [ -n "$CYANOGEN_RELEASE" ]; then
   cp -f $ANDROID_BUILD_TOP/device/motorola/jordan/logo-google.raw $REPACK/ota/logo.img
 fi
 cp -f $ANDROID_BUILD_TOP/out/target/product/jordan/root/init $REPACK/ota/system/bootmenu/2nd-init/init
-cp -f $REPACK/ota/system/bootmenu/2nd-init/2nd-boot $REPACK/ota/system/bootmenu/2nd-init/2nd-init
+cp -f $REPACK/ota/system/bootmenu/binary/2nd-boot $REPACK/ota/system/bootmenu/binary/2nd-init
 cp -f $ANDROID_BUILD_TOP/out/target/product/jordan/root/init.rc $REPACK/ota/system/bootmenu/2nd-init/init.rc
 cp -f $ANDROID_BUILD_TOP/out/target/product/jordan/root/sbin/adbd $REPACK/ota/system/bin/adbd
 
