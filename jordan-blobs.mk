@@ -15,6 +15,7 @@
 DEVICE_PREBUILT := device/motorola/jordan/prebuilt
 
 PRODUCT_COPY_FILES += \
+	$(DEVICE_PREBUILT)/bootanimation.zip:system/media/bootanimation.zip \
 	$(DEVICE_PREBUILT)/etc/terminfo/l/linux:system/etc/terminfo/l/linux \
 	$(DEVICE_PREBUILT)/etc/terminfo/x/xterm:system/etc/terminfo/x/xterm \
 	$(DEVICE_PREBUILT)/usr/keychars/cpcap-key.kcm.bin:system/usr/keychars/cpcap-key.kcm.bin \
