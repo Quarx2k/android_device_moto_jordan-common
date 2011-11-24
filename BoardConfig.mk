@@ -43,7 +43,7 @@ TARGET_ARCH_VARIANT_FPU := neon
 TARGET_GLOBAL_CFLAGS += -mtune=cortex-a8
 TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a8
 TARGET_OMAP3 := true
-COMMON_GLOBAL_CFLAGS += -DTARGET_OMAP3 -DOMAP_COMPAT -DMOTOROLA_UIDS -funsafe-math-optimizations
+COMMON_GLOBAL_CFLAGS += -DTARGET_OMAP3 -DOMAP_COMPAT -DMOTOROLA_UIDS
 ARCH_ARM_HAVE_TLS_REGISTER := false
 
 # Wifi related defines
@@ -62,6 +62,8 @@ WPA_SUPPL_APPROX_USE_RSSI   := true
 
 BOARD_USE_YUV422I_DEFAULT_COLORFORMAT := true
 BOARD_EGL_CFG := device/motorola/jordan/egl.cfg
+DEFAULT_FB_NUM := 0
+
 BOARD_CUSTOM_USB_CONTROLLER := ../../device/motorola/jordan/UsbController.cpp
 
 BOARD_HAVE_BLUETOOTH := true
@@ -133,5 +135,6 @@ BOARD_CUSTOM_RECOVERY_KEYMAPPING:= ../../device/motorola/jordan/recovery_keys.c
 
 ENABLE_SENSORS_COMPAT := true
 TARGET_PROXIMITY_SENSOR_LIMIT := 0x1F
+#segfault: TARGET_USES_OLD_LIBSENSORS_HAL := true
 
 
