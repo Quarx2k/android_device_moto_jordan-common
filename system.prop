@@ -69,3 +69,9 @@ persist.service.adb.enable=1
 
 # try old ril switch
 ro.telephony.ril.v3=1
+
+# DDMS debug SurfaceFlinger (EGL)
+debug.sf.ddms=1
+
+# all/choice
+hwui.print_config=all
