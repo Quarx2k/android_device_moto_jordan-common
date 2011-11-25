@@ -69,10 +69,10 @@ on post-fs
 # Dont delete this line, used as event in bootmenu (cpu settings & postbootmenu)
     exec /system/bin/logwrapper postbootmenu
 
-    # Enable ADB mode
-    write /dev/usb_device_mode charge_adb
-    write /tmp/usbd_current_state usb_mode_charge_adb
-    chmod 0666 /tmp/usbd_current_state
+    # Enable ADB mode (made in init.d)
+    #write /dev/usb_device_mode charge_adb
+    #write /tmp/usbd_current_state usb_mode_charge_adb
+    #chmod 0666 /tmp/usbd_current_state
 
     mount rootfs rootfs / ro remount
 
