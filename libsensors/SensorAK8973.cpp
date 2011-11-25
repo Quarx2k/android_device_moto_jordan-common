@@ -230,6 +230,7 @@ int SensorAK8973::readEvents(sensors_event_t* data, int count)
 
 void SensorAK8973::processEvent(int code, int value)
 {
+    int status=0;
     switch (code)
     {
         case ABS_X:
@@ -246,7 +247,9 @@ void SensorAK8973::processEvent(int code, int value)
             break;
         case ABS_WHEEL:
             mPendingMask |= 1 << Accelerometer;
-            mPendingEvents[Accelerometer].acceleration.status = uint8_t(value & AK8973_SENSOR_STATE_MASK);
+            status = value & AK8973_SENSOR_STATE_MASK;
+            if (status == 4) status = 0;
+            mPendingEvents[Accelerometer].acceleration.status = uint8_t(status);
             break;
 
         case ABS_HAT0X:
@@ -276,11 +279,18 @@ void SensorAK8973::processEvent(int code, int value)
             break;
         case ABS_RUDDER:
             mPendingMask |= 1 << Orientation;
-            mPendingEvents[Orientation].orientation.status = uint8_t(value & AK8973_SENSOR_STATE_MASK);
+            status = value & AK8973_SENSOR_STATE_MASK;
+            if (status == 4) status = 0;
+            mPendingEvents[Orientation].orientation.status = uint8_t(status);
             break;
 
         case ABS_THROTTLE:
             mPendingMask |= 1 << Temperature;
             mPendingEvents[Temperature].temperature = value;
+            break;
+
+        default:
+            LOGE("SensorAK8973: unknown event (code=%d, value=%d)", code, value);
+            break;
     }
 }

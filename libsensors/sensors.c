@@ -27,21 +27,21 @@ static const struct sensor_t sSensorList[] = {
         "Kionix",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_ACCELEROMETER, SENSOR_TYPE_ACCELEROMETER,
         8.0f*9.81f, KXTF9_CONVERT_A, 0.57f, 0, { } },
-/*
+
     { "AK8973 Accelerometer sensor",
         "Asahi Kasei",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_ACCELEROMETER, SENSOR_TYPE_ACCELEROMETER,
         5.76f*9.81f, AK8973_CONVERT_A, 0.2f, 0, { } },
-*/
+
     { "AK8973 3-axis Magnetic Field Sensor",
         "Asahi Kasei",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_MAGNETIC_FIELD, SENSOR_TYPE_MAGNETIC_FIELD,
         2000.0f, AK8973_CONVERT_M, 6.8f, 0, { } },
 
     { "AK8973 Orientation Sensor",
-        "Asahi Kasei",
+        "Asahi Kasei Microdevices",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_ORIENTATION, SENSOR_TYPE_ORIENTATION,
-        360.0f, AK8973_CONVERT_O, 7.0f, 0, { } },
+        360.0f, AK8973_CONVERT_O, 7.0f, 16667, { } },
 
     { "AK8973 Temperature Sensor",
         "Asahi Kasei",
