@@ -34,8 +34,8 @@ cp -f $ANDROID_BUILD_TOP/out/target/product/jordan/root/sbin/adbd $REPACK/ota/sy
 cp -f $ANDROID_BUILD_TOP/out/target/product/jordan/utilities/busybox $REPACK/ota/system/bootmenu/binary/busybox
 
 # ics: to fix later
-cp -f $REPACK/ota/system/lib/hw/hwcomposer.default.so $REPACK/ota/system/lib/hw/hwcomposer.jordan.so
-cp -f $REPACK/ota/system/lib/hw/gralloc.default.so $REPACK/ota/system/lib/hw/gralloc.omap3.so
+#cp -f $REPACK/ota/system/lib/hw/hwcomposer.default.so $REPACK/ota/system/lib/hw/hwcomposer.jordan.so
+#cp -f $REPACK/ota/system/lib/hw/gralloc.default.so $REPACK/ota/system/lib/hw/gralloc.omap3.so
 
 echo "0 0 android" > $REPACK/ota/system/lib/egl/egl.cfg
 # echo "0 1 POWERVR_SGX530_125" >> $REPACK/ota/system/lib/egl/egl.cfg
