@@ -65,8 +65,8 @@ PRODUCT_COPY_FILES += \
 	 $(DEVICE_PREBUILT)/app/basebandswitcherV4.0.apk:system/app/basebandswitcherV4.0.apk \
 
 #Temporary apps (will be in CM9 common folder later)
-PRODUCT_COPY_FILES += \
-	 $(DEVICE_PREBUILT)/app/Superuser.apk:system/app/Superuser.apk \
+#PRODUCT_COPY_FILES += \
+#	 $(DEVICE_PREBUILT)/app/Superuser.apk:system/app/Superuser.apk \
 
 #Bootmenu
 PRODUCT_COPY_FILES += \

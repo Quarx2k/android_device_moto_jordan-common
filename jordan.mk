@@ -102,6 +102,7 @@ PRODUCT_PACKAGES += \
 	hijack_boot_2nd-init \
 	DefyParts \
 	Usb \
+	superuser \
 	su
 
 # for jpeg hw encoder/decoder
