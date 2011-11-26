@@ -126,7 +126,7 @@ int SensorKXTF9::readEvents(sensors_event_t* data, int count)
         }
         else
         {
-            LOGE("SensorKXTF9: unknown event (type=%d, code=%d, value=%d)", type, event->code, event->value);
+            LOGE("SensorKXTF9: unknown event (type=0x%x, code=0x%x, value=0x%x)", type, event->code, event->value);
         }
         mInputReader.next();
     }
@@ -136,6 +136,7 @@ int SensorKXTF9::readEvents(sensors_event_t* data, int count)
 
 void SensorKXTF9::processEvent(int code, int value)
 {
+    int status;
     switch (code)
     {
         case ABS_X:
@@ -146,6 +147,14 @@ void SensorKXTF9::processEvent(int code, int value)
             break;
         case ABS_Z:
             mPendingEvent.acceleration.z = value * KXTF9_CONVERT_A_Z;
+            break;
+        case ABS_MISC: //0x28
+            status = value & KXTF9_SENSOR_STATE_MASK;
+            LOGI("SensorKXTF9: orientation event (code=0x%x, value=0x%x) status=0x%x", code, value, status);
+            mPendingEvent.orientation.status = uint8_t(status);
+            break;
+        default:
+            LOGE("SensorKXTF9: unknown event (code=0x%x, value=0x%x)", code, value);
             break;
     }
 }
