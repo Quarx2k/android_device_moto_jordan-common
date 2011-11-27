@@ -18,20 +18,45 @@
 
 #include "nusensors.h"
 
-/*****************************************************************************/
-/* The SENSORS Module */
-/*****************************************************************************/
+/*****************************************************************************
+ * The SENSORS Module
+ *****************************************************************************
+ *
+ * To remember :
+ *  180° = pi radians (3,1415)
+ *
+ *  ORIENTATION is in degrees
+ *  GYROSCOPE   is in rad/sec
+ *
+ *  PROXIMITY in centimeters
+ *  LINEAR_ACCELERATION in m/sec
+ *
+ *****************************************************************************
+
+ struct sensor_t from hardware/libhardware/include/hardware/sensors.h :
+
+   "Name", "vendor",
+   <version>, <handle>, <type>,
+   <max>, <res>, <power mA>, <min delay>, <reserved>
+
+ resolution is the smallest difference between two reported values
+ power value is not only related to the sensor, it depends on CPU usage too
+ delay is in microsec, 0 if the sensor doesn't report events at a constant rate
+
+ *****************************************************************************/
+#define MS_50 50000
+#define ONCHANGED 0
 
 static const struct sensor_t sSensorList[] = {
     { "KXTF9 3-axis Accelerometer",
         "Kionix",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_ACCELEROMETER, SENSOR_TYPE_ACCELEROMETER,
-        8.0f*9.81f, KXTF9_CONVERT_A, 0.57f, 0, { } },
+        8.0f*9.81f, KXTF9_CONVERT_A, 0.6f, 0, { } }, // 8G
 
-    { "KXTF9 Orientation Sensor",
+    { "KXTF9 2-axis Orientation Events",
         "Kionix",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_ORIENTATION, SENSOR_TYPE_ORIENTATION,
-        360.0f, KXTF9_CONVERT_O, 90.0f, 0, { } },
+        270.0f, 90.0f, 0.2f, ONCHANGED, { } },
 /*
     { "AK8973 Accelerometer sensor",
         "Asahi Kasei",
@@ -41,27 +66,32 @@ static const struct sensor_t sSensorList[] = {
     { "AK8973 3-axis Magnetic Field Sensor",
         "Asahi Kasei",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_MAGNETIC_FIELD, SENSOR_TYPE_MAGNETIC_FIELD,
-        2000.0f, AK8973_CONVERT_M, 6.8f, 0, { } },
+        360.0f, AK8973_CONVERT_M, 4.0f, MS_50, { } }, // can use more power because values are unstables (cpu)
+
+    { "AK8973 3-axis Gyroscope",
+        "Asahi Kasei",
+        1, SENSORS_HANDLE_BASE + SENSOR_TYPE_GYROSCOPE, SENSOR_TYPE_GYROSCOPE,
+        100.0f, AK8973_CONVERT_A, 2.0f, 0, { } },
 /*
-    { "AK8973 Orientation Sensor",
-        "Asahi Kasei Microdevices",
+    { "AK8973 3-axis Orientation Sensor",
+        "Asahi Kasei",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_ORIENTATION, SENSOR_TYPE_ORIENTATION,
         360.0f, AK8973_CONVERT_O, 7.0f, 0, { } },
 */
     { "AK8973 Temperature Sensor",
         "Asahi Kasei",
-        1, SENSORS_HANDLE_BASE + SENSOR_TYPE_TEMPERATURE, SENSOR_TYPE_TEMPERATURE,
+        1, SENSORS_HANDLE_BASE + SENSOR_TYPE_AMBIENT_TEMPERATURE, SENSOR_TYPE_AMBIENT_TEMPERATURE,
         85.0f, 1.0f, 0.2f, 0, { } },
 
     { "ISL29030 Proximity Sensor",
         "Intersil Corporation",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_PROXIMITY, SENSOR_TYPE_PROXIMITY,
-        100.0f, 1.0f, 0.5f, 0, { } },
+        100.0f, 1.0f, 25.0f, 0, { } }, // (IR LED can use a lot of battery)
 
     { "ISL29030 Light Sensor",
         "Intersil Corporation",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_LIGHT, SENSOR_TYPE_LIGHT,
-        16384.0f, 1.0f, 0.5f, 0, { } },
+        8192.0f, 1.0f, 0.5f, 0, { } },
 };
 
 /*****************************************************************************/

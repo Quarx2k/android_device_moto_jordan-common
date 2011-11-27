@@ -22,13 +22,15 @@
 #include <dirent.h>
 #include <sys/select.h>
 
-//#define LOG_NDEBUG 0
+//#define LOG_NDEBUG 1
 
 #include <cutils/log.h>
 
 #include "kernel/akm8973_akmd.h"
 
 #include "SensorAK8973.h"
+
+#define TAG "AK8973"
 
 /*****************************************************************************/
 
@@ -48,16 +50,16 @@ SensorAK8973::SensorAK8973() : SensorBase(AK8973_DEVICE_NAME, "compass"),
     mPendingEvents[MagneticField].version = sizeof(sensors_event_t);
     mPendingEvents[MagneticField].sensor = SENSOR_TYPE_MAGNETIC_FIELD;
     mPendingEvents[MagneticField].type = SENSOR_TYPE_MAGNETIC_FIELD;
-    mPendingEvents[MagneticField].magnetic.status = SENSOR_STATUS_ACCURACY_HIGH;
+    mPendingEvents[MagneticField].magnetic.status = SENSOR_STATUS_ACCURACY_MEDIUM;
 
     mPendingEvents[Orientation].version = sizeof(sensors_event_t);
-    mPendingEvents[Orientation].sensor = SENSOR_TYPE_ORIENTATION;
-    mPendingEvents[Orientation].type = SENSOR_TYPE_ORIENTATION;
+    mPendingEvents[Orientation].sensor = SENSOR_TYPE_GYROSCOPE;//SENSOR_TYPE_ORIENTATION;
+    mPendingEvents[Orientation].type = SENSOR_TYPE_GYROSCOPE;//SENSOR_TYPE_ORIENTATION;
     mPendingEvents[Orientation].orientation.status = SENSOR_STATUS_ACCURACY_HIGH;
 
     mPendingEvents[Temperature].version = sizeof(sensors_event_t);
-    mPendingEvents[Temperature].sensor = SENSOR_TYPE_TEMPERATURE;
-    mPendingEvents[Temperature].type = SENSOR_TYPE_TEMPERATURE;
+    mPendingEvents[Temperature].sensor = SENSOR_TYPE_AMBIENT_TEMPERATURE;
+    mPendingEvents[Temperature].type = SENSOR_TYPE_AMBIENT_TEMPERATURE;
 
     for (int i = 0 ; i < numSensors; i++)
         mDelays[i] = AK8973_DEFAULT_DELAY;
@@ -74,8 +76,14 @@ int SensorAK8973::enable(int32_t handle, int en)
     {
         case SENSOR_TYPE_ACCELEROMETER:  what = Accelerometer; break;
         case SENSOR_TYPE_MAGNETIC_FIELD: what = MagneticField; break;
-        case SENSOR_TYPE_ORIENTATION:    what = Orientation;   break;
-        case SENSOR_TYPE_TEMPERATURE:    what = Temperature;   break;
+        case SENSOR_TYPE_ORIENTATION:
+        case SENSOR_TYPE_GYROSCOPE:
+            what = Orientation;
+            break;
+        case SENSOR_TYPE_TEMPERATURE:
+        case SENSOR_TYPE_AMBIENT_TEMPERATURE:
+            what = Temperature;
+            break;
     }
 
     if (uint32_t(what) >= numSensors)
@@ -103,7 +111,7 @@ int SensorAK8973::enable(int32_t handle, int en)
         err = ioctl(dev_fd, cmd, &flags);
         err = err < 0 ? -errno : 0;
 
-        LOGE_IF(err, "ECS_IOCTL_APP_SET_XXX failed (%s)", strerror(-err));
+        LOGE_IF(err, TAG ": ECS_IOCTL_APP_SET_XXX failed (%s)", strerror(-err));
 
         if (!err)
         {
@@ -129,8 +137,14 @@ int SensorAK8973::setDelay(int32_t handle, int64_t ns)
     {
         case SENSOR_TYPE_ACCELEROMETER:  what = Accelerometer; break;
         case SENSOR_TYPE_MAGNETIC_FIELD: what = MagneticField; break;
-        case SENSOR_TYPE_ORIENTATION:    what = Orientation;   break;
-        case SENSOR_TYPE_TEMPERATURE:    what = Temperature;   break;
+        case SENSOR_TYPE_ORIENTATION:
+        case SENSOR_TYPE_GYROSCOPE:
+            what = Orientation;
+            break;
+        case SENSOR_TYPE_TEMPERATURE:
+        case SENSOR_TYPE_AMBIENT_TEMPERATURE:
+            what = Temperature;
+            break;
     }
 
     if (uint32_t(what) >= numSensors)
@@ -222,7 +236,7 @@ int SensorAK8973::readEvents(sensors_event_t* data, int count)
         }
         else
         {
-            LOGE("SensorAK8973: unknown event (type=0x%x, code=0x%x, value=0x%x)", type, event->code, event->value);
+            LOGE(TAG ": unknown event (type=0x%x, code=0x%x, value=0x%x)", type, event->code, event->value);
             mInputReader.next();
         }
     }
@@ -238,20 +252,22 @@ void SensorAK8973::processEvent(int code, int value)
         case ABS_X:
             mPendingMask |= 1 << Accelerometer;
             mPendingEvents[Accelerometer].acceleration.x = value * AK8973_CONVERT_A_X;
+            LOGD(TAG ": acceleration X event value=0x%x (%.1f)", value, (value * AK8973_CONVERT_A_X));
             break;
         case ABS_Y:
             mPendingMask |= 1 << Accelerometer;
             mPendingEvents[Accelerometer].acceleration.y = value * AK8973_CONVERT_A_Y;
+            LOGD(TAG ": acceleration Y event value=0x%x (%.1f)", value, (value * AK8973_CONVERT_A_Y));
             break;
         case ABS_Z:
             mPendingMask |= 1 << Accelerometer;
             mPendingEvents[Accelerometer].acceleration.z = value * AK8973_CONVERT_A_Z;
+            LOGD(TAG ": acceleration Z event value=0x%x (%.1f)", value, (value * AK8973_CONVERT_A_Z));
             break;
         case ABS_WHEEL:
             mPendingMask |= 1 << Accelerometer;
             status = value & AK8973_SENSOR_STATE_MASK;
-            LOGI("SensorAK8973: acceleration event (code=0x%x, value=0x%x) status=0x%x", code, value, status);
-            if (status == 4) status = 0;
+            LOGI(TAG ": acceleration WHEEL (value=0x%x)", value);
             mPendingEvents[Accelerometer].acceleration.status = uint8_t(status);
             break;
 
@@ -271,23 +287,22 @@ void SensorAK8973::processEvent(int code, int value)
         case ABS_RX:
             mPendingMask |= 1 << Orientation;
             mPendingEvents[Orientation].orientation.azimuth = value * AK8973_CONVERT_O_Y;
-            LOGI("SensorAK8973: orientation X event (code=0x%x, value=0x%x) value=%.1f", code, value, (value * AK8973_CONVERT_O_Y));
+            LOGD(TAG ": orientation X event value=0x%x (%.1f)", value, (value * AK8973_CONVERT_O_Y));
             break;
         case ABS_RY:
             mPendingMask |= 1 << Orientation;
             mPendingEvents[Orientation].orientation.pitch = value * AK8973_CONVERT_O_P;
-            LOGI("SensorAK8973: orientation Y event (code=0x%x, value=0x%x) value=%.1f", code, value, (value * AK8973_CONVERT_O_P));
+            LOGD(TAG ": orientation Y event value=0x%x (%.1f)", value, (value * AK8973_CONVERT_O_P));
             break;
         case ABS_RZ:
             mPendingMask |= 1 << Orientation;
             mPendingEvents[Orientation].orientation.roll = value * AK8973_CONVERT_O_R;
-            LOGI("SensorAK8973: orientation Z event (code=0x%x, value=0x%x) value=%.1f", code, value, (value * AK8973_CONVERT_O_R));
+            LOGD(TAG ": orientation Z event value=0x%x (%.1f)", value, (value * AK8973_CONVERT_O_R));
             break;
         case ABS_RUDDER:
             mPendingMask |= 1 << Orientation;
             status = value & AK8973_SENSOR_STATE_MASK;
-            LOGI("SensorAK8973: orientation event (code=0x%x, value=0x%x) status=0x%x", code, value, status);
-            if (status == 4) status = 0;
+            //LOGI(TAG ": orientation RUDDER (value=0x%x)", value);
             mPendingEvents[Orientation].orientation.status = uint8_t(status);
             break;
 
@@ -297,7 +312,7 @@ void SensorAK8973::processEvent(int code, int value)
             break;
 
         default:
-            LOGE("SensorAK8973: unknown event (code=0x%x, value=0x%x)", code, value);
+            LOGE(TAG ": unknown event (code=0x%x, value=0x%x)", code, value);
             break;
     }
 }
