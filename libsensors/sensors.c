@@ -27,6 +27,11 @@ static const struct sensor_t sSensorList[] = {
         "Kionix",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_ACCELEROMETER, SENSOR_TYPE_ACCELEROMETER,
         8.0f*9.81f, KXTF9_CONVERT_A, 0.57f, 0, { } },
+
+    { "KXTF9 Orientation Sensor",
+        "Kionix",
+        1, SENSORS_HANDLE_BASE + SENSOR_TYPE_ORIENTATION, SENSOR_TYPE_ORIENTATION,
+        360.0f, KXTF9_CONVERT_O, 90.0f, 0, { } },
 /*
     { "AK8973 Accelerometer sensor",
         "Asahi Kasei",
@@ -37,12 +42,12 @@ static const struct sensor_t sSensorList[] = {
         "Asahi Kasei",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_MAGNETIC_FIELD, SENSOR_TYPE_MAGNETIC_FIELD,
         2000.0f, AK8973_CONVERT_M, 6.8f, 0, { } },
-
+/*
     { "AK8973 Orientation Sensor",
-        "Asahi Kasei",
+        "Asahi Kasei Microdevices",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_ORIENTATION, SENSOR_TYPE_ORIENTATION,
         360.0f, AK8973_CONVERT_O, 7.0f, 0, { } },
-
+*/
     { "AK8973 Temperature Sensor",
         "Asahi Kasei",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_TEMPERATURE, SENSOR_TYPE_TEMPERATURE,
@@ -79,10 +84,10 @@ const struct sensors_module_t HAL_MODULE_INFO_SYM = {
     .common = {
         .tag = HARDWARE_MODULE_TAG,
         .version_major = 1,
-        .version_minor = 0,
+        .version_minor = 1,
         .id = SENSORS_HARDWARE_MODULE_ID,
         .name = "Motorola Defy Sensors Module",
-        .author = "Sorin P. <sorin@hypermagik.com>",
+        .author = "CyanogenDefy",
         .methods = &sensors_module_methods,
     },
     .get_sensors_list = sensors__get_sensors_list

@@ -58,15 +58,18 @@ PRODUCT_COPY_FILES += \
 	frameworks/base/data/etc/android.hardware.sensor.compass.xml:system/etc/permissions/android.hardware.sensor.compass.xml \
 	frameworks/base/data/etc/android.hardware.sensor.light.xml:system/etc/permissions/android.hardware.sensor.light.xml \
 	frameworks/base/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml \
-	frameworks/base/data/etc/android.hardware.touchscreen.xml:system/etc/permissions/android.hardware.touchscreen.xml \
+	frameworks/base/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
+	frameworks/base/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml
 
-#	frameworks/base/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
-#	frameworks/base/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml
+# ICS sound
+PRODUCT_PACKAGES += libaudioutils audio.a2dp.default audio_policy.jordan
+
+# ICS graphics
+PRODUCT_PACKAGES += libGLESv2 libEGL libGLESv1_CM
 
 # TO FIX for ICS
-#PRODUCT_PACKAGES += overlay.omap3 libaudiopolicy libcamera
-PRODUCT_PACKAGES += hwcomposer.default libGLESv2 libEGL libGLESv1_CM
-PRODUCT_PACKAGES += libaudioutils audio.a2dp.default audio_policy.jordan
+#PRODUCT_PACKAGES += gralloc.jordan hwcomposer.jordan overlay.omap3 libcamera
+PRODUCT_PACKAGES += gralloc.default hwcomposer.default
 
 #Common packages (gingerbread/ics)
 PRODUCT_PACKAGES += \
@@ -102,6 +105,8 @@ PRODUCT_PACKAGES += \
 	hijack_boot_2nd-init \
 	DefyParts \
 	Usb \
+	ssh \
+	superuser \
 	su
 
 # for jpeg hw encoder/decoder

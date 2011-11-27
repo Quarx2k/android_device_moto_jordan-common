@@ -22,6 +22,8 @@
 #include <dirent.h>
 #include <sys/select.h>
 
+//#define LOG_NDEBUG 0
+
 #include <cutils/log.h>
 
 #include "kernel/akm8973_akmd.h"
@@ -220,7 +222,7 @@ int SensorAK8973::readEvents(sensors_event_t* data, int count)
         }
         else
         {
-            LOGE("SensorAK8973: unknown event (type=%d, code=%d, value=%d)", type, event->code, event->value);
+            LOGE("SensorAK8973: unknown event (type=0x%x, code=0x%x, value=0x%x)", type, event->code, event->value);
             mInputReader.next();
         }
     }
@@ -230,6 +232,7 @@ int SensorAK8973::readEvents(sensors_event_t* data, int count)
 
 void SensorAK8973::processEvent(int code, int value)
 {
+    int status=0;
     switch (code)
     {
         case ABS_X:
@@ -246,7 +249,10 @@ void SensorAK8973::processEvent(int code, int value)
             break;
         case ABS_WHEEL:
             mPendingMask |= 1 << Accelerometer;
-            mPendingEvents[Accelerometer].acceleration.status = uint8_t(value & AK8973_SENSOR_STATE_MASK);
+            status = value & AK8973_SENSOR_STATE_MASK;
+            LOGI("SensorAK8973: acceleration event (code=0x%x, value=0x%x) status=0x%x", code, value, status);
+            if (status == 4) status = 0;
+            mPendingEvents[Accelerometer].acceleration.status = uint8_t(status);
             break;
 
         case ABS_HAT0X:
@@ -265,22 +271,33 @@ void SensorAK8973::processEvent(int code, int value)
         case ABS_RX:
             mPendingMask |= 1 << Orientation;
             mPendingEvents[Orientation].orientation.azimuth = value * AK8973_CONVERT_O_Y;
+            LOGI("SensorAK8973: orientation X event (code=0x%x, value=0x%x) value=%.1f", code, value, (value * AK8973_CONVERT_O_Y));
             break;
         case ABS_RY:
             mPendingMask |= 1 << Orientation;
             mPendingEvents[Orientation].orientation.pitch = value * AK8973_CONVERT_O_P;
+            LOGI("SensorAK8973: orientation Y event (code=0x%x, value=0x%x) value=%.1f", code, value, (value * AK8973_CONVERT_O_P));
             break;
         case ABS_RZ:
             mPendingMask |= 1 << Orientation;
             mPendingEvents[Orientation].orientation.roll = value * AK8973_CONVERT_O_R;
+            LOGI("SensorAK8973: orientation Z event (code=0x%x, value=0x%x) value=%.1f", code, value, (value * AK8973_CONVERT_O_R));
             break;
         case ABS_RUDDER:
             mPendingMask |= 1 << Orientation;
-            mPendingEvents[Orientation].orientation.status = uint8_t(value & AK8973_SENSOR_STATE_MASK);
+            status = value & AK8973_SENSOR_STATE_MASK;
+            LOGI("SensorAK8973: orientation event (code=0x%x, value=0x%x) status=0x%x", code, value, status);
+            if (status == 4) status = 0;
+            mPendingEvents[Orientation].orientation.status = uint8_t(status);
             break;
 
         case ABS_THROTTLE:
             mPendingMask |= 1 << Temperature;
             mPendingEvents[Temperature].temperature = value;
+            break;
+
+        default:
+            LOGE("SensorAK8973: unknown event (code=0x%x, value=0x%x)", code, value);
+            break;
     }
 }
