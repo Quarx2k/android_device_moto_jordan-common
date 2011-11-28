@@ -27,6 +27,11 @@
 #include <hardware/hardware.h>
 #include <hardware/sensors.h>
 
+// gingerbread/ics compat
+#ifndef SENSOR_TYPE_AMBIENT_TEMPERATURE
+#define SENSOR_TYPE_AMBIENT_TEMPERATURE SENSOR_TYPE_TEMPERATURE
+#endif
+
 __BEGIN_DECLS
 
 /*****************************************************************************/
@@ -61,7 +66,7 @@ int init_nusensors(hw_module_t const* module, hw_device_t** device);
 
   so, we need to divide per 8 (3bits right)
 */
-#define KXTF9_SENSOR_STATE_MASK            (0x3F)
+#define KXTF9_SENSOR_ROTATION_MASK         (0x3F)
 
 #define KXTF9_CONVERT_O                    (90.0f/8.0f)
 #define KXTF9_CONVERT_O_Y                  (KXTF9_CONVERT_O)
@@ -84,11 +89,11 @@ int init_nusensors(hw_module_t const* module, hw_device_t** device);
 #define AK8973_CONVERT_M_Z                 (-AK8973_CONVERT_M)
 
 #define AK8973_CONVERT_O                   (1.0f/64.0f)
-#define AK8973_CONVERT_O_Y                 (AK8973_CONVERT_O)
+#define AK8973_CONVERT_O_A                 (AK8973_CONVERT_O)
 #define AK8973_CONVERT_O_P                 (AK8973_CONVERT_O)
 #define AK8973_CONVERT_O_R                 (-AK8973_CONVERT_O)
 
-#define AK8973_SENSOR_STATE_MASK           (0x7FFF)
+#define AK8973_SENSOR_STATE_MASK           (0x3)
 
 
 #define ISL29030_DEVICE_NAME               "/dev/isl29030"
