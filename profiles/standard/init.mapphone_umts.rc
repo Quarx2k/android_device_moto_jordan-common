@@ -201,9 +201,30 @@ on property:service.adb.tcp.port=5555
 on property:service.adb.tcp.port=-1
     restart adbd
 
-# triggered by holding down volume down, volume up and power
+# Adb ICS
+on property:persist.sys.usb.config=*
+    setprop sys.usb.config $persist.sys.usb.config
+
+on property:sys.usb.config=mass_storage,adb
+    # Made by usbd, but could be usefull later..
+    # write /sys/devices/virtual/usb_composite/adb/enable 0
+    # write /dev/usb_device_mode msc_adb
+    # write /tmp/usbd_current_state usb_mode_msc_adb
+    # write /sys/devices/virtual/usb_composite/adb/enable 1
+    start adbd
+on property:sys.usb.config=mtp,adb
+    start adbd
+on property:sys.usb.config=ptp,adb
+    start adbd
+on property:service.adb.root=1
+    write /sys/devices/virtual/usb_composite/adb/enable 0
+    restart adbd
+    write /sys/devices/virtual/usb_composite/adb/enable 1
+
+# reboot triggered by holding down volume down, up and power
 service reboot_key /system/bin/reboot
-    user root
+    user system
+    group root
     oneshot
     keycodes 114 115 107
     disabled

@@ -171,7 +171,7 @@ void SensorKXTF9::processEvent(int code, int value)
   0x20 landscape, usb port down  90°
 
 */
-            state = value & 0x3F;
+            state = value & KXTF9_SENSOR_ROTATION_MASK; //0x3F
 
             // roll is the orientation used to rotate screen
             if (state == 0x04)

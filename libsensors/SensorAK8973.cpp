@@ -53,8 +53,8 @@ SensorAK8973::SensorAK8973() : SensorBase(AK8973_DEVICE_NAME, "compass"),
     mPendingEvents[MagneticField].magnetic.status = SENSOR_STATUS_ACCURACY_MEDIUM;
 
     mPendingEvents[Orientation].version = sizeof(sensors_event_t);
-    mPendingEvents[Orientation].sensor = SENSOR_TYPE_GYROSCOPE;//SENSOR_TYPE_ORIENTATION;
-    mPendingEvents[Orientation].type = SENSOR_TYPE_GYROSCOPE;//SENSOR_TYPE_ORIENTATION;
+    mPendingEvents[Orientation].sensor = SENSOR_TYPE_ORIENTATION;
+    mPendingEvents[Orientation].type = SENSOR_TYPE_ORIENTATION;
     mPendingEvents[Orientation].orientation.status = SENSOR_STATUS_ACCURACY_HIGH;
 
     mPendingEvents[Temperature].version = sizeof(sensors_event_t);
@@ -80,7 +80,6 @@ int SensorAK8973::enable(int32_t handle, int en)
         case SENSOR_TYPE_GYROSCOPE:
             what = Orientation;
             break;
-        case SENSOR_TYPE_TEMPERATURE:
         case SENSOR_TYPE_AMBIENT_TEMPERATURE:
             what = Temperature;
             break;
@@ -141,7 +140,6 @@ int SensorAK8973::setDelay(int32_t handle, int64_t ns)
         case SENSOR_TYPE_GYROSCOPE:
             what = Orientation;
             break;
-        case SENSOR_TYPE_TEMPERATURE:
         case SENSOR_TYPE_AMBIENT_TEMPERATURE:
             what = Temperature;
             break;
@@ -244,9 +242,18 @@ int SensorAK8973::readEvents(sensors_event_t* data, int count)
     return numEventReceived;
 }
 
+/**
+ *
+ * Sensors data convertion
+ *
+ * Please read:
+ *   http://developer.android.com/reference/android/hardware/SensorEvent.html
+ *
+ */
 void SensorAK8973::processEvent(int code, int value)
 {
     int status=0;
+    double converted=0.0f;
     switch (code)
     {
         case ABS_X:
@@ -271,6 +278,7 @@ void SensorAK8973::processEvent(int code, int value)
             mPendingEvents[Accelerometer].acceleration.status = uint8_t(status);
             break;
 
+
         case ABS_HAT0X:
             mPendingMask |= 1 << MagneticField;
             mPendingEvents[MagneticField].magnetic.x = value * AK8973_CONVERT_M_X;
@@ -284,25 +292,36 @@ void SensorAK8973::processEvent(int code, int value)
             mPendingEvents[MagneticField].magnetic.z = value * AK8973_CONVERT_M_Z;
             break;
 
+
         case ABS_RX:
             mPendingMask |= 1 << Orientation;
-            mPendingEvents[Orientation].orientation.azimuth = value * AK8973_CONVERT_O_Y;
-            LOGD(TAG ": orientation X event value=0x%x (%.1f)", value, (value * AK8973_CONVERT_O_Y));
+            // 0 to 359°:  0=North, 90=East, 180=South, 270=West (like a compass)
+            converted = value * AK8973_CONVERT_O_A; //0 to 0x59FF -> x/64
+            if (converted > 359.98f) converted = 0;
+            mPendingEvents[Orientation].orientation.azimuth = converted;
+            //LOGD(TAG ": orientation X event value=0x%x (%.1f)", value, converted);;
             break;
         case ABS_RY:
             mPendingMask |= 1 << Orientation;
-            mPendingEvents[Orientation].orientation.pitch = value * AK8973_CONVERT_O_P;
-            LOGD(TAG ": orientation Y event value=0x%x (%.1f)", value, (value * AK8973_CONVERT_O_P));
+            // -180 to 180°: lcd on upside or downside (0° on a flat table)
+            converted = value * AK8973_CONVERT_O_P;
+            mPendingEvents[Orientation].orientation.pitch = converted;
+            LOGD(TAG ": orientation Y event value=0x%x (%.1f)", value, converted);
             break;
         case ABS_RZ:
             mPendingMask |= 1 << Orientation;
-            mPendingEvents[Orientation].orientation.roll = value * AK8973_CONVERT_O_R;
-            LOGD(TAG ": orientation Z event value=0x%x (%.1f)", value, (value * AK8973_CONVERT_O_R));
+            // -90 to 90°: rotation used for screen rotate, should be -90 on landscape
+            converted = value * AK8973_CONVERT_O_R;
+            if (converted > 90.0f) converted  = 90.0f;
+            if (converted < -90.0f) converted = -90.0f;
+            mPendingEvents[Orientation].orientation.roll = converted;
+            LOGD(TAG ": orientation Z event value=0x%x (%.1f)", value, converted);
             break;
         case ABS_RUDDER:
             mPendingMask |= 1 << Orientation;
+            // seems always 3 (SENSOR_STATUS_ACCURACY_HIGH)
             status = value & AK8973_SENSOR_STATE_MASK;
-            //LOGI(TAG ": orientation RUDDER (value=0x%x)", value);
+            //LOGD(TAG ": orientation RUDDER (value=0x%x)", value);
             mPendingEvents[Orientation].orientation.status = uint8_t(status);
             break;
 
