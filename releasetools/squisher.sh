@@ -38,8 +38,8 @@ cp -f $ANDROID_BUILD_TOP/out/target/product/jordan/utilities/busybox $REPACK/ota
 #cp -f $REPACK/ota/system/lib/hw/gralloc.default.so $REPACK/ota/system/lib/hw/gralloc.omap3.so
 
 echo "0 0 android" > $REPACK/ota/system/lib/egl/egl.cfg
-# echo "0 1 POWERVR_SGX530_125" >> $REPACK/ota/system/lib/egl/egl.cfg
+echo "0 1 POWERVR_SGX530_125" >> $REPACK/ota/system/lib/egl/egl.cfg
 
-rm $REPACK/ota/system/app/Launcher2.apk
+#rm $REPACK/ota/system/app/Launcher2.apk
 cp $ANDROID_BUILD_TOP/device/motorola/jordan/prebuilt/ADWLauncherStd.apk $REPACK/ota/system/app/ADWLauncherStd.apk
 
