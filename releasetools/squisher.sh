@@ -30,17 +30,9 @@ cp -f $REPACK/ota/system/bootmenu/binary/2nd-boot $REPACK/ota/system/bootmenu/bi
 cp -f $ANDROID_BUILD_TOP/out/target/product/jordan/root/init.rc $REPACK/ota/system/bootmenu/2nd-init/init.rc
 cp -f $ANDROID_BUILD_TOP/out/target/product/jordan/root/sbin/adbd $REPACK/ota/system/bin/adbd
 
-# use the static busybox in bootmenu, this helps a lot on incomplete roms and ics
+# use the static busybox as bootmenu shell
 cp -f $ANDROID_BUILD_TOP/out/target/product/jordan/utilities/busybox $REPACK/ota/system/bootmenu/binary/busybox
 
-# ics: to fix later
-#cp -f $REPACK/ota/system/lib/hw/hwcomposer.default.so $REPACK/ota/system/lib/hw/hwcomposer.jordan.so
-#cp -f $REPACK/ota/system/lib/hw/gralloc.default.so $REPACK/ota/system/lib/hw/gralloc.omap3.so
+# ril fix
 cp -f $REPACK/ota/system/lib/hw/audio.a2dp.default.so $REPACK/ota/system/lib/liba2dp.so
-
-#echo "0 0 android" > $REPACK/ota/system/lib/egl/egl.cfg
-# echo "0 1 POWERVR_SGX530_125" >> $REPACK/ota/system/lib/egl/egl.cfg
-
-#rm $REPACK/ota/system/app/Launcher2.apk
-cp $ANDROID_BUILD_TOP/device/motorola/jordan/prebuilt/ADWLauncherStd.apk $REPACK/ota/system/app/ADWLauncherStd.apk
 

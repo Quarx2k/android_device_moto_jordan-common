@@ -62,7 +62,9 @@ PRODUCT_COPY_FILES += \
 	frameworks/base/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml
 
 # ICS sound
-PRODUCT_PACKAGES += libaudioutils audio.a2dp.default audio_policy.jordan
+PRODUCT_PACKAGES += \
+	libaudioutils audio.a2dp.default audio_policy.jordan \
+	libaudiohw_legacy audio.primary.omap3 audio.policy.jordan
 
 # ICS graphics
 PRODUCT_PACKAGES += libGLESv2 libEGL libGLESv1_CM
@@ -106,7 +108,7 @@ PRODUCT_PACKAGES += \
 	DefyParts \
 	Usb \
 	ssh \
-	superuser \
+	Superuser \
 	su
 
 # for jpeg hw encoder/decoder
