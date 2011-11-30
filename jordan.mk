@@ -108,7 +108,7 @@ PRODUCT_PACKAGES += \
 	DefyParts \
 	Usb \
 	ssh \
-	superuser \
+	Superuser \
 	su
 
 # for jpeg hw encoder/decoder
