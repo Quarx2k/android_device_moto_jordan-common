@@ -103,6 +103,10 @@ BOARD_SDEXT_DEVICE  := /dev/block/mmcblk0p2
 BOARD_SYSTEM_DEVICE := /dev/block/mmcblk1p21
 BOARD_DATA_DEVICE   := /dev/block/mmcblk1p25
 
+# Reboot mode for reboot menu, but only handle recovery, not bootmenu :(
+TARGET_RECOVERY_PRE_COMMAND := "/system/bootmenu/script/reboot_command.sh"
+TARGET_RECOVERY_PRE_COMMAND_CLEAR_REASON := true
+
 BOARD_NEVER_UMOUNT_SYSTEM := true
 #TARGET_RECOVERY_UI_LIB := librecovery_ui_generic
 #TARGET_RECOVERY_UPDATER_LIBS += librecovery_updater_generic

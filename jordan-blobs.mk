@@ -62,7 +62,8 @@ endif
 
 #Apps
 PRODUCT_COPY_FILES += \
-	 $(DEVICE_PREBUILT)/app/basebandswitcherV4.0.apk:system/app/basebandswitcherV4.0.apk \
+	$(DEVICE_PREBUILT)/app/basebandswitcherV4.0.apk:system/app/basebandswitcherV4.0.apk \
+	$(DEVICE_PREBUILT)/app/Orientator.apk:system/app/Orientator.apk \
 
 #Temporary apps (will be in CM9 common folder later)
 #PRODUCT_COPY_FILES += \
@@ -139,6 +140,7 @@ PRODUCT_COPY_FILES += \
 	device/motorola/jordan/bootmenu/script/overclock.sh:system/bootmenu/script/overclock.sh \
 	device/motorola/jordan/bootmenu/script/post_bootmenu.sh:system/bootmenu/script/post_bootmenu.sh \
 	device/motorola/jordan/bootmenu/script/pre_bootmenu.sh:system/bootmenu/script/pre_bootmenu.sh \
+	device/motorola/jordan/bootmenu/script/reboot_command.sh:system/bootmenu/script/reboot_command.sh \
 	device/motorola/jordan/bootmenu/script/recovery.sh:system/bootmenu/script/recovery.sh \
 	device/motorola/jordan/bootmenu/script/recovery_stable.sh:system/bootmenu/script/recovery_stable.sh \
 	device/motorola/jordan/bootmenu/script/recoveryexit.sh:system/bootmenu/script/recoveryexit.sh \
