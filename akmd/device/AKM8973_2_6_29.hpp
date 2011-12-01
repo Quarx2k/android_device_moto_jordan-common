@@ -15,6 +15,9 @@ class AKM8973_2_6_29 : public ChipReader, public TemperatureReader, public DataP
 {
     private:
 
+    int fd;
+    int index;
+
     /* Temperature is -(value-zero). */
     char temperature_zero;
     /* The analog offset */
@@ -28,9 +31,7 @@ class AKM8973_2_6_29 : public ChipReader, public TemperatureReader, public DataP
 
     /* Misc. measurement data */
     struct timeval next_update;
-    int fd;
     short temperature;
-    int index;
     Vector mbuf[2];
 
     Vector m;

@@ -14,12 +14,12 @@ class KXTF9 : public ChipReader {
     private:
     /* Open file descriptors */
     int fd;
+    int index;
 
     Calibrator accelerometer;
     Vector accelerometer_g;
 
     struct timeval next_update;
-    int index;
     Vector abuf[2];
     Vector a;
 

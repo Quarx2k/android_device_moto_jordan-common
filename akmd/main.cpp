@@ -89,7 +89,6 @@ void jordan_mainloop(int magnetometer_gain, int temperature_zero)
 {
     LOGD("entering jordan main loop");
     AKM8973_2_6_29* magnetometer_reader = new AKM8973_2_6_29(magnetometer_gain);
-    //ChipReader* accelerometer_reader = new BMA150();
     ChipReader* accelerometer_reader = new KXTF9();
     ChipReader* orientation_reader = new OrientationAdapter(accelerometer_reader, magnetometer_reader);
     ChipReader* temperature_reader = new TemperatureReaderAdapter(magnetometer_reader, temperature_zero);

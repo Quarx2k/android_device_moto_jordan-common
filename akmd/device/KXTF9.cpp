@@ -9,11 +9,15 @@ namespace akmd {
 KXTF9::KXTF9()
 : index(0), accelerometer(3600)
 {
+    int enabled=0;
+
     abuf[0] = abuf[1] = Vector();
 
     fd = open(KXTF9_NAME, O_RDONLY);
     SUCCEED(fd != -1);
-    SUCCEED(ioctl(fd, KXTF9_IOCTL_GET_ENABLE, NULL) == 0);
+    SUCCEED(ioctl(fd, KXTF9_IOCTL_GET_ENABLE, &enabled) == 0);
+
+    LOGI("KXTF9 enabled=%d", enabled);
 
 /* BMA150
     char rwbuf[8] = { 1, RANGE_BWIDTH_REG };
@@ -32,8 +36,12 @@ KXTF9::~KXTF9()
 
 int KXTF9::get_delay()
 {
-    //TODO:  KXTF9_IOCTL_GET_DELAY
-    return -1;
+    int delay=-1;
+
+    SUCCEED(fd != -1);
+    SUCCEED(ioctl(fd, KXTF9_IOCTL_GET_DELAY, &delay) == 0);
+
+    return delay;
 }
 
 void KXTF9::calibrate()
@@ -100,13 +108,13 @@ Vector KXTF9::read()
 
 void KXTF9::start()
 {
-    char enabled = 1;
+    int enabled = 1;
     SUCCEED(ioctl(fd, KXTF9_IOCTL_SET_ENABLE, &enabled) == 0);
 }
 
 void KXTF9::stop()
 {        
-    char enabled = 0;
+    int enabled = 0;
     SUCCEED(ioctl(fd, KXTF9_IOCTL_SET_ENABLE, &enabled) == 0);
 }
 
