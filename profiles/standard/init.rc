@@ -89,7 +89,7 @@ loglevel 3
 
 # Allow everybody to read the xt_qtaguid resource tracking misc dev.
 # This is needed by any process that uses socket tagging.
-    chmod 0644 /dev/xt_qtaguid
+    #chmod 0644 /dev/xt_qtaguid
 
 on fs
 # mount mtd partitions
@@ -105,11 +105,11 @@ on post-fs
 
     # We chown/chmod /cache again so because mount is run as root + defaults
     chown system cache /cache
-    chmod 0770 /cache
+    chmod 0775 /cache
 
     # This may have been created by the recovery system with odd permissions
     chown system cache /cache/recovery
-    chmod 0770 /cache/recovery
+    chmod 0775 /cache/recovery
 
     #change permissions on vmallocinfo so we can grab it from bugreports
     chown root log /proc/vmallocinfo
@@ -183,10 +183,10 @@ on post-fs-data
     # Set indication (checked by vold) that we have finished this action
     #setprop vold.post_fs_data_done 1
 
-    chown system system /sys/class/android_usb/android0/f_mass_storage/lun/file
-    chmod 0660 /sys/class/android_usb/android0/f_mass_storage/lun/file
-    chown system system /sys/class/android_usb/android0/f_rndis/ethaddr
-    chmod 0660 /sys/class/android_usb/android0/f_rndis/ethaddr
+    #chown system system /sys/class/android_usb/android0/f_mass_storage/lun/file
+    #chmod 0660 /sys/class/android_usb/android0/f_mass_storage/lun/file
+    #chown system system /sys/class/android_usb/android0/f_rndis/ethaddr
+    #chmod 0660 /sys/class/android_usb/android0/f_rndis/ethaddr
 
 # Include extra init file
     import /system/etc/init.local.rc
@@ -255,9 +255,9 @@ on boot
 
 # Define TCP buffer sizes for various networks
 #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
-    setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208
+#   setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208
     setprop net.tcp.buffersize.wifi    524288,1048576,2097152,262144,524288,1048576
-    setprop net.tcp.buffersize.lte     524288,1048576,2097152,262144,524288,1048576
+#   setprop net.tcp.buffersize.lte     524288,1048576,2097152,262144,524288,1048576
     setprop net.tcp.buffersize.umts    4094,87380,110208,4096,16384,110208
     setprop net.tcp.buffersize.hspa    4094,87380,262144,4096,16384,262144
     setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
@@ -306,30 +306,30 @@ on property:sys.usb.config=none
 # This should only be used during device bringup
 # and as a fallback if the USB manager fails to set a standard configuration
 on property:sys.usb.config=adb
-    write /sys/class/android_usb/android0/enable 0
-    write /sys/class/android_usb/android0/idVendor 18d1
-    write /sys/class/android_usb/android0/idProduct D002
-    write /sys/class/android_usb/android0/functions $sys.usb.config
-    write /sys/class/android_usb/android0/enable 1
+    #write /sys/class/android_usb/android0/enable 0
+    #write /sys/class/android_usb/android0/idVendor 18d1
+    #write /sys/class/android_usb/android0/idProduct D002
+    #write /sys/class/android_usb/android0/functions $sys.usb.config
+    #write /sys/class/android_usb/android0/enable 1
     start adbd
     setprop sys.usb.state $sys.usb.config
 
 # USB accessory configuration
 on property:sys.usb.config=accessory
-    write /sys/class/android_usb/android0/enable 0
-    write /sys/class/android_usb/android0/idVendor 18d1
-    write /sys/class/android_usb/android0/idProduct 2d00
-    write /sys/class/android_usb/android0/functions $sys.usb.config
-    write /sys/class/android_usb/android0/enable 1
+    #write /sys/class/android_usb/android0/enable 0
+    #write /sys/class/android_usb/android0/idVendor 18d1
+    #write /sys/class/android_usb/android0/idProduct 2d00
+    #write /sys/class/android_usb/android0/functions $sys.usb.config
+    #write /sys/class/android_usb/android0/enable 1
     setprop sys.usb.state $sys.usb.config
 
 # USB accessory configuration, with adb
 on property:sys.usb.config=accessory,adb
-    write /sys/class/android_usb/android0/enable 0
-    write /sys/class/android_usb/android0/idVendor 18d1
-    write /sys/class/android_usb/android0/idProduct 2d01
-    write /sys/class/android_usb/android0/functions $sys.usb.config
-    write /sys/class/android_usb/android0/enable 1
+    #write /sys/class/android_usb/android0/enable 0
+    #write /sys/class/android_usb/android0/idVendor 18d1
+    #write /sys/class/android_usb/android0/idProduct 2d01
+    #write /sys/class/android_usb/android0/functions $sys.usb.config
+    #write /sys/class/android_usb/android0/enable 1
     start adbd
     setprop sys.usb.state $sys.usb.config
 
@@ -371,9 +371,9 @@ on property:ro.kernel.qemu=1
 # rather than waiting for init to notice its death and restarting it so the timing
 # of USB resetting and adb restarting more closely matches the previous behavior.
 on property:service.adb.root=1
-    write /sys/class/android_usb/android0/enable 0
+    #write /sys/class/android_usb/android0/enable 0
     restart adbd
-    write /sys/class/android_usb/android0/enable 1
+    #write /sys/class/android_usb/android0/enable 1
 
 service servicemanager /system/bin/servicemanager
     class core
