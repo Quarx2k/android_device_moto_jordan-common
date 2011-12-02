@@ -67,8 +67,8 @@ persist.sys.camera-mute=0
 # enable adbd during first boot (for dalvik cache problems)
 persist.service.adb.enable=1
 
-# try old ril switchs
-ro.telephony.ril.v3=signalstrength
+# old ril switchs: signalstrength,facilitylock,datacall,icccardstatus
+ro.telephony.ril.v3=facilitylock,datacall,icccardstatus
 
 # DDMS debug SurfaceFlinger (EGL)
 debug.sf.ddms=1
