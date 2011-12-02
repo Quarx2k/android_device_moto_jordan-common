@@ -3,6 +3,7 @@
 
 # Delete unwanted apps
 rm -f $REPACK/ota/system/app/RomManager.apk
+
 # rm -f $REPACK/ota/system/xbin/irssi
 
 # these scripts are not required
@@ -35,4 +36,7 @@ cp -f $ANDROID_BUILD_TOP/out/target/product/jordan/utilities/busybox $REPACK/ota
 
 # ril fix
 cp -f $REPACK/ota/system/lib/hw/audio.a2dp.default.so $REPACK/ota/system/lib/liba2dp.so
+
+# temporary tool to fix orientation
+cp -f $ANDROID_BUILD_TOP/device/motorola/jordan/prebuilt/app/Orientator.apk $REPACK/ota/system/app/
 
