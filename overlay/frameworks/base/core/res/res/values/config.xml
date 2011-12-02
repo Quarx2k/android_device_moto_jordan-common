@@ -155,7 +155,8 @@ ICS -->
     <!-- XXXXXX END OF RESOURCES USING WRONG NAMING CONVENTION -->
 
     <!-- The number of degrees to rotate the display when the keyboard is open. -->
-    <integer name="config_lidOpenRotation">90</integer>
+    <!-- MUST STAY TO -1, else rot. sensor is disabled -->
+    <integer name="config_lidOpenRotation">-1</integer>
 
     <!-- The number of degrees to rotate the display when the device is in a desk dock.
          A value of -1 means no change in orientation by default. -->
