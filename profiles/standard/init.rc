@@ -188,6 +188,9 @@ on post-fs-data
     #chown system system /sys/class/android_usb/android0/f_rndis/ethaddr
     #chmod 0660 /sys/class/android_usb/android0/f_rndis/ethaddr
 
+    chown system system /sys/devices/platform/usb_mass_storage/lun0/file
+    chmod 0660 /sys/devices/platform/usb_mass_storage/lun0/file
+
 # Include extra init file
     import /system/etc/init.local.rc
 
@@ -356,6 +359,10 @@ on property:ro.debuggable=1
 
 # adbd is controlled via property triggers in init.<platform>.usb.rc
 service adbd /sbin/adbd
+    class core
+    disabled
+
+service adbd.root /sbin/adbd.root
     class core
     disabled
 
