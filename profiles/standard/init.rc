@@ -258,7 +258,7 @@ on boot
 
 # Define TCP buffer sizes for various networks
 #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
-#   setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208
+    setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208
     setprop net.tcp.buffersize.wifi    524288,1048576,2097152,262144,524288,1048576
 #   setprop net.tcp.buffersize.lte     524288,1048576,2097152,262144,524288,1048576
     setprop net.tcp.buffersize.umts    4094,87380,110208,4096,16384,110208
@@ -379,7 +379,9 @@ on property:ro.kernel.qemu=1
 # of USB resetting and adb restarting more closely matches the previous behavior.
 on property:service.adb.root=1
     #write /sys/class/android_usb/android0/enable 0
+    write /sys/devices/virtual/usb_composite/adb/enable 0
     restart adbd
+    write /sys/devices/virtual/usb_composite/adb/enable 1
     #write /sys/class/android_usb/android0/enable 1
 
 service servicemanager /system/bin/servicemanager
