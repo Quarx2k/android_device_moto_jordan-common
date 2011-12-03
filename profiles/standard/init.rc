@@ -379,7 +379,9 @@ on property:ro.kernel.qemu=1
 # of USB resetting and adb restarting more closely matches the previous behavior.
 on property:service.adb.root=1
     #write /sys/class/android_usb/android0/enable 0
+    write /sys/devices/virtual/usb_composite/adb/enable 0
     restart adbd
+    write /sys/devices/virtual/usb_composite/adb/enable 1
     #write /sys/class/android_usb/android0/enable 1
 
 service servicemanager /system/bin/servicemanager
