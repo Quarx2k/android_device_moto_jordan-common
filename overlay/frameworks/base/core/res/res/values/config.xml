@@ -85,10 +85,6 @@
         <item>"0,1"</item>
         <item>"4,1"</item>
         <item>"7,1"</item>
-        <item>"0,7"</item>
-        <item>"4,7"</item>
-        <item>"0,13"</item>
-        <item>"7,13"</item>
     </string-array>
 
     <!-- Array of ConnectivityManager.TYPE_xxxx values allowable for tethering -->

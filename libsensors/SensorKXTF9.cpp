@@ -188,7 +188,7 @@ void SensorKXTF9::processEvent(int code, int value)
 
             // azimuth (vertical rotation) is not handled by this sensor event
 
-            LOGI("SensorKXTF9: orientation event (code=0x%x, value=0x%x) state=0x%x", code, value, state);
+            LOGV("SensorKXTF9: orientation event (code=0x%x, value=0x%x) state=0x%x", code, value, state);
 
             break;
         default:
