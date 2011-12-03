@@ -237,12 +237,7 @@ on property:sys.usb.config=mtp,adb
     start adbd
 on property:sys.usb.config=ptp,adb
     start adbd
-on property:service.adb.root=1
-    write /sys/devices/virtual/usb_composite/adb/enable 0
-    restart adbd
-    write /sys/devices/virtual/usb_composite/adb/enable 1
 
-# reboot triggered by holding down volume down, up and power
 service reboot_key /system/bin/reboot
     user system
     group root
