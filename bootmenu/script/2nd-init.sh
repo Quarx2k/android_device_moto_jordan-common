@@ -15,7 +15,7 @@ cp -f /system/bin/adbd /sbin/adbd
 
 ADBD_RUNNING=`ps | grep adbd | grep -v grep`
 if [ -z "$ADB_RUNNING" ]; then
-    rm -f /sbin/adbd.root
+#    rm -f /sbin/adbd.root
     rm -f /tmp/usbd_current_state
 fi
 

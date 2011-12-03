@@ -273,7 +273,7 @@ void SensorAK8973::processEvent(int code, int value)
             break;
         case ABS_WHEEL:
             mPendingMask |= 1 << Accelerometer;
-            status = value & AK8973_SENSOR_STATE_MASK;
+            status = value & AK8973_SENSOR_STATE_MASK & 3;
             LOGI(TAG ": acceleration WHEEL (value=0x%x)", value);
             mPendingEvents[Accelerometer].acceleration.status = uint8_t(status);
             break;
