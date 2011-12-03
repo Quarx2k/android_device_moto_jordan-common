@@ -68,10 +68,10 @@ persist.sys.camera-mute=0
 persist.service.adb.enable=1
 
 # old ril switchs: signalstrength,facilitylock,datacall,icccardstatus
-ro.telephony.ril.v3=facilitylock,datacall,icccardstatus
+ro.telephony.ril.v3=facilitylock,datacall,icccardstatus,signalstrength
 
 # DDMS debug SurfaceFlinger (EGL)
 debug.sf.ddms=1
 
 # all/choice
-hwui.print_config=all
+hwui.print_config=choice
