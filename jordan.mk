@@ -64,7 +64,7 @@ PRODUCT_COPY_FILES += \
 # ICS sound
 PRODUCT_PACKAGES += \
 	libaudioutils audio.a2dp.default audio_policy.jordan \
-	libaudiohw_legacy audio.primary.omap3 audio.policy.jordan
+	libaudiohw_legacy audio.primary.omap3
 
 # ICS graphics
 PRODUCT_PACKAGES += libGLESv2 libEGL libGLESv1_CM
