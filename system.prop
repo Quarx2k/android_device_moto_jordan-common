@@ -69,6 +69,7 @@ persist.service.adb.enable=1
 
 # old ril switchs: signalstrength,facilitylock,datacall,icccardstatus,skipbrokendatacall
 #ro.telephony.ril.v3=facilitylock,datacall,icccardstatus,signalstrength,skipbrokendatacall
+ro.telephony.ril.v3=skipbrokendatacall,signalstrength
 
 # DDMS debug SurfaceFlinger (EGL)
 # debug.sf.ddms=1

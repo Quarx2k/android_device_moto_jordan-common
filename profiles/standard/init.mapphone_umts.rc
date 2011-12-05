@@ -316,6 +316,14 @@ service iprenew_tiwlan0 /system/bin/dhcpcd -n
     class main
     disabled
     oneshot
+service dhcpcd_rmnet0 /system/bin/dhcpcd -ABKL
+    class main
+    disabled
+    oneshot
+service iprenew_rmnet0 /system/bin/dhcpcd -n
+    class main
+    disabled
+    oneshot
 
 service baseimage /system/bin/dspexec -v -T /system/lib/dsp/baseimage.dof
     class main
