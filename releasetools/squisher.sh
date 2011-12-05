@@ -22,17 +22,24 @@ mkdir -p $REPACK/ota/system/etc/terminfo/x
 cp $REPACK/ota/system/etc/terminfo/l/linux $REPACK/ota/system/etc/terminfo/x/xterm
 
 # prebuilt boot, devtree, logo & updater-script
+
 rm -f $REPACK/ota/boot.img
+
 cp -f $DEVICE_TOP/updater-script $REPACK/ota/META-INF/com/google/android/updater-script
-if [ -n "$CYANOGEN_RELEASE" ]; then
-  cat $DEVICE_TOP/updater-script-rel >> $REPACK/ota/META-INF/com/google/android/updater-script
-  cp -f $VENDOR_TOP/boot-222-179-4.smg $REPACK/ota/boot.img
-  cp -f $VENDOR_TOP/devtree-222-179-2.smg $REPACK/ota/devtree.img
-  cp -f $DEVICE_TOP/logo-google.raw $REPACK/ota/logo.img
-fi
+
+#if [ -n "$CYANOGEN_RELEASE" ]; then
+#  cat $DEVICE_TOP/updater-script-rel >> $REPACK/ota/META-INF/com/google/android/updater-script
+#  cp -f $VENDOR_TOP/boot-222-179-4.smg $REPACK/ota/boot.img
+#  cp -f $VENDOR_TOP/devtree-222-179-2.smg $REPACK/ota/devtree.img
+#  cp -f $DEVICE_TOP/logo-google.raw $REPACK/ota/logo.img
+#fi
+
+cat $DEVICE_TOP/updater-script-test >> $REPACK/ota/META-INF/com/google/android/updater-script
+cp -f $VENDOR_TOP/boot-4.5.2-109.smg $REPACK/ota/boot.img
+cp -f $VENDOR_TOP/devtree-4.5.2-109.smg $REPACK/ota/devtree.img
+
 cp -f $DEVICE_OUT/root/init $REPACK/ota/system/bootmenu/2nd-init/init
 cp -f $DEVICE_OUT/root/sbin/adbd $REPACK/ota/system/bin/adbd
-
 cp -f $DEVICE_TOP/bootmenu/binary/2nd-init $REPACK/ota/system/bootmenu/binary/2nd-init
 
 # use the static busybox as bootmenu shell
