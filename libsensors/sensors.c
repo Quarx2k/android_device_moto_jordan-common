@@ -79,11 +79,12 @@ static const struct sensor_t sSensorList[] = {
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_ACCELEROMETER, SENSOR_TYPE_ACCELEROMETER,
         8.0f*9.81f, KXTF9_CONVERT_A, 0.6f, 0, { } }, // 8G
 
+/* not required:
     { "KXTF9 2-axis Orientation Events",
         "Kionix",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_ORIENTATION, SENSOR_TYPE_ORIENTATION,
         270.0f, 90.0f, 0.2f, ONCHANGED, { } },
-
+*/
     { "ISL29030 Proximity Sensor",
         "Intersil Corporation",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_PROXIMITY, SENSOR_TYPE_PROXIMITY,
