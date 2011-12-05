@@ -35,8 +35,8 @@ cp -f $DEVICE_TOP/updater-script $REPACK/ota/META-INF/com/google/android/updater
 #fi
 
 cat $DEVICE_TOP/updater-script-test >> $REPACK/ota/META-INF/com/google/android/updater-script
-cp -f $VENDOR_TOP/boot-4.5.2-109.smg $REPACK/ota/boot.img
-cp -f $VENDOR_TOP/devtree-4.5.2-109.smg $REPACK/ota/devtree.img
+cp -f $VENDOR_TOP/boot-234-134.smg $REPACK/ota/boot.img
+cp -f $VENDOR_TOP/devtree-234-134.smg $REPACK/ota/devtree.img
 
 cp -f $DEVICE_OUT/root/init $REPACK/ota/system/bootmenu/2nd-init/init
 cp -f $DEVICE_OUT/root/sbin/adbd $REPACK/ota/system/bin/adbd
