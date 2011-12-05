@@ -87,11 +87,11 @@ bool Matrix::calculateReducedRowEchelonForm() {
             }
         }
         swapRows(r1, maxrow);
-        
+
         if (fabsf(values[r1][r1]) <= EPSILON) {
             return false;
         }
-            
+
         for (int r2 = r1 + 1; r2 < rows; r2 ++) {
             float f = values[r2][r1] / values[r1][r1];
             for (int c = r1; c < cols; c ++) {
@@ -99,7 +99,7 @@ bool Matrix::calculateReducedRowEchelonForm() {
             }
         }
     }
-    
+
     for (int r1 = rows-1; r1 >= 0; r1 --) {
         float f = values[r1][r1];
         for (int r2 = 0; r2 < r1; r2 ++) {
@@ -107,13 +107,13 @@ bool Matrix::calculateReducedRowEchelonForm() {
                 values[r2][c] -= values[r1][c] * values[r2][r1] / f;
             }
         }
-        
+
         values[r1][r1] /= f;
         for (int c = rows; c < cols; c ++) {
             values[r1][c] /= f;
         }
     }
-        
+
     return true;
 }
 
@@ -134,7 +134,7 @@ float* Matrix::solve(Matrix* a, Matrix* b) {
     delete v;
     return x;
 }
-    
+
 float* Matrix::leastSquares(Matrix* a, Matrix* b) {
     Matrix* at = a->transpose();
     Matrix* a2 = at->multiply(a);
@@ -146,4 +146,4 @@ float* Matrix::leastSquares(Matrix* a, Matrix* b) {
     return x;
 }
 
-}
+} //namespace akmd

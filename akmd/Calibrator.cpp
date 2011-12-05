@@ -9,7 +9,7 @@
 #include "math/Matrix.hpp"
 #include "util.hpp"
 
-namespace akmd {    
+namespace akmd {
 
 Calibrator::Calibrator(int validity)
 {
@@ -68,7 +68,6 @@ void Calibrator::update(int time, Vector v)
             idx = i;
             break;
         }
-        
     }
 
     point_cloud[idx].time = time;
