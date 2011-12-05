@@ -55,6 +55,4 @@ mount -o remount,ro rootfs /
 mount -o remount,ro /dev/block/mmcblk1p21 /system
 ##################################################
 
-/system/bootmenu/script/media_fixup.sh &
-
 exit 0
