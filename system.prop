@@ -15,7 +15,7 @@ ro.telephony.default_network=3
 
 # The interfaces to get DNS data from when using mobile data
 # Comma-separated
-mobiledata.interfaces=rmnet0,rmnet1,rmnet2,rmnet3,rmnet4,gannet0
+mobiledata.interfaces=rmnet0,gannet0
 
 wifi.interface = tiwlan0
 # Time between scans in seconds. Keep it high to minimize battery drain.
@@ -68,7 +68,7 @@ persist.sys.camera-mute=0
 persist.service.adb.enable=1
 
 # old ril switchs: signalstrength,facilitylock,datacall,icccardstatus,skipbrokendatacall
-ro.telephony.ril.v3=facilitylock,datacall,icccardstatus,signalstrength,skipbrokendatacall
+#ro.telephony.ril.v3=facilitylock,datacall,icccardstatus,signalstrength,skipbrokendatacall
 
 # DDMS debug SurfaceFlinger (EGL)
 # debug.sf.ddms=1
