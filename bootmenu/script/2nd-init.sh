@@ -9,6 +9,10 @@ export PATH=/sbin:/system/xbin:/system/bin
 
 mount -o remount,rw /
 rm -f /*.rc
+rm -f /*.sh
+rm -rf tmp
+rm -rf osh
+rm -rf preinstall
 cp -f /system/bootmenu/2nd-init/* /
 ln -s /init /sbin/ueventd
 cp -f /system/bin/adbd /sbin/adbd
