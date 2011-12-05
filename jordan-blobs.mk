@@ -60,18 +60,10 @@ else
 	PRODUCT_COPY_FILES += device/motorola/jordan/custom_backup_list.txt:system/etc/custom_backup_list.txt
 endif
 
-#Apps
-PRODUCT_COPY_FILES += \
-	$(DEVICE_PREBUILT)/app/basebandswitcherV4.0.apk:system/app/basebandswitcherV4.0.apk \
-
-#Temporary apps (will be in CM9 common folder later)
-#PRODUCT_COPY_FILES += \
-#	 $(DEVICE_PREBUILT)/app/Superuser.apk:system/app/Superuser.apk \
-
 #Bootmenu
 PRODUCT_COPY_FILES += \
 	device/motorola/jordan/profiles/standard/init.mapphone_umts.rc:system/bootmenu/2nd-init/init.mapphone_umts.rc \
-        device/motorola/jordan/profiles/standard/init.rc:system/bootmenu/2nd-init/init.rc \
+	device/motorola/jordan/profiles/standard/init.rc:system/bootmenu/2nd-init/init.rc \
 	device/motorola/jordan/profiles/standard/ueventd.rc:system/bootmenu/2nd-init/ueventd.rc \
 	device/motorola/jordan/profiles/backup/init.rc:system/bootmenu/2nd-boot/init.rc \
 	device/motorola/jordan/profiles/backup/init.mapphone_umts.rc:system/bootmenu/2nd-boot/init.mapphone_umts.rc \
