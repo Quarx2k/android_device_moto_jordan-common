@@ -63,6 +63,7 @@ PRODUCT_COPY_FILES += \
 
 # ICS sound
 PRODUCT_PACKAGES += \
+	hcitool \
 	libaudioutils audio.a2dp.default audio_policy.jordan \
 	libaudiohw_legacy audio.primary.omap3
 
