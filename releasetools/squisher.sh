@@ -13,6 +13,10 @@ rm -f $REPACK/ota/system/app/RomManager.apk
 cp $DEVICE_TOP/prebuilt/app/basebandswitcherV4.0.apk $REPACK/ota/system/app/basebandswitcher407.apk
 cp -f $VENDOR_TOP/app/* $REPACK/ota/system/app/
 
+#DroidSSHD
+cp $DEVICE_TOP/prebuilt/app/DroidSSHd.apk $REPACK/ota/system/app/DroidSSHd.apk
+cp $DEVICE_TOP/prebuilt/lib/libNativeSSHd.so $REPACK/ota/system/lib/libNativeSSHd.so
+
 # these scripts are not required
 rm -f $REPACK/ota/system/etc/init.d/03firstboot
 rm -f $REPACK/ota/system/etc/init.d/04modules
