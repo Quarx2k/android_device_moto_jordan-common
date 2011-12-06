@@ -14,7 +14,7 @@ BMA150::BMA150()
     fd = open(BMA150_NAME, O_RDONLY);
     SUCCEED(fd != -1);
     SUCCEED(ioctl(fd, BMA_IOCTL_INIT, NULL) == 0);
-    
+
     char rwbuf[8] = { 1, RANGE_BWIDTH_REG };
     SUCCEED(ioctl(fd, BMA_IOCTL_READ, &rwbuf) == 0);
     rwbuf[2] = (rwbuf[1] & 0xf8) | 1; /* 47 Hz sampling */
@@ -98,7 +98,7 @@ void BMA150::start()
 }
 
 void BMA150::stop()
-{        
+{
     char bmode = BMA_MODE_SLEEP;
     SUCCEED(ioctl(fd, BMA_IOCTL_SET_MODE, &bmode) == 0);
 }

@@ -136,7 +136,7 @@ on init
     chown root system /dev/i2c-1
     chown root system /dev/i2c-2
     chown root root /dev/smodule
-    chown root system /dev/ttyGS0  
+    chown root system /dev/ttyGS0
     chown root system /dev/tcmd_driver
 
     chmod 0660 /dev/cpcap
@@ -146,7 +146,7 @@ on init
     chmod 0660 /dev/i2c-1
     chmod 0660 /dev/i2c-2
     chmod 0660 /dev/smodule
-    chmod 0666 /dev/ttyGS0  
+    chmod 0666 /dev/ttyGS0
     chmod 0660 /dev/tcmd_driver
 
     # Install kernel modules

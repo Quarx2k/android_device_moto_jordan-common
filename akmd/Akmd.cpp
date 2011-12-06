@@ -46,7 +46,7 @@ void Akmd::fill_result_vector(Vector o, Vector a, Vector m, short temperature, s
     out[1] = roundf(o.y);
     /* roll */
     out[2] = roundf(o.z);
-    
+
     out[3] = temperature;
     out[4] = 3;
     out[5] = 3;
@@ -94,7 +94,7 @@ void Akmd::sleep_until_next_update()
         delay /= 2;
     }
 
-    /* Find out how long to sleep so that we achieve true periodic tick. */ 
+    /* Find out how long to sleep so that we achieve true periodic tick. */
     struct timeval current_time;
     SUCCEED(gettimeofday(&current_time, NULL) == 0);
     next_update.tv_usec += delay * 1000;

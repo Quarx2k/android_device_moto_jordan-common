@@ -45,7 +45,7 @@ char AKM8973_2_6_29::calibrate_analog_apply()
         char rwbuf[5] = { 2, 0xe1+i, params[i] };
         SUCCEED(ioctl(fd, ECS_IOCTL_WRITE, &rwbuf) == 0);
     }
-    
+
     digital_gain = powf(10.0f, (magnetometer_gain - fixed_magnetometer_gain) * 0.4f / 20.0f) * 16.0f;
 
     struct timespec interval;
@@ -113,7 +113,7 @@ void AKM8973_2_6_29::calibrate_magnetometer_analog()
 {
     calibrate_magnetometer_analog_helper(m.x, 0);
     calibrate_magnetometer_analog_helper(m.y, 1);
-    calibrate_magnetometer_analog_helper(m.z, 2);    
+    calibrate_magnetometer_analog_helper(m.z, 2);
 
     /* Apply 16-bit digital gain factor to scale 8->12 bits. */
     m = m.multiply(digital_gain);
@@ -148,7 +148,7 @@ void AKM8973_2_6_29::measure() {
     char akm_data[5] = { 2, AKECS_REG_MS1, AKECS_MODE_MEASURE };
     SUCCEED(ioctl(fd, ECS_IOCTL_WRITE, &akm_data) == 0);
 
-    /* Sleep for 300 us, which is the measurement interval. */ 
+    /* Sleep for 300 us, which is the measurement interval. */
     struct timespec interval;
     interval.tv_sec = 0;
     interval.tv_nsec = 300000;
@@ -160,7 +160,7 @@ void AKM8973_2_6_29::measure() {
     temperature = (signed char) akm_data[1];
     mbuf[index] = Vector(127 - (unsigned char) akm_data[2], 127 - (unsigned char) akm_data[3], 127 - (unsigned char) akm_data[4]);
     index = (index + 1) & 1;
-    
+
     m = mbuf[0].add(mbuf[1]).multiply(0.5f);
     calibrate_magnetometer_analog();
     calibrate();

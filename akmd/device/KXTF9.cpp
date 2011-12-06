@@ -113,7 +113,7 @@ void KXTF9::start()
 }
 
 void KXTF9::stop()
-{        
+{
     int enabled = 0;
     SUCCEED(ioctl(fd, KXTF9_IOCTL_SET_ENABLE, &enabled) == 0);
 }

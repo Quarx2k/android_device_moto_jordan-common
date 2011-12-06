@@ -7,8 +7,11 @@ VENDOR_TOP=$ANDROID_BUILD_TOP/vendor/motorola/jordan
 
 # Delete unwanted apps
 rm -f $REPACK/ota/system/app/RomManager.apk
-
 # rm -f $REPACK/ota/system/xbin/irssi
+
+# Apk required, (forbidden in product copy files in ics)
+cp $DEVICE_TOP/prebuilt/app/basebandswitcherV4.0.apk $REPACK/ota/system/app/basebandswitcher407.apk
+cp -f $VENDOR_TOP/app/* $REPACK/ota/system/app/
 
 # these scripts are not required
 rm -f $REPACK/ota/system/etc/init.d/03firstboot
@@ -47,7 +50,4 @@ cp -f $DEVICE_OUT/utilities/busybox $REPACK/ota/system/bootmenu/binary/busybox
 
 # ril fix
 cp -f $REPACK/ota/system/lib/hw/audio.a2dp.default.so $REPACK/ota/system/lib/liba2dp.so
-
-# temporary tool to fix orientation
-cp -f $DEVICE_TOP/prebuilt/app/Orientator.apk $REPACK/ota/system/app/
 

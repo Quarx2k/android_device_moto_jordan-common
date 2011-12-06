@@ -138,12 +138,6 @@ $SED -i \
 	-e '/ro\.build\.type/s/eng/user/' \
 	$REPACK/ota/system/build.prop
 
-# Include device specific script
-#if [ -f $ANDROID_BUILD_TOP/device/motorola/jordan/releasetools/squisher.sh ]; then
-#	echo "squisher.sh..."
-#	. $ANDROID_BUILD_TOP/device/motorola/jordan/releasetools/squisher.sh
-#fi
-
 # Delete unnecessary binaries
 if [ -n "$DELETE_BINS" ]; then
 
