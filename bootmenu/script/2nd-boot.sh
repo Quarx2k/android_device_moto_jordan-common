@@ -30,6 +30,11 @@ else
     fi
 fi
 
+if [ -L /sdcard-ext ]; then
+    rm /sdcard-ext
+    mkdir -p /sd-ext
+fi
+
 ## unmount devices
 sync
 umount /acct
