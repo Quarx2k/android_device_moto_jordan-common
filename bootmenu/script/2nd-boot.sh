@@ -14,8 +14,20 @@ cp -r -f /system/bootmenu/2nd-boot/* /
 
 ADBD_RUNNING=`ps | grep adbd | grep -v grep`
 if [ -z "$ADB_RUNNING" ]; then
-#    rm -f /sbin/adbd.root
+    #rm -f /sbin/adbd.root
     rm -f /tmp/usbd_current_state
+    #delete if is a symlink
+    [ -L "/tmp" ] && rm -f /tmp
+    mkdir -p /tmp
+else
+    # well, not beautiful but do the work
+    # to keep current usbd state
+    if [ -L "/tmp" ]; then
+        mv /tmp/usbd_current_state /
+        rm -f /tmp
+        mkdir -p /tmp
+        mv /usbd_current_state /tmp/
+    fi
 fi
 
 ## unmount devices
