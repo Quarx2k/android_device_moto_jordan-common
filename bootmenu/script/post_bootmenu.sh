@@ -20,9 +20,13 @@ mount -o remount,rw rootfs /
 mount -o remount,rw /dev/block/mmcblk1p21 /system
 ##################################################
 
-chmod 755 /system/bootmenu/init.d/*
+if [ -d /system/bootmenu/init.d ]; then
+    chmod 755 /system/bootmenu/init.d/*
+    run-parts /system/bootmenu/init.d/
+fi
 
 chmod 755 /system/etc/init.d/*
+run-parts /system/etc/init.d/
 
 # normal cleanup here (need fix in recovery first)
 # ...
