@@ -2,7 +2,8 @@ LOCAL_PATH:= $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_SRC_FILES:= JordanCameraWrapper.cpp
+#LOCAL_SRC_FILES:= JordanCameraWrapper.cpp
+LOCAL_SRC_FILES:= JordanCameraWrapper_test.cpp
 
 LOCAL_SHARED_LIBRARIES:= libdl libutils libcutils libcamera_client
 
