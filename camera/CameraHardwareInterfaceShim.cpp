@@ -1,4 +1,4 @@
-#include <camera/CameraHardwareInterface.h>
+#include <CameraHardwareInterface.h>
 #include <utils/RefBase.h>
 #include <utils/threads.h>
 #include <hardware/camera.h>
@@ -34,8 +34,9 @@ namespace android {
     }
     
     void data_callback_shim(int32_t msgType,
-                                const sp<IMemory> &dataPtr,
-                                void* user)
+                            const sp<IMemory> &dataPtr,
+                            camera_frame_metadata_t *metadata,
+                            void* user)
     {
         struct camera_memory memory;
         memory.data = dataPtr->pointer();
