@@ -13,14 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ifeq ($(BOARD_USES_CAMERA_LEGACY),true)
+#ifeq ($(BOARD_USES_CAMERA_LEGACY),true)
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := camera.$(TARGET_BOOTLOADER_BOARD_NAME)
 LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/hw
-LOCAL_MODULE_TAGS := eng
+LOCAL_MODULE_TAGS := optional
 
 LOCAL_SHARED_LIBRARIES := \
     libcutils \
@@ -41,4 +41,4 @@ LOCAL_STATIC_LIBRARIES := \
 
 include $(BUILD_SHARED_LIBRARY)
 
-endif
+#endif
