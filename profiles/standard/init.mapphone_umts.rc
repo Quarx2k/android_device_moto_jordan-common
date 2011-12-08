@@ -251,6 +251,13 @@ service iprenew_tiwlan0 /system/bin/dhcpcd -n
     disabled
     oneshot
 
+# Logging daemon
+on property:persist.service.aplogd.enable=1
+    start aplogd
+
+on property:persist.service.aplogd.enable=0
+    stop aplogd
+
 service baseimage /system/bin/dspexec -v -T /system/lib/dsp/baseimage.dof
     user media
     group media graphics
