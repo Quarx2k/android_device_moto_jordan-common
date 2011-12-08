@@ -65,16 +65,19 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
 	hcitool \
 	libaudioutils audio.a2dp.default audio_policy.jordan \
-	libaudiohw_legacy audio.primary.omap3 camera.jordan libcamera
+	libaudiohw_legacy audio.primary.omap3
 
 # ICS graphics
 PRODUCT_PACKAGES += libGLESv2 libEGL libGLESv1_CM
 
 # TO FIX for ICS
-#PRODUCT_PACKAGES += gralloc.jordan hwcomposer.jordan overlay.omap3 libcamera
+#PRODUCT_PACKAGES += gralloc.jordan hwcomposer.jordan
 PRODUCT_PACKAGES += gralloc.default hwcomposer.default
 
-#Common packages (gingerbread/ics)
+# ICS Camera
+PRODUCT_PACKAGES += camera.jordan libcamera
+
+# Common packages (gingerbread/ics)
 PRODUCT_PACKAGES += \
 	librs_jni \
 	tiwlan.ini \
