@@ -125,10 +125,9 @@ PRODUCT_PACKAGES += e2fsck
 # Add DroidSSHd (dropbear) Management App - tpruvot/android_external_droidsshd @ github
 PRODUCT_PACKAGES += DroidSSHd dropbear dropbearkey sftp-server scp ssh
 
-# CM9
-PRODUCT_PACKAGES += AndroidTerm DSPManager
-
-#doesnt work: libcyanogen-dsp
+# CM9 apps
+PRODUCT_PACKAGES += AndroidTerm
+#doesnt work: DSPManager libcyanogen-dsp
 
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
