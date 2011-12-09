@@ -223,6 +223,8 @@ static int qta_ctrl_parse(const char *input, int count)
 	}
 	if (!res)
 		res = count;
+
+	return res;
 err:
 	printk(KERN_ERR TAG": ctrl(%s): res=%d\n", input, res);
 	return res;
@@ -286,9 +288,9 @@ static void __exit qta_owner_mt_exit(void)
 module_init(qta_owner_mt_init);
 module_exit(qta_owner_mt_exit);
 
-MODULE_AUTHOR("Tanguy Pruvot");
-MODULE_DESCRIPTION("Xtables: socket owner match to xt_qtaguid");
+MODULE_AUTHOR("Tanguy Pruvot, CyanogenDefy+");
+MODULE_DESCRIPTION("Xtables: fake socket owner match to xt_qtaguid");
 MODULE_LICENSE("GPL");
-MODULE_VERSION("0.3");
+MODULE_VERSION("0.4");
 MODULE_ALIAS("ipt_qtaguid");
 MODULE_ALIAS("ip6t_qtaguid");
