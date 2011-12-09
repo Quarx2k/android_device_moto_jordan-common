@@ -360,11 +360,12 @@ on property:ro.debuggable=1
 # adbd is controlled via property triggers in init.<platform>.usb.rc
 service adbd /sbin/adbd
     class core
+    user root
     disabled
 
-service adbd.root /sbin/adbd.root
-    class core
-    disabled
+#service adbd.root /sbin/adbd.root
+#    class core
+#    disabled
 
 # adbd on at boot in emulator
 on property:ro.kernel.qemu=1
