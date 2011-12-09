@@ -34,7 +34,10 @@ if [ -n "$CYANOGEN_RELEASE" ]; then
   cp -f $DEVICE_TOP/logo-google.raw $REPACK/ota/logo.img
 fi
 cp -f $DEVICE_OUT/root/init $REPACK/ota/system/bootmenu/2nd-init/init
-cp -f $DEVICE_OUT/root/sbin/adbd $REPACK/ota/system/bin/adbd
+
+# Use a prebuilt adbd configured for root access instead of normal one, for dev purpose
+cp -f $REPACK/ota/system/bootmenu/binary/adbd $REPACK/ota/system/bin/adbd
+#cp -f $DEVICE_OUT/root/sbin/adbd $REPACK/ota/system/bin/adbd
 
 cp -f $DEVICE_TOP/bootmenu/binary/2nd-init $REPACK/ota/system/bootmenu/binary/2nd-init
 
