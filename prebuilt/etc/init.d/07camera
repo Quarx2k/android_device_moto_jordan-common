@@ -1,0 +1,19 @@
+#!/system/bin/sh
+#
+# load green lens camera modules
+
+DEFYPLUS_KERNEL=0
+if [ -f /proc/socinfo ]; then
+    DEFYPLUS_KERNEL=1
+fi
+
+CAMERA_DETECTED=0
+if [ -f /dev/camera0 ]; then
+    CAMERA_DETECTED=1
+fi
+
+if [ "$DEFYPLUS_KERNEL $CAMERA_DETECTED" = "1 0" ]; then
+    /system/xbin/insmod /system/lib/modules/camise.ko
+    /system/xbin/insmod /system/lib/modules/camera.ko
+fi
+
