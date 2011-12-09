@@ -198,7 +198,7 @@ int mapphone_camera_reg_power(bool enable)
 
 int mapphone_camera_lines_safe_mode(void)
 {
-	SYMSEARCH_BIND_FUNCTION_TO(backlight, omap_ctrl_writew, ss_omap_ctrl_writew);
+	SYMSEARCH_BIND_FUNCTION_TO(camera, omap_ctrl_writew, ss_omap_ctrl_writew);
 	ss_omap_ctrl_writew(CAM_IOMUX_SAFE_MODE_INPUT, 0x011a);
 	ss_omap_ctrl_writew(CAM_IOMUX_SAFE_MODE_INPUT, 0x011c);
 	ss_omap_ctrl_writew(CAM_IOMUX_SAFE_MODE_INPUT, 0x011e);
@@ -214,7 +214,7 @@ int mapphone_camera_lines_safe_mode(void)
 
 int mapphone_camera_lines_func_mode(void)
 {
-	SYMSEARCH_BIND_FUNCTION_TO(backlight, omap_ctrl_writew, ss_omap_ctrl_writew);
+	SYMSEARCH_BIND_FUNCTION_TO(camera, omap_ctrl_writew, ss_omap_ctrl_writew);
 	ss_omap_ctrl_writew(CAM_IOMUX_FUNC_MODE, 0x011a);
 	ss_omap_ctrl_writew(CAM_IOMUX_FUNC_MODE, 0x011c);
 	ss_omap_ctrl_writew(CAM_IOMUX_FUNC_MODE, 0x011e);

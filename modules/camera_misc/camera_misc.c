@@ -386,7 +386,7 @@ void _camera_lines_func_mode(void)
 module_init(camera_misc_init);
 module_exit(camera_misc_exit);
 
-MODULE_VERSION("1.0");
+MODULE_VERSION("1.1");
 MODULE_DESCRIPTION("Motorola Camera Driver Backport");
 MODULE_AUTHOR("Tanguy Pruvot, From Motorola Open Sources");
 MODULE_LICENSE("GPL");
