@@ -29,6 +29,10 @@ LOCAL_MODULE_TAGS := eng debug
 
 LOCAL_CFLAGS := -DLOG_TAG=\"Sensors\"
 
+ifneq ($(BOARD_DEFY_MODEL),DEFY_FROYO)
+LOCAL_CFLAGS += -DDEFYPLUS
+endif
+
 LOCAL_SRC_FILES := \
 	sensors.c \
 	nusensors.cpp \
