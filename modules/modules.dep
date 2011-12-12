@@ -39,5 +39,5 @@ xt_owner2:
 xt_quota2:
 xt_multiport.ko:
 camise.ko:
-camera.ko: symsearch.ko
+camera.ko: symsearch.ko camise.ko
 

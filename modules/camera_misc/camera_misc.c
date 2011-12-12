@@ -24,30 +24,28 @@
 #include <linux/gpio.h>
 
 #include "camera_misc.h"
+#include <../drivers/media/video/omap34xxcam.h>
 #include <../drivers/media/video/isp/isp.h>
 #include <../drivers/media/video/isp/ispreg.h>
 
 #include <linux/gpio_mapping.h>
 #include <linux/of.h>
 
-#define CONTROL_PADCONF_CAM_FLD   0x48002114
-#define CONTROL_PADCONF_CAM_XCLKA 0x48002110
-
 #define GPIO_SENSOR_NAME "camera_misc"
 
 #define DEBUG 2
 
 #define err_print(fmt, args...) \
-	printk(KERN_ERR "fun %s "fmt"\n", __func__, ##args)
+	printk(KERN_ERR "fun %s "fmt, __func__, ##args)
 
 #if DEBUG > 0
 
 #define dbg_print(fmt, args...) \
-	printk(KERN_INFO "fun %s "fmt"\n", __func__, ##args)
+	printk(KERN_INFO "fun %s "fmt, __func__, ##args)
 
 #if DEBUG > 1
 #define ddbg_print(fmt, args...) \
-	printk(KERN_INFO "fun %s "fmt"\n", __func__, ##args)
+	printk(KERN_INFO "fun %s "fmt, __func__, ##args)
 #else
 #define ddbg_print(fmt, args...) ;
 #endif
@@ -58,6 +56,10 @@
 #define ddbg_print(fmt, args...) ;
 
 #endif
+
+#include "camise.h"
+#include "hook.h"
+static bool hooked = false;
 
 static void _camera_lines_lowpower_mode(void);
 static void _camera_lines_func_mode(void);
@@ -74,7 +76,7 @@ static void cam_misc_enableClk(unsigned long clock);
 
 static int gpio_reset;
 static int gpio_powerdown;
-static int isp_count_local;
+static int isp_count_local=0;
 static struct regulator *regulator;
 static int bHaveResetGpio;
 static int bHavePowerDownGpio;
@@ -142,7 +144,7 @@ static void cam_misc_enableClk(unsigned long clock)
 
 static int cam_misc_suspend(struct platform_device *pdev, pm_message_t state)
 {
-	dbg_print("------------- MOT CAM _ SUSPEND CALLED ---------\n");
+	dbg_print("------------- MOT CAM SUSPEND CALLED ---------");
 
 	/* Checking to make sure that camera is on */
 	if (bHavePowerDownGpio && (gpio_get_value(gpio_powerdown) == 0)) {
@@ -158,7 +160,7 @@ static int cam_misc_suspend(struct platform_device *pdev, pm_message_t state)
 		/* Need to make sure that all encounters of the
 		   isp clocks are disabled*/
 		cam_misc_disableClk();
-		dbg_print("CAMERA_MISC turned off MCLK done\n");
+		dbg_print("CAMERA_MISC turned off MCLK done");
 	}
 
 	_camera_lines_lowpower_mode();
@@ -184,13 +186,13 @@ static int camera_dev_ioctl(struct inode *inode, struct file *file,
 	int rc = 0;
 
 	if (!bHaveResetGpio) {
-		ddbg_print("Requesting reset gpio\n");
+		ddbg_print("Requesting reset gpio");
 		rc = gpio_request(gpio_reset, "camera reset");
 		if (!rc)
 			bHaveResetGpio = 1;
 	}
 	if (!bHavePowerDownGpio) {
-		ddbg_print("Requesting powerdown gpio\n");
+		ddbg_print("Requesting powerdown gpio");
 		rc = gpio_request(gpio_powerdown, "camera powerdown");
 		if (!rc)
 			bHavePowerDownGpio = 1;
@@ -232,7 +234,7 @@ static int camera_dev_ioctl(struct inode *inode, struct file *file,
 
 	case CAMERA_CLOCK_DISABLE:
 		cam_misc_disableClk();
-		dbg_print("CAMERA_MISC turned off MCLK done\n");
+		dbg_print("CAMERA_MISC turned off MCLK done");
 		break;
 
 	case CAMERA_CLOCK_ENABLE:
@@ -244,7 +246,7 @@ static int camera_dev_ioctl(struct inode *inode, struct file *file,
 		if (arg == 1) {
 			/* turn on digital power */
 			if (regulator != NULL) {
-				err_print("Already have regulator\n");
+				err_print("Already have regulator");
 			} else {
 				regulator = regulator_get(NULL, "vcam");
 				if (IS_ERR(regulator)) {
@@ -264,8 +266,7 @@ static int camera_dev_ioctl(struct inode *inode, struct file *file,
 				regulator_put(regulator);
 				regulator = NULL;
 			} else {
-				err_print("Regulator for vcam is not \
-					initialized\n");
+				err_print("Regulator for vcam is not initialized");
 				return -EIO;
 			}
 			_camera_lines_lowpower_mode();
@@ -283,7 +284,7 @@ static int camera_dev_ioctl(struct inode *inode, struct file *file,
 
 static int __init camera_misc_probe(struct platform_device *device)
 {
-	printk(KERN_INFO "camera_misc_probe - probe function called\n");
+	printk(KERN_INFO "camera_misc_probe - probe function called");
 
 	/* put the GPIO64 (camera powerdown) to default state
 	Its getting altered by Jordan aptina sensor probe */
@@ -306,7 +307,7 @@ static int __init camera_misc_probe(struct platform_device *device)
 	}
 
 	if (misc_register(&cam_misc_device0)) {
-		err_print("error in register camera misc device!\n");
+		err_print("error in register camera misc device!");
 		return -EIO;
 	}
 
@@ -329,21 +330,254 @@ static int camera_misc_remove(struct platform_device *device)
 	return 0;
 }
 
+static int try_pix_parm(struct omap34xxcam_videodev *vdev,
+                        struct v4l2_pix_format *best_pix_in,
+                        struct v4l2_pix_format *wanted_pix_out,
+                        struct v4l2_fract *best_ival)
+{
+	int fps;
+	int fmtd_index;
+	int rval;
+	struct v4l2_pix_format best_pix_out;
+	int in_aspect_ratio;
+	int out_aspect_ratio;
+
+	if (best_ival->numerator == 0
+	    || best_ival->denominator == 0)
+		*best_ival = vdev->vdev_sensor_config.ival_default;
+
+	fps = best_ival->denominator / best_ival->numerator;
+
+	best_ival->denominator = 0;
+	best_pix_out.height = INT_MAX >> 1;
+	best_pix_out.width = best_pix_out.height;
+
+
+	for (fmtd_index = 0; fmtd_index < 64; fmtd_index++) {
+		int size_index;
+		struct v4l2_fmtdesc fmtd;
+
+		fmtd.index = fmtd_index;
+		fmtd.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+		// this pixel format test is removed in defy+
+		if (vdev->vfd->minor == CAM_DEVICE_SOC) {
+			fmtd.pixelformat = V4L2_PIX_FMT_YUYV;
+		}
+		rval = vidioc_int_enum_fmt_cap(vdev->vdev_sensor, &fmtd);
+		if (rval)
+			break;
+		ddbg_print("trying fmt %8.8x (%d.)\n", fmtd.pixelformat, fmtd_index);
+		/*
+		 * Get supported resolutions.
+		 */
+		for (size_index = 0; size_index < 64; size_index++) {
+			struct v4l2_frmsizeenum frms;
+			struct v4l2_pix_format pix_tmp_in, pix_tmp_out;
+			int ival_index;
+
+			frms.index = size_index;
+			frms.pixel_format = fmtd.pixelformat;
+			rval = vidioc_int_enum_framesizes(vdev->vdev_sensor, &frms);
+			if (rval)
+				break;
+
+			pix_tmp_in.pixelformat = frms.pixel_format;
+			pix_tmp_in.width = frms.discrete.width;
+			pix_tmp_in.height = frms.discrete.height;
+			pix_tmp_out = *wanted_pix_out;
+			rval = isp_try_fmt_cap(&pix_tmp_in, &pix_tmp_out);
+			if (rval)
+				return rval;
+
+			ddbg_print("this w %d\th %d\tfmt %8.8x\t"
+				"-> w %d\th %d\t fmt %8.8x"
+				"\twanted w %d\th %d\t fmt %8.8x\n",
+				pix_tmp_in.width, pix_tmp_in.height,
+				pix_tmp_in.pixelformat,
+				pix_tmp_out.width, pix_tmp_out.height,
+				pix_tmp_out.pixelformat,
+				wanted_pix_out->width, wanted_pix_out->height,
+				wanted_pix_out->pixelformat);
+
+			in_aspect_ratio = 0;
+			out_aspect_ratio = 0;
+			if (pix_tmp_out.width > pix_tmp_out.height) {
+				in_aspect_ratio =
+					(pix_tmp_in.width * 256)/
+					pix_tmp_in.height;
+				out_aspect_ratio =
+					(pix_tmp_out.width * 256)/
+					(pix_tmp_out.height);
+			}
+
+			if ((in_aspect_ratio -
+					out_aspect_ratio) > 50) {
+				ddbg_print("aspect ratio diff: "
+					"w %d\th %d\tw %d\th %d\n",
+					pix_tmp_out.width,
+					pix_tmp_out.height,
+					pix_tmp_in.width,
+					pix_tmp_in.height);
+				continue;
+			}
+
+#define SIZE_DIFF(pix1, pix2) \
+		(abs((pix1)->width - (pix2)->width) \
+		+ abs((pix1)->height - (pix2)->height))
+
+			/*
+			 * Don't use modes that are farther from wanted size
+			 * that what we already got.
+			 */
+			if (SIZE_DIFF(&pix_tmp_out, wanted_pix_out)
+			    > SIZE_DIFF(&best_pix_out, wanted_pix_out)) {
+				ddbg_print("size diff bigger: "
+					"w %d\th %d\tw %d\th %d\n",
+					pix_tmp_out.width, pix_tmp_out.height,
+					best_pix_out.width,
+					best_pix_out.height);
+				continue;
+			}
+
+			/*
+			 * There's an input mode that can provide output
+			 * closer to wanted.
+			 */
+			if (SIZE_DIFF(&pix_tmp_out, wanted_pix_out)
+			    < SIZE_DIFF(&best_pix_out, wanted_pix_out)) {
+				/* Force renegotation of fps etc. */
+				best_ival->denominator = 0;
+				ddbg_print("renegotiate: "
+					"w %d\th %d\tw %d\th %d\n",
+					pix_tmp_out.width, pix_tmp_out.height,
+					best_pix_out.width,
+					best_pix_out.height);
+			}
+
+			for (ival_index = 0; ; ival_index++) {
+				struct v4l2_frmivalenum frmi;
+
+				frmi.index = ival_index;
+				frmi.pixel_format = frms.pixel_format;
+				frmi.width = frms.discrete.width;
+				frmi.height = frms.discrete.height;
+				/* FIXME: try to fix standard... */
+				frmi.reserved[0] = 0xdeafbeef;
+
+				rval = vidioc_int_enum_frameintervals(
+					vdev->vdev_sensor, &frmi);
+				if (rval)
+					break;
+
+				ddbg_print("fps %d\n",
+					frmi.discrete.denominator / frmi.discrete.numerator);
+
+				if (best_ival->denominator == 0)
+					goto do_it_now;
+
+				/*
+				 * We aim to use maximum resolution
+				 * from the sensor, provided that the
+				 * fps is at least as close as on the
+				 * current mode.
+				 */
+#define FPS_ABS_DIFF(fps, ival) abs(fps - (ival).denominator / (ival).numerator)
+
+				/* Select mode with closest fps. */
+				if (FPS_ABS_DIFF(fps, frmi.discrete)
+				    < FPS_ABS_DIFF(fps, *best_ival)) {
+					ddbg_print("closer fps: "
+						"fps %d\t fps %d\n",
+						(int)FPS_ABS_DIFF(fps,
+							     frmi.discrete),
+						(int)FPS_ABS_DIFF(fps,
+								  *best_ival));
+					goto do_it_now;
+				}
+
+				/*
+				 * Select bigger resolution if it's available
+				 * at same fps.
+				 */
+				if (frmi.width + frmi.height
+				    > best_pix_in->width + best_pix_in->height
+				    && FPS_ABS_DIFF(fps, frmi.discrete)
+				    <= FPS_ABS_DIFF(fps, *best_ival)) {
+					ddbg_print("bigger res, "
+						"same fps: "
+						"w %d\th %d\tw %d\th %d\n",
+						frmi.width, frmi.height,
+						best_pix_in->width,
+						best_pix_in->height);
+					goto do_it_now;
+				}
+
+				dev_dbg(&vdev->vfd->dev, "falling through\n");
+
+				continue;
+
+do_it_now:
+				*best_ival = frmi.discrete;
+				best_pix_out = pix_tmp_out;
+				best_pix_in->width = frmi.width;
+				best_pix_in->height = frmi.height;
+				best_pix_in->pixelformat = frmi.pixel_format;
+
+				ddbg_print(
+					"best_pix_in: w %d\th %d\tfmt %8.8x"
+					"\tival %d/%d\n",
+					best_pix_in->width,
+					best_pix_in->height,
+					best_pix_in->pixelformat,
+					best_ival->numerator,
+					best_ival->denominator);
+			}
+		}
+	}
+
+	if (best_ival->denominator == 0)
+		return -EINVAL;
+
+	*wanted_pix_out = best_pix_out;
+
+	ddbg_print("w %d, h %d, fmt %8.8x -> w %d, h %d\n",
+		 best_pix_in->width, best_pix_in->height,
+		 best_pix_in->pixelformat,
+		 best_pix_out.width, best_pix_out.height);
+
+	return isp_try_fmt_cap(best_pix_in, wanted_pix_out);
+	//HOOK_INVOKE(try_pix_parm, vdev, best_pix_in, wanted_pix_out, best_ival);
+	//return ret;
+}
+
+struct hook_info g_hi[] = {
+        HOOK_INIT(try_pix_parm),
+        HOOK_INIT_END
+};
+
 extern int camise_add_i2c_device(void);
 
 static int __init camera_misc_init(void)
 {
 	int ret=0;
-	ret=platform_driver_register(&cam_misc_driver);
 	camise_add_i2c_device();
+	ret=platform_driver_register(&cam_misc_driver);
+
+	hook_init();
+	hooked = true;
+
 	return ret;
 }
 
 static void __exit camera_misc_exit(void)
 {
+	if (hooked) hook_exit();
+
 	platform_driver_unregister(&cam_misc_driver);
 }
 
+#define CONTROL_PADCONF_CAM_FLD   0x48002114
+#define CONTROL_PADCONF_CAM_XCLKA 0x48002110
 
 void _camera_lines_lowpower_mode(void)
 {
@@ -386,7 +620,7 @@ void _camera_lines_func_mode(void)
 module_init(camera_misc_init);
 module_exit(camera_misc_exit);
 
-MODULE_VERSION("1.1");
+MODULE_VERSION("1.2");
 MODULE_DESCRIPTION("Motorola Camera Driver Backport");
 MODULE_AUTHOR("Tanguy Pruvot, From Motorola Open Sources");
 MODULE_LICENSE("GPL");

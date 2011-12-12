@@ -19,15 +19,18 @@
 # Motorola 2009-Feb-18 - Initial Creation
 #
 
-config CAMERA_MISC
-	tristate "Motorola Camera Driver"
-	default m
-
 config VIDEO_CAM_ISE
 	tristate "Motorola Camera ISE Interface"
 	depends on I2C && VIDEO_V4L2
 	default m
 	---help---
 	  This is a Video4Linux2 isp and vl42 configuration handler for
-	  the motorole ISE driver, which resides in the user space.
+	  the motorola ISE driver, which resides in the user space.
 	  For first Defy (Green Lens) model
+
+config CAMERA_MISC
+	tristate "Motorola Camera Driver"
+	select VIDEO_CAM_ISE
+	depends on SYMSEARCH
+	default m
+
