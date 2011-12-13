@@ -75,7 +75,7 @@ PRODUCT_PACKAGES += libGLESv2 libEGL libGLESv1_CM
 PRODUCT_PACKAGES += gralloc.default hwcomposer.default
 
 # ICS Camera
-PRODUCT_PACKAGES += camera.jordan libcamera
+PRODUCT_PACKAGES += camera.jordan libcamera libui
 
 # Common packages (gingerbread/ics)
 PRODUCT_PACKAGES += \
@@ -126,8 +126,8 @@ PRODUCT_PACKAGES += e2fsck
 PRODUCT_PACKAGES += DroidSSHd dropbear dropbearkey sftp-server scp ssh
 
 # CM9 apps
-PRODUCT_PACKAGES += AndroidTerm
-#doesnt work: DSPManager libcyanogen-dsp
+PRODUCT_PACKAGES += AndroidTerm FileManager Torch
+PRODUCT_PACKAGES += DSPManager libcyanogen-dsp
 
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise

@@ -132,6 +132,11 @@ ifndef CYANOGEN_RELEASE
 
 endif
 
+# Gingerbread kernel specifics
+ifeq ($(BOARD_DEFY_MODEL),DEFY_GINGER)
+BOARD_USE_CID_ROTATE_34 := true
+endif
+
 ## ICS specifics
 
 BOARD_USES_OVERLAY := true

@@ -62,7 +62,7 @@ static char regulator_list[CAM_MAX_REGS][CAM_MAX_REG_NAME_LEN];
 
 static int cam_reset_gpio   = -1;
 static int cam_standby_gpio = -1;
-static unsigned int is_smart_cam;
+static unsigned int is_smart_cam = 0;
 
 struct camise_capture_size {
 	unsigned long width;

@@ -8,7 +8,7 @@ if [ -f /proc/socinfo ]; then
 fi
 
 CAMERA_DETECTED=0
-if [ -f /dev/camera0 ]; then
+if [ -c /dev/camera0 ]; then
     CAMERA_DETECTED=1
 fi
 

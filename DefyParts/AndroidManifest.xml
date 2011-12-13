@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.cyanogenmod.defyparts"
-          android:sharedUserId="android.uid.system"
-          android:versionCode="1"
-          android:versionName="1.0" >
+          android:sharedUserId="android.uid.system">
+
+    <uses-sdk android:minSdkVersion="10" />
 
     <application
         android:label="@string/app_name" >
         <activity
             android:label="@string/app_shortname"
             android:name=".SettingsActivity" >
-            <intent-filter >
+            <intent-filter>
                 <!-- icon in launcher -->
                 <category android:name="android.intent.category.LAUNCHER" />
                 <action android:name="android.intent.action.MAIN" />
-                <!-- cm link in settings -->
+            </intent-filter>
+            <intent-filter>
+                <!-- link in settings -->
+                <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="com.cyanogenmod.action.LAUNCH_DEVICE_SETTINGS" />
             </intent-filter>
         </activity>
