@@ -6,20 +6,24 @@
     <uses-sdk android:minSdkVersion="10" />
 
     <application
+        android:icon="@drawable/icon"
         android:label="@string/app_name" >
         <activity
             android:label="@string/app_shortname"
             android:name=".SettingsActivity" >
+
+            <!-- icon in launcher -->
             <intent-filter>
-                <!-- icon in launcher -->
                 <category android:name="android.intent.category.LAUNCHER" />
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
+
+            <!-- link in settings -->
             <intent-filter>
-                <!-- link in settings -->
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="com.cyanogenmod.action.LAUNCH_DEVICE_SETTINGS" />
             </intent-filter>
+
         </activity>
     </application>
 

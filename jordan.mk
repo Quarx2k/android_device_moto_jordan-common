@@ -75,7 +75,7 @@ PRODUCT_PACKAGES += libGLESv2 libEGL libGLESv1_CM
 PRODUCT_PACKAGES += gralloc.default hwcomposer.default
 
 # ICS Camera
-PRODUCT_PACKAGES += camera.jordan libcamera libui
+PRODUCT_PACKAGES += Camera overlay.omap3 camera.jordan libcamera libui
 
 # Common packages (gingerbread/ics)
 PRODUCT_PACKAGES += \
