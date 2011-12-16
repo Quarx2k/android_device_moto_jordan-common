@@ -40,5 +40,5 @@ xt_quota2:
 xt_multiport.ko:
 camise.ko:
 camera.ko: symsearch.ko camise.ko
-
+ip6_tables.ko:
 
