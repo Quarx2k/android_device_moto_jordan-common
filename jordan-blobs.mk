@@ -24,6 +24,13 @@ PRODUCT_COPY_FILES += \
 
 #key layouts, names must fit the ones in /proc/bus/input/devices, qwerty.kl is the fallback one.
 PRODUCT_COPY_FILES += \
+	$(DEVICE_PREBUILT)/usr/idc/internal.idc:system/usr/idc/lm3530_led.idc \
+	$(DEVICE_PREBUILT)/usr/idc/internal.idc:system/usr/idc/accelerometer.idc \
+	$(DEVICE_PREBUILT)/usr/idc/internal.idc:system/usr/idc/compass.idc \
+	$(DEVICE_PREBUILT)/usr/idc/internal.idc:system/usr/idc/light-prox.idc \
+	$(DEVICE_PREBUILT)/usr/idc/internal.idc:system/usr/idc/proximity.idc \
+	$(DEVICE_PREBUILT)/usr/idc/sholes-keypad.idc:system/usr/idc/sholes-keypad.kl \
+	$(DEVICE_PREBUILT)/usr/idc/cpcap-key.idc:system/usr/idc/cpcap-key.kl \
 	$(DEVICE_PREBUILT)/usr/idc/qtouch-touchscreen.idc:system/usr/idc/qtouch-touchscreen.idc \
 	$(DEVICE_PREBUILT)/usr/qwerty.kl:system/usr/keylayout/qwerty.kl \
 	$(DEVICE_PREBUILT)/usr/qwerty.kl:system/usr/keylayout/qtouch-touchscreen.kl \
