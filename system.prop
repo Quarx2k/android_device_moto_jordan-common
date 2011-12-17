@@ -2,9 +2,12 @@
 # system.prop for jordan
 #
 
-rild.libpath=/system/lib/librilswitch.so
-rilswitch.vendorlibpath=/system/lib/libril-moto-umts-1.so
-rilswitch.ganlibpath=/system/lib/libganril.so
+#rild.libpath=/system/lib/librilswitch.so
+#rilswitch.vendorlibpath=/system/lib/libril-moto-umts-1.so
+#rilswitch.ganlibpath=/system/lib/libganril.so
+
+rild.libpath=/system/lib/libril-moto-umts-1.so
+
 rild.libargs=-d /dev/ttyS0
 
 ro.sf.lcd_density=240
@@ -73,3 +76,11 @@ ro.telephony.ril.v3=skipbrokendatacall,signalstrength
 
 # all/choice
 hwui.print_config=choice
+
+# FROM MB526
+ro.mot.hw.uaprof=http://uaprof.motorola.com/phoneconfig/motomb526/Profile/motomb526.rdf
+ro.mot.hidden_keyboards=evfwd
+
+# This defines the min duration between two pointer event in ms
+ro.min_pointer_dur=10
+

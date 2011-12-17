@@ -34,6 +34,8 @@ public:
 
         virtual ~AudioPolicyManager() {}
 
+        virtual AudioPolicyManagerBase::routing_strategy getStrategy(AudioSystem::stream_type stream);
+
 protected:
         // true is current platform implements a back microphone
         virtual bool hasBackMicrophone() const { return true; }

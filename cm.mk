@@ -28,7 +28,7 @@ PRODUCT_MANUFACTURER := Motorola
 PRODUCT_SFX := DFP
 
 # Release name and versioning
-ifeq ($(BOARD_DEFY_MODEL),DEFY_GINGER)
+ifneq ($(BOARD_DEFY_MODEL),DEFY_FROYO)
     PRODUCT_RELEASE_NAME := Defy+
 else
     PRODUCT_RELEASE_NAME := Defy
