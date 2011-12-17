@@ -128,6 +128,7 @@ PRODUCT_COPY_FILES += \
 	device/motorola/jordan/bootmenu/recovery/sbin/mke2fs.bin:system/bootmenu/recovery/sbin/mke2fs.bin \
 	device/motorola/jordan/bootmenu/recovery/sbin/tune2fs.bin:system/bootmenu/recovery/sbin/tune2fs \
 	device/motorola/jordan/bootmenu/recovery/recovery.fstab:system/bootmenu/recovery/recovery.fstab \
+	device/motorola/jordan/bootmenu/script/_config.sh:system/bootmenu/script/_config.sh \
 	device/motorola/jordan/bootmenu/script/2nd-init.sh:system/bootmenu/script/2nd-init.sh \
 	device/motorola/jordan/bootmenu/script/2nd-boot.sh:system/bootmenu/script/2nd-boot.sh \
 	device/motorola/jordan/bootmenu/script/stock.sh:system/bootmenu/script/stock.sh \

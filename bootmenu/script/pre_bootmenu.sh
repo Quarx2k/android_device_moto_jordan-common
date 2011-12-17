@@ -3,7 +3,6 @@
 ######## BootMenu Script
 ######## Execute Pre BootMenu
 
-
 export PATH=/sbin:/system/xbin:/system/bin
 
 PART_CACHE=/dev/block/mmcblk1p24
@@ -31,7 +30,6 @@ chmod 755 /sbin
 chmod 755 $BB
 $BB chown 0.0 $BB
 $BB chmod 4755 $BB
-$BB chmod +rx /sbin/*
 
 if [ -f /sbin/chmod ]; then
     # job already done...
@@ -43,23 +41,19 @@ for cmd in $($BB --list); do
     $BB ln -s /sbin/busybox /sbin/$cmd
 done
 
-chmod -R +x /sbin
-
-
-
 # add lsof to debug locks
 cp -f /system/bootmenu/binary/lsof /sbin/lsof
 
-# replace /sbin/adbd..
+$BB chmod +rx /sbin/*
+
+# custom adbd (allow always root)
 cp -f /system/bootmenu/binary/adbd /sbin/adbd.root
-chmod 4755 /sbin/adbd.root
 chown 0.0 /sbin/adbd.root
+chmod 4755 /sbin/adbd.root
 
+# opensource adbd
 cp -f /system/bin/adbd /sbin/adbd
-chown shell /sbin/adbd
-
-#hmm, keep root access
-chown 0.0 /sbin/adbd
+chown 0.0  /sbin/adbd
 chmod 4750 /sbin/adbd
 
 ## missing system files
@@ -67,9 +61,7 @@ chmod 4750 /sbin/adbd
 
 ## /default.prop replace.. (TODO: check if that works)
 rm -f /default.prop
-#cp -f /system/bootmenu/config/default.prop /default.prop
-
-
+cp -f /system/bootmenu/config/default.prop /default.prop
 
 ## mount cache
 mkdir -p /cache
@@ -82,6 +74,13 @@ fi
 # mount cache for boot mode and recovery logs
 if [ ! -d /cache/recovery ]; then
     mount -t ext3 -o nosuid,nodev,noatime,nodiratime,barrier=1 $PART_CACHE /cache
+fi
+
+mkdir -p /cache/bootmenu
+
+# load ondemand safe settings to reduce heat and battery use
+if [ -x /system/bootmenu/script/overclock.sh ]; then
+    /system/bootmenu/script/overclock.sh safe
 fi
 
 exit 0
