@@ -102,17 +102,19 @@ int brightness_fading(short level) {
 	unsigned short n, val;
 
 	SYMSEARCH_BIND_FUNCTION_TO(backlight, cpcap_direct_misc_write, _cpcap_direct_misc_write);
-	for (n=2; n < 32; n++) {
-		val = brightness_to_cpcap(n*8 - 1);
+	for (n = 1; n < 32; n++) {
+		val = brightness_to_cpcap(n * 8 - 1);
 		_cpcap_direct_misc_write(g_reg, val, g_mask_wr);
 		msleep_interruptible(3);
 	}
-	for (n=31; n > 0; n--) {
-		val = brightness_to_cpcap(n*8 - 1);
+	for (; n > 0; n--) {
+		val = brightness_to_cpcap(n * 8 - 1);
 		_cpcap_direct_misc_write(g_reg, val, g_mask_wr);
-		//if ((n*8) < level) break;
 		msleep_interruptible(1);
-	}
+	} while (n > 0);
+
+	_cpcap_direct_misc_write(g_reg, 0, g_mask_wr);
+
 	return 0;
 }
 
@@ -137,8 +139,8 @@ int cpcap_regacc_write(struct cpcap_device *cpcap, enum cpcap_reg reg, unsigned 
 	value = brightness_to_cpcap(brightness);
 	DBG("write REG 0x%02x(%d) set/mask %x/%x\n", (unsigned int) reg, reg, value, mask);
 
-        g_mask_wr |= mask;
-        g_last_value = value;
+	g_mask_wr |= mask;
+	g_last_value = value;
 
 	if (defy_plus && mask == 0xf) {
 		mask = CPCAP_BUTTON_WR_MASK;
@@ -351,7 +353,7 @@ module_init(backlight_init);
 module_exit(backlight_exit);
 
 MODULE_ALIAS(TAG);
-MODULE_VERSION("2.0");
+MODULE_VERSION("2.1");
 MODULE_DESCRIPTION("Fix button backlight brightness level");
 MODULE_AUTHOR("Tanguy Pruvot, CyanogenDefy");
 MODULE_LICENSE("GPL");
