@@ -128,7 +128,7 @@ on post-fs
     # create the lost+found directories, so as to enforce our permissions
     mkdir /cache/lost+found 0770 root root
 
-on post-fs-data
+#on post-fs-data
     # We chown/chmod /data again so because mount is run as root + defaults
     chown system system /data
     chmod 0771 /data
@@ -200,6 +200,9 @@ on post-fs-data
 
 # Include extra init file
     import /system/etc/init.local.rc
+
+on post-fs-data
+    exec /system/bin/logwrapper echo "------------- on post-fs-data -------------"
 
 on boot
 # basic network init

@@ -76,7 +76,7 @@ on post-fs
 
     mount rootfs rootfs / ro remount
 
-on post-fs-data
+#on post-fs-data
 # Create basic filesystem structure
     # we chown/chmod /pds again so because mount is run as root + defaults
     mkdir /pds/lost+found

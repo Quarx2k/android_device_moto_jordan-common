@@ -35,8 +35,9 @@ if [ -n "$CM_RELEASE" ]; then
   cp -f $DEVICE_TOP/logo-google.raw $REPACK/ota/logo.img
 fi
 
-# Opensource init binary
-cp -f $DEVICE_OUT/root/init $REPACK/ota/system/bootmenu/2nd-init/init
+# Opensource init binary (buggy now)
+#cp -f $DEVICE_OUT/root/init $REPACK/ota/system/bootmenu/2nd-init/init
+cp -f $REPACK/ota/system/bootmenu/2nd-boot/init $REPACK/ota/system/bootmenu/2nd-init/init
 
 # Use a prebuilt adbd configured for root access instead of normal one, for dev purpose
 cp -f $REPACK/ota/system/bootmenu/binary/adbd $REPACK/ota/system/bin/adbd
