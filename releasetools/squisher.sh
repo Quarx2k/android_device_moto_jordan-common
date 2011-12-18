@@ -14,7 +14,7 @@ rm -f $REPACK/ota/system/app/Term.apk
 
 # Apk required, (forbidden in product copy files in ics)
 cp $DEVICE_TOP/prebuilt/app/basebandswitcherV4.0.apk $REPACK/ota/system/app/BasebandSwitcher.apk
-#cp $DEVICE_TOP/prebuilt/app/Superuser.apk $REPACK/ota/system/app/Superuser.apk
+cp $DEVICE_TOP/prebuilt/app/Superuser.apk $REPACK/ota/system/app/Superuser.apk
 cp -f $VENDOR_TOP/app/* $REPACK/ota/system/app/
 
 # these scripts are not required or bad
