@@ -1,4 +1,4 @@
-on early-init
+on init
     # Set init and its forked children's oom_adj.
     write /proc/1/oom_adj -16
 
@@ -6,9 +6,6 @@ on early-init
 
 # create mountpoints
     mkdir /mnt 0775 root system
-    mkdir /mnt/sdcard 0000 system system
-
-on init
 
 sysclktz 0
 
@@ -18,7 +15,6 @@ loglevel 3
     export PATH /sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin
     export LD_LIBRARY_PATH /vendor/lib:/system/lib
     export ANDROID_BOOTLOGO 1
-    export ANDROID_CACHE /cache
     export ANDROID_ROOT /system
     export ANDROID_ASSETS /system/app
     export ANDROID_DATA /data
@@ -30,7 +26,6 @@ loglevel 3
 # Backward compatibility
     symlink /system/etc /etc
     symlink /sys/kernel/debug /d
-    symlink /mnt/sdcard /sdcard
 
 # Right now vendor lives on the same filesystem as system,
 # but someday that may change.
@@ -162,13 +157,10 @@ on post-fs
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
     mkdir /data/local 0771 shell shell
     mkdir /data/local/tmp 0771 shell shell
-    mkdir /data/local/download 0771 system cache
     mkdir /data/data 0771 system system
     mkdir /data/app-private 0771 system system
     mkdir /data/app 0771 system system
     mkdir /data/property 0700 root root
-
-    mkdir /cache/download 0771 system cache
 
     # create dalvik-cache, so as to enforce our permissions
     mkdir /data/dalvik-cache 0771 system system
@@ -202,7 +194,7 @@ on post-fs
     import /system/etc/init.local.rc
 
 on post-fs-data
-    exec /system/bin/logwrapper echo "------------- on post-fs-data -------------"
+    exec /system/bin/logwrapper /system/xbin/echo "------------- on post-fs-data -------------"
 
 on boot
 # basic network init
@@ -369,9 +361,9 @@ on property:ro.debuggable=1
 
 # adbd is controlled via property triggers in init.<platform>.usb.rc
 service adbd /sbin/adbd
-    class core
+    class main
+    group shell
     user root
-    disabled
 
 #service adbd.root /sbin/adbd.root
 #    class core
@@ -390,9 +382,9 @@ on property:ro.kernel.qemu=1
 # of USB resetting and adb restarting more closely matches the previous behavior.
 on property:service.adb.root=1
     #write /sys/class/android_usb/android0/enable 0
-    write /sys/devices/virtual/usb_composite/adb/enable 0
+    #write /sys/devices/virtual/usb_composite/adb/enable 0
     restart adbd
-    write /sys/devices/virtual/usb_composite/adb/enable 1
+    #write /sys/devices/virtual/usb_composite/adb/enable 1
     #write /sys/class/android_usb/android0/enable 1
 
 service servicemanager /system/bin/servicemanager
