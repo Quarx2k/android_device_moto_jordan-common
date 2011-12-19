@@ -1,5 +1,5 @@
 on fs
-    log "------------- mapphone: on fs ------------------------"
+    log "== mapphone: on fs ------------------------"
 
 # Mount mmc partitions
     mkdir /pds 0775 system system
@@ -8,7 +8,7 @@ on fs
     mount ext3 /dev/block/mmcblk1p25 /data nosuid nodev noatime nodiratime barrier=0
 
 on post-fs
-    log "------------- mapphone: on post-fs -------------------"
+    log "== mapphone: on post-fs -------------------"
 
 # Backward compatibility
     symlink /dev /dev/netmux
@@ -79,7 +79,7 @@ on post-fs
     mount rootfs rootfs / ro remount
 
 #on post-fs-data
-    #log "------------- mapphone: on post-fs-data -------------------"
+    #log "== mapphone: on post-fs-data -------------------"
 
 # Create basic filesystem structure
     # we chown/chmod /pds again so because mount is run as root + defaults
@@ -128,10 +128,13 @@ on post-fs
     # copy hostapd configuration
     copy /system/etc/wifi/softap/hostapd.conf /data/misc/wifi/hostapd.conf
 
+on post-fs-data
+    log "== mapphone: on post-fs-data --------------"
+
     setprop vold.post_fs_data_done 1
 
 on init
-    log "------------- mapphone: on init ----------------------"
+    log "== mapphone: on init ----------------------"
 
     # Temporary fix permissions for gb kernel
     chown root system /dev/cpcap
@@ -175,7 +178,7 @@ on init
     insmod /system/lib/modules/cifs.ko
 
 on boot
-    log "------------- mapphone: on boot ----------------------"
+    log "== mapphone: on boot ----------------------"
 
     # Enable panic on softlockup
     write /proc/sys/kernel/softlockup_panic 1

@@ -29,6 +29,9 @@ fi
 chmod 755 /system/etc/init.d/*
 run-parts /system/etc/init.d/
 
+# Clean market cache
+rm -f /data/data/com.android.providers.downloads/cache/*
+
 # normal cleanup here (need fix in recovery first)
 # ...
 
