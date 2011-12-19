@@ -194,7 +194,7 @@ on post-fs
     import /system/etc/init.local.rc
 
 on post-fs-data
-    exec /system/bin/logwrapper /system/xbin/echo "------------- on post-fs-data -------------"
+    exec /system/xbin/logwrapper /system/xbin/echo "------------- on post-fs-data -------------"
 
 on boot
 # basic network init
