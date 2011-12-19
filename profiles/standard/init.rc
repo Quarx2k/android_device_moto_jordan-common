@@ -325,7 +325,6 @@ on property:sys.usb.config=adb
     #write /sys/class/android_usb/android0/idProduct D002
     #write /sys/class/android_usb/android0/functions $sys.usb.config
     #write /sys/class/android_usb/android0/enable 1
-    start adbd
     setprop sys.usb.state $sys.usb.config
 
 # USB accessory configuration
@@ -344,8 +343,10 @@ on property:sys.usb.config=accessory,adb
     #write /sys/class/android_usb/android0/idProduct 2d01
     #write /sys/class/android_usb/android0/functions $sys.usb.config
     #write /sys/class/android_usb/android0/enable 1
-    start adbd
     setprop sys.usb.state $sys.usb.config
+
+on property:sys.usb.config=*
+    log "on property sys.usb.config:" $sys.usb.config
 
 # Used to set USB configuration at boot and to switch the configuration
 # when changing the default configuration
