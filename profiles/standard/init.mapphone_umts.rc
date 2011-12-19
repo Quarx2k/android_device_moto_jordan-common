@@ -1,4 +1,5 @@
 on fs
+    log "------------- mapphone: on fs ------------------------"
 
 # Mount mmc partitions
     mkdir /pds 0775 system system
@@ -7,6 +8,7 @@ on fs
     mount ext3 /dev/block/mmcblk1p25 /data nosuid nodev noatime nodiratime barrier=0
 
 on post-fs
+    log "------------- mapphone: on post-fs -------------------"
 
 # Backward compatibility
     symlink /dev /dev/netmux
@@ -77,6 +79,8 @@ on post-fs
     mount rootfs rootfs / ro remount
 
 #on post-fs-data
+    #log "------------- mapphone: on post-fs-data -------------------"
+
 # Create basic filesystem structure
     # we chown/chmod /pds again so because mount is run as root + defaults
     mkdir /pds/lost+found
@@ -127,6 +131,7 @@ on post-fs
     setprop vold.post_fs_data_done 1
 
 on init
+    log "------------- mapphone: on init ----------------------"
 
     # Temporary fix permissions for gb kernel
     chown root system /dev/cpcap
@@ -170,6 +175,7 @@ on init
     insmod /system/lib/modules/cifs.ko
 
 on boot
+    log "------------- mapphone: on boot ----------------------"
 
     # Enable panic on softlockup
     write /proc/sys/kernel/softlockup_panic 1
@@ -206,6 +212,7 @@ on boot
 
 # Charge only mode services.
     exec /system/bin/mot_boot_mode
+
 on property:sys.chargeonly.mode=1
     start battd
     start console
@@ -238,9 +245,9 @@ on property:sys.usb.config=mtp,adb
 on property:sys.usb.config=ptp,adb
     start adbd
 on property:service.adb.root=1
-    write /sys/devices/virtual/usb_composite/adb/enable 0
+    # write /sys/devices/virtual/usb_composite/adb/enable 0
     restart adbd
-    write /sys/devices/virtual/usb_composite/adb/enable 1
+    # write /sys/devices/virtual/usb_composite/adb/enable 1
 
 service reboot_key /system/bin/reboot
     user system
