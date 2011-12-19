@@ -1,4 +1,6 @@
 on init
+    log "------------- init.rc: on init -----------------------"
+
     # Set init and its forked children's oom_adj.
     write /proc/1/oom_adj -16
 
@@ -99,6 +101,8 @@ on fs
     mount yaffs2 mtd@cache /cache nosuid nodev
 
 on post-fs
+    log "------------- init.rc: on post-fs --------------------"
+
     # once everything is setup, no need to modify /
     mount rootfs rootfs / ro remount
 
@@ -194,9 +198,11 @@ on post-fs
     import /system/etc/init.local.rc
 
 on post-fs-data
-    exec /system/bin/logwrapper /system/xbin/echo "------------- on post-fs-data -------------"
+    log "------------- init.rc: on post-fs-data ---------------"
 
 on boot
+    log "------------- init.rc: on boot -----------------------"
+
 # basic network init
     ifup lo
     hostname localhost
@@ -275,9 +281,11 @@ on boot
     class_start main
 
 on nonencrypted
+    log "------------- init.rc: on nonencrypted ---------------"
     class_start late_start
 
 on charger
+    log "------------- init.rc: on charger --------------------"
     class_start charger
 
 on property:vold.decrypt=trigger_reset_main

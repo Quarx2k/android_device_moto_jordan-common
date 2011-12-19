@@ -152,7 +152,7 @@ cd $REPACK/ota/system/bin && find -name "*Test*" -exec /bin/rm -f {} \;
 cd $REPACK
 
 # Move vendor bin/lib
-if [ -d $REPACK/ota/system/vendor ]; then
+if [ -d $REPACK/ota/system/vendor/lib ]; then
 
 	echo "Move vendor subfolder"
 	cp -R $REPACK/ota/system/vendor/lib/* $REPACK/ota/system/lib/
