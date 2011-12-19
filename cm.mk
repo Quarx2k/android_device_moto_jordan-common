@@ -18,8 +18,6 @@ $(call inherit-product, device/motorola/jordan/full_jordan.mk)
 
 # Inherit some common CM9 stuff.
 $(call inherit-product-if-exists, vendor/cm/config/common_full_phone.mk)
-
-# Inherit some common CM stuff.
 $(call inherit-product-if-exists, vendor/cm/config/gsm.mk)
 
 PRODUCT_NAME := cm_jordan
@@ -30,7 +28,11 @@ PRODUCT_MANUFACTURER := Motorola
 PRODUCT_SFX := DFP
 
 # Release name and versioning
-PRODUCT_RELEASE_NAME := Defy
+ifneq ($(BOARD_DEFY_MODEL),DEFY_FROYO)
+    PRODUCT_RELEASE_NAME := Defy+
+else
+    PRODUCT_RELEASE_NAME := Defy
+endif
 
 UTC_DATE := $(shell date +%s)
 DATE     := $(shell date +%Y%m%d)

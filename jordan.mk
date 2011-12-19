@@ -59,11 +59,13 @@ PRODUCT_COPY_FILES += \
 	frameworks/base/data/etc/android.hardware.sensor.light.xml:system/etc/permissions/android.hardware.sensor.light.xml \
 	frameworks/base/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml \
 	frameworks/base/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
-	frameworks/base/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml
+	frameworks/base/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml \
+	frameworks/base/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
+	frameworks/base/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
 
 # ICS sound
 PRODUCT_PACKAGES += \
-	hcitool \
+	hcitool hciattach hcidump \
 	libaudioutils audio.a2dp.default audio_policy.jordan \
 	libaudiohw_legacy audio.primary.omap3
 
@@ -126,8 +128,9 @@ PRODUCT_PACKAGES += e2fsck
 PRODUCT_PACKAGES += DroidSSHd dropbear dropbearkey sftp-server scp ssh
 
 # CM9 apps
-PRODUCT_PACKAGES += AndroidTerm FileManager Torch
-PRODUCT_PACKAGES += DSPManager libcyanogen-dsp
+PRODUCT_PACKAGES += AndroidTerm
+PRODUCT_PACKAGES += Trebuchet FileManager Torch
+#PRODUCT_PACKAGES += DSPManager libcyanogen-dsp
 
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
