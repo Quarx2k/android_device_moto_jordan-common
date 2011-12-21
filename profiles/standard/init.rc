@@ -355,6 +355,10 @@ on property:persist.sys.usb.config=*
     log "on property persist.sys.usb.config:" $persist.sys.usb.config
     setprop sys.usb.config $persist.sys.usb.config
 
+on property:persist.sys.usb.config=adbd
+    log "persist.sys.usb.config changed, starting adbd"
+    start adbd
+
 ## Daemon processes to be run by init.
 ##
 service ueventd /sbin/ueventd

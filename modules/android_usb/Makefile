@@ -3,5 +3,5 @@
 #
 
 obj-m += android_usb.o
-#android_usb-objs := xxx.o xxx.o
+android_usb-objs := ics_usb.o
 

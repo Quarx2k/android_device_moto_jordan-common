@@ -68,6 +68,8 @@ on post-fs
 # Tweaks
     write /sys/block/mmcblk0/bdi/read_ahead_kb 512
 
+    # to prevent errors on aosp init.rc
+    insmod /system/lib/modules/android_usb.ko
 
 on post-fs-data
     log "== mapphone: on post-fs-data -------------------"
