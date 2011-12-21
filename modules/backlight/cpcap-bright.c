@@ -111,7 +111,7 @@ int brightness_fading(short level) {
 		val = brightness_to_cpcap(n * 8 - 1);
 		_cpcap_direct_misc_write(g_reg, val, g_mask_wr);
 		msleep_interruptible(1);
-	} while (n > 0);
+	}
 
 	_cpcap_direct_misc_write(g_reg, 0, g_mask_wr);
 
@@ -353,7 +353,7 @@ module_init(backlight_init);
 module_exit(backlight_exit);
 
 MODULE_ALIAS(TAG);
-MODULE_VERSION("2.1");
+MODULE_VERSION("2.2");
 MODULE_DESCRIPTION("Fix button backlight brightness level");
 MODULE_AUTHOR("Tanguy Pruvot, CyanogenDefy");
 MODULE_LICENSE("GPL");
