@@ -44,6 +44,7 @@ int android0_major = -1;
 static ssize_t show_enable(struct device *dev,
                    struct device_attribute *attr, char *buf)
 {
+	KDBG("get enable");
 	if (android0 != NULL) {
 		return sprintf(buf, "%d\n", android0->enable);
 	}
@@ -54,6 +55,7 @@ static ssize_t set_enable(struct device *dev,
 {
 	int value;
 	if (sscanf(buf, "%d", &value) != 1) return -EINVAL;
+	KDBG("set enable [%s]", buf);
 	if (android0 != NULL) {
 	   android0->enable = (int) (value != 0);
 	}
@@ -65,6 +67,7 @@ static DEVICE_ATTR(enable, 0664, show_enable, set_enable);
 static ssize_t show_functions(struct device *dev,
                    struct device_attribute *attr, char *buf)
 {
+	KDBG("get functions");
 	if (android0 != NULL) {
 		return sprintf(buf, "%s\n", android0->functions);
 	}
@@ -74,7 +77,8 @@ static ssize_t set_functions(struct device *dev,
                    struct device_attribute *attr, const char *buf, size_t count)
 {
 	char buffer[FUNCTIONS_SZ];
-	if (sscanf(buf, "%s", buffer) != 1) return -EINVAL;
+	if (sscanf(buf, "%s", buffer) == 0) return -EINVAL;
+	KDBG("set functions [%s]", buf);
 	if (android0 != NULL) {
 		strncpy(android0->functions, buffer, FUNCTIONS_SZ);
 	}
@@ -86,6 +90,7 @@ static DEVICE_ATTR(functions, 0664, show_functions, set_functions);
 static ssize_t show_desc_idVendor(struct device *dev,
                    struct device_attribute *attr, char *buf)
 {
+	KDBG("get idVendor");
 	if (android0 != NULL) {
 		return sprintf(buf, "%x\n", android0->desc.idVendor);
 	}
@@ -95,7 +100,8 @@ static ssize_t set_desc_idVendor(struct device *dev,
                    struct device_attribute *attr, const char *buf, size_t count)
 {
 	int value;
-	if (sscanf(buf, "%x", &value) != 1) return -EINVAL;
+	if (sscanf(buf, "%x", &value) == 0) return -EINVAL;
+	KDBG("set idVendor [%s]", buf);
 	if (android0 != NULL) {
 		android0->desc.idVendor = value;
 	}
@@ -107,6 +113,7 @@ static DEVICE_ATTR(idVendor, 0664, show_desc_idVendor, set_desc_idVendor);
 static ssize_t show_desc_idProduct(struct device *dev,
                    struct device_attribute *attr, char *buf)
 {
+	KDBG("get idProduct");
 	if (android0 != NULL) {
 		return sprintf(buf, "%x\n", android0->desc.idProduct);
 	}
@@ -116,7 +123,8 @@ static ssize_t set_desc_idProduct(struct device *dev,
                    struct device_attribute *attr, const char *buf, size_t count)
 {
 	int value;
-	if (sscanf(buf, "%x", &value) != 1) return -EINVAL;
+	if (sscanf(buf, "%x", &value) == 0) return -EINVAL;
+	KDBG("set idProduct [%s]", buf);
 	if (android0 != NULL) {
 		android0->desc.idProduct = value;
 	}
@@ -128,8 +136,9 @@ static DEVICE_ATTR(idProduct, 0664, show_desc_idProduct, set_desc_idProduct);
 static ssize_t show_desc_bDeviceClass(struct device *dev,
                    struct device_attribute *attr, char *buf)
 {
+	KDBG("get bDeviceClass");
 	if (android0 != NULL) {
-		return sprintf(buf, "%x\n", android0->desc.bDeviceClass);
+		return sprintf(buf, "%d\n", android0->desc.bDeviceClass);
 	}
 	return sprintf(buf, "\n");
 }
@@ -137,7 +146,8 @@ static ssize_t set_desc_bDeviceClass(struct device *dev,
                    struct device_attribute *attr, const char *buf, size_t count)
 {
 	int value;
-	if (sscanf(buf, "%x", &value) != 1) return -EINVAL;
+	if (sscanf(buf, "%d", &value) == 0) return -EINVAL;
+	KDBG("set bDeviceClass [%s]", buf);
 	if (android0 != NULL) {
 		android0->desc.bDeviceClass = value;
 	}
@@ -169,15 +179,16 @@ static void android_usb_remove_sysfs_files(struct android_usb_data *data)
 /*****************************************************************************/
 static struct kobject *kset_find(struct kset *kset, const char *name)
 {
-	struct kobject *k;
-	struct kobject *ret = NULL;
+	struct kobject *k, *ret = NULL;
 	if (kset == NULL) {
 		return NULL;
 	}
 	spin_lock(&kset->list_lock);
 	list_for_each_entry(k, &kset->list, entry) {
-		//KDBG("   kset_find=%s...", kobject_name(k));
+		//KDBG("   kset_find=%s p=%x...", kobject_name(k), k->parent);
 		if (kobject_name(k) && !strcmp(kobject_name(k), name)) {
+			if (strcmp(kobject_name(k->parent), "usb_composite"))
+				continue;
 			ret = kobject_get(k);
 			break;
 		}
@@ -186,7 +197,6 @@ static struct kobject *kset_find(struct kset *kset, const char *name)
 	return ret;
 }
 static struct kobject *func_kobj = NULL;
-static struct kobject *composite = NULL;
 static struct kobject *device_search_composite(struct device *dev)
 {
 	struct kobject * kobj;
@@ -199,8 +209,6 @@ static struct kobject *device_search_composite(struct device *dev)
 				devpath = kobject_get_path(func_kobj, GFP_KERNEL);
 				KDBG(" kobject found at %s...", devpath);
 				kfree(devpath);
-				kobj = func_kobj->parent;
-				composite = kobj;
 				kobject_put(func_kobj);
 			}
 		}
@@ -210,7 +218,6 @@ static struct kobject *device_search_composite(struct device *dev)
 static struct kobject *device_get_func_kobj(const char* name)
 {
 	struct kobject * kobj;
-	if (!composite) return NULL;
 
 	kobj = kset_find(func_kobj->kset, name);
 	if (kobj) kobject_put(kobj);
@@ -237,18 +244,16 @@ static int __match_android_usb(struct device *dev, void *data)
 }
 static int android_usb_link_sysfs_platform(struct android_usb_data *data)
 {
-	int ret = 0;
 	struct device* sdev;
-	//get device ref to this device : /sys/devices/platform/android_usb
+	// get device ref to this device : /sys/devices/platform/android_usb
 	sdev = device_find_child(&platform_bus, NULL, __match_android_usb);
 	if (!sdev) {
 		return -ENODEV;
 	}
 	KDBG(" found %s device...", dev_name(sdev));
 
-	// search "adb" kobj and get the parent (usb_composite)
-	composite = device_search_composite(sdev);
-	data->comp = (composite != NULL);
+	// and search "adb" kobj to get the parent (usb_composite)
+	data->comp = (device_search_composite(sdev) != NULL);
 
 	data->adb = search_and_link_gadget(data, "adb", "f_adb");
 	data->acm = search_and_link_gadget(data, "acm", "f_acm");
@@ -258,7 +263,7 @@ static int android_usb_link_sysfs_platform(struct android_usb_data *data)
 	data->rndis = search_and_link_gadget(data, "rndis", "f_rndis");
 	data->msc = search_and_link_gadget(data, "usb_mass_storage", "f_mass_storage");
 
-	return ret;
+	return 0;
 }
 static void android_usb_unlink_sysfs_platform(struct android_usb_data *data)
 {
@@ -314,7 +319,7 @@ static int __init android_usb_init(void)
 
 	android0 = data;
 
-	KINFO("registered android0 device");
+	KINFO("registered " SYS_DEVICE " device");
 
 	ret = android_usb_link_sysfs_platform(data);
 
@@ -347,5 +352,5 @@ module_exit(android_usb_exit);
 
 MODULE_AUTHOR("Tanguy Pruvot");
 MODULE_DESCRIPTION("ICS sysfs usb wrapper");
-MODULE_VERSION("1.1");
+MODULE_VERSION("1.2");
 MODULE_LICENSE("GPL");
