@@ -1,3 +1,5 @@
+import init.mapphone_umts.usb.rc
+
 on fs
     log "== mapphone: on fs ------------------------"
 

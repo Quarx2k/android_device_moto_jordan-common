@@ -72,6 +72,7 @@ endif
 #Bootmenu
 PRODUCT_COPY_FILES += \
 	device/motorola/jordan/profiles/standard/init.mapphone_umts.rc:system/bootmenu/2nd-init/init.mapphone_umts.rc \
+	device/motorola/jordan/profiles/standard/init.mapphone_umts.usb.rc:system/bootmenu/2nd-init/init.mapphone_umts.usb.rc \
 	device/motorola/jordan/profiles/standard/init.rc:system/bootmenu/2nd-init/init.rc \
 	device/motorola/jordan/profiles/standard/ueventd.rc:system/bootmenu/2nd-init/ueventd.rc \
 	device/motorola/jordan/profiles/backup/init.rc:system/bootmenu/2nd-boot/init.rc \
