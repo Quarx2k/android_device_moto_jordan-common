@@ -1,0 +1,4 @@
+config ANDROID_USB_ICS
+        tristate "Defy: android_usb sysfs class wrapper"
+        default m
+        depends on SYMSEARCH

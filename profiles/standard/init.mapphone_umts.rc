@@ -1,5 +1,5 @@
 on fs
-    log "------------- mapphone: on fs ------------------------"
+    log "== mapphone: on fs ------------------------"
 
 # Mount mmc partitions
     mkdir /pds 0775 system system
@@ -8,7 +8,7 @@ on fs
     mount ext3 /dev/block/mmcblk1p25 /data nosuid nodev noatime nodiratime barrier=0
 
 on post-fs
-    log "------------- mapphone: on post-fs -------------------"
+    log "== mapphone: on post-fs -------------------"
 
 # Backward compatibility
     symlink /dev /dev/netmux
@@ -68,6 +68,10 @@ on post-fs
 # Tweaks
     write /sys/block/mmcblk0/bdi/read_ahead_kb 512
 
+
+on post-fs-data
+    log "== mapphone: on post-fs-data -------------------"
+   
 # Dont delete this line, used as event in bootmenu (cpu settings & postbootmenu)
     exec /system/bin/logwrapper postbootmenu
 
@@ -78,10 +82,7 @@ on post-fs
 
     mount rootfs rootfs / ro remount
 
-#on post-fs-data
-    #log "------------- mapphone: on post-fs-data -------------------"
-
-# Create basic filesystem structure
+    # Create basic filesystem structure
     # we chown/chmod /pds again so because mount is run as root + defaults
     mkdir /pds/lost+found
     chown system shell /pds/public
@@ -131,7 +132,7 @@ on post-fs
     setprop vold.post_fs_data_done 1
 
 on init
-    log "------------- mapphone: on init ----------------------"
+    log "== mapphone: on init ----------------------"
 
     # Temporary fix permissions for gb kernel
     chown root system /dev/cpcap
@@ -174,14 +175,22 @@ on init
     insmod /system/lib/modules/slow-work.ko
     insmod /system/lib/modules/cifs.ko
 
+on charger
+    log "== mapphone: on charger -------------------"
+    start console
+    start battd
+    write /data/simpin lock
+    start charge
+    stop zygote
+
+on early-boot
+    log "== mapphone: on early-boot ----------------"
+
 on boot
-    log "------------- mapphone: on boot ----------------------"
+    log "== mapphone: on boot ----------------------"
 
     # Enable panic on softlockup
     write /proc/sys/kernel/softlockup_panic 1
-
-    setprop ro.build.product jordan
-    setprop ro.product.device jordan
 
     # Change the ownership of led files.
     chown system system /sys/class/leds/lcd-backlight/als
@@ -210,15 +219,14 @@ on boot
     chmod 0660 /sys/class/leds/torch-flash/flash_light
     chmod 0666 /sys/class/leds/spotlight/brightness
 
-# Charge only mode services.
+    # Charge only mode services.
     exec /system/bin/mot_boot_mode
 
 on property:sys.chargeonly.mode=1
-    start battd
-    start console
-    write /data/simpin lock
-    exec /system/bin/charge_only_mode
-    exec /system/bin/stop zygote
+    log "sys.chargeonly.mode=1 starting charger"
+    class_reset main
+    class_reset late_start
+    class_start charger
 
 on property:init.svc.wpa_supplicant=stopped
     stop dhcpcd
@@ -228,26 +236,6 @@ on property:service.adb.tcp.port=5555
     restart adbd
 on property:service.adb.tcp.port=-1
     restart adbd
-
-# Adb ICS
-on property:persist.sys.usb.config=*
-    setprop sys.usb.config $persist.sys.usb.config
-
-on property:sys.usb.config=mass_storage,adb
-    # Made by usbd, but could be usefull later..
-    # write /sys/devices/virtual/usb_composite/adb/enable 0
-    # write /dev/usb_device_mode msc_adb
-    # write /tmp/usbd_current_state usb_mode_msc_adb
-    # write /sys/devices/virtual/usb_composite/adb/enable 1
-    start adbd
-on property:sys.usb.config=mtp,adb
-    start adbd
-on property:sys.usb.config=ptp,adb
-    start adbd
-on property:service.adb.root=1
-    # write /sys/devices/virtual/usb_composite/adb/enable 0
-    restart adbd
-    # write /sys/devices/virtual/usb_composite/adb/enable 1
 
 service reboot_key /system/bin/reboot
     user system
@@ -259,6 +247,10 @@ service reboot_key /system/bin/reboot
 service usbd /system/bin/usbd
     class main
     user root
+service charge /system/bin/charge_only_mode
+    group root
+    oneshot
+    disabled
 service nvm-daemon /system/bin/nvm_daemon
     class main
     user root
@@ -269,16 +261,17 @@ service start_commdrv /system/bin/sh /system/etc/motorola/comm_drv/commdrv_fs.sh
     user radio
     group radio system cache
 service gkisystem /system/bin/gkisystem
-    class main
+    class late_start
     socket location_shim stream 660 radio system
     socket gpshal_socket stream 660 radio system
     socket opprofdaemon stream 660 radio system
     group radio system
+    oneshot
 service battd /system/bin/battd
     class main
     socket battdsock stream 660 root system
     user root
-    group system
+    group system 9001
     oneshot
 service ssmgrd /system/bin/ssmgrd
     class main
@@ -294,7 +287,7 @@ service hciattach /system/bin/hciattach -n -t 10 /dev/ttyS1 texasalt 3000000 flo
 
 # Ecompass daemon
 service akmd2 /system/bin/akmd2
-    class main
+    class late_start
     user compass
     group compass misc input
 
@@ -324,25 +317,32 @@ service iprenew_tiwlan0 /system/bin/dhcpcd -n
     disabled
     oneshot
 
-service baseimage /system/bin/dspexec -v -T /system/lib/dsp/baseimage.dof
-    class main
-    user media
-    group media graphics
-    oneshot
-service locDrv /system/bin/brcm_guci_drv -config /system/etc/gpsconfig.xml
-    class main
-    user radio
-    group radio inet sdcard_rw
-service fmradio /system/bin/fmradioserver
-    class main
-    disabled
-    user system
-    group bluetooth net_bt_admin net_raw net_admin misc
-
 # 3D init
 service pvrsrvinit /system/bin/pvrsrvinit
     class core
     user root
     group root
     oneshot
+
+service baseimage /system/bin/dspexec -v -T /system/lib/dsp/baseimage.dof
+    class main
+    user media
+    group media graphics
+    oneshot
+
+service locDrv /system/bin/brcm_guci_drv -config /system/etc/gpsconfig.xml
+    class late_start
+    user radio
+    group radio inet sdcard_rw
+
+service motolocation /system/bin/sh /system/bin/am startservice -n com.motorola.android.location/com.motorola.android.locationproxy.LocationProxyService
+    class late_start
+    disabled
+    oneshot
+
+service fmradio /system/bin/fmradioserver
+    class late_start
+    disabled
+    user system
+    group bluetooth net_bt_admin net_raw net_admin misc
 

@@ -109,6 +109,7 @@ PRODUCT_PACKAGES += \
 	hostapd.conf \
 	libhostapdcli \
 	bootmenu \
+	utility_lsof \
 	static_busybox \
 	hijack_boot_2nd-init \
 	DefyParts \
