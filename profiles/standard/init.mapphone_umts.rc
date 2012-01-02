@@ -353,11 +353,6 @@ service locDrv /system/bin/brcm_guci_drv -config /system/etc/gpsconfig.xml
     user radio
     group radio inet sdcard_rw
 
-service motolocation /system/bin/sh /system/bin/am startservice -n com.motorola.android.location/com.motorola.android.locationproxy.LocationProxyService
-    class late_start
-    disabled
-    oneshot
-
 service fmradio /system/bin/fmradioserver
     class late_start
     disabled
