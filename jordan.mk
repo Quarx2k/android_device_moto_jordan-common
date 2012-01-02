@@ -89,6 +89,7 @@ PRODUCT_PACKAGES += \
 	libtiOsLib \
 	wlan_loader \
 	libCustomWifi \
+	wpa_cli wpa_supplicant libwpa_client \
 	wpa_supplicant.conf \
 	dhcpcd.conf \
 	libOMX.TI.AAC.encode \
@@ -118,7 +119,7 @@ PRODUCT_PACKAGES += \
 	su
 
 # for jpeg hw encoder/decoder
-PRODUCT_PACKAGES += libskiahw libOMX.TI.JPEG.Encoder libOMX.TI.JPEG.decoder
+PRODUCT_PACKAGES += libskiahw libOMX.TI.JPEG.Encoder libOMX.TI.JPEG.decoder libstagefrighthw
 
 # video post processor
 PRODUCT_PACKAGES += libOMX.TI.VPP
