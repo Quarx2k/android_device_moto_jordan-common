@@ -1,8 +1,9 @@
 #ifndef ANDROID_HARDWARE_JORDAN_CAMERA_WRAPPER_H
 #define ANDROID_HARDWARE_JORDAN_CAMERA_WRAPPER_H
 
-//#include <camera/CameraHardwareInterface.h>
-#include "CameraHardwareInterface.h"
+#include <utils/threads.h>
+#include <ui/android_native_buffer.h>
+#include <CameraHardwareInterface.h>
 
 namespace android {
 
@@ -10,8 +11,8 @@ class JordanCameraWrapper : public CameraHardwareInterface {
 public:
     virtual sp<IMemoryHeap> getPreviewHeap() const;
     virtual sp<IMemoryHeap> getRawHeap() const;
-
-  /*   virtual void        setCallbacks(notify_callback notify_cb,
+/*
+    virtual void        setCallbacks(notify_callback notify_cb,
                                      data_callback data_cb,
                                      data_callback_timestamp data_cb_timestamp,
                                      void *user);
@@ -40,8 +41,8 @@ public:
     virtual CameraParameters  getParameters() const;
     virtual status_t    sendCommand(int32_t command, int32_t arg1,
                                     int32_t arg2);
-    virtual void        release(); */
-
+    virtual void        release();
+*/
     static    sp<CameraHardwareInterface> createInstance(int cameraId);
 
 private:
@@ -50,24 +51,54 @@ private:
         CAM_BAYER
     } CameraType;
 
+    class TorchEnableThread : public Thread {
+        public:
+            TorchEnableThread(JordanCameraWrapper *hw) :
+                Thread(false), mHw(hw) { }
+            void scheduleTorch() {
+                cancelAndWait();
+                run("TorchEnableThread");
+            }
+            void cancelAndWait() {
+                mStopCondition.signal();
+                requestExitAndWait();
+            }
+            virtual bool threadLoop() {
+                mStopLock.lock();
+                mStopCondition.waitRelative(mStopLock, 1000000000);
+                if (!exitPending()) {
+                    mHw->toggleTorchIfNeeded();
+                }
+                mStopLock.unlock();
+                return false;
+            }
+        private:
+            JordanCameraWrapper *mHw;
+            mutable Mutex mStopLock;
+            mutable Condition mStopCondition;
+    };
+
     JordanCameraWrapper(sp<CameraHardwareInterface>& motoInterface, CameraType type);
     virtual ~JordanCameraWrapper();
-
-/*    static void notifyCb(int32_t msgType, int32_t ext1, int32_t ext2, void* user);
+/*
+    static void notifyCb(int32_t msgType, int32_t ext1, int32_t ext2, void* user);
     static void dataCb(int32_t msgType, const sp<IMemory>& dataPtr, void* user);
     static void dataCbTimestamp(nsecs_t timestamp, int32_t msgType, const sp<IMemory>& dataPtr, void* user);
-    void fixUpBrokenGpsLatitudeRef(const sp<IMemory>& dataPtr); */
+    void fixUpBrokenGpsLatitudeRef(const sp<IMemory>& dataPtr);
+*/
+    void toggleTorchIfNeeded();
 
     sp<CameraHardwareInterface> mMotoInterface;
+    sp<TorchEnableThread> mTorchThread;
     CameraType mCameraType;
- /*   bool mVideoMode;
-    String8 mLastFlashMode;
-
+    bool mVideoMode;
+    String8 mFlashMode;
+/*
     notify_callback mNotifyCb;
     data_callback mDataCb;
     data_callback_timestamp mDataCbTimestamp;
-    void *mCbUserData; */
-
+    void *mCbUserData;
+*/
     static wp<CameraHardwareInterface> singleton;
 
 };
