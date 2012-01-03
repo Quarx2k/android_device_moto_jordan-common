@@ -9,7 +9,7 @@ extern "C" int HAL_getNumberOfCameras();
 
 namespace android {
     extern "C" sp<CameraHardwareInterface> HAL_openCameraHardware(int cameraId);
-  
+
     typedef struct shim_camera_device_t {
         camera_device_t base;
         sp<CameraHardwareInterface> hardware;
@@ -28,11 +28,11 @@ namespace android {
     {
         return 0;
     }
-    
+
     void camera_release_memory_shim(struct camera_memory *mem)
     {
     }
-    
+
     void data_callback_shim(int32_t msgType,
                             const sp<IMemory> &dataPtr,
                             camera_frame_metadata_t *metadata,
@@ -44,7 +44,7 @@ namespace android {
         memory.handle = NULL;
         memory.release = camera_release_memory_shim;
         shim_camera_device_t* shim_device = (shim_camera_device_t*)user;
-        shim_device->data_cb(msgType, &memory, 0, NULL, shim_device->user);        
+        shim_device->data_cb(msgType, &memory, 0, NULL, shim_device->user);
     }
 
     void data_callback_timestamp_shim(nsecs_t timestamp,
@@ -58,9 +58,8 @@ namespace android {
         memory.handle = NULL;
         memory.release = camera_release_memory_shim;
         shim_camera_device_t* shim_device = (shim_camera_device_t*)user;
-        shim_device->data_cb_timestamp(timestamp, msgType, &memory, 0, shim_device->user);        
+        shim_device->data_cb_timestamp(timestamp, msgType, &memory, 0, shim_device->user);
     }
-
 
     void camera_set_callbacks(struct camera_device * device,
             camera_notify_callback notify_cb,
@@ -69,7 +68,7 @@ namespace android {
             camera_request_memory get_memory,
             void *user)
     {
-        LOGE("%x", device);
+        LOGE("device=0x%x", (unsigned int) device);
         shim_camera_device_t* shim_device = (shim_camera_device_t*)device;
         shim_device->user = user;
         sp<CameraHardwareInterface> hardware = shim_device->hardware;
@@ -232,7 +231,7 @@ namespace android {
                   rv = -ENOMEM;
                   goto fail;
               }
-              LOGE("camera device: %x", camera_device);
+              LOGE("camera device: 0x%x", (unsigned int) camera_device);
 
               camera_ops = (camera_device_ops_t*)malloc(sizeof(*camera_ops));
               if(!camera_ops)
@@ -251,7 +250,7 @@ namespace android {
                   rv = -EINVAL;
                   goto fail;
               }
-              
+
               camera_device->hardware = hardware;
               camera_device->preview_enabled = 0;
 
@@ -306,5 +305,5 @@ namespace android {
           *device = NULL;
           return rv;
   }
-  
-}
+
+} // namespace

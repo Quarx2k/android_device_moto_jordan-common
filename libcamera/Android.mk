@@ -2,10 +2,14 @@ ifeq ($(TARGET_BOOTLOADER_BOARD_NAME),jordan)
 
 LOCAL_PATH:= $(call my-dir)
 
+
 include $(CLEAR_VARS)
 
 #LOCAL_SRC_FILES:= JordanCameraWrapper.cpp
 LOCAL_SRC_FILES:= JordanCameraWrapper_test.cpp
+
+# CameraHardwareInterface.h
+LOCAL_C_INCLUDES := $(ANDROID_BUILD_TOP)/frameworks/base/services/camera/libcameraservice
 
 LOCAL_SHARED_LIBRARIES:= libdl libutils libcutils libcamera_client
 
@@ -13,6 +17,8 @@ LOCAL_MODULE := libcamera
 LOCAL_MODULE_TAGS := optional
 
 include $(BUILD_SHARED_LIBRARY)
+
+
 
 include $(CLEAR_VARS)
 
@@ -32,7 +38,7 @@ LOCAL_SHARED_LIBRARIES += libdl
 
 LOCAL_SHARED_LIBRARIES += libcamera
 LOCAL_SRC_FILES := hmi.c CameraHardwareInterfaceShim.cpp
-
+LOCAL_C_INCLUDES := $(ANDROID_BUILD_TOP)/frameworks/base/services/camera/libcameraservice
 
 LOCAL_STATIC_LIBRARIES := \
     libmedia_helper
