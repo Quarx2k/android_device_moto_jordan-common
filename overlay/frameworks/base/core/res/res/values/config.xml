@@ -294,4 +294,6 @@ ICS -->
         <item>/system/framework/com.motorola.android.location.jar:com.android.server.LocationProxyService</item>
     </string-array>
 
+    <bool name="config_usesLegacyUsbDeviceManager">true</bool>
+
 </resources>
