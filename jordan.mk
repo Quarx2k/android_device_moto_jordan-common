@@ -109,10 +109,6 @@ PRODUCT_PACKAGES += \
 	hostap \
 	hostapd.conf \
 	libhostapdcli \
-	bootmenu \
-	utility_lsof \
-	static_busybox \
-	hijack_boot_2nd-init \
 	DefyParts \
 	Usb \
 	Superuser \
@@ -155,8 +151,9 @@ LOCAL_KERNEL := device/motorola/jordan/kernel
 PRODUCT_COPY_FILES += \
 	$(LOCAL_KERNEL):kernel
 
-# Blobs
+# Blobs and bootmenu stuff
 $(call inherit-product, device/motorola/jordan/jordan-blobs.mk)
+$(call inherit-product, device/motorola/jordan/bootmenu/bootmenu.mk)
 
 # Live wallpaper packages
 PRODUCT_PACKAGES += \
