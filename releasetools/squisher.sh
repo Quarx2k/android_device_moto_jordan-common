@@ -10,7 +10,7 @@ rm -f $REPACK/ota/system/app/RomManager.apk
 #rm -f $REPACK/ota/system/app/MusicFX.apk
 rm -f $REPACK/ota/system/app/DSPManager.apk
 rm -f $REPACK/ota/system/app/VideoEditor.apk
-rm -f $REPACK/ota/system/app/Term.apk
+#rm -f $REPACK/ota/system/app/Term.apk
 
 # Apk required, (forbidden in product copy files in ics)
 cp $DEVICE_TOP/prebuilt/app/basebandswitcherV4.0.apk $REPACK/ota/system/app/BasebandSwitcher.apk
