@@ -71,7 +71,6 @@ endif
 
 #app
 PRODUCT_COPY_FILES += \
-<<<<<<< HEAD
 	device/motorola/jordan/profiles/standard/init.mapphone_umts.rc:system/bootmenu/2nd-init/init.mapphone_umts.rc \
 	device/motorola/jordan/profiles/standard/init.mapphone_umts.usb.rc:system/bootmenu/2nd-init/init.mapphone_umts.usb.rc \
 	device/motorola/jordan/profiles/standard/init.rc:system/bootmenu/2nd-init/init.rc \
@@ -149,7 +148,7 @@ PRODUCT_COPY_FILES += \
 	device/motorola/jordan/bootmenu/script/recoveryexit.sh:system/bootmenu/script/recoveryexit.sh \
 	device/motorola/jordan/bootmenu/script/sdcard.sh:system/bootmenu/script/sdcard.sh \
 	device/motorola/jordan/bootmenu/script/system.sh:system/bootmenu/script/system.sh \
-	device/motorola/jordan/bootmenu/script/media_fixup.sh:system/bootmenu/script/media_fixup.sh 
-	device/motorola/jordan/prebuilt/app/basebandswitcherV4.0.apk:system/app/basebandswitcherV4.0.apk 
+	device/motorola/jordan/bootmenu/script/media_fixup.sh:system/bootmenu/script/media_fixup.sh \
+	device/motorola/jordan/prebuilt/app/basebandswitcherV4.0.apk:system/app/basebandswitcherV4.0.apk \
 
 #end of jordan-blobs.mk
