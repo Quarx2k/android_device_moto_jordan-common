@@ -39,26 +39,26 @@ PRODUCT_COPY_FILES += \
 	$(DEVICE_PREBUILT)/usr/cpcap-key.kl:system/usr/keylayout/cpcap-key.kl \
 	$(DEVICE_PREBUILT)/usr/keychars/cpcap-key.kcm:system/usr/keychars/cpcap-key.kcm \
 
-#etc
+
 PRODUCT_COPY_FILES += \
 	device/motorola/jordan/bootmenu/recovery/recovery.fstab:system/etc/recovery.fstab \
-	device/motorola/jordan/prebuilt/etc/init.d/01sysctl:system/etc/init.d/01sysctl \
+	$(DEVICE_PREBUILT)/etc/init.d/01sysctl:system/etc/init.d/01sysctl \
 	$(DEVICE_PREBUILT)/etc/init.d/02ipv6:system/etc/init.d/02ipv6 \
-	device/motorola/jordan/prebuilt/etc/init.d/03adbd:system/etc/init.d/03adbd \
-	device/motorola/jordan/prebuilt/etc/init.d/04pdsbackup:system/etc/init.d/04pdsbackup \
-	device/motorola/jordan/prebuilt/etc/init.d/05mountsd:system/etc/init.d/05mountsd \
+	$(DEVICE_PREBUILT)/etc/init.d/03adbd:system/etc/init.d/03adbd \
+	$(DEVICE_PREBUILT)/etc/init.d/04pdsbackup:system/etc/init.d/04pdsbackup \
+	$(DEVICE_PREBUILT)/etc/init.d/05mountsd:system/etc/init.d/05mountsd \
 	$(DEVICE_PREBUILT)/etc/init.d/07camera:system/etc/init.d/07camera \
-	device/motorola/jordan/prebuilt/etc/init.d/08backlight:system/etc/init.d/08backlight \
-	device/motorola/jordan/prebuilt/etc/init.d/90multitouch:system/etc/init.d/90multitouch \
-	device/motorola/jordan/prebuilt/etc/profile:system/etc/profile \
-	device/motorola/jordan/prebuilt/etc/sysctl.conf:system/etc/sysctl.conf \
-	device/motorola/jordan/prebuilt/etc/busybox.fstab:system/etc/fstab \
-	device/motorola/jordan/prebuilt/etc/wifi/dnsmasq.conf:system/etc/wifi/dnsmasq.conf \
-	device/motorola/jordan/prebuilt/etc/wifi/tiwlan.ini:system/etc/wifi/tiwlan.ini \
-	device/motorola/jordan/prebuilt/etc/wifi/tiwlan_ap.ini:system/etc/wifi/tiwlan_ap.ini \
-	device/motorola/jordan/prebuilt/etc/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
-	device/motorola/jordan/prebuilt/etc/gpsconfig.xml:system/etc/gpsconfig.xml \
-	device/motorola/jordan/prebuilt/etc/location.cfg:system/etc/location.cfg \
+	$(DEVICE_PREBUILT)/etc/init.d/08backlight:system/etc/init.d/08backlight \
+	$(DEVICE_PREBUILT)/etc/init.d/90multitouch:system/etc/init.d/90multitouch \
+	$(DEVICE_PREBUILT)/etc/profile:system/etc/profile \
+	$(DEVICE_PREBUILT)/etc/sysctl.conf:system/etc/sysctl.conf \
+	$(DEVICE_PREBUILT)/etc/busybox.fstab:system/etc/fstab \
+	$(DEVICE_PREBUILT)/etc/wifi/dnsmasq.conf:system/etc/wifi/dnsmasq.conf \
+	$(DEVICE_PREBUILT)/etc/wifi/tiwlan.ini:system/etc/wifi/tiwlan.ini \
+	$(DEVICE_PREBUILT)/etc/wifi/tiwlan_ap.ini:system/etc/wifi/tiwlan_ap.ini \
+	$(DEVICE_PREBUILT)/etc/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
+	$(DEVICE_PREBUILT)/etc/gpsconfig.xml:system/etc/gpsconfig.xml \
+	$(DEVICE_PREBUILT)/etc/location.cfg:system/etc/location.cfg \
 	device/motorola/jordan/media_profiles.xml:system/etc/media_profiles.xml \
 	device/motorola/jordan/modules/modules.alias:system/lib/modules/modules.alias \
 	device/motorola/jordan/modules/modules.dep:system/lib/modules/modules.dep \
@@ -69,8 +69,9 @@ else
 	PRODUCT_COPY_FILES += device/motorola/jordan/custom_backup_list.txt:system/etc/custom_backup_list.txt
 endif
 
-#Bootmenu
+#app
 PRODUCT_COPY_FILES += \
+<<<<<<< HEAD
 	device/motorola/jordan/profiles/standard/init.mapphone_umts.rc:system/bootmenu/2nd-init/init.mapphone_umts.rc \
 	device/motorola/jordan/profiles/standard/init.mapphone_umts.usb.rc:system/bootmenu/2nd-init/init.mapphone_umts.usb.rc \
 	device/motorola/jordan/profiles/standard/init.rc:system/bootmenu/2nd-init/init.rc \
@@ -149,5 +150,6 @@ PRODUCT_COPY_FILES += \
 	device/motorola/jordan/bootmenu/script/sdcard.sh:system/bootmenu/script/sdcard.sh \
 	device/motorola/jordan/bootmenu/script/system.sh:system/bootmenu/script/system.sh \
 	device/motorola/jordan/bootmenu/script/media_fixup.sh:system/bootmenu/script/media_fixup.sh 
+	device/motorola/jordan/prebuilt/app/basebandswitcherV4.0.apk:system/app/basebandswitcherV4.0.apk 
 
 #end of jordan-blobs.mk
