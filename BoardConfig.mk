@@ -25,7 +25,7 @@
 # against the traditional rules of inheritance).
 
 # Model variant (DEFY_FROYO, DEFY_GINGER, DEFY_PLUS)
-BOARD_DEFY_MODEL := DEFY_GINGER
+BOARD_DEFY_MODEL := DEFY_FROYO
 
 USE_CAMERA_STUB := false
 BOARD_USES_GENERIC_AUDIO := false
