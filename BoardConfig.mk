@@ -50,9 +50,9 @@ COMMON_GLOBAL_CFLAGS += -DTARGET_OMAP3 -DOMAP_COMPAT -DMOTOROLA_UIDS
 ARCH_ARM_HAVE_TLS_REGISTER := false
 
 # FM radio
-BOARD_HAVE_FM_RADIO := true
-BOARD_FM_DEVICE     := wl1271
-BOARD_GLOBAL_CFLAGS += -DHAVE_FM_RADIO
+#BOARD_HAVE_FM_RADIO := true
+#BOARD_FM_DEVICE     := wl1271
+#BOARD_GLOBAL_CFLAGS += -DHAVE_FM_RADIO
 
 # Wifi related defines
 BOARD_WLAN_DEVICE           := wl1271
@@ -121,16 +121,6 @@ TARGET_CUSTOM_RELEASETOOL := ./device/motorola/jordan/releasetools/squisher
 
 # Jordan need 2nd-init binary from motorola common
 TARGET_NEEDS_MOTOROLA_HIJACK := true
-
-# In nighly builds only
-ifndef CYANOGEN_RELEASE
-
-#BOARD_HAVE_FM_RADIO := true
-#BOARD_FM_DEVICE := wl1271
-#TARGET_GLOBAL_CFLAGS += -DHAVE_FM_RADIO
-#TARGET_GLOBAL_CPPFLAGS += -DHAVE_FM_RADIO
-
-endif
 
 # Gingerbread kernel specifics
 ifeq ($(BOARD_DEFY_MODEL),DEFY_GINGER)
