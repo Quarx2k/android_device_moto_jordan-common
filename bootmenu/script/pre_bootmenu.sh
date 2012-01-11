@@ -1,11 +1,9 @@
-#!/system/bin/sh
+#!/system/bootmenu/binary/busybox ash
 
 ######## BootMenu Script
 ######## Execute Pre BootMenu
 
-export PATH=/sbin:/system/xbin:/system/bin
-
-PART_CACHE=/dev/block/mmcblk1p24
+source /system/bootmenu/script/_config.sh
 
 ######## Main Script
 
@@ -68,7 +66,7 @@ fi
 
 # mount cache for boot mode and recovery logs
 if [ ! -d /cache/recovery ]; then
-    mount -t ext3 -o nosuid,nodev,noatime,nodiratime,barrier=1 $PART_CACHE /cache
+    mount -t $FS_CACHE -o nosuid,nodev,noatime,nodiratime,barrier=1 $PART_CACHE /cache
 fi
 
 mkdir -p /cache/bootmenu

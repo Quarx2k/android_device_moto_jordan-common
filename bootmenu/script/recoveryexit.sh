@@ -1,4 +1,4 @@
-#!/system/bin/sh
+#!/sbin/busybox ash
 
 # fast button warning
 echo 1 > /sys/class/leds/red/brightness

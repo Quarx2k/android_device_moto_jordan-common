@@ -1,4 +1,4 @@
-#!/system/bin/sh
+#!/system/bootmenu/binary/busybox ash
 #
 # Script made to fix the audiopolicy lock
 
