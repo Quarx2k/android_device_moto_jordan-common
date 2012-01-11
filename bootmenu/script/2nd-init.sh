@@ -46,7 +46,7 @@ umount /mnt/asec
 umount /mnt/obb
 umount /cache
 umount /data
-mount -o remount,rw,relatime,mode=775,size=128k /dev
+#mount -o remount,rw,relatime,mode=775,size=128k /dev
 
 ######## Cleanup
 
