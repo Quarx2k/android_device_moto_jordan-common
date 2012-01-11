@@ -33,6 +33,12 @@ PRODUCT_PROPERTY_OVERRIDES := \
         net.dns1=8.8.8.8 \
         net.dns2=8.8.4.4
 
+PRODUCT_PROPERTY_OVERRIDES += \
+        ro.cm.version=CyanogenMod-9-NIGHTLY-$(shell date +%y%m%d)
+
+PRODUCT_BUILD_PROP_OVERRIDES += BUILD_DISPLAY_ID="IML74K - Ice Cream Sandwich"
+
+
 # Inherit from those products. Most specific first.
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 $(call inherit-product, frameworks/base/build/phone-hdpi-512-dalvik-heap.mk)
