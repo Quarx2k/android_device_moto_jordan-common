@@ -82,7 +82,6 @@ if [ ! $ret -eq 0 ]; then
 
    # don't use adbd here, will load many android process which locks /system
    killall adbd
-   killall adbd.root
 fi
 
 #############################

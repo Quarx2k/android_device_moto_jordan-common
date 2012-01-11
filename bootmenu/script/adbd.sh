@@ -24,6 +24,6 @@ mkdir -p /cache/bootmenu
 export HISTFILE=/cache/bootmenu/.ash_history
 export HISTFILESIZE=256
 
-PATH=/sbin:/system/xbin:/system/bin /sbin/adbd.root &
+PATH=/sbin:/system/xbin:/system/bin /sbin/adbd &
 
 exit

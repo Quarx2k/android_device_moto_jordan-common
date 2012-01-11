@@ -13,11 +13,10 @@ rm -rf /osh
 rm -rf /preinstall
 cp -f /system/bootmenu/2nd-init/* /
 ln -s /init /sbin/ueventd
-cp -f /system/bin/adbd /sbin/adbd
+cp -f /system/bootmenu/binary/adbd /sbin/adbd
 
 ADBD_RUNNING=`ps | grep adbd | grep -v grep`
 if [ -z "$ADB_RUNNING" ]; then
-    rm -f /sbin/adbd.root
     rm -f /tmp/usbd_current_state
     #delete if is a symlink
     [ -L "/tmp" ] && rm -f /tmp
@@ -55,13 +54,12 @@ rm -f /sbin/lsof
 
 ## busybox cleanup..
 for cmd in $(/sbin/busybox --list); do
-    [ -L "/sbin/$cmd" ] && rm "/sbin/$cmd"
+    [ -L "/sbin/$cmd" ] && [ "$cmd" != "sh" ] && rm "/sbin/$cmd"
 done
 
-rm -f /sbin/busybox
-
 ## used for adbd shell (can be bash also)
-/system/xbin/ln -s /system/xbin/busybox /sbin/sh
+#/system/xbin/ln -s /system/bootmenu/binary/busybox /sbin/sh
+#rm -f /sbin/busybox
 
 ## reduce lcd backlight to save battery
 echo 18 > /sys/class/leds/lcd-backlight/brightness

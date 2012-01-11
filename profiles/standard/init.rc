@@ -377,10 +377,6 @@ service adbd /sbin/adbd
     group shell
     user root
 
-#service adbd.root /sbin/adbd.root
-#    class core
-#    disabled
-
 # adbd on at boot in emulator
 on property:ro.kernel.qemu=1
     start adbd
