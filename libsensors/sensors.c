@@ -68,12 +68,6 @@ static const struct sensor_t sSensorList[] = {
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_AMBIENT_TEMPERATURE, SENSOR_TYPE_AMBIENT_TEMPERATURE,
         85.0f, 1.0f, 0.2f, 0, { } },
 
-/* we could compute this... orientation vector also
-    { "AK8973 3-axis Gyroscope",
-        "Asahi Kasei",
-        1, SENSORS_HANDLE_BASE + SENSOR_TYPE_GYROSCOPE, SENSOR_TYPE_GYROSCOPE,
-        100.0f, AK8973_CONVERT_A, 2.0f, 0, { } },
-*/
     { "KXTF9 3-axis Accelerometer",
         "Kionix",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_ACCELEROMETER, SENSOR_TYPE_ACCELEROMETER,
