@@ -73,7 +73,6 @@ private:
                 return KXTF9;
             //case SENSOR_TYPE_ACCELEROMETER:
             case SENSOR_TYPE_ORIENTATION:
-            //case SENSOR_TYPE_GYROSCOPE:
             case SENSOR_TYPE_MAGNETIC_FIELD:
             case SENSOR_TYPE_AMBIENT_TEMPERATURE:
                 return AK8973;

@@ -18,6 +18,7 @@ PRODUCT_COPY_FILES += \
 
 # init.rc profiles
 PRODUCT_COPY_FILES += \
+	${bm_device}/profiles/standard/init.rc:system/bootmenu/2nd-init/init.rc \
 	${bm_device}/profiles/standard/init.mapphone_umts.rc:system/bootmenu/2nd-init/init.mapphone_umts.rc \
 	${bm_device}/profiles/standard/ueventd.rc:system/bootmenu/2nd-init/ueventd.rc \
 	${bm_device}/profiles/backup/init.rc:system/bootmenu/2nd-boot/init.rc \
@@ -54,7 +55,6 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/binary/logwrapper.bin:system/bootmenu/binary/logwrapper.bin \
 	${bm_device}/bootmenu/binary/logwrapper.bin:system/bin/logwrapper.bin \
 	${bm_device}/bootmenu/binary/2nd-boot:system/bootmenu/binary/2nd-boot \
-	${bm_device}/bootmenu/binary/su:system/bootmenu/ext/su \
 
 # images
 PRODUCT_COPY_FILES += \

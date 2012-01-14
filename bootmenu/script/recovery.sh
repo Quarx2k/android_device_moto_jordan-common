@@ -78,7 +78,6 @@ if [ ! $ret -eq 0 ]; then
 
    # don't use adbd here, will load many android process which locks /system
    killall adbd
-   killall adbd.root
 fi
 
 #############################
@@ -102,6 +101,8 @@ echo 0 > /sys/class/leds/blue/brightness
 # turn on button backlight (back button is used in CWM Recovery 3.x)
 echo 1 > /sys/class/leds/button-backlight/brightness
 
+# to allow "eat"
+ln -s /sdcard /mnt/sdcard
 
 /sbin/recovery
 
