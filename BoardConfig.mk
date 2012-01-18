@@ -123,10 +123,10 @@ TARGET_CUSTOM_RELEASETOOL := ./device/motorola/jordan/releasetools/squisher
 # Jordan need 2nd-init binary from motorola common
 TARGET_NEEDS_MOTOROLA_HIJACK := true
 
-# FM Radio
-BOARD_HAVE_FM_RADIO := true
-BOARD_FM_DEVICE := wl1271
-COMMON_GLOBAL_CFLAGS += -DHAVE_FM_RADIO
+# FM Radio (not ready in ICS)
+# BOARD_HAVE_FM_RADIO := true
+# BOARD_FM_DEVICE := wl1271
+# COMMON_GLOBAL_CFLAGS += -DHAVE_FM_RADIO
 
 # Gingerbread kernel specifics
 ifeq ($(BOARD_DEFY_MODEL),DEFY_GINGER)
