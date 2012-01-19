@@ -41,16 +41,10 @@ using android::IMemoryHeap;
 using android::CameraParameters;
 
 using android::CameraInfo;
-//using android::HAL_getCameraInfo;
-//using android::HAL_getNumberOfCameras;
 using android::HAL_openCameraHardware;
 using android::CameraHardwareInterface;
 
-android::String8          g_str;
-android::CameraParameters camSettings;
-
 static sp<CameraHardwareInterface> gCameraHals[MAX_CAMERAS_SUPPORTED];
-android::sp<android::CameraHardwareInterface> motoCamera;
 
 static unsigned int gCamerasOpen = 0;
 //static android::Mutex gCameraDeviceLock;
@@ -335,7 +329,7 @@ CameraHAL_FixupParams(android::CameraParameters &settings)
    const char *video_sizes = 
       "1280x720,800x480,720x480,640x480,352x288,320x240,176x144";
    const char *preferred_size       = "640x480";
-   const char *preview_frame_rates  = "30,27,24,15";
+   const char *preview_frame_rates  = "30,25,24,15";
    const char *preferred_frame_rate = "15";
 
    settings.set(android::CameraParameters::KEY_VIDEO_FRAME_FORMAT,
@@ -528,8 +522,19 @@ int camera_msg_type_enabled(struct camera_device * device, int32_t msg_type)
 
 int camera_start_preview(struct camera_device * device)
 {
-   motoCamera->enableMsgType(CAMERA_MSG_PREVIEW_FRAME);
-   return motoCamera->startPreview();
+    int rv = -EINVAL;
+    priv_camera_device_t* dev = NULL;
+
+    LOGD("%s", __FUNCTION__);
+
+    if(!device)
+        return rv;
+
+    dev = (priv_camera_device_t*) device;
+
+    rv = gCameraHals[dev->cameraid]->startPreview();
+
+    return rv;
 }
 
 void camera_stop_preview(struct camera_device * device)
@@ -719,7 +724,6 @@ int camera_set_parameters(struct camera_device * device, const char *params)
     dev = (priv_camera_device_t*) device;
 
     String8 params_str8(params);
-    camParams.unflatten(g_str);
 
     rv = gCameraHals[dev->cameraid]->setParameters(camParams);
 
@@ -743,17 +747,15 @@ char* camera_get_parameters(struct camera_device * device)
     dev = (priv_camera_device_t*) device;
 
     camParams = gCameraHals[dev->cameraid]->getParameters();
-    motoCamera->getParameters();
     CameraHAL_FixupParams(camParams); 
-    params_str8 = camParams.flatten();
-    params = strdup((char *)g_str.string());
+    params = strdup(params_str8.string());
     return params;
 } 
 
 
 static void camera_put_parameters(struct camera_device *device, char *parms)
 {
-    //LOGD("%s", __FUNCTION__);
+    LOGD("%s", __FUNCTION__);
     free(parms);
 }
 
