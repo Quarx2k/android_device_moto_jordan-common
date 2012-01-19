@@ -159,6 +159,9 @@ on init
     chmod 0666 /dev/ttyGS0
     chmod 0660 /dev/tcmd_driver
 
+#temporary permission for camera
+    chmod 0777 /dev/graphics/fb0  
+
     # Install kernel modules
     insmod /system/lib/modules/netmux.ko
     insmod /system/lib/modules/netmux_linkdriver.ko
