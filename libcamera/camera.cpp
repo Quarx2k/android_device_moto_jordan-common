@@ -534,7 +534,7 @@ int camera_start_preview(struct camera_device * device)
         return rv;
 
     dev = (priv_camera_device_t*) device;
-
+   // gCameraHals[dev->cameraid]->enableMsgType(CAMERA_MSG_PREVIEW_FRAME);
     rv = gCameraHals[dev->cameraid]->startPreview();
 
     return rv;
@@ -724,13 +724,13 @@ int camera_set_parameters(struct camera_device * device, const char *params)
         return rv;
 
     dev = (priv_camera_device_t*) device;
-    LOGV("camera_set_parameters: %s\n", params);
+    LOGE("camera_set_parameters: %s\n", params);
 
     params_str8 = android::String8(params);
     camParams.unflatten(params_str8);
 
     rv = gCameraHals[dev->cameraid]->setParameters(camParams);
-
+    LOGE("camera_set_parameters: rv value: %s\n", rv);
     return 0;
 
 }
