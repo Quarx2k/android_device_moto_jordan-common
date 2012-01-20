@@ -44,6 +44,9 @@ using android::CameraInfo;
 using android::HAL_openCameraHardware;
 using android::CameraHardwareInterface;
 
+android::CameraParameters camParams;
+android::String8 params_str8;
+
 static sp<CameraHardwareInterface> gCameraHals[MAX_CAMERAS_SUPPORTED];
 
 static unsigned int gCamerasOpen = 0;
@@ -714,7 +717,6 @@ int camera_set_parameters(struct camera_device * device, const char *params)
 {
     int rv = -EINVAL;
     priv_camera_device_t* dev = NULL;
-    CameraParameters camParams;
 
     LOGD("%s", __FUNCTION__);
 
@@ -722,14 +724,14 @@ int camera_set_parameters(struct camera_device * device, const char *params)
         return rv;
 
     dev = (priv_camera_device_t*) device;
+    LOGV("camera_set_parameters: %s\n", params);
 
-    String8 params_str8(params);
+    params_str8 = android::String8(params);
+    camParams.unflatten(params_str8);
 
     rv = gCameraHals[dev->cameraid]->setParameters(camParams);
 
-    //camParams.dump();
-
-    return rv;
+    return 0;
 
 }
 
@@ -737,8 +739,6 @@ char* camera_get_parameters(struct camera_device * device)
 {
     char* params = NULL;
     priv_camera_device_t* dev = NULL;
-    CameraParameters camParams;
-    String8 params_str8;
     LOGD("%s", __FUNCTION__);
 
     if(!device)
@@ -748,7 +748,10 @@ char* camera_get_parameters(struct camera_device * device)
 
     camParams = gCameraHals[dev->cameraid]->getParameters();
     CameraHAL_FixupParams(camParams); 
-    params = strdup(params_str8.string());
+    params_str8 = camParams.flatten();
+    params = strdup((char *)params_str8.string());
+    LOGV("camera_get_parameters: returning params:%p :%s\n", 
+        params, (params != NULL) ? params : "EMPTY STRING");
     return params;
 } 
 
