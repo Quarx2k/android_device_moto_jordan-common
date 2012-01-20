@@ -336,7 +336,7 @@ CameraHAL_FixupParams(android::CameraParameters &settings)
    const char *preferred_frame_rate = "15";
 
    settings.set(android::CameraParameters::KEY_VIDEO_FRAME_FORMAT,
-                android::CameraParameters::PIXEL_FORMAT_YUV420SP);
+                android::CameraParameters::PIXEL_FORMAT_YUV422I);
 
    if (!settings.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES)) {
       settings.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES,
@@ -424,7 +424,7 @@ int camera_set_preview_window(struct camera_device * device,
     int preview_height;
     CameraParameters params(gCameraHals[dev->cameraid]->getParameters());
     params.getPreviewSize(&preview_width, &preview_height);
-    int hal_pixel_format = HAL_PIXEL_FORMAT_YCrCb_420_SP;
+    int hal_pixel_format = HAL_PIXEL_FORMAT_YCbCr_422_I;
 
     const char *str_preview_format = params.getPreviewFormat();
     LOGD("%s: preview format %s", __FUNCTION__, str_preview_format);
