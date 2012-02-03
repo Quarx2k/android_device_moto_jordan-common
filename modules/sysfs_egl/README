@@ -1,0 +1,16 @@
+# Sample sysfs export module to export SGX version 
+#
+# put sysfs.c into kernel/drivers/gpu/pvr/
+#
+# add into kernel/drivers/gpu/pvr/Makefile :
+
+sysfs_egl-objs += sysfs.o
+obj-$(CONFIG_PVR_SYSFS_EGL) += sysfs_egl.o
+
+# add into kernel/drivers/gpu/pvr/Kconfig :
+
+config PVR_SYSFS_EGL
+	tristate "Export EGL version in /sys/egl/egl.cfg (backport)"
+	depends on SGX
+	default m
+
