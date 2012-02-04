@@ -22,6 +22,8 @@
 
 #define MAX_CAMERAS_SUPPORTED 1
 
+#define DUMP_PREVIEW_FRAMES
+
 #include <fcntl.h>
 #include <stdint.h>
 #include <string.h>
@@ -168,8 +170,8 @@ static void wrap_queue_buffer_hook(void *data, void* buffer)
     int offset = (int)buffer;
     char *frame = (char *)(heap->base()) + offset;
 
-    //LOGD("%s: base:%p offset:%i frame:%p", __FUNCTION__,
-    //     heap->base(), offset, frame);
+    LOGD("%s: base:%p offset:%i frame:%p", __FUNCTION__,
+         heap->base(), offset, frame);
 
     int stride;
     void *vaddr;
@@ -216,7 +218,7 @@ skipframe:
         {
             LOGV("dumping data");
             written = write(file_fd, (char *)frame,
-                    dev->preview_frame_size);
+                    width * height * 3 / 2);//dev->preview_frame_size);
             if(written < 0)
                 LOGE("error in data write");
         }
@@ -328,13 +330,14 @@ void
 CameraHAL_FixupParams(android::CameraParameters &settings)
 {
    const char *preview_sizes =
-      "1280x720,800x480,768x432,720x480,640x480,576x432,480x320,384x288,352x288,320x240,240x160,176x144";
+      "848x480,640x480,576x432,480x320,384x288,352x288,320x240,240x160,176x144";
    const char *video_sizes = 
-      "1280x720,800x480,720x480,640x480,352x288,320x240,176x144";
+      "848x480,640x480,352x288,320x240,176x144";
    const char *preferred_size       = "640x480";
    const char *preview_frame_rates  = "30,25,24,15";
    const char *preferred_frame_rate = "15";
 
+   LOGV("CameraHAL FixupParams\n");
    settings.set(android::CameraParameters::KEY_VIDEO_FRAME_FORMAT,
                 android::CameraParameters::PIXEL_FORMAT_YUV422I);
 
@@ -407,7 +410,7 @@ int camera_set_preview_window(struct camera_device * device,
         return -1;
     }
 
-    LOGD("%s: bufs:%i", __FUNCTION__, min_bufs);
+    LOGD("%s: min_bufs:%i", __FUNCTION__, min_bufs);
 
     if (min_bufs >= kBufferCount) {
         LOGE("%s: min undequeued buffer count %i is too high (expecting at most %i)",
@@ -730,9 +733,8 @@ int camera_set_parameters(struct camera_device * device, const char *params)
     camParams.unflatten(params_str8);
 
     rv = gCameraHals[dev->cameraid]->setParameters(camParams);
-    LOGE("camera_set_parameters: rv value: %s\n", rv);
+    LOGE("camera_set_parameters: rv=%d\n", rv);
     return 0;
-
 }
 
 char* camera_get_parameters(struct camera_device * device)
@@ -747,14 +749,13 @@ char* camera_get_parameters(struct camera_device * device)
     dev = (priv_camera_device_t*) device;
 
     camParams = gCameraHals[dev->cameraid]->getParameters();
-    CameraHAL_FixupParams(camParams); 
+    CameraHAL_FixupParams(camParams);
     params_str8 = camParams.flatten();
     params = strdup((char *)params_str8.string());
-    LOGV("camera_get_parameters: returning params:%p :%s\n", 
+    LOGV("camera_get_parameters: returning params:%p :%s\n",
         params, (params != NULL) ? params : "EMPTY STRING");
     return params;
-} 
-
+}
 
 static void camera_put_parameters(struct camera_device *device, char *parms)
 {

@@ -21,6 +21,10 @@ mount -o remount,rw rootfs /
 mount -o remount,rw $PART_SYSTEM /system
 ##################################################
 
+chmod 777 /dev/graphics
+chmod 666 /dev/graphics/fb0
+chmod 666 /dev/video*
+
 if [ -d /system/bootmenu/init.d ]; then
     chmod 755 /system/bootmenu/init.d/*
     run-parts /system/bootmenu/init.d/
