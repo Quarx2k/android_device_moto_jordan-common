@@ -7,10 +7,10 @@ VENDOR_TOP=$ANDROID_BUILD_TOP/vendor/motorola/jordan
 
 # Delete unwanted apps
 rm -f $REPACK/ota/system/app/RomManager.apk
-#rm -f $REPACK/ota/system/app/MusicFX.apk
-rm -f $REPACK/ota/system/app/DSPManager.apk
+rm -f $REPACK/ota/system/app/MusicFX.apk
+#rm -f $REPACK/ota/system/app/DSPManager.apk
 rm -f $REPACK/ota/system/app/VideoEditor.apk
-#rm -f $REPACK/ota/system/app/Term.apk
+rm -f $REPACK/ota/system/app/Term.apk
 
 # Apk required, (forbidden in product copy files in ics)
 cp $DEVICE_TOP/prebuilt/app/basebandswitcherV4.0.apk $REPACK/ota/system/app/BasebandSwitcher.apk
@@ -35,12 +35,12 @@ rm -f $REPACK/ota/boot.img
 
 cp -f $DEVICE_TOP/updater-script $REPACK/ota/META-INF/com/google/android/updater-script
 
-#if [ -n "$CM_RELEASE" ]; then
+if [ -n "$CM_RELEASE" ]; then
   cat $DEVICE_TOP/updater-script-rel >> $REPACK/ota/META-INF/com/google/android/updater-script
   cp -f $VENDOR_TOP/boot-222-179-4.smg $REPACK/ota/boot.img
   cp -f $VENDOR_TOP/devtree-222-179-2.smg $REPACK/ota/devtree.img
   cp -f $DEVICE_TOP/logo-google.raw $REPACK/ota/logo.img
-#fi
+fi
 
 # Opensource init binary
 cp -f $DEVICE_OUT/root/init $REPACK/ota/system/bootmenu/2nd-init/init

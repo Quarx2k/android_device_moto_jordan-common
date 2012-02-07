@@ -222,8 +222,8 @@ on boot
     chmod 0660 /sys/class/leds/green/brightness
     chmod 0660 /sys/class/leds/blue/brightness
     chmod 0660 /sys/class/leds/usb/brightness
-    chmod 0660 /sys/class/leds/torch-flash/camera_strobe
-    chmod 0660 /sys/class/leds/torch-flash/flash_light
+    chmod 0666 /sys/class/leds/torch-flash/camera_strobe
+    chmod 0666 /sys/class/leds/torch-flash/flash_light
     chmod 0666 /sys/class/leds/spotlight/brightness
 
     # Charge only mode services.
