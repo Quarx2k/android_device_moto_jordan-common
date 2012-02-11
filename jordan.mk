@@ -105,6 +105,7 @@ PRODUCT_PACKAGES += \
 	libLCML \
 	libOMX_Core \
 	libfnc \
+	libstagefrighthw \
 	iwmulticall \
 	hostap \
 	hostapd.conf \
@@ -115,10 +116,10 @@ PRODUCT_PACKAGES += \
 	su
 
 # for jpeg hw encoder/decoder
-PRODUCT_PACKAGES += libskiahw libOMX.TI.JPEG.Encoder libOMX.TI.JPEG.decoder libstagefrighthw
+#PRODUCT_PACKAGES += libskiahw libOMX.TI.JPEG.Encoder libOMX.TI.JPEG.decoder
 
 # video post processor
-PRODUCT_PACKAGES += libOMX.TI.VPP
+#PRODUCT_PACKAGES += libOMX.TI.VPP
 
 PRODUCT_PACKAGES += e2fsck
 
@@ -128,7 +129,6 @@ PRODUCT_PACKAGES += DroidSSHd dropbear dropbearkey sftp-server scp ssh
 # CM9 apps
 #PRODUCT_PACKAGES += AndroidTerm
 PRODUCT_PACKAGES += Trebuchet FileManager Torch CMStats
-#PRODUCT_PACKAGES += DSPManager libcyanogen-dsp
 
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise

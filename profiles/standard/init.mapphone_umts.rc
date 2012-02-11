@@ -64,9 +64,6 @@ on post-fs
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
     chmod 0660 /sys/class/rfkill/rfkill0/state
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill1/type
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill1/state
-    chmod 0660 /sys/class/rfkill/rfkill1/state
 # Tweaks
     write /sys/block/mmcblk0/bdi/read_ahead_kb 512
 
@@ -95,6 +92,7 @@ on post-fs-data
     chmod 0770 /pds/lost+found
     chown radio radio /pds/bp_nvm
     chmod 0770 /pds/bp_nvm
+    chmod 0770 /pds/security
     # wifi dirs
     mkdir /data/misc/wifi/hostapd.sockets 0770 wifi wifi
     mkdir /data/misc/wifi/sockets 0770 wifi wifi
@@ -114,21 +112,6 @@ on post-fs-data
     mkdir /data/opprof 0770 radio shell
     # create dropbear directory
     mkdir /data/dropbear 0755 root shell
-    # create the necessary dirs for tpapi with proper permission
-    mkdir /data/tpapi
-    mkdir /data/tpapi/etc
-    mkdir /data/tpapi/etc/tpa
-    mkdir /data/tpapi/etc/tpa/persistent
-    chmod 0770 /pds/security
-    chmod 0770 /data/tpapi
-    chmod 0770 /data/tpapi/etc
-    chmod 0770 /data/tpapi/etc/tpa
-    chmod 0770 /data/tpapi/etc/tpa/persistent
-    chown system system /pds/security
-    chown system system /data/tpapi
-    chown system system /data/tpapi/etc
-    chown system system /data/tpapi/etc/tpa
-    chown system system /data/tpapi/etc/tpa/persistent
 
     # copy hostapd configuration
     copy /system/etc/wifi/softap/hostapd.conf /data/misc/wifi/hostapd.conf
@@ -322,10 +305,10 @@ service wpa_supplicant /system/bin/wpa_supplicant -Dtiwlan0 -itiwlan0 -c/data/mi
     socket wpa_tiwlan0 dgram 660 wifi wifi
     disabled
     oneshot
-service wlan_ap_loader /system/bin/logwrapper /system/bin/tiap_loader -f /system/etc/wifi/fw_tiwlan_ap.bin -i /system/etc/wifi/tiwlan_ap.ini -e /pds/wifi/nvs_map.bin
+service wlan_ap_loader /system/bin/tiap_loader -f /system/etc/wifi/fw_tiwlan_ap.bin -i /system/etc/wifi/tiwlan_ap.ini -e /pds/wifi/nvs_map.bin
     disabled
     oneshot
-service hostapd /system/bin/logwrapper /system/bin/hostap -d /data/misc/wifi/hostapd.conf
+service hostapd /system/bin/hostap -d /data/misc/wifi/hostapd.conf
     class main
     disabled
     oneshot
@@ -345,7 +328,7 @@ service pvrsrvinit /system/bin/pvrsrvinit
     group root
     oneshot
 
-service baseimage /system/bin/dspexec -v -T /system/lib/dsp/baseimage.dof
+service baseimage /system/bin/dspexec -T /system/lib/dsp/baseimage.dof
     class main
     user media
     group media graphics
@@ -361,4 +344,3 @@ service fmradio /system/bin/fmradioserver
     disabled
     user system
     group bluetooth net_bt_admin net_raw net_admin misc
-
