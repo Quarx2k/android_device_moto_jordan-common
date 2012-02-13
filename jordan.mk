@@ -69,19 +69,15 @@ PRODUCT_PACKAGES += \
 	libaudioutils audio.a2dp.default audio_policy.jordan \
 	libaudiohw_legacy audio.primary.omap3
 
-# ICS graphics
-PRODUCT_PACKAGES += libGLESv2 libEGL libGLESv1_CM
-
 # TO FIX for ICS
 #PRODUCT_PACKAGES += gralloc.jordan hwcomposer.jordan
 PRODUCT_PACKAGES += gralloc.default hwcomposer.default
 
 # ICS Camera
-PRODUCT_PACKAGES += Camera overlay.omap3 camera.jordan libcamera libui
+PRODUCT_PACKAGES += Camera camera.jordan
 
 # Common packages (gingerbread/ics)
 PRODUCT_PACKAGES += \
-	librs_jni \
 	tiwlan.ini \
 	dspexec \
 	libbridge \
@@ -111,9 +107,7 @@ PRODUCT_PACKAGES += \
 	hostapd.conf \
 	libhostapdcli \
 	DefyParts \
-	Usb \
-	Superuser \
-	su
+	Usb 
 
 # for jpeg hw encoder/decoder
 #PRODUCT_PACKAGES += libskiahw libOMX.TI.JPEG.Encoder libOMX.TI.JPEG.decoder
@@ -128,7 +122,7 @@ PRODUCT_PACKAGES += DroidSSHd dropbear dropbearkey sftp-server scp ssh
 
 # CM9 apps
 #PRODUCT_PACKAGES += AndroidTerm
-PRODUCT_PACKAGES += Trebuchet FileManager Torch CMStats
+PRODUCT_PACKAGES += Trebuchet FileManager CMStats
 
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
@@ -165,7 +159,6 @@ PRODUCT_PACKAGES += \
         MagicSmokeWallpapers \
         VisualizationWallpapers \
         librs_jni
-
 
 # ICS USB Packages
 PRODUCT_PACKAGES += com.android.future.usb.accessory
