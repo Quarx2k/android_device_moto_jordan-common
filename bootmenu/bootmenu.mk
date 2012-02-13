@@ -44,7 +44,6 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/script/reboot_command.sh:system/bootmenu/script/reboot_command.sh \
 	${bm_device}/bootmenu/script/recovery.sh:system/bootmenu/script/recovery.sh \
 	${bm_device}/bootmenu/script/recovery_stable.sh:system/bootmenu/script/recovery_stable.sh \
-	${bm_device}/bootmenu/script/recoveryexit.sh:system/bootmenu/script/recoveryexit.sh \
 	${bm_device}/bootmenu/script/sdcard.sh:system/bootmenu/script/sdcard.sh \
 	${bm_device}/bootmenu/script/system.sh:system/bootmenu/script/system.sh \
 	${bm_device}/bootmenu/script/media_fixup.sh:system/bootmenu/script/media_fixup.sh \
@@ -95,6 +94,7 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/recovery/sbin/parted:system/bootmenu/recovery/sbin/parted \
 	${bm_device}/bootmenu/recovery/sbin/postrecoveryboot.sh:system/bootmenu/recovery/sbin/postrecoveryboot.sh \
 	${bm_device}/bootmenu/recovery/sbin/recovery:system/bootmenu/recovery/sbin/recovery_stable \
+	${bm_device}/bootmenu/recovery/sbin/recoveryexit.sh:system/bootmenu/recovery/sbin/recoveryexit.sh \
 	${bm_device}/bootmenu/recovery/sbin/resize2fs:system/bootmenu/recovery/sbin/resize2fs \
 	${bm_device}/bootmenu/recovery/sbin/sdparted:system/bootmenu/recovery/sbin/sdparted \
 	${bm_device}/bootmenu/recovery/sbin/mke2fs:system/bootmenu/recovery/sbin/mke2fs \
