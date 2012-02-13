@@ -121,8 +121,7 @@ PRODUCT_PACKAGES += e2fsck
 PRODUCT_PACKAGES += DroidSSHd dropbear dropbearkey sftp-server scp ssh
 
 # CM9 apps
-#PRODUCT_PACKAGES += AndroidTerm
-PRODUCT_PACKAGES += Trebuchet FileManager CMStats
+PRODUCT_PACKAGES += Trebuchet FileManager CMStats Torch
 
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
