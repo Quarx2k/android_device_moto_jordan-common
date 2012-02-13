@@ -43,6 +43,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	ro.media.dec.vid.wmv.enabled=1 \
 	dalvik.vm.lockprof.threshold=500 \
 	ro.kernel.android.checkjni=0 \
+        dalvik.vm.checkjni=false \
 	dalvik.vm.dexopt-data-only=1 \
 	ro.vold.umsdirtyratio=20
 
@@ -158,13 +159,6 @@ PRODUCT_PACKAGES += \
         MagicSmokeWallpapers \
         VisualizationWallpapers \
         librs_jni
-
-# ICS USB Packages
-PRODUCT_PACKAGES += com.android.future.usb.accessory
-
-PRODUCT_COPY_FILES += \
-        frameworks/base/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml \
-        frameworks/base/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
 
 ######################################################################################################################################
 

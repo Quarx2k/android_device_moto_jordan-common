@@ -85,6 +85,7 @@ ro.mot.hidden_keyboards=evfwd
 ro.min_pointer_dur=10
 
 # hold precise GC data, and use SMP
+dalvik.vm.verify-bytecode=false
 dalvik.vm.dexopt-flags=m=y,u=n
 
 

@@ -27,7 +27,6 @@ PRODUCT_PROPERTY_OVERRIDES := \
 
 # Inherit from those products. Most specific first.
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
-$(call inherit-product, frameworks/base/build/phone-hdpi-512-dalvik-heap.mk)
 $(call inherit-product, device/motorola/jordan/jordan.mk)
 # Also get non-open-source files if available
 $(call inherit-product-if-exists, vendor/motorola/jordan/jordan-vendor.mk)
