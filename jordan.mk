@@ -155,16 +155,17 @@ PRODUCT_COPY_FILES += \
 $(call inherit-product, device/motorola/jordan/jordan-blobs.mk)
 $(call inherit-product, device/motorola/jordan/bootmenu/bootmenu.mk)
 
-# Live wallpaper packages
+# Publish that we support the live wallpaper feature.
+PRODUCT_COPY_FILES += \
+        packages/wallpapers/LivePicker/android.software.live_wallpaper.xml:/system/etc/permissions/android.software.live_wallpaper.xml
+
 PRODUCT_PACKAGES += \
         LiveWallpapers \
         LiveWallpapersPicker \
         MagicSmokeWallpapers \
-        VisualizationWallpapers
+        VisualizationWallpapers \
+        librs_jni
 
-# Publish that we support the live wallpaper feature.
-PRODUCT_COPY_FILES += \
-        packages/wallpapers/LivePicker/android.software.live_wallpaper.xml:/system/etc/permissions/android.software.live_wallpaper.xml
 
 # ICS USB Packages
 PRODUCT_PACKAGES += com.android.future.usb.accessory
