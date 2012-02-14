@@ -176,25 +176,36 @@ static void wrap_queue_buffer_hook(void *data, void* buffer)
     int stride;
     void *vaddr;
     buffer_handle_t *buf_handle;
-
+    int tries = 5, err = 0;
     int width = dev->preview_width;
     int height = dev->preview_height;
+    int framesize = (width * height * 3 / 2);
     if (0 != window->dequeue_buffer(window, &buf_handle, &stride)) {
         LOGE("%s: could not dequeue gralloc buffer", __FUNCTION__);
 	goto skipframe;
     }
-    if (0 == dev->gralloc->lock(dev->gralloc, *buf_handle,
+
+    err = dev->gralloc->lock(dev->gralloc, *buf_handle,
 			    GRALLOC_USAGE_SW_WRITE_MASK,
-			    0, 0, width, height, &vaddr)) {
+			    0, 0, width, height, &vaddr);
+    while (err && tries) {
+        // Pano frames almost always need a retry...
+        usleep(1000);
+        dev->gralloc->unlock(dev->gralloc, *buf_handle);
+        err = dev->gralloc->lock(dev->gralloc, *buf_handle,
+                            GRALLOC_USAGE_SW_WRITE_MASK,
+                            0, 0, width, height, &vaddr);
+        LOGW("%s: retry gralloc lock %d", __FUNCTION__, (6 - tries));
+        tries--;
+    }
+    if (0 == err) {
         // the code below assumes YUV, not RGB
-	memcpy(vaddr, frame, width * height * 3 / 2);
-        //LOGD("%s: copy frame to gralloc buffer", __FUNCTION__);
+	memcpy(vaddr, frame, framesize);
+        dev->gralloc->unlock(dev->gralloc, *buf_handle);
     } else {
         LOGE("%s: could not lock gralloc buffer", __FUNCTION__);
 	goto skipframe;
     }
-
-    dev->gralloc->unlock(dev->gralloc, *buf_handle);
 
     if (0 != window->enqueue_buffer(window, buf_handle)) {
         LOGE("%s: could not dequeue gralloc buffer", __FUNCTION__);
@@ -313,7 +324,7 @@ static void wrap_data_callback_timestamp(nsecs_t timestamp, int32_t msg_type,
 int
 CameraHAL_GetNum_Cameras(void)
 {
-   LOGE("CameraHAL_GetNum_Cameras:\n");
+   LOGV("CameraHAL_GetNum_Cameras:\n");
    return 1;
 }
 
@@ -330,12 +341,17 @@ void
 CameraHAL_FixupParams(android::CameraParameters &settings)
 {
    const char *preview_sizes =
-      "848x480,640x480,576x432,480x320,384x288,352x288,320x240,240x160,176x144";
+      "640x480,576x432,480x320,384x288,352x288,320x240,240x160,176x144";
    const char *video_sizes = 
       "848x480,640x480,352x288,320x240,176x144";
-   const char *preferred_size       = "640x480";
-   const char *preview_frame_rates  = "30,25,24,15";
+   const char *preferred_size       = "480x320";
+   const char *preview_frame_rates  = "25,24,15,10";
    const char *preferred_frame_rate = "15";
+
+   const char *preview_fps_range    = "1000,25000";
+   const char *preview_fps_range_values = "(1000,7000),(1000,10000),(1000,15000),(1000,20000),(1000,24000),(1000,25000)";
+   const char *horizontal_view_angle= "360";
+   const char *vertical_view_angle= "360";
 
    LOGV("CameraHAL FixupParams\n");
    settings.set(android::CameraParameters::KEY_VIDEO_FRAME_FORMAT,
@@ -363,6 +379,26 @@ CameraHAL_FixupParams(android::CameraParameters &settings)
    if (!settings.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES)) {
       settings.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES,
                    preview_frame_rates);
+   }
+
+   if (!settings.get(android::CameraParameters::KEY_PREVIEW_FPS_RANGE)) {
+      settings.set(android::CameraParameters::KEY_PREVIEW_FPS_RANGE,
+                   preview_fps_range);
+   }
+
+   if (!settings.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE)) {
+      settings.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE,
+                   preview_fps_range_values);
+   }
+
+   if (!settings.get(android::CameraParameters::KEY_HORIZONTAL_VIEW_ANGLE)) {
+      settings.set(android::CameraParameters::KEY_HORIZONTAL_VIEW_ANGLE,
+                   horizontal_view_angle);
+   }
+
+   if (!settings.get(android::CameraParameters::KEY_VERTICAL_VIEW_ANGLE)) {
+      settings.set(android::CameraParameters::KEY_VERTICAL_VIEW_ANGLE,
+                   vertical_view_angle);
    }
 
    if (!settings.get(android::CameraParameters::KEY_PREVIEW_FRAME_RATE)) {
@@ -428,6 +464,7 @@ int camera_set_preview_window(struct camera_device * device,
     CameraParameters params(gCameraHals[dev->cameraid]->getParameters());
     params.getPreviewSize(&preview_width, &preview_height);
     int hal_pixel_format = HAL_PIXEL_FORMAT_YCbCr_422_I;
+    //int hal_pixel_format = HAL_PIXEL_FORMAT_RGB_565;
 
     const char *str_preview_format = params.getPreviewFormat();
     LOGD("%s: preview format %s", __FUNCTION__, str_preview_format);
