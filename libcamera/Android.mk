@@ -1,5 +1,3 @@
-ifeq ($(TARGET_BOOTLOADER_BOARD_NAME),jordan)
-
 LOCAL_PATH:= $(call my-dir)
 
 #Using prebuilt until fix.
@@ -16,6 +14,7 @@ LOCAL_PATH:= $(call my-dir)
 
 #include $(BUILD_SHARED_LIBRARY)
 
+ifneq ($(BOARD_QCOM_BASED_CAMERA_HAL),true)
 
 include $(CLEAR_VARS)
 
@@ -44,4 +43,4 @@ LOCAL_STATIC_LIBRARIES := \
 
 include $(BUILD_SHARED_LIBRARY)
 
-endif
+endif #BOARD_QCOM_BASED_CAMERA_HAL

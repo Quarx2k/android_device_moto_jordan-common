@@ -1,0 +1,9 @@
+The ICS Camera HAL for P990/SU660
+
+based on Raviprasad V Mummidi for Qcom camera
+https://github.com/rapmv78/android_hardware_qcom_camerahal
+
+Please see also:
+ - [Dev] ICS Camera Driver Development by zivan56 @ xda: http://forum.xda-developers.com/showthread.php?t=1379368
+   - http://forum.xda-developers.com/showpost.php?p=20281617&postcount=17
+ - https://github.com/Andromadus/android_hardware_qcom_camera
