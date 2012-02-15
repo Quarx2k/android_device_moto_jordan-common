@@ -328,6 +328,40 @@ CameraHAL_GetCam_Info(int camera_id, struct camera_info *info)
    return rv;
 }
 
+void
+CameraHAL_FixupParams(android::CameraParameters &settings)
+{
+   /* defy: required key to start video recording */
+   if (!settings.get(android::CameraParameters::KEY_VIDEO_FRAME_FORMAT)) {
+       // required for video capture only, color format to double check...
+       settings.set(android::CameraParameters::KEY_VIDEO_FRAME_FORMAT,
+                android::CameraParameters::PIXEL_FORMAT_YUV422I); // "yuv422i-yuyv"
+   }
+
+   /* defy: focus locks the camera, but dunno how to disable it... */
+   if (!settings.get(android::CameraParameters::KEY_SUPPORTED_FOCUS_MODES))
+       settings.set(android::CameraParameters::KEY_SUPPORTED_FOCUS_MODES, "auto,macro,infinity,off");
+
+   if (!settings.get(android::CameraParameters::KEY_SUPPORTED_EFFECTS))
+       settings.set(android::CameraParameters::KEY_SUPPORTED_EFFECTS, "none,mono,negative,sepia");
+
+   if (!settings.get(android::CameraParameters::KEY_SUPPORTED_SCENE_MODES))
+       settings.set(android::CameraParameters::KEY_SUPPORTED_EFFECTS,
+                            "auto,portrait,landscape,action,night-portrait,sunset,steadyphoto");
+
+   settings.set(android::CameraParameters::KEY_EXPOSURE_COMPENSATION, "0");
+
+   if (!settings.get(android::CameraParameters::KEY_PICTURE_SIZE))
+       settings.setPictureSize(2592,1456);
+
+   /* defy: required to prevent panorama crash, but require also opengl ui */
+   const char *fps_range_values = "(1000,10000),(1000,11000),(1000,15000),(1000,20000),"
+                                  "(1000,25000),(1000,24000),(1000,30000)";
+   if (!settings.get(android::CameraParameters::KEY_PREVIEW_FPS_RANGE))
+       settings.set(android::CameraParameters::KEY_PREVIEW_FPS_RANGE, fps_range_values);
+
+}
+
 #if 0
 void
 CameraHAL_FixupParams(android::CameraParameters &settings)
@@ -470,7 +504,8 @@ qcom_camera_set_preview_window(struct camera_device * device,
    int w, h;
    android::CameraParameters params(lcdev->hwif->getParameters());
    params.getPreviewSize(&w, &h);
-   int hal_pixel_format = HAL_PIXEL_FORMAT_YCrCb_420_SP;
+   //int hal_pixel_format = HAL_PIXEL_FORMAT_YCrCb_420_SP;
+   int hal_pixel_format = HAL_PIXEL_FORMAT_YCbCr_422_I;
 
    const char *str_preview_format = params.getPreviewFormat();
    LOGD("%s: preview format %s", __FUNCTION__, str_preview_format);
@@ -670,6 +705,8 @@ qcom_camera_set_parameters(struct camera_device * device, const char *params)
    android::String8 s(params);
    android::CameraParameters p(s);
 
+   CameraHAL_FixupParams(p);
+
 #if 0
    // Fix up zoom
    int zoom = p.getInt(android::CameraParameters::KEY_ZOOM);
@@ -677,6 +714,7 @@ qcom_camera_set_parameters(struct camera_device * device, const char *params)
       p.set(android::CameraParameters::KEY_ZOOM, "1");
    }
 #endif
+
 
    lcdev->hwif->setParameters(p);
    return NO_ERROR;
@@ -687,10 +725,10 @@ qcom_camera_get_parameters(struct camera_device * device)
 {
    struct legacy_camera_device *lcdev = to_lcdev(device);
    char *rc = NULL;
-   LOGV("qcom_camera_get_parameters\n");
+   LOGV("camera_get_parameters\n");
    android::CameraParameters params(lcdev->hwif->getParameters());
    //CameraHAL_FixupParams(params);
-   LOGV("qcom_camera_get_parameters: after calling hwif->getParameters()\n");
+   LOGV("camera_get_parameters: after hwif->getParameters()\n");
    rc = strdup((char *)params.flatten().string());
    LOGV("camera_get_parameters: returning rc:%p :%s\n",
         rc, (rc != NULL) ? rc : "EMPTY STRING");
@@ -700,8 +738,9 @@ qcom_camera_get_parameters(struct camera_device * device)
 void
 qcom_camera_put_parameters(struct camera_device *device, char *params)
 {
-   LOGV("qcom_camera_put_parameters: params:%p %s", params, params);
+   LOGV("qcom_camera_put_parameters: params:%p", params);
    free(params);
+   params = NULL;
 }
 
 
@@ -719,8 +758,8 @@ void
 qcom_camera_release(struct camera_device * device)
 {
    struct legacy_camera_device *lcdev = to_lcdev(device);
-   LOGV("qcom_camera_release:\n");
-   lcdev->hwif->release();
+   LOGV("camera_release:\n");
+   //lcdev->hwif->release();
 }
 
 int
