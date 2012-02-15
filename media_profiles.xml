@@ -101,7 +101,7 @@
 
             <Audio codec="aac"
                    bitRate="96000"
-                   sampleRate="44100"
+                   sampleRate="16000"
                    channels="1" />
         </EncoderProfile> -->
 
@@ -114,7 +114,7 @@
 
             <Audio codec="aac"
                    bitRate="96000"
-                   sampleRate="44100"
+                   sampleRate="16000"
                    channels="1" />
         </EncoderProfile>
 
