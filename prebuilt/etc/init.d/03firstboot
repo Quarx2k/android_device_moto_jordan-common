@@ -7,6 +7,9 @@ if [ -f /system/firstboot ]; then
     busybox mount -o remount,rw /system
     rm -f /system/firstboot
 
+    # Clean market cache
+    rm -f /data/data/com.android.providers.downloads/cache/*
+
     #DISABLED:
     exit 0
 
