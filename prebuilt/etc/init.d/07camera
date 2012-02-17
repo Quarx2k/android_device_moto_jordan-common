@@ -2,10 +2,6 @@
 #
 # load green lens camera modules
 
-export PATH="/system/xbin:$PATH"
-
-log path is $PATH
-
 DEFYPLUS_KERNEL=0
 if [ -f /proc/socinfo ]; then
     DEFYPLUS_KERNEL=1
@@ -17,12 +13,7 @@ if [ -c /dev/camera0 ]; then
 fi
 
 if [ "$DEFYPLUS_KERNEL $CAMERA_DETECTED" = "1 0" ]; then
-    /system/xbin/insmod /system/lib/modules/camise.ko
-    /system/xbin/insmod /system/lib/modules/camera.ko
+    busybox insmod /system/lib/modules/camise.ko
+    busybox insmod /system/lib/modules/camera.ko
 fi
-
-# Camera leds sysfs has bad permissions
-busybox chmod a+rw /sys/class/leds/spotlight/*
-busybox chmod a+rw /sys/class/leds/torch-flash/*
-busybox chown -R camera:system /sys/class/leds/torch-flash /sys/class/leds/spotlight
 

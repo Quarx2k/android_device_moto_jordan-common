@@ -94,5 +94,11 @@
 /sys/devices/virtual/input/input*   enable      0660  root   input
 /sys/devices/virtual/input/input*   poll_delay  0660  root   input
 
+/sys/devices/platform/i2c_omap.3/i2c-3/3-0053/leds/torch-flash brightness    0660 camera system
+/sys/devices/platform/i2c_omap.3/i2c-3/3-0053/leds/torch-flash flash_light   0660 camera system
+/sys/devices/platform/i2c_omap.3/i2c-3/3-0053/leds/torch-flash camera_strobe 0660 camera system
+
+/sys/devices/platform/i2c_omap.3/i2c-3/3-0053/leds/spotlight   brightness    0660 camera system
+
 # Motorola CedarPoint Baseband Logger
 /dev/bus/usb/002/123      0660   root       radio
