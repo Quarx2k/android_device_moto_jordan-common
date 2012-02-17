@@ -82,9 +82,6 @@ symlink("busybox", "/system/xbin/[", "/system/xbin/[[",
         "/system/xbin/which", "/system/xbin/whoami", "/system/xbin/xargs",
         "/system/xbin/xz", "/system/xbin/xzcat", "/system/xbin/yes",
         "/system/xbin/zcat");
-symlink("qwerty.kcm.bin", "/system/usr/keychars/cpcap-key.kcm.bin",
-        "/system/usr/keychars/qtouch-touchscreen.kcm.bin",
-        "/system/usr/keychars/sholes-keypad.kcm.bin");
 symlink("toolbox", "/system/bin/cmp",
         "/system/bin/getevent", "/system/bin/getprop", "/system/bin/hd",
         "/system/bin/ifconfig", "/system/bin/iftop",
