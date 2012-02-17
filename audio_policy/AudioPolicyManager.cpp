@@ -61,6 +61,8 @@ AudioPolicyManagerBase::routing_strategy AudioPolicyManager::getStrategy(
         // while key clicks are played produces a poor result
 #ifdef HAVE_FM_RADIO
     case AudioSystem::FM:
+#else
+    case 0x0A:
 #endif
     case AudioSystem::TTS:
     case AudioSystem::MUSIC:
