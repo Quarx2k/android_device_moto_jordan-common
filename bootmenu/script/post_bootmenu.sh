@@ -21,7 +21,7 @@ mount -o remount,rw rootfs /
 mount -o remount,rw $PART_SYSTEM /system
 ##################################################
 
-# fast button warning (to check when script is really used)
+# fast button warning (to check if this script is used in recovery)
 if [ -L /sbin/adbd.root ]; then
     echo 1 > /sys/class/leds/button-backlight/brightness
     usleep 150000
@@ -41,14 +41,6 @@ if [ -d /system/bootmenu/init.d ]; then
     chmod 755 /system/bootmenu/init.d/*
     run-parts /system/bootmenu/init.d/
 fi
-
-chmod 755 /system/etc/init.d/*
-run-parts /system/etc/init.d/
-
-# Camera flash
-busybox chmod a+rw /sys/class/leds/spotlight/*
-busybox chmod a+rw /sys/class/leds/torch-flash/*
-busybox chown -R camera:system /sys/class/leds/torch-flash /sys/class/leds/spotlight
 
 ######## Don't Delete.... ########################
 mount -o remount,ro rootfs /
