@@ -17,12 +17,7 @@ rm -f $REPACK/ota/system/media/video/*.480p.mp4
 
 # Apk required, (forbidden in product copy files in ics)
 cp $DEVICE_TOP/prebuilt/app/basebandswitcherV4.0.apk $REPACK/ota/system/app/BasebandSwitcher.apk
-<<<<<<< HEAD
-cp $DEVICE_TOP/prebuilt/app/DefyCamera.apk $REPACK/ota/system/app/DefyCamera.apk
 
-#cp $DEVICE_TOP/prebuilt/app/Superuser.apk $REPACK/ota/system/app/Superuser.apk
-=======
->>>>>>> a6bb781... restore vendor/cm sysinit
 cp -f $VENDOR_TOP/app/* $REPACK/ota/system/app/
 
 # these scripts are not required or bad
