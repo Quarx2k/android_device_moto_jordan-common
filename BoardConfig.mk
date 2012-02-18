@@ -64,6 +64,8 @@ WIFI_AP_DRIVER_MODULE_PATH  := "/system/lib/modules/tiap_drv.ko"
 WIFI_AP_DRIVER_MODULE_NAME  := tiap_drv
 WIFI_AP_FIRMWARE_LOADER     := wlan_ap_loader
 WIFI_AP_DRIVER_MODULE_ARG   := ""
+BOARD_HOSTAPD_DRIVER        := true
+BOARD_HOSTAPD_DRIVER_NAME   := wilink
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
