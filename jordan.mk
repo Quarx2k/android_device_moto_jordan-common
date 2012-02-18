@@ -81,6 +81,7 @@ PRODUCT_PACKAGES += Camera camera.jordan
 PRODUCT_PACKAGES += iwmulticall hostap wlan_loader wlan_cu wpa_supplicant
 PRODUCT_PACKAGES += libhostapdcli libCustomWifi libwpa_client libtiOsLib
 PRODUCT_PACKAGES += tiwlan.ini dhcpcd.conf wpa_supplicant.conf hostapd.conf
+PRODUCT_PACKAGES += tiap_loader tiap_cu
 
 # Various packages
 PRODUCT_PACKAGES += \
