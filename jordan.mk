@@ -77,18 +77,15 @@ PRODUCT_PACKAGES += gralloc.default hwcomposer.default
 # ICS Camera
 PRODUCT_PACKAGES += Camera camera.jordan
 
-# Common packages (gingerbread/ics)
+# Wifi packages
+PRODUCT_PACKAGES += iwmulticall hostap wlan_loader wlan_cu wpa_supplicant
+PRODUCT_PACKAGES += libhostapdcli libCustomWifi libwpa_client libtiOsLib
+PRODUCT_PACKAGES += tiwlan.ini dhcpcd.conf wpa_supplicant.conf hostapd.conf
+
+# Various packages
 PRODUCT_PACKAGES += \
-	tiwlan.ini \
 	dspexec \
 	libbridge \
-	wlan_cu \
-	libtiOsLib \
-	wlan_loader \
-	libCustomWifi \
-	wpa_cli wpa_supplicant libwpa_client \
-	wpa_supplicant.conf \
-	dhcpcd.conf \
 	libOMX.TI.AAC.encode \
 	libOMX.TI.AAC.decode \
 	libOMX.TI.AMR.decode \
@@ -102,11 +99,6 @@ PRODUCT_PACKAGES += \
 	libLCML \
 	libOMX_Core \
 	libfnc \
-	libstagefrighthw \
-	iwmulticall \
-	hostap \
-	hostapd.conf \
-	libhostapdcli \
 	DefyParts \
 	Usb 
 
@@ -122,7 +114,8 @@ PRODUCT_PACKAGES += e2fsck
 PRODUCT_PACKAGES += DroidSSHd dropbear dropbearkey sftp-server scp ssh
 
 # CM9 apps
-PRODUCT_PACKAGES += Trebuchet FileManager CMStats Torch
+PRODUCT_PACKAGES += Trebuchet FileManager Torch
+
 
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
