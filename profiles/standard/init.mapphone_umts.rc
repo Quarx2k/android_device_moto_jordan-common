@@ -296,7 +296,7 @@ service akmd2 /system/bin/akmd2
     group compass misc input
 
 # Wifi services
-service wlan_loader /system/bin/logwrapper /system/bin/wlan_loader -f /system/etc/wifi/fw_wlan1271.bin -i /system/etc/wifi/tiwlan.ini -e /pds/wifi/nvs_map.bin
+service wlan_loader /system/bin/wlan_loader -f /system/etc/wifi/fw_wlan1271.bin -i /system/etc/wifi/tiwlan.ini -e /pds/wifi/nvs_map.bin
     class main
     disabled
     oneshot
@@ -305,13 +305,10 @@ service wpa_supplicant /system/bin/wpa_supplicant -Dtiwlan0 -itiwlan0 -c/data/mi
     socket wpa_tiwlan0 dgram 660 wifi wifi
     disabled
     oneshot
-service wlan_ap_loader /system/bin/logwrapper /system/bin/tiap_loader -f /system/etc/wifi/fw_tiwlan_ap.bin -i /system/etc/wifi/tiwlan_ap.ini -e /pds/wifi/nvs_map.bin
+service wlan_ap_loader /system/bin/tiap_loader -f /system/etc/wifi/fw_tiwlan_ap.bin -i /system/etc/wifi/tiwlan_ap.ini -e /pds/wifi/nvs_map.bin
     disabled
     oneshot
-service hostapd /system/bin/hostap -d /data/misc/wifi/hostapd.conf
-    class main
-    disabled
-    oneshot
+
 service dhcpcd_tiwlan0 /system/bin/dhcpcd -ABKL
     class main
     disabled
@@ -320,6 +317,21 @@ service iprenew_tiwlan0 /system/bin/dhcpcd -n
     class main
     disabled
     oneshot
+
+service dhcpcd_bnep0 /system/bin/dhcpcd -ABKL
+    class main
+    disabled
+    oneshot
+service iprenew_bnep0 /system/bin/dhcpcd -n
+    class main
+    disabled
+    oneshot
+
+#in ICS, loaded by netd
+#service hostapd /system/bin/logwrapper /system/bin/hostap -d /data/misc/wifi/hostapd.conf
+#    class main
+#    disabled
+#    oneshot
 
 # 3D init
 service pvrsrvinit /system/bin/pvrsrvinit
