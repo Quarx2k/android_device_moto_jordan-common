@@ -30,7 +30,6 @@ BOARD_DEFY_MODEL := DEFY_FROYO
 USE_CAMERA_STUB := false
 BOARD_USES_GENERIC_AUDIO := false
 
-TARGET_NO_RECOVERY := false
 TARGET_NO_RADIOIMAGE := true
 TARGET_NO_BOOTLOADER := true
 TARGET_NO_PREINSTALL := true
@@ -66,101 +65,80 @@ WIFI_AP_DRIVER_MODULE_NAME  := tiap_drv
 WIFI_AP_FIRMWARE_LOADER     := wlan_ap_loader
 WIFI_AP_DRIVER_MODULE_ARG   := ""
 
-BOARD_USE_YUV422I_DEFAULT_COLORFORMAT := true
-BOARD_EGL_CFG := device/motorola/jordan/egl.cfg
-DEFAULT_FB_NUM := 0
-
-BOARD_CUSTOM_USB_CONTROLLER := ../../device/motorola/jordan/UsbController.cpp
-
+# Bluetooth
 BOARD_HAVE_BLUETOOTH := true
 TARGET_CUSTOM_BLUEDROID := ../../../device/motorola/jordan/bluedroid.c
 
+# Usb Specific
+BOARD_CUSTOM_USB_CONTROLLER := ../../device/motorola/jordan/UsbController.cpp
+BOARD_USE_USB_MASS_STORAGE_SWITCH := true
 BOARD_MASS_STORAGE_FILE_PATH := "/sys/devices/platform/usb_mass_storage/lun0/file"
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/usb_mass_storage/lun0/file"
 BOARD_MTP_DEVICE := "/dev/mtp"
 
+# Build options
 BOARD_BOOTIMAGE_MAX_SIZE := $(call image-size-from-data-size,0x00280000)
 BOARD_RECOVERYIMAGE_MAX_SIZE := $(call image-size-from-data-size,0x00500000)
 BOARD_SYSTEMIMAGE_MAX_SIZE := $(call image-size-from-data-size,0x07500000)
 BOARD_USERDATAIMAGE_MAX_SIZE := $(call image-size-from-data-size,0x04ac0000)
 BOARD_FLASH_BLOCK_SIZE := 131072
+TARGET_CUSTOM_RELEASETOOL := ./device/motorola/jordan/releasetools/squisher
 
+# OMX Stuff
 HARDWARE_OMX := true
 TARGET_USE_OMX_RECOVERY := true
 TARGET_USE_OMAP_COMPAT  := true
 BUILD_WITH_TI_AUDIO := 1
 BUILD_PV_VIDEO_ENCODERS := 1
 
-BOARD_USE_USB_MASS_STORAGE_SWITCH := true
-BOARD_NO_RGBX_8888 := true
-BOARD_USE_KINETO_COMPATIBILITY := true
-
-# Changes related to bootmenu
+# Bootmenu
 BOARD_USES_BOOTMENU := true
-
-# Recovery
-TARGET_RECOVERY_PIXEL_FORMAT := "BGRA_8888"
-BOARD_CUSTOM_RECOVERY_KEYMAPPING:= ../../device/motorola/jordan/recovery_ui.c
-BOARD_HAS_NO_MISC_PARTITION := true
-BOARD_RECOVERY_IGNORE_BOOTABLES := true
-BOARD_HAS_SMALL_RECOVERY := true
-BOARD_HAS_LARGE_FILESYSTEM := true
-BOARD_HAS_NO_SELECT_BUTTON := true
-
 BOARD_SDCARD_DEVICE_PRIMARY   := /dev/block/mmcblk0p1
 BOARD_SDCARD_DEVICE_SECONDARY := /dev/block/mmcblk0
 BOARD_SDEXT_DEVICE  := /dev/block/mmcblk0p2
 BOARD_SYSTEM_DEVICE := /dev/block/mmcblk1p21
 BOARD_DATA_DEVICE   := /dev/block/mmcblk1p25
 
-# Reboot mode for reboot menu, but only handle recovery, not bootmenu :(
+# Recovery
+TARGET_RECOVERY_PIXEL_FORMAT := "BGRA_8888"
+BOARD_RECOVERY_IGNORE_BOOTABLES := true
+BOARD_HAS_NO_MISC_PARTITION := true
+BOARD_HAS_NO_SELECT_BUTTON := true
+BOARD_HAS_SMALL_RECOVERY := true
+BOARD_HAS_LARGE_FILESYSTEM := true
+BOARD_NEVER_UMOUNT_SYSTEM := true
+BOARD_CUSTOM_RECOVERY_KEYMAPPING:= ../../device/motorola/jordan/recovery_keys.c
+BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext3
+TARGET_USERIMAGES_USE_EXT4 := false
+#TARGET_RECOVERY_UI_LIB := librecovery_ui_generic
+#TARGET_RECOVERY_UPDATER_LIBS += librecovery_updater_generic
 TARGET_RECOVERY_PRE_COMMAND := "/system/bootmenu/script/reboot_command.sh"
 TARGET_RECOVERY_PRE_COMMAND_CLEAR_REASON := true
 
-BOARD_NEVER_UMOUNT_SYSTEM := true
-#TARGET_RECOVERY_UI_LIB := librecovery_ui_generic
-#TARGET_RECOVERY_UPDATER_LIBS += librecovery_updater_generic
-
-# Override cyanogen squisher to customize our update zip package
-TARGET_CUSTOM_RELEASETOOL := ./device/motorola/jordan/releasetools/squisher
-
 # Jordan need 2nd-init binary from motorola common
 TARGET_NEEDS_MOTOROLA_HIJACK := true
-
 
 # FM Radio (not ready in ICS)
 # BOARD_HAVE_FM_RADIO := true
 # BOARD_FM_DEVICE := wl1271
 # COMMON_GLOBAL_CFLAGS += -DHAVE_FM_RADIO
 
-# Gingerbread kernel specifics
-ifeq ($(BOARD_DEFY_MODEL),DEFY_PLUS)
-BOARD_USE_CID_ROTATE_34 := true
-endif
-
-## ICS specifics
-
+# Egl Specific
+BOARD_EGL_CFG := device/motorola/jordan/egl.cfg
+DEFAULT_FB_NUM := 0
+BOARD_USE_YUV422I_DEFAULT_COLORFORMAT := true
+BOARD_NO_RGBX_8888 := true
 BOARD_USES_OVERLAY := true
-USE_OPENGL_RENDERER := true
-#BOARD_USES_HGL := true
-BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext3
-TARGET_USERIMAGES_USE_EXT4 := false
-
-#USE_OPENGL_RENDERER := true
 COMMON_GLOBAL_CFLAGS += -DMISSING_EGL_EXTERNAL_IMAGE -DMISSING_EGL_PIXEL_FORMAT_YV12
 COMMON_GLOBAL_CFLAGS += -DMISSING_GRALLOC_BUFFERS
 BOARD_QCOM_BASED_CAMERA_HAL := true
 BOARD_LIBUI_USE_OVERLAY_CPP := true
 
-# CM9
-BOARD_CUSTOM_RECOVERY_KEYMAPPING:= ../../device/motorola/jordan/recovery_keys.c
-
+# Other..
+BOARD_USE_LEGACY_TOUCHSCREEN := true
 ENABLE_SENSORS_COMPAT := true
 TARGET_PROXIMITY_SENSOR_LIMIT := 0x1F
-#segfault: TARGET_USES_OLD_LIBSENSORS_HAL := true
-
 BOARD_USES_AUDIO_LEGACY := true
-BOARD_USE_LEGACY_TOUCHSCREEN := true
 TARGET_PROVIDES_LIBAUDIO := true
-BOARD_USES_GPSSHIM := false
+BOARD_USE_KINETO_COMPATIBILITY := true
 

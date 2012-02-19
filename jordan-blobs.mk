@@ -16,11 +16,11 @@ DEVICE_PREBUILT := device/motorola/jordan/prebuilt
 
 #temporary cm9 bootanimation
 PRODUCT_COPY_FILES += \
-	$(DEVICE_PREBUILT)/bootanimation.zip:system/media/bootanimation.zip \
+	$(DEVICE_PREBUILT)/bootanimation.zip:system/media/bootanimation.zip 
 
 PRODUCT_COPY_FILES += \
 	$(DEVICE_PREBUILT)/etc/terminfo/l/linux:system/etc/terminfo/l/linux \
-	$(DEVICE_PREBUILT)/etc/terminfo/x/xterm:system/etc/terminfo/x/xterm \
+	$(DEVICE_PREBUILT)/etc/terminfo/x/xterm:system/etc/terminfo/x/xterm 
 
 #key layouts, names must fit the ones in /proc/bus/input/devices, qwerty.kl is the fallback one.
 PRODUCT_COPY_FILES += \
@@ -37,7 +37,7 @@ PRODUCT_COPY_FILES += \
 	$(DEVICE_PREBUILT)/usr/keypad.kl:system/usr/keylayout/sholes-keypad.kl \
 	$(DEVICE_PREBUILT)/usr/keypad.kl:system/usr/keylayout/umts_jordan-keypad.kl \
 	$(DEVICE_PREBUILT)/usr/cpcap-key.kl:system/usr/keylayout/cpcap-key.kl \
-	$(DEVICE_PREBUILT)/usr/keychars/cpcap-key.kcm:system/usr/keychars/cpcap-key.kcm \
+	$(DEVICE_PREBUILT)/usr/keychars/cpcap-key.kcm:system/usr/keychars/cpcap-key.kcm 
 
 
 PRODUCT_COPY_FILES += \
@@ -59,18 +59,15 @@ PRODUCT_COPY_FILES += \
 	$(DEVICE_PREBUILT)/etc/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
 	$(DEVICE_PREBUILT)/etc/gpsconfig.xml:system/etc/gpsconfig.xml \
 	$(DEVICE_PREBUILT)/etc/location.cfg:system/etc/location.cfg \
+	device/motorola/jordan/vold.fstab:system/etc/vold.fstab \
 	device/motorola/jordan/media_profiles.xml:system/etc/media_profiles.xml \
 	device/motorola/jordan/modules/modules.alias:system/lib/modules/modules.alias \
-	device/motorola/jordan/modules/modules.dep:system/lib/modules/modules.dep \
+	device/motorola/jordan/modules/modules.dep:system/lib/modules/modules.dep 
 
 ifdef CM_RELEASE
 	PRODUCT_COPY_FILES += device/motorola/jordan/custom_backup_release.txt:system/etc/custom_backup_list.txt
 else
 	PRODUCT_COPY_FILES += device/motorola/jordan/custom_backup_list.txt:system/etc/custom_backup_list.txt
 endif
-
-#app
-PRODUCT_COPY_FILES += \
-	device/motorola/jordan/prebuilt/app/basebandswitcherV4.0.apk:system/app/basebandswitcherV4.0.apk \
 
 #end of jordan-blobs.mk
