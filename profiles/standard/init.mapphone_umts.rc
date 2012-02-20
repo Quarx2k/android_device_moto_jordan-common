@@ -113,9 +113,6 @@ on post-fs-data
     # create dropbear directory
     mkdir /data/dropbear 0755 root shell
 
-    # copy hostapd configuration
-    copy /system/etc/wifi/softap/hostapd.conf /data/misc/wifi/hostapd.conf
-
     setprop vold.post_fs_data_done 1
 
 on init
