@@ -50,9 +50,9 @@
 /dev/DspBridge            0666   audio      graphics
 /dev/hp3a-omap            0770   media      camera
 /dev/hplens-omap          0770   media      camera
-/dev/video0               0770   media      camera
-/dev/video1               0770   media      graphics
-/dev/video2               0770   system     graphics
+/dev/video0               0774   media      camera
+/dev/video1               0774   media      graphics
+/dev/video2               0774   system     graphics
 /dev/video3               0777   media      camera
 /dev/smodule              0777   root       root
 /dev/syspanic             0770   radio      radio
@@ -66,10 +66,10 @@
 /dev/cpcap_batt           0660   root       system
 /dev/cpcap_mot_rtc        0660   root       system
 /dev/cpcap_uc             0660   root       system
-/dev/camera0              0777   root       root
+/dev/camera0              0666   media      camera
 /dev/i2c-1                0660   root       system
 /dev/i2c-2                0660   root       system
-/dev/i2c-3                0660   root       camera
+/dev/i2c-3                0660   media      camera
 /dev/pvrsrvkm             0666   system     graphics
 /dev/netmon               0660   root       radio
 /dev/block/mmcblk0p1      0660   root       sdcard_rw
@@ -94,11 +94,7 @@
 /sys/devices/virtual/input/input*   enable      0660  root   input
 /sys/devices/virtual/input/input*   poll_delay  0660  root   input
 
-/sys/devices/platform/i2c_omap.3/i2c-3/3-0053/leds/torch-flash brightness    0660 camera system
-/sys/devices/platform/i2c_omap.3/i2c-3/3-0053/leds/torch-flash flash_light   0660 camera system
-/sys/devices/platform/i2c_omap.3/i2c-3/3-0053/leds/torch-flash camera_strobe 0660 camera system
-
-/sys/devices/platform/i2c_omap.3/i2c-3/3-0053/leds/spotlight   brightness    0660 camera system
+/sys/devices/platform/i2c_omap.3/i2c-3/3-0053/leds/torch-flash brightness    0660 media camera
 
 # Motorola CedarPoint Baseband Logger
 /dev/bus/usb/002/123      0660   root       radio
