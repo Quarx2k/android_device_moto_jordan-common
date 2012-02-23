@@ -31,6 +31,7 @@
 
 #define LOG_TAG "CameraHAL"
 #define LOG_NDEBUG 0
+#define LOG_PARAMS 0
 
 #include "CameraHardwareInterface.h"
 #include <hardware/hardware.h>
@@ -39,6 +40,8 @@
 #include <fcntl.h>
 #include <linux/ioctl.h>
 #include <hardware/gralloc.h>
+
+#include "overlay.h"
 
 #define NO_ERROR 0
 
@@ -56,6 +59,12 @@ struct legacy_camera_device {
     preview_stream_ops *window;
     gralloc_module_t const *gralloc;
     camera_memory_t *clientData;
+
+    overlay_module_t *omi;
+    struct overlay_t *overlay;
+    overlay_t* ovl;
+    overlay_control_device_t *overlay_ctrl;
+    overlay_data_device_t *overlay_data;
 };
 
 /** camera_hw_device implementation **/
@@ -168,6 +177,7 @@ void
 CameraHAL_HandlePreviewData(const android::sp<android::IMemory>& dataPtr,
                                      int32_t previewWidth, int32_t previewHeight, void* user)
 {
+    LOGD("%s: previewWidth:%d previewHeight:%d ", __FUNCTION__, previewWidth, previewHeight);
     struct legacy_camera_device *lcdev = (struct legacy_camera_device *) user;
     if (lcdev->window != NULL && lcdev->request_memory != NULL) {
         ssize_t offset;
@@ -190,7 +200,12 @@ CameraHAL_HandlePreviewData(const android::sp<android::IMemory>& dataPtr,
                                                             previewWidth, previewHeight,
                                                             bufferFormat);
 
-        if (retVal == NO_ERROR) {
+        if (retVal != NO_ERROR) {
+
+            LOGE("%s: ERROR %d on set_buffers_geometry\n", __FUNCTION__, retVal);
+         
+        } else {
+
             int32_t          stride;
             buffer_handle_t *bufHandle = NULL;
 
@@ -271,8 +286,8 @@ CameraHAL_DataCb(int32_t msg_type, const android::sp<android::IMemory>& dataPtr,
 {
     struct legacy_camera_device *lcdev = (struct legacy_camera_device *) user;
 
-    //LOGV("CameraHAL_DataCb: msg_type:%d user:%p\n", msg_type, user);
-    //
+    LOGV("CameraHAL_DataCb: msg_type:%d user:%p\n", msg_type, user);
+
     if (lcdev->data_callback != NULL && lcdev->request_memory != NULL) {
         /* Make sure any pre-existing heap is released */
         if (lcdev->clientData != NULL) {
@@ -471,7 +486,7 @@ defy_camera_set_preview_window(struct camera_device * device,
 {
     int rv = -EINVAL;
     int min_bufs = -1;
-    int kBufferCount = 8;
+    int kBufferCount = 4;
     struct legacy_camera_device *lcdev = to_lcdev(device);
 
     LOGV("camera_set_preview_window : Window :%p\n", window);
@@ -488,7 +503,7 @@ defy_camera_set_preview_window(struct camera_device * device,
         LOGD("%s: window is NULL", __FUNCTION__);
         return -EINVAL;
     }
-    LOGD("%s : OK window is %p", __FUNCTION__, window);
+    LOGD("%s: OK window is %p", __FUNCTION__, window);
 
     if (!lcdev->gralloc) {
         hw_module_t const* module;
@@ -505,10 +520,33 @@ defy_camera_set_preview_window(struct camera_device * device,
         LOGE("%s: could not retrieve min undequeued buffer count", __FUNCTION__);
         return -1;
     }
+
+    int w, h;
+    android::CameraParameters params(lcdev->hwif->getParameters());
+    params.getPreviewSize(&w, &h);
+
+    int ret;
+    lcdev->ovl = lcdev->overlay_ctrl->createOverlay(lcdev->overlay_ctrl, w, h, OVERLAY_FORMAT_DEFAULT);//hal_pixel_format);
+    LOGV("%s: createOverlay -> %p\n",  __FUNCTION__, lcdev->ovl);
+    if (!lcdev->ovl) {
+        LOGE("%s: failed to create overlay object", __FUNCTION__);
+    }
+
+    if (!lcdev->overlay_data) { 
+        ret = overlay_data_open(&lcdev->omi->common, &lcdev->overlay_data);
+        LOGD("%s: overlay_data_open overlay data obj=%p, ret=%d\n", __FUNCTION__, lcdev->overlay_data, ret);
+        if (ret != 0) return ret;
+        ret = lcdev->overlay_data->initialize(lcdev->overlay_data, lcdev->ovl->getHandleRef(lcdev->ovl));
+        LOGD("%s: overlay_data initialize ret=%d\n", __FUNCTION__, ret);
+        if (ret != 0) return ret;
+        kBufferCount = lcdev->overlay_data->getBufferCount(lcdev->overlay_data);
+        printf("overlay buffer count = %d\n", kBufferCount);
+    }
+
     LOGD("%s: min_bufs:%i", __FUNCTION__, min_bufs);
     if (min_bufs >= kBufferCount) {
         LOGE("%s: min undequeued buffer count %i is too high (expecting at most %i)",
-             __FUNCTION__, min_bufs, kBufferCount - 1);
+             __FUNCTION__, min_bufs, kBufferCount);
     }
 
     LOGD("%s: setting buffer count to %i", __FUNCTION__, kBufferCount);
@@ -517,18 +555,8 @@ defy_camera_set_preview_window(struct camera_device * device,
         return -1;
     }
 
-    int w, h;
-    android::CameraParameters params(lcdev->hwif->getParameters());
-    params.getPreviewSize(&w, &h);
-    const char *str_preview_format = params.getPreviewFormat();
-    LOGD("%s: preview format %s", __FUNCTION__, str_preview_format);
-    if (strcmp(str_preview_format, "rgb565") != 0) {
-         LOGW("fixing preview format, %s is not supported", str_preview_format);
-         //params.setPreviewFormat("rgb565");
-    }
-
-    //http://androidxref.com/source/xref/hardware/libhardware/include/hardware/gralloc.h
-    if (window->set_usage(window, 0x1033)) {
+    // http://androidxref.com/source/xref/hardware/libhardware/include/hardware/gralloc.h
+    if (window->set_usage(window, 0x1023)) {
         LOGE("%s: could not set usage on gralloc buffer", __FUNCTION__);
         return -1;
     }
@@ -537,11 +565,26 @@ defy_camera_set_preview_window(struct camera_device * device,
     //int hal_pixel_format = HAL_PIXEL_FORMAT_YCrCb_420_SP;
     //int hal_pixel_format = HAL_PIXEL_FORMAT_YCbCr_422_I;
 
+    //to do : link window buffer and size?
     LOGV("%s: set_buffers_geometry(%dx%d,%d)", __FUNCTION__, w, h, hal_pixel_format);
     if (window->set_buffers_geometry(window, w, h, hal_pixel_format)) {
-        LOGE("%s: could not set buffers geometry to %s",
-             __FUNCTION__, str_preview_format);
+        LOGE("%s: could not set buffers geometry to format %d",
+             __FUNCTION__, hal_pixel_format);
         return -1;
+    }
+
+    if (lcdev->overlay_data != NULL && kBufferCount) {
+        overlay_buffer_t buffer;
+        if (lcdev->overlay_data->dequeueBuffer(lcdev->overlay_data, &buffer) == 0) {
+            kBufferCount--;
+            LOGD("%s: dequeueBuffer buffer = %p\n", __FUNCTION__, buffer);
+            void* address = lcdev->overlay_data->getBufferAddress(lcdev->overlay_data, buffer);
+            LOGD("%s: buffer address = %p\n", __FUNCTION__, address);
+        }
+        if (lcdev->overlay_data->queueBuffer(lcdev->overlay_data, buffer) == 0) {
+            LOGD("%s: queueBuffer buffer = %p\n", __FUNCTION__, buffer);
+            kBufferCount++;
+        }
     }
 
     return NO_ERROR;
@@ -750,10 +793,11 @@ defy_camera_get_parameters(struct camera_device * device)
     LOGV("camera_get_parameters\n");
     android::CameraParameters params(lcdev->hwif->getParameters());
     //CameraHAL_FixupParams(params);
-    LOGV("camera_get_parameters: after hwif->getParameters()\n");
+    if (LOG_PARAMS) LOGV("%s: after hwif->getParameters()\n", __FUNCTION__);
     rc = strdup((char *)params.flatten().string());
-    LOGV("camera_get_parameters: returning rc:%p :%s\n",
-          rc, (rc != NULL) ? rc : "EMPTY STRING");
+    if (LOG_PARAMS)
+         LOGV("%s: returning rc:%p :%s\n", __FUNCTION__,
+                   rc, (rc != NULL) ? rc : "EMPTY STRING");
     return rc;
 }
 
@@ -793,6 +837,32 @@ defy_camera_dump(struct camera_device * device, int fd)
     return lcdev->hwif->dump(fd, args);
 }
 
+int defy_dequeue_buffer(struct preview_stream_ops* w, buffer_handle_t** buffer, int *stride)
+{
+    LOGD("%s\n", __FUNCTION__);
+    return 0;
+}
+
+extern struct overlay_module_t overlay_module;
+
+int defy_link_overlay(struct legacy_camera_device *lcdev)
+{
+    int ret = 0;
+    overlay_control_device_t* overlay_ctrl = NULL;
+
+    lcdev->omi = &OVERLAY_MODULE_INFO_SYM;
+    //lcdev->omi.common.methods = &overlay_module_methods;
+
+    LOGD("%s: overlay_control_open .... \n", __FUNCTION__);
+
+    ret = overlay_control_open(&lcdev->omi->common, &overlay_ctrl);
+    LOGD("%s: overlay_control_open overlay=%p, ret=%d\n", __FUNCTION__, overlay_ctrl, ret);
+    if (ret != NO_ERROR) return ret;
+    lcdev->overlay_ctrl = overlay_ctrl;
+
+    return ret;
+}
+
 int
 defy_camera_device_close(hw_device_t* device)
 {
@@ -808,6 +878,19 @@ defy_camera_device_close(hw_device_t* device)
             }
             free(camera_ops);
         }
+
+        LOGD("%s: overlay_data_close .... \n", __FUNCTION__);
+        //if (lcdev->overlay_data != NULL) overlay_data_close(lcdev->overlay_data)
+        if (lcdev->overlay_data != NULL) {
+            lcdev->overlay_data->common.close(&lcdev->overlay_data->common);
+            lcdev->overlay_data = NULL;
+        }
+        LOGD("%s: overlay_ctrl_close .... \n", __FUNCTION__);
+        if (lcdev->overlay_ctrl != NULL) {
+            lcdev->overlay_ctrl->common.close(&lcdev->overlay_ctrl->common);
+            lcdev->overlay_ctrl = NULL;
+        }
+
         free(lcdev);
         rc = NO_ERROR;
     }
@@ -828,7 +911,7 @@ defy_camera_device_open(const hw_module_t* module, const char* name,
 
     int cameraId = atoi(name);
 
-    LOGD("camera_device_open: name:%s device:%p cameraId:%d\n",
+    LOGD("%s: name:%s device:%p cameraId:%d\n", __FUNCTION__,
           name, device, cameraId);
 
     lcdev = (struct legacy_camera_device *)calloc(1, sizeof(*lcdev));
@@ -873,6 +956,11 @@ defy_camera_device_open(const hw_module_t* module, const char* name,
          goto err_create_camera_hw;
     }
     *device = &lcdev->device.common;
+
+    if (defy_link_overlay(lcdev) == NO_ERROR) {
+        //lcdev->overlay_module.common.methods.open(...);
+    }
+
     return NO_ERROR;
 
 err_create_camera_hw:
@@ -882,5 +970,5 @@ err_create_camera_hw:
 }
 
 /*
- * vim:et:sts=3:sw=3
+ * vim:et:sts=4:sw=4
  */

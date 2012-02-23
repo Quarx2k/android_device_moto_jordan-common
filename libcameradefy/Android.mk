@@ -10,6 +10,8 @@ LOCAL_MODULE         := camera.jordan
 LOCAL_SRC_FILES      := cameraHal.cpp
 LOCAL_PRELINK_MODULE := false
 
+LOCAL_SRC_FILES += v4l2_utils.c overlay.cpp
+
 LOCAL_SHARED_LIBRARIES += \
     liblog \
     libutils \
