@@ -61,7 +61,6 @@ struct legacy_camera_device {
     camera_memory_t *clientData;
 
     overlay_module_t *omi;
-    struct overlay_t *overlay;
     overlay_t* ovl;
     overlay_control_device_t *overlay_ctrl;
     overlay_data_device_t *overlay_data;
@@ -532,6 +531,19 @@ defy_camera_set_preview_window(struct camera_device * device,
         LOGE("%s: failed to create overlay object", __FUNCTION__);
     }
 
+    int hal_pixel_format = HAL_PIXEL_FORMAT_RGB_565;
+    //int hal_pixel_format = HAL_PIXEL_FORMAT_YCrCb_420_SP;
+    //int hal_pixel_format = HAL_PIXEL_FORMAT_YCbCr_422_I;
+    //int hal_pixel_format = 7;
+
+    //to do : link window buffer and size?
+    LOGV("%s: set_buffers_geometry(w=%d,h=%d,f=%d)", __FUNCTION__, w, h, hal_pixel_format);
+    if (window->set_buffers_geometry(window, w, h, hal_pixel_format)) {
+        LOGE("%s: could not set buffers geometry to format %d",
+             __FUNCTION__, hal_pixel_format);
+        return -1;
+    }
+
     if (!lcdev->overlay_data) { 
         ret = overlay_data_open(&lcdev->omi->common, &lcdev->overlay_data);
         LOGD("%s: overlay_data_open overlay data obj=%p, ret=%d\n", __FUNCTION__, lcdev->overlay_data, ret);
@@ -556,31 +568,25 @@ defy_camera_set_preview_window(struct camera_device * device,
     }
 
     // http://androidxref.com/source/xref/hardware/libhardware/include/hardware/gralloc.h
-    if (window->set_usage(window, 0x1023)) {
+    if (window->set_usage(window, 0x1423)) {
         LOGE("%s: could not set usage on gralloc buffer", __FUNCTION__);
         return -1;
     }
 
-    int hal_pixel_format = HAL_PIXEL_FORMAT_RGB_565;
-    //int hal_pixel_format = HAL_PIXEL_FORMAT_YCrCb_420_SP;
-    //int hal_pixel_format = HAL_PIXEL_FORMAT_YCbCr_422_I;
-
-    //to do : link window buffer and size?
-    LOGV("%s: set_buffers_geometry(%dx%d,%d)", __FUNCTION__, w, h, hal_pixel_format);
-    if (window->set_buffers_geometry(window, w, h, hal_pixel_format)) {
-        LOGE("%s: could not set buffers geometry to format %d",
-             __FUNCTION__, hal_pixel_format);
-        return -1;
-    }
-
-    if (lcdev->overlay_data != NULL && kBufferCount) {
+    if (lcdev->overlay_data && lcdev->ovl && kBufferCount) {
         overlay_buffer_t buffer;
+
+        //??? neeed doooc LOGV("%s: commit buffer\n", __FUNCTION__);
+        lcdev->overlay_ctrl->commit(lcdev->overlay_ctrl, lcdev->ovl);
+
+        LOGV("%s: dequeueBuffer\n", __FUNCTION__);
         if (lcdev->overlay_data->dequeueBuffer(lcdev->overlay_data, &buffer) == 0) {
             kBufferCount--;
             LOGD("%s: dequeueBuffer buffer = %p\n", __FUNCTION__, buffer);
             void* address = lcdev->overlay_data->getBufferAddress(lcdev->overlay_data, buffer);
             LOGD("%s: buffer address = %p\n", __FUNCTION__, address);
         }
+
         if (lcdev->overlay_data->queueBuffer(lcdev->overlay_data, buffer) == 0) {
             LOGD("%s: queueBuffer buffer = %p\n", __FUNCTION__, buffer);
             kBufferCount++;
@@ -843,8 +849,6 @@ int defy_dequeue_buffer(struct preview_stream_ops* w, buffer_handle_t** buffer, 
     return 0;
 }
 
-extern struct overlay_module_t overlay_module;
-
 int defy_link_overlay(struct legacy_camera_device *lcdev)
 {
     int ret = 0;
@@ -958,10 +962,10 @@ defy_camera_device_open(const hw_module_t* module, const char* name,
     *device = &lcdev->device.common;
 
     if (defy_link_overlay(lcdev) == NO_ERROR) {
-        //lcdev->overlay_module.common.methods.open(...);
+        return NO_ERROR;
+    } else {
+        ret = -ENODEV;
     }
-
-    return NO_ERROR;
 
 err_create_camera_hw:
     free(lcdev);
