@@ -114,70 +114,22 @@ CameraHAL_NotifyCb(int32_t msg_type, int32_t ext1,
     }
 }
 
-//
-// http://code.google.com/p/android/issues/detail?id=823#c4
-//
-void Yuv420spToRGBA8888(char* rgb, char* yuv420sp, int width, int height)
-{
-     int frameSize = width * height;
-     int colr = 0;
-     for (int j = 0, yp = 0, k = 0; j < height; j++) {
-          int uvp = frameSize + (j >> 1) * width, u = 0, v = 0;
-          for (int i = 0; i < width; i++, yp++) {
-                int y = (0xff & ((int) yuv420sp[yp])) - 16;
-                if (y < 0) y = 0;
-                if ((i & 1) == 0) {
-                     v = (0xff & yuv420sp[uvp++]) - 128;
-                     u = (0xff & yuv420sp[uvp++]) - 128;
-                }
-
-                int y1192 = 1192 * y;
-                int r = (y1192 + 1634 * v);
-                int g = (y1192 - 833 * v - 400 * u);
-                int b = (y1192 + 2066 * u);
-
-                if (r < 0) r = 0; else if (r > 262143) r = 262143;
-                if (g < 0) g = 0; else if (g > 262143) g = 262143;
-                if (b < 0) b = 0; else if (b > 262143) b = 262143;
-
-#if 0
-                /* for RGB8888 */
-                r = (r >> 10) & 0xff;
-                g = (g >> 10) & 0xff;
-                b = (b >> 10) & 0xff;
-
-                rgb[k++] = r;
-                rgb[k++] = g;
-                rgb[k++] = b;
-                rgb[k++] = 255;
-#else
-                /* for RGB565 */
-                /*
-                r = (r >> 13) & 0x1f;
-                g = (g >> 12) & 0x3f;
-                b = (b >> 13) & 0x1f;
-                unsigned int rgb2 = (r << 11) | (g << 5)| b;
-                */
-                unsigned short rgb2 = ((r >> 2) & 0xf800) | ((g >> 7) & 0x7e0) | ((b >> 13) & 0x1f);
-                rgb[k++] = rgb2 & 0x00ff;
-                rgb[k++] = (rgb2 >> 8) & 0xff;
-#endif
-          }
-     }
-}
-
 static void dump_parameters(const char* func, const char* params)
 {
     //todo: strtok
     LOGV("%s: %s\n", func, params);
+    if (strlen(params) > 1000)
+    LOGV("%s: %s\n", func, params + 995);
+    if (strlen(params) > 2000)
+    LOGV("%s: %s\n", func, params + 1995);
 }
 
 void
 CameraHAL_HandlePreviewData(const android::sp<android::IMemory>& dataPtr,
                                      int32_t previewWidth, int32_t previewHeight, void* user)
 {
-    LOGD("%s: previewWidth:%d previewHeight:%d ", __FUNCTION__, previewWidth, previewHeight);
     struct legacy_camera_device *lcdev = (struct legacy_camera_device *) user;
+    LOGD("%s: preview:%dx%d rqmem=%p", __FUNCTION__, previewWidth, previewHeight, lcdev->request_memory);
     if (lcdev->window != NULL && lcdev->request_memory != NULL) {
         ssize_t offset;
         size_t  size;
@@ -377,16 +329,16 @@ CameraHAL_FixupParams(android::CameraParameters &settings)
     //if (!settings.get(android::CameraParameters::KEY_PICTURE_SIZE))
     //     settings.setPictureSize(2592,1456);
 
-    const char *str_preview_format = settings.getPreviewFormat();
+    /*const char *str_preview_format = settings.getPreviewFormat();
     LOGD("%s: preview format %s", __FUNCTION__, str_preview_format);
     if (strcmp(str_preview_format, "yuv420sp") == 0) {
          LOGW("fixing preview format, '%s' is not supported", str_preview_format);
          settings.setPreviewFormat("yuv422i-yuyv");  //rgb565 is not allowed by LibSOCJordanCamera
-    }
+    }*/
 
     //LibSOCJordanCamera( 2113): Failed substring capabilities check, unsupported parameter newparam=on parseTable[i].key=focus-mode,currparam=auto
     const char *str_focus = settings.get(android::CameraParameters::KEY_FOCUS_MODE);
-    if (strcmp(str_preview_format, "on") == 0) {
+    if (strcmp(str_focus, "on") == 0) {
         settings.set(android::CameraParameters::KEY_FOCUS_MODE, "auto");
     }
     
@@ -525,26 +477,12 @@ defy_camera_set_preview_window(struct camera_device * device,
     params.getPreviewSize(&w, &h);
 
     int ret;
-    lcdev->ovl = lcdev->overlay_ctrl->createOverlay(lcdev->overlay_ctrl, w, h, OVERLAY_FORMAT_DEFAULT);//hal_pixel_format);
+    lcdev->ovl = lcdev->overlay_ctrl->createOverlay(lcdev->overlay_ctrl, w, h, OVERLAY_FORMAT_RGB_565);//OVERLAY_FORMAT_DEFAULT//hal_pixel_format);
     LOGV("%s: createOverlay -> %p\n",  __FUNCTION__, lcdev->ovl);
     if (!lcdev->ovl) {
         LOGE("%s: failed to create overlay object", __FUNCTION__);
     }
-
-    int hal_pixel_format = HAL_PIXEL_FORMAT_RGB_565;
-    //int hal_pixel_format = HAL_PIXEL_FORMAT_YCrCb_420_SP;
-    //int hal_pixel_format = HAL_PIXEL_FORMAT_YCbCr_422_I;
-    //int hal_pixel_format = 7;
-
-    //to do : link window buffer and size?
-    LOGV("%s: set_buffers_geometry(w=%d,h=%d,f=%d)", __FUNCTION__, w, h, hal_pixel_format);
-    if (window->set_buffers_geometry(window, w, h, hal_pixel_format)) {
-        LOGE("%s: could not set buffers geometry to format %d",
-             __FUNCTION__, hal_pixel_format);
-        return -1;
-    }
-
-    if (!lcdev->overlay_data) { 
+    if (!lcdev->overlay_data) {
         ret = overlay_data_open(&lcdev->omi->common, &lcdev->overlay_data);
         LOGD("%s: overlay_data_open overlay data obj=%p, ret=%d\n", __FUNCTION__, lcdev->overlay_data, ret);
         if (ret != 0) return ret;
@@ -553,6 +491,24 @@ defy_camera_set_preview_window(struct camera_device * device,
         if (ret != 0) return ret;
         kBufferCount = lcdev->overlay_data->getBufferCount(lcdev->overlay_data);
         printf("overlay buffer count = %d\n", kBufferCount);
+    }
+
+    //int hal_pixel_format = HAL_PIXEL_FORMAT_RGB_565;
+    int hal_pixel_format = HAL_PIXEL_FORMAT_RGBA_8888; //tested ok on defy...
+    //int hal_pixel_format = HAL_PIXEL_FORMAT_YCrCb_420_SP;
+    //int hal_pixel_format = HAL_PIXEL_FORMAT_YCbCr_422_I;
+
+    // http://androidxref.com/source/xref/hardware/libhardware/include/hardware/gralloc.h
+    if (window->set_usage(window, 0x0033)) {
+        LOGE("%s: could not set usage on gralloc buffer", __FUNCTION__);
+        return -1;
+    }
+    //to do : link window buffer and size?
+    LOGV("%s: set_buffers_geometry(w=%d,h=%d,f=%d)", __FUNCTION__, w, h, hal_pixel_format);
+    if (window->set_buffers_geometry(window, w, h, hal_pixel_format)) {
+        LOGE("%s: could not set buffers geometry to format %d",
+             __FUNCTION__, hal_pixel_format);
+        return -1;
     }
 
     LOGD("%s: min_bufs:%i", __FUNCTION__, min_bufs);
@@ -567,30 +523,88 @@ defy_camera_set_preview_window(struct camera_device * device,
         return -1;
     }
 
-    // http://androidxref.com/source/xref/hardware/libhardware/include/hardware/gralloc.h
-    if (window->set_usage(window, 0x1423)) {
-        LOGE("%s: could not set usage on gralloc buffer", __FUNCTION__);
-        return -1;
-    }
-
     if (lcdev->overlay_data && lcdev->ovl && kBufferCount) {
         overlay_buffer_t buffer;
 
+        ssize_t offset = 0;
+        size_t  size = w * h * 4;
+
+        //android::sp<android::IMemoryHeap> mHeap = dataPtr->getMemory(&offset, &size);
+
+        LOGV("%s: w:%d h:%d offset:%x size:%#x\n", __FUNCTION__, 
+                  w, h, (uint32_t) offset, size);//, mHeap != NULL ? mHeap->base() : 0);
+
+        int32_t          stride;
+        buffer_handle_t *bufHandle = NULL;
+
+        ret = lcdev->window->dequeue_buffer(lcdev->window, &bufHandle, &stride);
+        if (ret != NO_ERROR) {
+            LOGE("%s: ERROR dequeueing the buffer\n", __FUNCTION__);
+        } else {
+            ret = lcdev->window->lock_buffer(lcdev->window, bufHandle);
+            if (ret == NO_ERROR) {
+                int tries = 5;
+                int err = 0;
+                void *vaddr;
+
+                err = lcdev->gralloc->lock(lcdev->gralloc, *bufHandle,
+                                           GRALLOC_USAGE_SW_WRITE_MASK,
+                                           0, 0, w, h, &vaddr);
+                LOGI("%s: Window destination memory is at %p", __FUNCTION__, vaddr);
+
+                while (err && tries) {
+                    // Pano frames almost always need a retry...
+                    usleep(1000);
+                    LOGW("RETRYING LOCK");
+                    lcdev->gralloc->unlock(lcdev->gralloc, *bufHandle);
+                    err = lcdev->gralloc->lock(lcdev->gralloc, *bufHandle,
+                                               GRALLOC_USAGE_SW_WRITE_MASK,
+                                               0, 0, w, h, &vaddr);
+                    tries--;
+                }
+                if (!err) {
+                    //char *frame = (char *)(mHeap->base()) + offset;
+                    // direct copy
+
+                    LOGV("%s: dequeueBuffer\n", __FUNCTION__);
+                    if (lcdev->overlay_data->dequeueBuffer(lcdev->overlay_data, &buffer) == 0) {
+                        LOGD("%s: dequeueBuffer buffer = %p\n", __FUNCTION__, buffer);
+                        void* address = lcdev->overlay_data->getBufferAddress(lcdev->overlay_data, buffer);
+                        LOGD("%s: buffer address = %p\n", __FUNCTION__, address);
+                        if (address != NULL)
+                            memcpy(vaddr, address, w*4 * 100);
+                    }
+
+                    if (lcdev->overlay_data->queueBuffer(lcdev->overlay_data, buffer) == 0) {
+                        LOGD("%s: queueBuffer buffer = %p\n", __FUNCTION__, buffer);
+                    }
+
+                    // test some random data... should print pixels on screen...
+                    char *frame = (char *) params.flatten().string();
+                    memcpy(vaddr, frame, strlen(frame));
+
+                    // test some gradient colors at the bottom of the window
+                    uint32_t color = 0;
+                    for (size_t i=size * 3 / 4; i < size; i+=(w*4)) {
+                        color += 0x08;
+                        memset(vaddr + i, color, w*4);
+                    }
+                    lcdev->gralloc->unlock(lcdev->gralloc, *bufHandle);
+                    if (0 != lcdev->window->enqueue_buffer(lcdev->window, bufHandle)) {
+                        LOGE("%s: could not enqueue gralloc buffer", __FUNCTION__);
+                    }
+                } else {
+                    LOGE("%s: could not lock gralloc buffer", __FUNCTION__);
+                }
+            } else {
+                LOGE("%s: ERROR locking the buffer\n", __FUNCTION__);
+                lcdev->window->cancel_buffer(lcdev->window, bufHandle);
+            }
+        }
+
         //??? neeed doooc LOGV("%s: commit buffer\n", __FUNCTION__);
-        lcdev->overlay_ctrl->commit(lcdev->overlay_ctrl, lcdev->ovl);
+        //lcdev->overlay_ctrl->commit(lcdev->overlay_ctrl, lcdev->ovl);
 
-        LOGV("%s: dequeueBuffer\n", __FUNCTION__);
-        if (lcdev->overlay_data->dequeueBuffer(lcdev->overlay_data, &buffer) == 0) {
-            kBufferCount--;
-            LOGD("%s: dequeueBuffer buffer = %p\n", __FUNCTION__, buffer);
-            void* address = lcdev->overlay_data->getBufferAddress(lcdev->overlay_data, buffer);
-            LOGD("%s: buffer address = %p\n", __FUNCTION__, address);
-        }
-
-        if (lcdev->overlay_data->queueBuffer(lcdev->overlay_data, buffer) == 0) {
-            LOGD("%s: queueBuffer buffer = %p\n", __FUNCTION__, buffer);
-            kBufferCount++;
-        }
     }
 
     return NO_ERROR;
@@ -775,8 +789,8 @@ defy_camera_set_parameters(struct camera_device * device, const char *params)
     android::String8 s(params);
     android::CameraParameters p(s);
 
-    CameraHAL_FixupParams(p);
-    dump_parameters(__FUNCTION__, params);
+    //CameraHAL_FixupParams(p);
+    //dump_parameters(__FUNCTION__, params);
 
 #if 0
     // Fix up zoom
@@ -785,7 +799,6 @@ defy_camera_set_parameters(struct camera_device * device, const char *params)
         p.set(android::CameraParameters::KEY_ZOOM, "1");
     }
 #endif
-
 
     lcdev->hwif->setParameters(p);
     return NO_ERROR;
@@ -798,9 +811,10 @@ defy_camera_get_parameters(struct camera_device * device)
     char *rc = NULL;
     LOGV("camera_get_parameters\n");
     android::CameraParameters params(lcdev->hwif->getParameters());
-    //CameraHAL_FixupParams(params);
     if (LOG_PARAMS) LOGV("%s: after hwif->getParameters()\n", __FUNCTION__);
+    CameraHAL_FixupParams(params);
     rc = strdup((char *)params.flatten().string());
+    dump_parameters(__FUNCTION__, rc);
     if (LOG_PARAMS)
          LOGV("%s: returning rc:%p :%s\n", __FUNCTION__,
                    rc, (rc != NULL) ? rc : "EMPTY STRING");

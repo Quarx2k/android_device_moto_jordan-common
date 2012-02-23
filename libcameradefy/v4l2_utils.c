@@ -16,7 +16,7 @@
 
 #define OVERLAY_DEBUG 1
 #define LOG_NDEBUG 0
-#define LOG_TAG "Overlay"
+#define LOG_TAG "V4LOverlay"
 
 #include <fcntl.h>
 #include <errno.h>
@@ -37,12 +37,12 @@
 #define V4L2_CID_LASTP1     (V4L2_CID_BASE+38)
 
 #elif (V4L2_CID_ROTATE == (V4L2_CID_BASE+32))
-#warning -------------------------------------------------------------
-#warning Please double check the deprecated V4L2_CID_ROTATE(+32) ioctl
-#warning -------------------------------------------------------------
+//#warning -------------------------------------------------------------
+//#warning Please double check the deprecated V4L2_CID_ROTATE(+32) ioctl
+//#warning -------------------------------------------------------------
 #endif
 
-#define LOG_FUNCTION_NAME    LOGV("%s: %s",  __FILE__, __FUNCTION__);
+#define LOG_FUNCTION_NAME    LOGV("%s, ln %d", __FUNCTION__, __LINE__);
 
 #ifndef LOGE
 #define LOGE(fmt,args...) \
@@ -597,7 +597,7 @@ int v4l2_overlay_unmap_buf(void *start, size_t len)
 {
     LOG_FUNCTION_NAME
 
-  return munmap(start, len);
+    return munmap(start, len);
 }
 
 
@@ -652,6 +652,7 @@ int v4l2_overlay_q_buf(int fd, int index)
         return -EINVAL
     }
     */
+    LOGD("%s: fd=%d, index=%d\n", __FUNCTION__, fd, index);
     buf.type = V4L2_BUF_TYPE_VIDEO_OUTPUT;
     buf.index = index;
     buf.memory = V4L2_MEMORY_MMAP;
@@ -678,6 +679,7 @@ int v4l2_overlay_dq_buf(int fd, int *index)
         return -EINVAL
     }
     */
+    LOGD("%s: fd=%d, index=%p\n", __FUNCTION__, fd, index);
     buf.type = V4L2_BUF_TYPE_VIDEO_OUTPUT;
     buf.memory = V4L2_MEMORY_MMAP;
 
