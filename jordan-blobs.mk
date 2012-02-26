@@ -49,7 +49,6 @@ PRODUCT_COPY_FILES += \
 	$(DEVICE_PREBUILT)/etc/init.d/01sysctl:system/etc/init.d/01sysctl \
 	$(DEVICE_PREBUILT)/etc/init.d/02ipv6:system/etc/init.d/02ipv6 \
 	$(DEVICE_PREBUILT)/etc/init.d/03firstboot:system/etc/init.d/03firstboot \
-	$(DEVICE_PREBUILT)/etc/init.d/04pdsbackup:system/etc/init.d/04pdsbackup \
 	$(DEVICE_PREBUILT)/etc/init.d/05mountsd:system/etc/init.d/05mountsd \
 	$(DEVICE_PREBUILT)/etc/init.d/07camera:system/etc/init.d/07camera \
 	$(DEVICE_PREBUILT)/etc/init.d/08backlight:system/etc/init.d/08backlight \

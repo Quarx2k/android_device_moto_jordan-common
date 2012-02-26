@@ -28,6 +28,9 @@ on post-fs
 
     mount rootfs rootfs / rw remount
 
+# PDS Mount
+    exec /system/bootmenu/script/pdsbackup.sh
+
 # Busybox
     mkdir /data/local/tmp 0777 system shell
     export HISTFILE /data/local/tmp/.ash_history
