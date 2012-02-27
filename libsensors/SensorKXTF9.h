@@ -47,8 +47,6 @@ private:
     InputEventCircularReader mInputReader;
     sensors_event_t mPendingEvent;
 
-    void sendRotationEvent(int state, double roll, double pitch);
-
     int isEnabled();
 };
 

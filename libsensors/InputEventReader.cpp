@@ -37,7 +37,6 @@ InputEventCircularReader::InputEventCircularReader(size_t numEvents)
       mBufferEnd(mBuffer + numEvents),
       mHead(mBuffer),
       mCurr(mBuffer),
-      mEvents(numEvents),
       mFreeSpace(numEvents)
 {
 }
