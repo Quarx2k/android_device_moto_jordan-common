@@ -12,7 +12,7 @@ if [ -c /dev/camera0 ]; then
     CAMERA_DETECTED=1
 fi
 
-if [ "$DEFYPLUS_KERNEL $CAMERA_DETECTED" = "1 0" ]; then
+if [ "$DEFYPLUS_KERNEL $CAMERA_DETECTED" = "1 1" ]; then
     busybox insmod /system/lib/modules/camise.ko
     busybox insmod /system/lib/modules/camera.ko
 fi
