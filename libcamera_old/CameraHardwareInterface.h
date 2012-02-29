@@ -19,11 +19,13 @@
 
 #include <binder/IMemory.h>
 #include <utils/RefBase.h>
+#include <surfaceflinger/ISurface.h>
 #include <camera/Camera.h>
 #include <camera/CameraParameters.h>
-#include <ui/Overlay.h>
 
 namespace android {
+
+class Overlay;
 
 /**
  *  The size of image for display.
@@ -82,19 +84,19 @@ typedef void (*data_callback_timestamp)(nsecs_t timestamp,
  */
 class CameraHardwareInterface : public virtual RefBase {
 public:
-    virtual ~CameraHardwareInterface() { } // 0x04
+    virtual ~CameraHardwareInterface() { }
 
     /** Return the IMemoryHeap for the preview image heap */
-    virtual sp<IMemoryHeap>         getPreviewHeap() const = 0; // 0x08
+    virtual sp<IMemoryHeap>         getPreviewHeap() const = 0;
 
     /** Return the IMemoryHeap for the raw image heap */
-    virtual sp<IMemoryHeap>         getRawHeap() const = 0; // 0x10
+    virtual sp<IMemoryHeap>         getRawHeap() const = 0;
 
     /** Set the notification and data callbacks */
     virtual void setCallbacks(notify_callback notify_cb,
                               data_callback data_cb,
                               data_callback_timestamp data_cb_timestamp,
-                              void* user) = 0; // 0x1C
+                              void* user) = 0;
 
     /**
      * The following three functions all take a msgtype,
@@ -105,69 +107,81 @@ public:
     /**
      * Enable a message, or set of messages.
      */
-    virtual void        enableMsgType(int32_t msgType) = 0; // 0x14
+    virtual void        enableMsgType(int32_t msgType) = 0;
 
     /**
      * Disable a message, or a set of messages.
      */
-    virtual void        disableMsgType(int32_t msgType) = 0; // 0x18
+    virtual void        disableMsgType(int32_t msgType) = 0;
 
     /**
      * Query whether a message, or a set of messages, is enabled.
      * Note that this is operates as an AND, if any of the messages
      * queried are off, this will return false.
      */
-    virtual bool        msgTypeEnabled(int32_t msgType) = 0; // 0x1C
+    virtual bool        msgTypeEnabled(int32_t msgType) = 0;
 
     /**
      * Start preview mode.
      */
-    virtual status_t    startPreview() = 0; // 0x20
+    virtual status_t    startPreview() = 0;
+
+    /**
+     * Query the recording buffer information from HAL.
+     * This is needed because the opencore expects the buffer
+     * information before starting the recording.
+     
+    virtual status_t    getBufferInfo(sp<IMemory>& Frame, size_t *alignedSize) = 0;*/
+
+    /**
+     * Encode the YUV data.
+     
+    virtual void        encodeData() = 0;*/
 
     /**
      * Only used if overlays are used for camera preview.
      */
-    virtual bool         useOverlay() {return false;} // 0x24
-    virtual status_t     setOverlay(const sp<Overlay> &overlay) {return BAD_VALUE;} // 0x28
+    virtual bool         useOverlay() {return false;}
+    virtual status_t     setOverlay(const sp<Overlay> &overlay) {return BAD_VALUE;}
 
     /**
      * Stop a previously started preview.
      */
-    virtual void        stopPreview() = 0; // 0x2C
+    virtual void        stopPreview() = 0;
 
     /**
      * Returns true if preview is enabled.
      */
-    virtual bool        previewEnabled() = 0; // 0x30
+    virtual bool        previewEnabled() = 0;
 
     /**
      * Start record mode. When a record image is available a CAMERA_MSG_VIDEO_FRAME
      * message is sent with the corresponding frame. Every record frame must be released
      * by calling releaseRecordingFrame().
      */
-    virtual status_t    startRecording() = 0; // 0x34
+    virtual status_t    startRecording() = 0;
 
     /**
      * Stop a previously started recording.
      */
-    virtual void        stopRecording() = 0; // 0x38
+    virtual void        stopRecording() = 0;
 
     /**
      * Returns true if recording is enabled.
      */
-    virtual bool        recordingEnabled() = 0; // 0x3C
+    virtual bool        recordingEnabled() = 0;
 
     /**
      * Release a record frame previously returned by CAMERA_MSG_VIDEO_FRAME.
      */
-    virtual void        releaseRecordingFrame(const sp<IMemory>& mem) = 0; // 0x40
+    virtual void        releaseRecordingFrame(const sp<IMemory>& mem) = 0;
 
     /**
      * Start auto focus, the notification callback routine is called
      * with CAMERA_MSG_FOCUS once when focusing is complete. autoFocus()
      * will be called again if another auto focus is needed.
      */
-    virtual status_t    autoFocus() = 0; // 0x44
+    virtual status_t    autoFocus() = 0;
 
     /**
      * Cancels auto-focus function. If the auto-focus is still in progress,
@@ -175,49 +189,47 @@ public:
      * or not, this function will return the focus position to the default.
      * If the camera does not support auto-focus, this is a no-op.
      */
-    virtual status_t    cancelAutoFocus() = 0; // 0x48
+    virtual status_t    cancelAutoFocus() = 0;
 
     /**
      * Take a picture.
      */
-    virtual status_t    takePicture() = 0; // 0x4C
+    virtual status_t    takePicture() = 0;
 
     /**
      * Cancel a picture that was started with takePicture.  Calling this
      * method when no picture is being taken is a no-op.
      */
-    virtual status_t    cancelPicture() = 0; // 0x50
+    virtual status_t    cancelPicture() = 0;
 
     /**
      * Set the camera parameters. This returns BAD_VALUE if any parameter is
      * invalid or not supported. */
-    virtual status_t    setParameters(const CameraParameters& params) = 0; // 0x54
+    virtual status_t    setParameters(const CameraParameters& params) = 0;
 
     /** Return the camera parameters. */
-    virtual CameraParameters  getParameters() const = 0; // 0x58
-
-    /**
-     * Set/return custom camera parameters
-     */
-    virtual status_t    setCustomParameters(const CameraParameters& params) = 0; // 0x5C
-    virtual CameraParameters  getCustomParameters() const = 0; // 0x60
+    virtual CameraParameters  getParameters() const = 0;
 
     /**
      * Send command to camera driver.
      */
-    virtual status_t sendCommand(int32_t cmd, int32_t arg1, int32_t arg2) = 0; // 0x64
+    virtual status_t sendCommand(int32_t cmd, int32_t arg1, int32_t arg2) = 0;
+
+    /**
+    * function stub. keep compatible.
+    */
+    virtual status_t stub() = 0;
 
     /**
      * Release the hardware resources owned by this object.  Note that this is
      * *not* done in the destructor.
      */
-    virtual void release() = 0; // 0x68
+    virtual void release() = 0;
 
     /**
      * Dump state of the camera hardware
      */
-    virtual status_t dump(int fd, const Vector<String16>& args) const = 0; // 0x6C
-
+    virtual status_t dump(int fd, const Vector<String16>& args) const = 0;
 };
 
 /**
