@@ -22,7 +22,7 @@
                          AudioDecoderCap)>
 <!ELEMENT CamcorderProfiles (EncoderProfile+, ImageEncoding+, ImageDecoding, Camera)>
 <!ELEMENT EncoderProfile (Video, Audio)>
-<!ATTLIST EncoderProfile quality (high|mid|low) #REQUIRED>
+<!ATTLIST EncoderProfile quality (480p|high|mid|low) #REQUIRED>
 <!ATTLIST EncoderProfile fileFormat (mp4|3gp) #REQUIRED>
 <!ATTLIST EncoderProfile duration (30|60) #REQUIRED>
 <!ELEMENT Video EMPTY>
@@ -37,7 +37,7 @@
 <!ATTLIST Audio sampleRate CDATA #REQUIRED>
 <!ATTLIST Audio channels (1|2) #REQUIRED>
 <!ELEMENT ImageEncoding EMPTY>
-<!ATTLIST ImageEncoding quality (90|80|70|60|50|40) #REQUIRED>
+<!ATTLIST ImageEncoding quality (95|90|80|70) #REQUIRED>
 <!ELEMENT ImageDecoding EMPTY>
 <!ATTLIST ImageDecoding memCap CDATA #REQUIRED>
 <!ELEMENT Camera EMPTY>
@@ -90,9 +90,9 @@
                    bitRate="96000"
                    sampleRate="44100"
                    channels="1" />
-        </EncoderProfile>
+        </EncoderProfile> -->
 
-        <EncoderProfile quality="wide" fileFormat="mp4" duration="30">
+        <EncoderProfile quality="480p" fileFormat="mp4" duration="30">
             <Video codec="m4v"
                    bitRate="3500000"
                    width="848"
@@ -103,14 +103,14 @@
                    bitRate="96000"
                    sampleRate="16000"
                    channels="1" />
-        </EncoderProfile> -->
+        </EncoderProfile>
 
         <EncoderProfile quality="high" fileFormat="mp4" duration="30">
             <Video codec="m4v"
                    bitRate="2000000"
                    width="640"
                    height="480"
-                   frameRate="25" />
+                   frameRate="24" />
 
             <Audio codec="aac"
                    bitRate="96000"
@@ -132,12 +132,12 @@
 
         </EncoderProfile>
 
+        <ImageEncoding quality="95" />
         <ImageEncoding quality="90" />
-        <ImageEncoding quality="80" />
         <ImageEncoding quality="70" />
         <ImageDecoding memCap="20000000" />
 
-        <Camera previewFrameRate="30" />
+        <Camera previewFrameRate="15" />
 
     </CamcorderProfiles>
 
