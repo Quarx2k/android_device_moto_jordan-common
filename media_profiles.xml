@@ -95,19 +95,6 @@
         <EncoderProfile quality="480p" fileFormat="mp4" duration="30">
             <Video codec="m4v"
                    bitRate="3500000"
-                   width="848"
-                   height="480"
-                   frameRate="24" />
-
-            <Audio codec="aac"
-                   bitRate="96000"
-                   sampleRate="16000"
-                   channels="1" />
-        </EncoderProfile>
-
-        <EncoderProfile quality="high" fileFormat="mp4" duration="30">
-            <Video codec="m4v"
-                   bitRate="2000000"
                    width="640"
                    height="480"
                    frameRate="24" />
@@ -116,20 +103,6 @@
                    bitRate="96000"
                    sampleRate="16000"
                    channels="1" />
-        </EncoderProfile>
-
-        <EncoderProfile quality="low" fileFormat="3gp" duration="30">
-            <Video codec="h263"
-                   bitRate="200000"
-                   width="320"
-                   height="240"
-                   frameRate="15" />
-
-            <Audio codec="amrnb"
-                   bitRate="12200"
-                   sampleRate="8000"
-                   channels="1" />
-
         </EncoderProfile>
 
         <ImageEncoding quality="95" />
