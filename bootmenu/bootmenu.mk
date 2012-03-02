@@ -83,7 +83,8 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/recovery/res/images/indeterminate6.png:system/bootmenu/recovery/res/images/indeterminate6.png \
 	${bm_device}/bootmenu/recovery/res/images/progress_empty.png:system/bootmenu/recovery/res/images/progress_empty.png \
 	${bm_device}/bootmenu/recovery/res/images/progress_fill.png:system/bootmenu/recovery/res/images/progress_fill.png \
-	${bm_device}/bootmenu/recovery/res/images/icon_clockwork.png:system/bootmenu/recovery/res/images/icon_clockwork.png \
+	${bm_device}/bootmenu/recovery/res/images/icon_bootmenu.png:system/bootmenu/recovery/res/images/icon_bootmenu.png \
+	${bm_device}/bootmenu/recovery/res/images/icon_bootmenu.png:system/bootmenu/recovery/res/images/icon_clockwork.png \
 	${bm_device}/bootmenu/recovery/sbin/badblocks:system/bootmenu/recovery/sbin/badblocks \
 	${bm_device}/bootmenu/recovery/sbin/dedupe:system/bootmenu/recovery/sbin/dedupe \
 	${bm_device}/bootmenu/recovery/sbin/dump_image:system/bootmenu/recovery/sbin/dump_image \

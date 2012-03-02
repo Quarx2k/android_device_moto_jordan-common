@@ -76,4 +76,6 @@ if [ -x /system/bootmenu/script/overclock.sh ]; then
     /system/bootmenu/script/overclock.sh safe
 fi
 
+echo 1 > /sys/class/leds/button-backlight/brightness
+
 exit 0

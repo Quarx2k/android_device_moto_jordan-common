@@ -1,4 +1,5 @@
-#!/system/xbin/sh
+#!/sbin/busybox ash
+
 ######## BootMenu Script
 ######## Execute [2nd-init] Menu
 
@@ -6,11 +7,11 @@ source /system/bootmenu/script/_config.sh
 
 ######## Main Script
 
-mount -o remount,rw /
+toolbox mount -o remount,rw rootfs /
 rm -f /*.rc
 rm -f /*.sh
-rm -rf /osh
-rm -rf /preinstall
+rm -f /osh
+rm -f /preinstall
 cp -f /system/bootmenu/2nd-init/* /
 ln -s /init /sbin/ueventd
 cp -f /system/bootmenu/binary/adbd /sbin/adbd
@@ -46,7 +47,6 @@ umount /mnt/asec
 umount /mnt/obb
 umount /cache
 umount /data
-#mount -o remount,rw,relatime,mode=775,size=128k /dev
 
 ######## Cleanup
 

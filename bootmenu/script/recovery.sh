@@ -28,7 +28,6 @@ chmod 755 /res
 
 cp -r -f /system/bootmenu/recovery/res/* /res/
 cp -p -f /system/bootmenu/recovery/sbin/* /sbin/
-cp -p -f /system/bootmenu/script/recoveryexit.sh /sbin/
 
 if [ ! -f /sbin/recovery ]; then
     ln -s /sbin/recovery_stable /sbin/recovery
@@ -103,6 +102,7 @@ echo 1 > /sys/class/leds/button-backlight/brightness
 
 # to allow "eat"
 ln -s /sdcard /mnt/sdcard
+cd /sbin && ln -s adbd adbd.root
 
 /sbin/recovery
 

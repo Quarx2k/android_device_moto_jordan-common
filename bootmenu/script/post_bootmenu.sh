@@ -39,7 +39,7 @@ chmod 666 /dev/video*
 
 if [ -d /system/bootmenu/init.d ]; then
     chmod 755 /system/bootmenu/init.d/*
-    run-parts /system/bootmenu/init.d/
+    run-parts /system/bootmenu/init.d
 fi
 
 ######## Don't Delete.... ########################
