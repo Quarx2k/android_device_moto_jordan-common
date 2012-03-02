@@ -32,7 +32,6 @@ chmod 755 /res
 
 cp -r -f /system/bootmenu/recovery/res/* /res/
 cp -p -f /system/bootmenu/recovery/sbin/* /sbin/
-cp -p -f /system/bootmenu/script/recoveryexit.sh /sbin/
 
 if [ ! -f /sbin/recovery_stable ]; then
     ln -s /sbin/recovery /sbin/recovery_stable
@@ -107,6 +106,7 @@ echo 0 > /sys/class/leds/blue/brightness
 
 # to allow "eat"
 ln -s /sdcard /mnt/sdcard
+cd /sbin && ln -s adbd adbd.root
 
 /sbin/recovery_stable
 
