@@ -338,6 +338,15 @@ int bt_enable() {
         goto out;
     }
 
+    char prop[PROPERTY_VALUE_MAX];
+    property_get("init.svc.fmradio",prop,"running");
+    if (!strcmp(prop, "running")) {
+        usleep(HCID_STOP_DELAY_USEC);
+        hci_sock = create_hci_sock();
+        ioctl(hci_sock, HCIDEVDOWN, HCI_DEV_ID);
+        LOGE("FM Radio workaround");
+    }
+
     LOGI("Starting hciattach daemon");
     if (property_set("ctl.start", "hciattach") < 0) {
         LOGE("Failed to start hciattach");
@@ -395,15 +404,6 @@ int bt_disable() {
     {
         LOGV("bt_disable: other app using bt so just do noting");
         return 0;
-    }
-
-    char prop[PROPERTY_VALUE_MAX];
-    property_get("init.svc.fmradio",prop,"running");
-    if (!strcmp(prop, "running")) {
-        usleep(HCID_STOP_DELAY_USEC);
-        hci_sock = create_hci_sock();
-        ioctl(hci_sock, HCIDEVDOWN, HCI_DEV_ID);
-        LOGE("FM Radio workaround");
     }
 
     LOGI("Stopping bluetoothd deamon");
