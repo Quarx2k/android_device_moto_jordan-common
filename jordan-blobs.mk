@@ -59,10 +59,12 @@ PRODUCT_COPY_FILES += \
 	$(DEVICE_PREBUILT)/etc/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
 	$(DEVICE_PREBUILT)/etc/gpsconfig.xml:system/etc/gpsconfig.xml \
 	$(DEVICE_PREBUILT)/etc/location.cfg:system/etc/location.cfg \
+	$(DEVICE_PREBUILT)/bin/iptables:system/bin/iptables \
 	device/motorola/jordan/vold.fstab:system/etc/vold.fstab \
 	device/motorola/jordan/media_profiles.xml:system/etc/media_profiles.xml \
 	device/motorola/jordan/modules/modules.alias:system/lib/modules/modules.alias \
-	device/motorola/jordan/modules/modules.dep:system/lib/modules/modules.dep 
+	device/motorola/jordan/modules/modules.dep:system/lib/modules/modules.dep \
+
 
 ifdef CM_RELEASE
 	PRODUCT_COPY_FILES += device/motorola/jordan/custom_backup_release.txt:system/etc/custom_backup_list.txt
