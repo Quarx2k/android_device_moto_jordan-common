@@ -397,6 +397,15 @@ int bt_disable() {
         return 0;
     }
 
+    char prop[PROPERTY_VALUE_MAX];
+    property_get("init.svc.fmradio",prop,"running");
+    if (!strcmp(prop, "running")) {
+        usleep(HCID_STOP_DELAY_USEC);
+        hci_sock = create_hci_sock();
+        ioctl(hci_sock, HCIDEVDOWN, HCI_DEV_ID);
+        LOGE("FM Radio workaround");
+    }
+
     LOGI("Stopping bluetoothd deamon");
     if (property_set("ctl.stop", "bluetoothd") < 0) {
         LOGE("Error stopping bluetoothd");
