@@ -149,7 +149,7 @@ on init
 
     insmod /system/lib/modules/xt_multiport.ko
     insmod /system/lib/modules/xt_quota2.ko
-    insmod /system/lib/modules/xt_owner2.ko
+    #insmod /system/lib/modules/xt_owner2.ko
 
     insmod /system/lib/modules/tun.ko
     insmod /system/lib/modules/symsearch.ko
