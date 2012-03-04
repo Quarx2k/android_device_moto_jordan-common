@@ -88,8 +88,3 @@ ro.mot.hidden_keyboards=evfwd
 # This defines the min duration between two pointer event in ms
 ro.min_pointer_dur=10
 
-# hold precise GC data, and use SMP
-dalvik.vm.verify-bytecode=false
-dalvik.vm.dexopt-flags=m=y,u=n
-
-
