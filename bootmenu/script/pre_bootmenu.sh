@@ -44,6 +44,12 @@ cp -f /system/bootmenu/binary/lsof /sbin/lsof
 
 $BB chmod +rx /sbin/*
 
+# backup original init.rc
+if [ ! -f $BM_ROOTDIR/moto/init.rc ]; then
+    mkdir -p $BM_ROOTDIR/moto
+    cp /*.rc $BM_ROOTDIR/moto/
+fi
+
 # custom adbd (allow always root)
 cp -f /system/bootmenu/binary/adbd /sbin/adbd
 chown 0.0  /sbin/adbd
