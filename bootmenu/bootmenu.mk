@@ -26,8 +26,8 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/profiles/backup/ueventd.rc:system/bootmenu/2nd-boot/ueventd.rc \
 	${bm_device}/profiles/backup/init:system/bootmenu/2nd-boot/init \
 	${bm_device}/profiles/backup/sbin/ueventd:system/bootmenu/2nd-boot/sbin/ueventd \
-	${bm_device}/profiles/froyo/init.rc:system/bootmenu/froyo/init.rc \
-	${bm_device}/profiles/froyo/init.mapphone_umts.rc:system/bootmenu/froyo/init.mapphone_umts.rc \
+	${bm_device}/profiles/moto/froyo/init.rc:system/bootmenu/moto/froyo/init.rc \
+	${bm_device}/profiles/moto/froyo/init.mapphone_umts.rc:system/bootmenu/moto/froyo/init.mapphone_umts.rc \
 
 # scripts
 PRODUCT_COPY_FILES += \
