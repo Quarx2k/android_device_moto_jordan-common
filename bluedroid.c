@@ -338,12 +338,12 @@ int bt_enable() {
         goto out;
     }
 
+
     char prop[PROPERTY_VALUE_MAX];
-    property_get("init.svc.fmradio",prop,"running");
+    property_set("persist.sys.fm_disabled","1");
+    property_get("init.svc.fmradio",prop,"");
     if (!strcmp(prop, "running")) {
-        usleep(HCID_STOP_DELAY_USEC);
-        hci_sock = create_hci_sock();
-        ioctl(hci_sock, HCIDEVDOWN, HCI_DEV_ID);
+        property_set("persist.sys.fm_disabled","1");
         LOGE("FM Radio workaround");
     }
 
@@ -440,6 +440,14 @@ int bt_is_enabled() {
     int ret = -1;
     struct hci_dev_info dev_info;
 
+    char prop[PROPERTY_VALUE_MAX];
+    property_get("persist.sys.fm_disabled",prop,"");
+    if (!strcmp(prop, "1")) {
+        usleep(HCID_STOP_DELAY_USEC);
+        hci_sock = create_hci_sock();
+        ioctl(hci_sock, HCIDEVDOWN, HCI_DEV_ID);
+        LOGE("FM Radio turned off");
+    }
 
     // Check power first
     ret = check_bluetooth_power();
@@ -456,8 +464,6 @@ int bt_is_enabled() {
         ret = 0;
         goto out;
     }
-
-   // ret = hci_test_bit(HCI_UP, &dev_info.flags);
 
 out:
     if (hci_sock >= 0) close(hci_sock);
