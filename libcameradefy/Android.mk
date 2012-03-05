@@ -17,8 +17,9 @@ LOCAL_SHARED_LIBRARIES += \
     libhardware \
     libcamera_client \
     libui \
+    libstlport \
     libcamera \
 
-LOCAL_SHARED_LIBRARIES += libdl
+include external/stlport/libstlport.mk
 
 include $(BUILD_SHARED_LIBRARY)
