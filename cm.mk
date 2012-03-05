@@ -23,22 +23,17 @@ $(call inherit-product-if-exists, vendor/cm/config/gsm.mk)
 PRODUCT_NAME := cm_jordan
 PRODUCT_BRAND := MOTO
 PRODUCT_DEVICE := jordan
-PRODUCT_MODEL := MB526
+PRODUCT_MODEL := MB525
 PRODUCT_MANUFACTURER := Motorola
 PRODUCT_SFX := DFP
 
 # Release name and versioning
-ifneq ($(BOARD_DEFY_MODEL),DEFY_FROYO)
-    PRODUCT_RELEASE_NAME := Defy+
-else
     PRODUCT_RELEASE_NAME := Defy
-endif
 
 UTC_DATE := $(shell date +%s)
 DATE     := $(shell date +%Y%m%d)
 
 PRODUCT_BUILD_PROP_OVERRIDES += \
-    BUILD_ID=IML74K \
     PRODUCT_NAME=${PRODUCT_MODEL}_${PRODUCT_SFX} \
     TARGET_DEVICE=umts_jordan \
     BUILD_FINGERPRINT=MOTO/MB526_O2DE/umts_jordan:2.3.6/4.5.1-134_DFP-132/1317968148:user/release-keys \
