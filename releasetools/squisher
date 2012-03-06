@@ -1,11 +1,15 @@
 #!/bin/sh
 #
 # Squish a CM otapackage for distribution
-# cyanogen / CyanogenDefy
+# cyanogen / CyanogenDefy / Atrix-Dev-Team
 #
 
-echo "JORDAN SQUISHER:"
+echo "DEFY SQUISHER"
 echo "================"
+
+DEVICE_OUT=$ANDROID_BUILD_TOP/out/target/product/jordan
+DEVICE_TOP=$ANDROID_BUILD_TOP/device/motorola/jordan
+VENDOR_TOP=$ANDROID_BUILD_TOP/vendor/motorola/jordan
 
 OUT_TARGET_HOST=`uname -a | grep Darwin`
 if [ -z "$OUT_TARGET_HOST" ]
@@ -38,14 +42,14 @@ if [ ! -f "$OTAPACKAGE" ]; then
 	exit 1
 fi
 
-OPTICHARGER=$ANDROID_BUILD_TOP/device/motorola/jordan/releasetools/opticharger
+OPTICHARGER=$DEVICE_TOP/releasetools/opticharger
 QUIET=-q
 DELETE_BINS="applypatch applypatch_static check_prereq recovery updater"
 
 
 # Some products want a squashfs for xbin for space
 case "$TARGET_PRODUCT" in
-	cyanogen_dream_sapphire) WANT_SQUASHFS=1 ;;
+	cm_dream_sapphire) WANT_SQUASHFS=1 ;;
 	*) WANT_SQUASHFS=0 ;;
 esac
 
@@ -82,16 +86,15 @@ echo
 mkdir $REPACK/ota
 (
 cd $REPACK/ota
-printf "Unpacking $OTAPACKAGE ..."
+printf "Unpacking $OTAPACKAGE..."
 unzip $QUIET $OTAPACKAGE
 echo
 cd $REPACK/ota/system/framework
 )
 
 # Include device specific script
-if [ -f $ANDROID_BUILD_TOP/device/motorola/jordan/releasetools/squisher.sh ]; then
-        echo "squisher.sh..."
-        . $ANDROID_BUILD_TOP/device/motorola/jordan/releasetools/squisher.sh
+if [ -f $DEVICE_TOP/releasetools/squisher.sh ]; then
+       . $DEVICE_TOP/releasetools/squisher.sh
 fi
 
 if [ "$1" != "fast" ]; then
@@ -111,7 +114,7 @@ if [ "$WANT_SQUASHFS" -eq 1 ]; then
 	cp -a $REPACK/ota/system/xbin $REPACK/_xbin/
 	rm -f $REPACK/_xbin/su $REPACK/ota/system/bin/su
 	mv $REPACK/ota/system/xbin/su $REPACK/ota/system/bin/su
-	chmod -R 555 $REPACK/_xbin/*
+	chmod -R 755 $REPACK/_xbin/*
 
 	# Create symlinks for su and busybox (since updater-script can't work on the squashfs filesystem).
 	# Forgive me for the regex hell here. 
@@ -125,7 +128,7 @@ if [ "$WANT_SQUASHFS" -eq 1 ]; then
 	mksquashfs $REPACK/_xbin/* $REPACK/_xbin.sqf $squash_opts
 	rm -rf $REPACK/ota/system/xbin/*
 	mv $REPACK/_xbin.sqf $REPACK/ota/system/xbin/xbin.sqf
-	chmod 444 $REPACK/ota/system/xbin/xbin.sqf
+	chmod 644 $REPACK/ota/system/xbin/xbin.sqf
 
 	# Remove xbin stuff and fix up updater-script
 	$SED -i -e's,system/xbin/su,system/bin/su,g' -e'/xbin/d' $updater
@@ -141,7 +144,7 @@ $SED -i \
 # Delete unnecessary binaries
 if [ -n "$DELETE_BINS" ]; then
 
-	echo "Remove unwanted binaries"
+	echo "Removing unwanted binaries..."
 	cd $REPACK/ota/system/bin && echo $DELETE_BINS | xargs /bin/rm -f
 fi
 
@@ -151,45 +154,18 @@ cd $REPACK/ota/system/bin && find -name "test_*" -exec /bin/rm -f {} \;
 cd $REPACK/ota/system/bin && find -name "*Test*" -exec /bin/rm -f {} \;
 cd $REPACK
 
-# Move vendor bin/lib
-if [ -d $REPACK/ota/system/vendor/lib ]; then
-
-	echo "Move vendor subfolder"
-	cp -R $REPACK/ota/system/vendor/lib/* $REPACK/ota/system/lib/
-	rm -r $REPACK/ota/system/vendor/lib
-	cp -R $REPACK/ota/system/vendor/bin/* $REPACK/ota/system/bin/
-	rm -r $REPACK/ota/system/vendor/bin
-	touch $REPACK/ota/system/vendor/empty
-fi
-
-# Delete leftover wireless driver
-# rm -rf $REPACK/ota/system/lib/modules/*/kernel/drivers/net
-
-# No need for recovery
-rm -rf $REPACK/ota/recovery
-
 # Strip modules
 [ -d $REPACK/ota/system/lib/modules ] && \
 	find $REPACK/ota/system/lib/modules -name "*.ko" -not -name "overclock*" -print0 | xargs -0 arm-eabi-strip --strip-unneeded
 
 # Determine what to name the new signed package
-if [ -z "$CM_NIGHTLY" ]; then
-	MODVERSION=`sed -n -e'/ro\.cm\.version/s/^.*=//p' $REPACK/ota/system/build.prop`
-	: ${MODVERSION:=nightly}
-	OUTFILE=$OUT/update-cm-$MODVERSION-signed.zip
-	REALDATE=`date +%y%m%d`
-	OUTFILE=$OUT/CM9-ICS-MR1-$REALDATE-jordan.zip
-else
-	OUTFILE=$OUT/update-squished.zip
-	REALDATE=`sed -n -r 's/ro.build.version.incremental=//p' $REPACK/ota/system/build.prop`
-	MODVERSION=`sed -n -e'/ro\.cm\.version/s/^.*=//p' $REPACK/ota/system/build.prop`
+MODVERSION=`sed -n -e'/ro\.modversion/s/^.*=//p' $REPACK/ota/system/build.prop`
+: ${MODVERSION:=nightly}
+OUTFILE=$OUT/update-cm-$MODVERSION-signed.zip
+
+if [ -n "$CM_NIGHTLY" ]; then
 	MODVERSION=`sed -n -e'/ro\.modversion/s/^.*=//p' $REPACK/ota/system/build.prop`
-	: ${MODVERSION:=squished}
 	OUTFILE=$OUT/CM$MODVERSION.zip
-	if [ -n "$CM_NIGHTLY_BOOT" ]; then
-		MODVERSION=`echo $MODVERSION | sed -r 's/NIGHTLY/BOOT'$CM_NIGHTLY_BOOT'/'`
-		OUTFILE=$OUT/CM$MODVERSION.zip
-	fi
 fi
 
 # Pack it up and sign
@@ -221,5 +197,9 @@ cat $OUT/system/build.prop | grep ro.build.date=
 ls -l $OUTFILE
 echo
 )
+
+if [ -x $DEVICE_TOP/releasetools/addons ]; then
+	$DEVICE_TOP/releasetools/addons recovery
+fi
 
 exit 0
