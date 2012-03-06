@@ -15,6 +15,7 @@ lib/modules/sch_ingress.ko
 lib/modules/sec.ko
 lib/modules/vpnclient.ko
 bootmenu/config/overclock.conf
+bootmenu/script/2nd-system.sh
 etc/motorola/bp_nvm_default/File_GSM
 etc/motorola/bp_nvm_default/File_GPRS
 etc/motorola/bp_nvm_default/File_UMA

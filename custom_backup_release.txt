@@ -1,3 +1,4 @@
+bootmenu/script/2nd-system.sh
 etc/motorola/bp_nvm_default/File_GSM
 etc/motorola/bp_nvm_default/File_GPRS
 etc/motorola/bp_nvm_default/File_UMA
