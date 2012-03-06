@@ -340,7 +340,7 @@ int bt_enable() {
 
 
     char prop[PROPERTY_VALUE_MAX];
-    property_set("persist.sys.fm_disabled","1");
+    property_set("persist.sys.fm_disabled","0");
     property_get("init.svc.fmradio",prop,"");
     if (!strcmp(prop, "running")) {
         property_set("persist.sys.fm_disabled","1");
