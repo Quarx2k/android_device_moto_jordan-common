@@ -31,7 +31,7 @@
  */
 
 #define LOG_TAG "CameraHAL"
-//#define LOG_NDEBUG 0
+#define LOG_NDEBUG 0
 #define LOG_FULL_PARAMS 0
 
 //#define STORE_METADATA_IN_BUFFER
@@ -46,6 +46,11 @@
 using namespace std;
 
 #include "CameraHardwareInterface.h"
+
+#define YUV_CAM_FORMAT CameraParameters::PIXEL_FORMAT_YUV422I
+
+//Atrix :
+//#define YUV_CAM_FORMAT CameraParameters::PIXEL_FORMAT_YUV420P
 
 /* Prototypes and extern functions. */
 extern "C" android::sp<android::CameraHardwareInterface> HAL_openCameraHardware(int cameraId);
@@ -393,12 +398,13 @@ int CameraHAL_GetCam_Info(int camera_id, struct camera_info *info)
 
 void CameraHAL_FixupParams(CameraParameters &settings)
 {
-    /* Motorola camera doesn't support YUV420sp...
-    * it advertises so, but then sends "yuv422i-yuyv"
-    */
-    settings.set(CameraParameters::KEY_VIDEO_FRAME_FORMAT, CameraParameters::PIXEL_FORMAT_YUV422I);
-    settings.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FORMATS, CameraParameters::PIXEL_FORMAT_YUV422I);
-    settings.setPreviewFormat(CameraParameters::PIXEL_FORMAT_YUV422I);
+    /* Motorola omap cameras doesn't support YUV420sp...
+     * it advertises so, but then sends "yuv422i-yuyv"
+     * But nvidia tegra ones does...
+     */
+    settings.set(CameraParameters::KEY_VIDEO_FRAME_FORMAT, YUV_CAM_FORMAT);
+    settings.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FORMATS, YUV_CAM_FORMAT);
+    settings.setPreviewFormat(YUV_CAM_FORMAT);
 
     /* defy: focus locks the camera, but dunno how to disable it... */
     if (!settings.get(android::CameraParameters::KEY_SUPPORTED_FOCUS_MODES))
