@@ -31,8 +31,9 @@
  */
 
 #define LOG_TAG "CameraHAL"
-#define LOG_NDEBUG 0
-#define LOG_FULL_PARAMS 0
+//#define LOG_NDEBUG 0
+#define LOG_FULL_PARAMS
+//#define LOG_EACH_FRAMES
 
 //#define STORE_METADATA_IN_BUFFER
 
@@ -48,6 +49,16 @@ using namespace std;
 #include "CameraHardwareInterface.h"
 
 #define YUV_CAM_FORMAT CameraParameters::PIXEL_FORMAT_YUV422I
+
+#define DISPLAY_RGB565
+
+#ifdef DISPLAY_RGB565
+#define OVERLAY_FORMAT OVERLAY_FORMAT_RGB565
+#define HAL_PIXEL_FORMAT HAL_PIXEL_FORMAT_RGB_565
+#else
+#define OVERLAY_FORMAT OVERLAY_FORMAT_RGBA8888
+#define HAL_PIXEL_FORMAT HAL_PIXEL_FORMAT_RGBA_8888
+#endif
 
 //Atrix :
 //#define YUV_CAM_FORMAT CameraParameters::PIXEL_FORMAT_YUV420P
@@ -85,6 +96,8 @@ camera_module_t HAL_MODULE_INFO_SYM = {
 
 namespace android {
 
+int camera_set_preview_window(struct camera_device * device, struct preview_stream_ops *window);
+
 struct legacy_camera_device {
     camera_device_t device;
     int id;
@@ -115,7 +128,7 @@ static inline struct legacy_camera_device * to_lcdev(struct camera_device *dev) 
 }
 
 static inline void log_camera_params(const char* name, const CameraParameters params) {
-#if LOG_FULL_PARAMS
+#ifdef LOG_FULL_PARAMS
     params.dump();
 #endif
 }
@@ -154,6 +167,41 @@ void Yuv420spToRgba8888(char* rgb, char* yuv420sp, int width, int height) {
             rgb[k++] = b;
             rgb[k++] = 255;
         }
+    }
+}
+
+void Yuv420spToRgb565(char* rgb, char* yuv420sp, int width, int height, int stride) {
+    int frameSize = width * height;
+    int padding = (stride - width) * 2; //two bytes per pixel for rgb565
+    int colr = 0;
+    for (int j = 0, yp = 0, k = 0; j < height; j++) {
+        int uvp = frameSize + (j >> 1) * width, u = 0, v = 0;
+        for (int i = 0; i < width; i++, yp++) {
+            int y = (0xff & ((int) yuv420sp[yp])) - 16;
+            if (y < 0) y = 0;
+            if ((i & 1) == 0) {
+                v = (0xff & yuv420sp[uvp++]) - 128;
+                u = (0xff & yuv420sp[uvp++]) - 128;
+            }
+
+            int y1192 = 1192 * y;
+            int r = (y1192 + 1634 * v);
+            int g = (y1192 - 833 * v - 400 * u);
+            int b = (y1192 + 2066 * u);
+
+            if (r < 0) r = 0; else if (r > 262143) r = 262143;
+            if (g < 0) g = 0; else if (g > 262143) g = 262143;
+            if (b < 0) b = 0; else if (b > 262143) b = 262143;
+
+            /* for RGB565 */
+            r = (r >> 13) & 0x1f;
+            g = (g >> 12) & 0x3f;
+            b = (b >> 13) & 0x1f;
+
+            rgb[k++] = g << 5 | b;
+            rgb[k++] = r << 3 | g >> 3;
+        }
+        k += padding;
     }
 }
 
@@ -214,8 +262,66 @@ void Yuv422iToRgba8888 (char* rgb, char* yuv422i, int width, int height) {
     }
 }
 
+void Yuv422iToRgb565 (char* rgb, char* yuv422i, int width, int height, int stride) {
+    int yuv_index = 0;
+    int rgb_index = 0;
+    int padding = (stride - width) * 2; //two bytes per pixel for rgb565
+
+    for (int j = 0; j < height; j++) {
+        for (int i = 0; i < width / 2; i++) {
+
+            int y1 = (0xff & ((int) yuv422i[yuv_index++])) - 16;
+            if (y1 < 0) y1 = 0;
+
+            int u = (0xff & yuv422i[yuv_index++]) - 128;
+
+            int y2 = (0xff & ((int) yuv422i[yuv_index++])) - 16;
+            if (y2 < 0) y2 = 0;
+
+            int v = (0xff & yuv422i[yuv_index++]) - 128;
+
+            int y1192 = 1192 * y1;
+            int r = (y1192 + 1634 * v);
+            int g = (y1192 - 833 * v - 400 * u);
+            int b = (y1192 + 2066 * u);
+
+            if (r < 0) r = 0; else if (r > 262143) r = 262143;
+            if (g < 0) g = 0; else if (g > 262143) g = 262143;
+            if (b < 0) b = 0; else if (b > 262143) b = 262143;
+
+            /* for RGB565 */
+            r = (r >> 13) & 0x1f;
+            g = (g >> 12) & 0x3f;
+            b = (b >> 13) & 0x1f;
+
+            rgb[rgb_index++] = g << 5 | b;
+            rgb[rgb_index++] = r << 3 | g >> 3;
+
+            y1192 = 1192 * y2;
+            r = (y1192 + 1634 * v);
+            g = (y1192 - 833 * v - 400 * u);
+            b = (y1192 + 2066 * u);
+
+            if (r < 0) r = 0; else if (r > 262143) r = 262143;
+            if (g < 0) g = 0; else if (g > 262143) g = 262143;
+            if (b < 0) b = 0; else if (b > 262143) b = 262143;
+
+            /* for RGB565 */
+            r = (r >> 13) & 0x1f;
+            g = (g >> 12) & 0x3f;
+            b = (b >> 13) & 0x1f;
+
+            rgb[rgb_index++] = g << 5 | b;
+            rgb[rgb_index++] = r << 3 | g >> 3;
+        }
+        rgb_index += padding;
+    }
+}
+
 void CameraHAL_ProcessPreviewData(char *frame, size_t size, legacy_camera_device *lcdev) {
+#ifdef LOG_EACH_FRAMES
     LOGV("%s: frame=%p, size=%d, camera=%p", __FUNCTION__, frame, size, lcdev);
+#endif
     if (NULL != lcdev->window) {
         int32_t stride;
         buffer_handle_t *bufHandle = NULL;
@@ -223,18 +329,16 @@ void CameraHAL_ProcessPreviewData(char *frame, size_t size, legacy_camera_device
         if (retVal != NO_ERROR) {
             LOGE("%s: ERROR dequeueing the buffer\n", __FUNCTION__);
         } else {
-            LOGV("%s: dequeued window, stride=%d", __FUNCTION__, stride);
             if ( stride != lcdev->previewWidth) {
                  LOGE("%s: stride=%d doesn't equal width=%d", __FUNCTION__, stride, lcdev->previewWidth);
             }
             retVal = lcdev->window->lock_buffer(lcdev->window, bufHandle);
             if (retVal == NO_ERROR) {
-                LOGV("%s: window locked", __FUNCTION__);
 
                 int tries = 5;
                 int err = 0;
                 void *vaddr;
-                err = lcdev->gralloc->lock(lcdev->gralloc, *bufHandle, GRALLOC_USAGE_SW_WRITE_OFTEN,
+                err = lcdev->gralloc->lock(lcdev->gralloc, *bufHandle, GRALLOC_USAGE_SW_WRITE_OFTEN | GRALLOC_USAGE_HW_TEXTURE | GRALLOC_USAGE_HW_RENDER,
                                            0, 0, lcdev->previewWidth, lcdev->previewHeight, &vaddr);
                 while (err && tries) {
                     // Pano frames almost always need a retry... or not
@@ -248,19 +352,27 @@ void CameraHAL_ProcessPreviewData(char *frame, size_t size, legacy_camera_device
                 if (!err) {
                     // The data we get is in YUV... but Window is RGBA8888. It needs to be converted
                     switch (lcdev->previewFormat) {
+#ifndef DISPLAY_RGB565
                     case OVERLAY_FORMAT_YUV422I:
                         Yuv422iToRgba8888((char*)vaddr, frame, lcdev->previewWidth, lcdev->previewHeight);
                         break;
                     case OVERLAY_FORMAT_YUV420SP:
                         Yuv420spToRgba8888((char*)vaddr, frame, lcdev->previewWidth, lcdev->previewHeight);
                         break;
-                    case OVERLAY_FORMAT_RGBA8888:
+#else
+                    case OVERLAY_FORMAT_YUV422I:
+                        Yuv422iToRgb565((char*)vaddr, frame, lcdev->previewWidth, lcdev->previewHeight, stride);
+                        break;
+                    case OVERLAY_FORMAT_YUV420SP:
+                        Yuv420spToRgb565((char*)vaddr, frame, lcdev->previewWidth, lcdev->previewHeight, stride);
+                        break;
+#endif
+                    case OVERLAY_FORMAT:
                         memcpy(vaddr, frame, size);
                         break;
                     default:
                         LOGE("%s: Unknown video format, cannot convert!", __FUNCTION__);
                     }
-
                     lcdev->gralloc->unlock(lcdev->gralloc, *bufHandle);
                 } else {
                   LOGE("%s: could not lock gralloc buffer", __FUNCTION__);
@@ -325,7 +437,6 @@ void CameraHAL_DataCb(int32_t msg_type, const sp<IMemory>& dataPtr,
     LOGV("CameraHAL_DataCb: msg_type:%d user:%p\n", msg_type, user);
 
     if (lcdev->data_callback != NULL && lcdev->request_memory != NULL) {
-        /* Make sure any pre-existing heap is released here */
         camera_memory_t *mem = CameraHAL_GenClientData(dataPtr, lcdev);
         if (mem != NULL) {
             LOGV("%s: Posting data to client\n", __FUNCTION__);
@@ -396,7 +507,7 @@ int CameraHAL_GetCam_Info(int camera_id, struct camera_info *info)
     return rv;
 }
 
-void CameraHAL_FixupParams(CameraParameters &settings)
+void CameraHAL_FixupParams(struct camera_device * device, CameraParameters &settings)
 {
     /* Motorola omap cameras doesn't support YUV420sp...
      * it advertises so, but then sends "yuv422i-yuyv"
@@ -406,18 +517,14 @@ void CameraHAL_FixupParams(CameraParameters &settings)
     settings.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FORMATS, YUV_CAM_FORMAT);
     settings.setPreviewFormat(YUV_CAM_FORMAT);
 
-    /* defy: focus locks the camera, but dunno how to disable it... */
-    if (!settings.get(android::CameraParameters::KEY_SUPPORTED_FOCUS_MODES))
-        settings.set(android::CameraParameters::KEY_SUPPORTED_FOCUS_MODES, "auto,macro,infinity,off");
+    if (!settings.get("preview-size-values"))
+        settings.set("preview-size-values", "176x144,320x240,352x288,480x360,640x480,848x480");
 
-    if (!settings.get(android::CameraParameters::KEY_SUPPORTED_EFFECTS))
-        settings.set(android::CameraParameters::KEY_SUPPORTED_EFFECTS, "none,mono,negative,sepia");
+    if (!settings.get("picture-size-values"))
+        settings.set("picture-size-values", "320x240,640x480,1280x960,1600x1200,2048x1536,2592x1456,2592x1936");
 
-    if (!settings.get(android::CameraParameters::KEY_SUPPORTED_SCENE_MODES))
-        settings.set(android::CameraParameters::KEY_SUPPORTED_SCENE_MODES,
-                     "auto,portrait,landscape,action,night-portrait,sunset,steadyphoto");
-
-    settings.set(android::CameraParameters::KEY_EXPOSURE_COMPENSATION, "0");
+    if (!settings.get("mot-video-size-values"))
+        settings.set("mot-video-size-values", "176x144,320x240,352x288,640x480,848x480");
 
     //LibSOCJordanCamera( 2113): Failed substring capabilities check, unsupported parameter newparam=on parseTable[i].key=focus-mode,currparam=auto
     const char *str_focus = settings.get(android::CameraParameters::KEY_FOCUS_MODE);
@@ -425,38 +532,104 @@ void CameraHAL_FixupParams(CameraParameters &settings)
         settings.set(android::CameraParameters::KEY_FOCUS_MODE, "auto");
     }
 
+    /* defy: focus locks the camera, but dunno how to disable it... */
+    if (!settings.get(android::CameraParameters::KEY_SUPPORTED_FOCUS_MODES))
+        settings.set(android::CameraParameters::KEY_SUPPORTED_FOCUS_MODES, "auto,macro,fixed,infinity,off");
+
+    if (!settings.get(android::CameraParameters::KEY_SUPPORTED_EFFECTS))
+        settings.set(android::CameraParameters::KEY_SUPPORTED_EFFECTS, "none,mono,sepia,negative,solarize,red-tint,green-tint,blue-tint");
+//incandescent,warm-fluorescent,cloudy-daylight,twilight,shade,red-eye,torch,fireworks,sports,party,candlelight,50hz,60hz
+
+    if (!settings.get(android::CameraParameters::KEY_SUPPORTED_SCENE_MODES))
+        settings.set(android::CameraParameters::KEY_SUPPORTED_SCENE_MODES,
+                     "auto,portrait,landscape,action,night-portrait,sunset,steadyphoto");
+
+    if (!settings.get(android::CameraParameters::KEY_EXPOSURE_COMPENSATION))
+        settings.set(android::CameraParameters::KEY_EXPOSURE_COMPENSATION, "0");
+
+    if (!settings.get("mot-max-areas-to-focus"))
+        settings.set("mot-max-areas-to-focus", "1");
+    if (!settings.get("mot-areas-to-focus"))
+        settings.set("mot-areas-to-focus", "0");
+
+    //if (!settings.get("zoom-ratios"))
+        settings.set("zoom-ratios", "100,200,300,400,500,600");
+
+    //if (!settings.get("max-zoom"))
+        settings.set("max-zoom", "4");
+
     /* defy: required to prevent panorama crash, but require also opengl ui */
-    const char *fps_range_values = "(1000,10000),(1000,11000),(1000,15000),(1000,20000),"
-                                   "(1000,25000),(1000,24000),(1000,30000)";
+    const char *fps_range_values = "(1000,30000),(1000,25000),(1000,20000),"
+                                   "(1000,24000),(1000,15000),(1000,10000)";
+    if (!settings.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE))
+        settings.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE, fps_range_values);
+
+   const char *preview_fps_range = "1000,30000";
     if (!settings.get(android::CameraParameters::KEY_PREVIEW_FPS_RANGE))
-        settings.set(android::CameraParameters::KEY_PREVIEW_FPS_RANGE, fps_range_values);
+        settings.set(android::CameraParameters::KEY_PREVIEW_FPS_RANGE, preview_fps_range);
+
+    // Fix preview ratio (for wide picture and video formats)
+    // should be fixed in camera app... ratio defines, to allow small sizes (panorama)
+
+    const char *target_size = settings.get("picture-size");
+    float ratio = 0.0;
+    int height = 0, width = atoi(target_size);
+    char *sh;
+    bool need_reset = false;
+    if (width > 0) {
+        sh = strstr(target_size, "x");
+        height = atoi(sh + 1);
+        ratio = (height * 1.0) / width;
+        if (ratio < 0.70 && width >= 640) {
+            settings.setPreviewSize(848, 480);
+            settings.set(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO, "848x480");
+            need_reset = true;
+        } else if (width == 848) {
+            settings.setPreviewSize(640, 480);
+            settings.set(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO, "640x480");
+            need_reset = true;
+        }
+        LOGV("%s: target size %s, ratio %f", __FUNCTION__, target_size, ratio);
+    }
+
+    if (need_reset) {
+        struct legacy_camera_device *lcdev = to_lcdev(device);
+        camera_set_preview_window(device, lcdev->window);
+    }
 
     LOGD("Parameters fixed up");
 }
 
 inline void destroyOverlay(legacy_camera_device *lcdev) {
-    if (lcdev->overlay != NULL) {
-        lcdev->hwif->setOverlay(NULL);
+    LOGV("%s\n", __FUNCTION__);
+    if (lcdev->overlay != NULL && lcdev->hwif != NULL) {
+        lcdev->hwif->setOverlay(false);
         lcdev->overlay = NULL;
+    }
+}
+
+inline void clearHardwareIntf(legacy_camera_device *lcdev) {
+    LOGV("%s\n", __FUNCTION__);
+    if (lcdev->hwif != NULL) {
+        lcdev->hwif.clear();
+        lcdev->hwif = NULL;
     }
 }
 
 /* Hardware Camera interface handlers. */
 int camera_set_preview_window(struct camera_device * device, struct preview_stream_ops *window) {
     int rv = -EINVAL;
-    const int kBufferCount = 4;
+    const int kBufferCount = 6;
     struct legacy_camera_device *lcdev = to_lcdev(device);
 
     LOGV("%s: Window %p\n", __FUNCTION__, window);
-
     if (device == NULL) {
-        LOGE("camera_set_preview_window : Invalid device.\n");
+        LOGE("%s: Invalid device.\n", __FUNCTION__);
         return -EINVAL;
     }
 
     if (lcdev->window == window) {
-        // reconfigure the old window, preview size might have changed
-        LOGV("%s: reconfiguring window", __FUNCTION__);
+        LOGV("%s: reconfiguring window %p", __FUNCTION__, window);
         destroyOverlay(lcdev);
     }
 
@@ -469,7 +642,7 @@ int camera_set_preview_window(struct camera_device * device, struct preview_stre
         return NO_ERROR;
     }
 
-    LOGD("%s : OK window is %p", __FUNCTION__, window);
+    LOGD("%s: OK window is %p", __FUNCTION__, window);
 
     if (!lcdev->gralloc) {
         hw_module_t const* module;
@@ -490,7 +663,7 @@ int camera_set_preview_window(struct camera_device * device, struct preview_stre
     }
     LOGD("%s: OK get_min_undequeued_buffer_count", __FUNCTION__);
 
-    LOGD("%s: bufs:%i", __FUNCTION__, min_bufs);
+    LOGD("%s: minimum buffer count is %i", __FUNCTION__, min_bufs);
     if (min_bufs >= kBufferCount) {
         LOGE("%s: min undequeued buffer count %i is too high (expecting at most %i)", __FUNCTION__, min_bufs, kBufferCount - 1);
     }
@@ -503,7 +676,7 @@ int camera_set_preview_window(struct camera_device * device, struct preview_stre
 
     CameraParameters params(lcdev->hwif->getParameters());
     params.getPreviewSize(&lcdev->previewWidth, &lcdev->previewHeight);
-    int hal_pixel_format = HAL_PIXEL_FORMAT_RGBA_8888; // It's becaise we don't really have hw acceleration... it's from default gralloc
+    int hal_pixel_format = HAL_PIXEL_FORMAT;
 
     const char *str_preview_format = params.getPreviewFormat();
     LOGD("%s: preview format %s", __FUNCTION__, str_preview_format);
@@ -686,7 +859,7 @@ char* camera_get_parameters(struct camera_device * device) {
     struct legacy_camera_device *lcdev = to_lcdev(device);
     char *rc = NULL;
     CameraParameters params(lcdev->hwif->getParameters());
-    CameraHAL_FixupParams(params);
+    CameraHAL_FixupParams(device, params);
     log_camera_params(__FUNCTION__, params);
     rc = strdup((char *)params.flatten().string());
     return rc;
@@ -708,8 +881,8 @@ void camera_release(struct camera_device * device) {
     struct legacy_camera_device *lcdev = to_lcdev(device);
     LOGV("camera_release:\n");
     destroyOverlay(lcdev);
-    lcdev->hwif.clear();
-    //lcdev->hwif->release(); made in camera service if i remember right
+    //clearHardwareIntf(lcdev);
+    lcdev->hwif->release();
 }
 
 int camera_dump(struct camera_device * device, int fd) {
@@ -727,11 +900,12 @@ int camera_device_close(hw_device_t* device) {
     if (lcdev != NULL) {
         camera_device_ops_t *camera_ops = lcdev->device.ops;
         if (camera_ops) {
-            if (lcdev->hwif != NULL) {
-                lcdev->hwif.clear();
-            }
+            //clearHardwareIntf(lcdev);
             free(camera_ops);
+            camera_ops = NULL;
         }
+        destroyOverlay(lcdev);
+        lcdev->overlay->destroy();
         free(lcdev);
         rc = NO_ERROR;
     }
@@ -745,7 +919,7 @@ int camera_device_open(const hw_module_t* module, const char* name, hw_device_t*
     camera_device_ops_t* camera_ops;
 
     if (NULL == name) {
-        return 0;
+        return NO_ERROR;
     }
 
     int cameraId = atoi(name);
