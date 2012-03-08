@@ -455,7 +455,9 @@ int camera_set_preview_window(struct camera_device * device, struct preview_stre
     }
 
     if (lcdev->window == window) {
-        return NO_ERROR;
+        // reconfigure the old window, preview size might have changed
+        LOGV("%s: reconfiguring window", __FUNCTION__);
+        destroyOverlay(lcdev);
     }
 
     lcdev->window = window;
