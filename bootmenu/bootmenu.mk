@@ -6,7 +6,7 @@ PRODUCT_PACKAGES += \
 	utility_lsof \
 	static_busybox \
 	static_logwrapper \
-	hijack_boot_2nd-init \
+	2nd-init \
 
 # config
 PRODUCT_COPY_FILES += \
