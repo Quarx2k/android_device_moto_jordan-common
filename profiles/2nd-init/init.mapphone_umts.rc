@@ -118,30 +118,6 @@ on post-fs-data
 on init
     log "== mapphone: on init ----------------------"
 
-    # Temporary fix permissions for gb kernel
-    chown root system /dev/cpcap
-    chown root system /dev/cpcap_batt
-    chown root system /dev/cpcap_mot_rtc
-    chown root system /dev/cpcap_uc
-    chown root system /dev/i2c-1
-    chown root system /dev/i2c-2
-    chown root root /dev/smodule
-    chown root system /dev/ttyGS0
-    chown root system /dev/tcmd_driver
-
-    chmod 0660 /dev/cpcap
-    chmod 0660 /dev/cpcap_batt
-    chmod 0660 /dev/cpcap_mot_rtc
-    chmod 0660 /dev/cpcap_uc
-    chmod 0660 /dev/i2c-1
-    chmod 0660 /dev/i2c-2
-    chmod 0660 /dev/smodule
-    chmod 0666 /dev/ttyGS0
-    chmod 0660 /dev/tcmd_driver
-
-#temporary permission for camera
-    chmod 0777 /dev/graphics/fb0  
-
     # Install kernel modules
     insmod /system/lib/modules/netmux.ko
     insmod /system/lib/modules/netmux_linkdriver.ko

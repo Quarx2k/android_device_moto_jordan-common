@@ -10,8 +10,10 @@ source /system/bootmenu/script/_config.sh
 toolbox mount -o remount,rw rootfs /
 rm -f /*.rc
 rm -f /*.sh
-rm -f /osh
-rm -f /preinstall
+rm -rf /osh
+rm -rf /preinstall
+rm -f /sbin/ueventd
+
 cp -f /system/bootmenu/2nd-init/* /
 ln -s /init /sbin/ueventd
 cp -f /system/bootmenu/binary/adbd /sbin/adbd
