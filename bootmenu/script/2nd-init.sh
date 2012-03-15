@@ -10,14 +10,12 @@ source /system/bootmenu/script/_config.sh
 toolbox mount -o remount,rw rootfs /
 rm -f /*.rc
 rm -f /*.sh
-rm -rf /osh
+rm -f /osh
 rm -rf /preinstall
-rm -f /sbin/ueventd
-killall ueventd
-
 cp -f /system/bootmenu/2nd-init/* /
 ln -s /init /sbin/ueventd
 cp -f /system/bootmenu/binary/adbd /sbin/adbd
+killall ueventd
 
 ADBD_RUNNING=`ps | grep adbd | grep -v grep`
 if [ -z "$ADB_RUNNING" ]; then
