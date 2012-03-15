@@ -55,12 +55,13 @@ mount -o remount,rw,relatime,mode=775,size=128k /dev
 rm /sbin/lsof
 
 ## busybox cleanup..
-for cmd in $(/sbin/busybox --list); do
-    [ -L "/sbin/$cmd" ] && rm "/sbin/$cmd"
-done
+if [ -f /sbin/busybox ]; then
+    for cmd in $(/sbin/busybox --list); do
+        [ -L "/sbin/$cmd" ] && rm "/sbin/$cmd"
+    done
 
-rm -f /sbin/busybox
-
+    rm -f /sbin/busybox
+fi
 
 ## adbd shell
 ln -s /system/xbin/bash /sbin/sh
