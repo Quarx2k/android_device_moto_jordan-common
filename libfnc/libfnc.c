@@ -38,76 +38,76 @@ EXPORTS
 
  int TPA_SECCLK_Get_NITZ_Time()
 {
- LOGE(__func__);
+ LOGW(__func__);
 return 0 ;
 }
 
  int TPA_SECCLK_Set_NITZ_Time()
 {
- LOGE(__func__);
+ LOGW(__func__);
 return 0 ;
 }
 
  int TPA_SECCLK_Get_Alarm_Time()
 {
- LOGE(__func__);
+ LOGW(__func__);
 return 0 ;
 }
 
  int TPA_SECCLK_Set_Alarm_Time()
 {
- LOGE(__func__);
+ LOGW(__func__);
 return 0 ;
 }
 
  int TPA_SECCLK_Get_User_Time()
 {
- LOGE(__func__);
+ LOGW(__func__);
 return 0 ;
 }
 
  int TPA_SECCLK_Set_User_Time()
 {
- LOGE(__func__);
+ LOGW(__func__);
 return 0 ;
 }
 
  int TPA_SECCLK_Get_GPS_Time()
 {
- LOGE(__func__);
+ LOGW(__func__);
 return 0 ;
 }
 
  int TPA_SECCLK_Set_GPS_Time()
 {
- LOGE(__func__);
+ LOGW(__func__);
 return 0 ;
 }
 
 //libtpa.so
  int TPA_LIB_KDF_Gen()
 {
- LOGE(__func__);
+ LOGW(__func__);
 return 0 ;
 }
 
 //libmotodbgutils.so
  int moto_panic()
 {
- LOGE(__func__);
+ LOGW(__func__);
 return 0 ;
 }
 
 //libsmiledetect.so
  int destroySmileDetectEngine()
 {
- LOGE(__func__);
+ LOGW(__func__);
 return 0 ;
 }
 
  int createSmileDetectEngine()
 {
- LOGE(__func__);
+ LOGW(__func__);
 return 0 ;
 }
 
