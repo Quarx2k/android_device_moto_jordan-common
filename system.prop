@@ -2,10 +2,6 @@
 # system.prop for jordan
 #
 
-#rild.libpath=/system/lib/librilswitch.so
-#rilswitch.vendorlibpath=/system/lib/libril-moto-umts-1.so
-#rilswitch.ganlibpath=/system/lib/libganril.so
-
 rild.libpath=/system/lib/libril-moto-umts-1.so
 
 rild.libargs=-d /dev/ttyS0
@@ -15,6 +11,9 @@ ro.sf.lcd_density=240
 # Default network type.
 # 3 -> GSM/WCDMA (auto mode, according to PRL)
 ro.telephony.default_network=3
+
+# old ril switchs: signalstrength,facilitylock,datacall,icccardstatus,skipbrokendatacall
+ro.telephony.ril.v3=skipbrokendatacall,signalstrength
 
 # The interfaces to get DNS data from when using mobile data
 # Comma-separated
@@ -48,14 +47,12 @@ jpeg.libskiahw.encoder.enable=0
 # Forbid format of these partitions in mount menu :
 ro.cwm.forbid_format=/misc,/devtree,/config,/boot,/recovery,/pds,/system
 
-# LED charging indicator mode
-# off = keep LED off during charging
-# white = white LED for 'charging', green LED for 'charged'
-# rgb = mixed yellowish LED for 'charging', green LED for 'charged'
-persist.sys.charge_led=white
+# FROM MB526
+ro.mot.hw.uaprof=http://uaprof.motorola.com/phoneconfig/motomb526/Profile/motomb526.rdf
+ro.mot.hidden_keyboards=evfwd
 
-# Brightness scaling of the button backlight
-persist.sys.button_brightness=100
+# This defines the min duration between two pointer event in ms
+ro.min_pointer_dur=10
 
 # Tell UsbService that we're using Usb.apk
 ro.usb.use_custom_service=1
@@ -63,28 +60,32 @@ ro.usb.use_custom_service=1
 # use 1% battery steps
 ro.product.use_charge_counter=1
 
-# use default multitouch configuration
-persist.sys.multitouch=2
-
-# Shutter sound enabled
-persist.sys.camera-mute=0
-
-# enable adbd during first boot (for dalvik cache problems)
-persist.service.adb.enable=1
-
-# old ril switchs: signalstrength,facilitylock,datacall,icccardstatus,skipbrokendatacall
-ro.telephony.ril.v3=skipbrokendatacall,signalstrength
-
 # DDMS debug SurfaceFlinger (EGL)
 # debug.sf.ddms=1
 
 # all/choice
 hwui.print_config=choice
 
-# FROM MB526
-ro.mot.hw.uaprof=http://uaprof.motorola.com/phoneconfig/motomb526/Profile/motomb526.rdf
-ro.mot.hidden_keyboards=evfwd
-
-# This defines the min duration between two pointer event in ms
-ro.min_pointer_dur=10
+#=========================================================================================
+# Note about persist.xxx properties :
+#
+# Don't edit values in this file, they are only used to set the default values on upgrade
+# use setprop tool if you want to change them.
+#=========================================================================================
+# LED charging indicator mode
+#  off   = keep LED off during charging
+#  white = white LED for 'charging', green LED for 'charged'
+#  rgb   = mixed yellowish LED for 'charging', green LED for 'charged'
+persist.sys.charge_led=white
+# Brightness scaling of the button backlight
+persist.sys.button_brightness=100
+# use default multitouch configuration
+persist.sys.multitouch=2
+# Shutter sound enabled
+persist.sys.camera-mute=0
+# enable adbd during first boot (for dalvik cache problems)
+persist.service.adb.enable=1
+# default root acces
+persist.sys.root_access=3
+#=========================================================================================
 
