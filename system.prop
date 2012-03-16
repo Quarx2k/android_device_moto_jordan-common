@@ -14,7 +14,6 @@ ro.telephony.default_network=3
 
 # old ril switchs: signalstrength,facilitylock,datacall,icccardstatus,skipbrokendatacall
 ro.telephony.ril.v3=skipbrokendatacall,signalstrength
-
 ro.telephony.ril_class=MotoWrigley3GRIL
 
 # The interfaces to get DNS data from when using mobile data
