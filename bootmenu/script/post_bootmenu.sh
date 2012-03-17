@@ -1,4 +1,4 @@
-#!/sbin/busybox ash
+#!/system/bootmenu/binary/busybox ash
 
 ######## BootMenu Script
 ######## Execute Post BootMenu
@@ -21,8 +21,8 @@ mount -o remount,rw rootfs /
 mount -o remount,rw $PART_SYSTEM /system
 ##################################################
 
-# fast button warning (to check if this script is used in recovery)
-if [ -L /sbin/adbd.root ]; then
+# fast button warning (if this script is used in recovery)
+if [ -e /sbin/recovery ]; then
     echo 1 > /sys/class/leds/button-backlight/brightness
     usleep 150000
     echo 0 > /sys/class/leds/button-backlight/brightness
@@ -33,20 +33,17 @@ if [ -L /sbin/adbd.root ]; then
     exit 1
 fi
 
-chmod 777 /dev/graphics
-chmod 666 /dev/graphics/fb0
-chmod 666 /dev/video*
-
 if [ -d /system/bootmenu/init.d ]; then
     chmod 755 /system/bootmenu/init.d/*
     run-parts /system/bootmenu/init.d
 fi
 
+# adb shell
+ln -s /system/xbin/busybox /sbin/sh
+
 ######## Don't Delete.... ########################
 mount -o remount,ro rootfs /
 mount -o remount,ro $PART_SYSTEM /system
 ##################################################
-
-#/system/bootmenu/script/media_fixup.sh &
 
 exit 0

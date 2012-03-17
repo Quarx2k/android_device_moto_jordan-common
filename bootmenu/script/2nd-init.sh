@@ -62,10 +62,6 @@ if [ -f /sbin/busybox ]; then
     rm -f /sbin/busybox
 fi
 
-## used for adbd shell (can be bash also)
-#/system/xbin/ln -s /system/bootmenu/binary/busybox /sbin/sh
-#rm -f /sbin/busybox
-
 ## reduce lcd backlight to save battery
 echo 18 > /sys/class/leds/lcd-backlight/brightness
 
