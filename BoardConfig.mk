@@ -117,9 +117,6 @@ TARGET_USERIMAGES_USE_EXT4 := false
 TARGET_RECOVERY_PRE_COMMAND := "/system/bootmenu/script/reboot_command.sh"
 TARGET_RECOVERY_PRE_COMMAND_CLEAR_REASON := true
 
-# Jordan need 2nd-init binary from motorola common
-TARGET_NEEDS_MOTOROLA_HIJACK := true
-
 # FM Radio (not ready in ICS)
 # BOARD_HAVE_FM_RADIO := true
 # BOARD_FM_DEVICE := wl1271
