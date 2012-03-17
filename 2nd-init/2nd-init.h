@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define SECOND_INIT_H
 
 /*===============================================================================
- * 
+ *
  * Signature of calling execve (syscall 11)
  *
  * execve:
@@ -34,10 +34,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * HEX: 90002DE9 0B70A0E3 000000EF 9000BDE8
 ===============================================================================*/
-	 
-char execve_code[] = {	0x90, 0x00, 0x2D, 0xE9,
-												0x0B, 0x70, 0xA0, 0xE3,
-												0x00, 0x00, 0x00, 0xEF,
-												0x90, 0x00, 0xBD, 0xE8 };
-												
+
+char execve_code[] = {
+	0x90, 0x00, 0x2D, 0xE9,
+	0x0B, 0x70, 0xA0, 0xE3,
+	0x00, 0x00, 0x00, 0xEF,
+	0x90, 0x00, 0xBD, 0xE8
+};
 #endif //!SECOND_INIT_H
