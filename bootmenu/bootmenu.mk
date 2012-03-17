@@ -6,7 +6,7 @@ PRODUCT_PACKAGES += \
 	utility_lsof \
 	static_busybox \
 	static_logwrapper \
-	2nd-init \
+	2nd-init.jordan \
 
 # config
 PRODUCT_COPY_FILES += \
