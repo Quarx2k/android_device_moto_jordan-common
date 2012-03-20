@@ -46,10 +46,9 @@
  *****************************************************************************/
 #define MS_50 50000
 #define ONCHANGED 0
-#define USE_KXTF_ACCELEROMETER
 
 static const struct sensor_t sSensorList[] = {
-#ifdef USE_KXTF_ACCELEROMETER
+#ifdef USE_KXTF9_ACCELEROMETER
     { "KXTF9 3-axis Accelerometer",
         "Kionix",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_ACCELEROMETER, SENSOR_TYPE_ACCELEROMETER,
@@ -76,12 +75,6 @@ static const struct sensor_t sSensorList[] = {
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_AMBIENT_TEMPERATURE, SENSOR_TYPE_AMBIENT_TEMPERATURE,
         85.0f, 1.0f, 0.2f, 0, { } },
 
-/* not required:
-    { "KXTF9 2-axis Orientation Events",
-        "Kionix",
-        1, SENSORS_HANDLE_BASE + SENSOR_TYPE_ORIENTATION, SENSOR_TYPE_ORIENTATION,
-        270.0f, 90.0f, 0.2f, ONCHANGED, { } },
-*/
     { "ISL29030 Proximity Sensor",
         "Intersil Corporation",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_PROXIMITY, SENSOR_TYPE_PROXIMITY,
