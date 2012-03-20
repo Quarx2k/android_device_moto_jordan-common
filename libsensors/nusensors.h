@@ -27,11 +27,6 @@
 #include <hardware/hardware.h>
 #include <hardware/sensors.h>
 
-// gingerbread/ics compat
-#ifndef SENSOR_TYPE_AMBIENT_TEMPERATURE
-#define SENSOR_TYPE_AMBIENT_TEMPERATURE SENSOR_TYPE_TEMPERATURE
-#endif
-
 __BEGIN_DECLS
 
 /*****************************************************************************/
