@@ -3,8 +3,10 @@ package com.cyanogenmod.defyparts;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.SystemProperties;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -20,24 +22,35 @@ import java.io.IOException;
 public class SettingsActivity extends PreferenceActivity implements OnPreferenceChangeListener {
     private static final String TAG = "DefyParts";
 
+    private PackageManager mPm;
+
     private PreferenceCategory generalSettings;
     private ListPreference chargeLedModePref;
     private ListPreference touchPointsPref;
+    private CheckBoxPreference kinetoPref;
 
     private static final String PROP_CHARGE_LED_MODE = "persist.sys.charge_led";
     private static final String PROP_TOUCH_POINTS = "persist.sys.multitouch";
+    private static final String PROP_KINETO_ENABLED = "persist.sys.kineto.enable";
     private static final String FILE_TOUCH_POINTS = "/proc/multitouch/num";
+    private static final String KINETO_PACKAGE = "com.android.kineto";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
 
+        mPm = getPackageManager();
+
         generalSettings = (PreferenceCategory) getPreferenceScreen().findPreference("general");
         chargeLedModePref = (ListPreference) generalSettings.findPreference("charge_led_mode");
         chargeLedModePref.setOnPreferenceChangeListener(this);
         touchPointsPref = (ListPreference) generalSettings.findPreference("touch_points");
         touchPointsPref.setOnPreferenceChangeListener(this);
+
+        PreferenceCategory otherSettings = (PreferenceCategory) getPreferenceScreen().findPreference("other");
+        kinetoPref = (CheckBoxPreference) otherSettings.findPreference("kineto");
+        kinetoPref.setOnPreferenceChangeListener(this);
     }
 
     @Override
@@ -46,6 +59,15 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 
         chargeLedModePref.setValue(SystemProperties.get(PROP_CHARGE_LED_MODE));
         touchPointsPref.setValue(SystemProperties.get(PROP_TOUCH_POINTS));
+
+        try {
+            int setting = mPm.getApplicationEnabledSetting(KINETO_PACKAGE);
+            kinetoPref.setEnabled(true);
+            kinetoPref.setChecked(setting == PackageManager.COMPONENT_ENABLED_STATE_ENABLED);
+        } catch (IllegalArgumentException e) {
+            /* kineto not installed for whatever reason */
+            kinetoPref.setEnabled(false);
+        }
     }
 
     @Override
@@ -79,6 +101,14 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
                 dialog.show();
                 return false;
             }
+        } else if (preference == kinetoPref) {
+            final Boolean value = (Boolean) newValue;
+            final int setting = value ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
+                                        PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+
+	    Log.d(TAG, "set enabled " + KINETO_PACKAGE + " setting " + setting);
+            mPm.setApplicationEnabledSetting(KINETO_PACKAGE, setting, 0);
+            SystemProperties.set(PROP_KINETO_ENABLED, value ? "1" : "0");
         }
 
         return true;

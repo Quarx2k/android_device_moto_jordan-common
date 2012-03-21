@@ -30,4 +30,6 @@
     <string name="other_settings_title">Andere Einstellungen</string>
     <string name="compass_calibrate">Kompasskalibrierung</string>
     <string name="baseband_switcher">Baseband-Auswahl</string>
+    <string name="kineto_support">Kineto-Unterstützung</string>
+    <string name="kineto_support_summary">Kineto-Anwendung (\'Wifi Calling\') aktivieren</string>
 </resources>
