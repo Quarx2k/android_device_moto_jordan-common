@@ -106,7 +106,6 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
             final int setting = value ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
                                         PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
 
-	    Log.d(TAG, "set enabled " + KINETO_PACKAGE + " setting " + setting);
             mPm.setApplicationEnabledSetting(KINETO_PACKAGE, setting, 0);
             SystemProperties.set(PROP_KINETO_ENABLED, value ? "1" : "0");
         }
