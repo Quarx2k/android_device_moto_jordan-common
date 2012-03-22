@@ -58,8 +58,8 @@ SensorAK8973::SensorAK8973() : SensorBase(AK8973_DEVICE_NAME, "compass"),
     mPendingEvents[Orientation].orientation.status = SENSOR_STATUS_ACCURACY_HIGH;
 
     mPendingEvents[Temperature].version = sizeof(sensors_event_t);
-    mPendingEvents[Temperature].sensor = SENSOR_TYPE_TEMPERATURE;
-    mPendingEvents[Temperature].type = SENSOR_TYPE_TEMPERATURE;
+    mPendingEvents[Temperature].sensor = SENSOR_TYPE_AMBIENT_TEMPERATURE;
+    mPendingEvents[Temperature].type = SENSOR_TYPE_AMBIENT_TEMPERATURE;
 
     for (int i = 0 ; i < numSensors; i++) {
         mDelays[i] = AK8973_DEFAULT_DELAY;
@@ -78,10 +78,10 @@ int SensorAK8973::enable(int32_t handle, int en)
 
 
     switch (handle) {
-        case SENSOR_TYPE_ACCELEROMETER:  what = Accelerometer; break;
-        case SENSOR_TYPE_MAGNETIC_FIELD: what = MagneticField; break;
-        case SENSOR_TYPE_ORIENTATION:    what = Orientation; break;
-        case SENSOR_TYPE_TEMPERATURE:    what = Temperature; break;
+        case SENSOR_TYPE_ACCELEROMETER:       what = Accelerometer; break;
+        case SENSOR_TYPE_MAGNETIC_FIELD:      what = MagneticField; break;
+        case SENSOR_TYPE_ORIENTATION:         what = Orientation; break;
+        case SENSOR_TYPE_AMBIENT_TEMPERATURE: what = Temperature; break;
         default: return -EINVAL;
     }
 
@@ -131,10 +131,10 @@ int SensorAK8973::setDelay(int32_t handle, int64_t ns)
 
     switch (handle)
     {
-        case SENSOR_TYPE_ACCELEROMETER:  what = Accelerometer; break;
-        case SENSOR_TYPE_MAGNETIC_FIELD: what = MagneticField; break;
-        case SENSOR_TYPE_ORIENTATION:    what = Orientation; break;
-        case SENSOR_TYPE_TEMPERATURE:    what = Temperature; break;
+        case SENSOR_TYPE_ACCELEROMETER:       what = Accelerometer; break;
+        case SENSOR_TYPE_MAGNETIC_FIELD:      what = MagneticField; break;
+        case SENSOR_TYPE_ORIENTATION:         what = Orientation; break;
+        case SENSOR_TYPE_AMBIENT_TEMPERATURE: what = Temperature; break;
         default: return -EINVAL;
     }
 

@@ -72,7 +72,7 @@ static const struct sensor_t sSensorList[] = {
 
     { "AK8973 Temperature Sensor",
         "Asahi Kasei",
-        1, SENSORS_HANDLE_BASE + SENSOR_TYPE_TEMPERATURE, SENSOR_TYPE_TEMPERATURE,
+        1, SENSORS_HANDLE_BASE + SENSOR_TYPE_AMBIENT_TEMPERATURE, SENSOR_TYPE_AMBIENT_TEMPERATURE,
         85.0f, 1.0f, 0.2f, 0, { } },
 
     { "ISL29030 Proximity Sensor",
