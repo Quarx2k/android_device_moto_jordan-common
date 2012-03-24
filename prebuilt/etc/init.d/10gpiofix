@@ -1,0 +1,19 @@
+#!/system/bin/sh
+#
+# load module to fix gpio of touch_pwr_en
+
+# Module location
+MODULE="/system/lib/modules/gpiofix.ko"
+
+# Property to disable the module
+LOAD_MODULE=`getprop persist.sys.gpiofix.disable`
+
+DEFYPLUS=0
+if [ -f /proc/socinfo ]; then
+    DEFYPLUS=1
+fi
+
+if [ "$DEFYPLUS" = "0" ]; then
+    /system/xbin/insmod $MODULE
+fi
+
