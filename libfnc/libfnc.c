@@ -111,3 +111,10 @@ return 0 ;
 return 0 ;
 }
 
+//libbattd.so
+ int BATTD_send_daemon_cmd()
+{
+ LOGW(__func__);
+return 0 ;
+}
+
