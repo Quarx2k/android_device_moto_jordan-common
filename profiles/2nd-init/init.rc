@@ -96,13 +96,6 @@ on init
 on fs
     log "== init.rc: on fs -------------------------"
 
-    # mount mtd partitions
-    # Mount /system rw first to give the filesystem a chance to save a checkpoint
-    #mount yaffs2 mtd@system /system
-    #mount yaffs2 mtd@system /system ro remount
-    #mount yaffs2 mtd@userdata /data nosuid nodev
-    #mount yaffs2 mtd@cache /cache nosuid nodev
-
 on post-fs
     log "== init.rc: on post-fs --------------------"
 
@@ -283,16 +276,6 @@ on boot
     setprop net.tcp.buffersize.hspa    4094,87380,262144,4096,16384,262144
     setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
     setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
-
-# allow system to modify ksm control files
-    chown root system /sys/kernel/mm/ksm/pages_to_scan
-    chmod 0664 /sys/kernel/mm/ksm/pages_to_scan
-    chown root system /sys/kernel/mm/ksm/sleep_millisecs
-    chmod 0664 /sys/kernel/mm/ksm/sleep_millisecs
-    chown root system /sys/kernel/mm/ksm/run
-    chmod 0664 /sys/kernel/mm/ksm/run
-    write /sys/kernel/mm/ksm/sleep_millisecs 1500
-    write /sys/kernel/mm/ksm/pages_to_scan 256
 
 # Set this property so surfaceflinger is not started by system_init
     setprop system_init.startsurfaceflinger 0

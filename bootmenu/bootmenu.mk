@@ -33,7 +33,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/script/2nd-init.sh:system/bootmenu/script/2nd-init.sh \
 	${bm_device}/bootmenu/script/2nd-boot.sh:system/bootmenu/script/2nd-boot.sh \
-	${bm_device}/bootmenu/script/stock.sh:system/bootmenu/script/stock.sh \
 	${bm_device}/bootmenu/script/adbd.sh:system/bootmenu/script/adbd.sh \
 	${bm_device}/bootmenu/script/bootmode_clean.sh:system/bootmenu/script/bootmode_clean.sh \
 	${bm_device}/bootmenu/script/cdrom.sh:system/bootmenu/script/cdrom.sh \
@@ -82,8 +81,8 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/recovery/res/images/indeterminate6.png:system/bootmenu/recovery/res/images/indeterminate6.png \
 	${bm_device}/bootmenu/recovery/res/images/progress_empty.png:system/bootmenu/recovery/res/images/progress_empty.png \
 	${bm_device}/bootmenu/recovery/res/images/progress_fill.png:system/bootmenu/recovery/res/images/progress_fill.png \
-	${bm_device}/bootmenu/recovery/res/images/icon_bootmenu.png:system/bootmenu/recovery/res/images/icon_bootmenu.png \
-	${bm_device}/bootmenu/recovery/res/images/icon_bootmenu.png:system/bootmenu/recovery/res/images/icon_clockwork.png \
+	${bm_device}/bootmenu/recovery/res/images/icon_cm.png:system/bootmenu/recovery/res/images/icon_bootmenu.png \
+	${bm_device}/bootmenu/recovery/res/images/icon_cm.png:system/bootmenu/recovery/res/images/icon_clockwork.png \
 	${bm_device}/bootmenu/recovery/sbin/badblocks:system/bootmenu/recovery/sbin/badblocks \
 	${bm_device}/bootmenu/recovery/sbin/dedupe:system/bootmenu/recovery/sbin/dedupe \
 	${bm_device}/bootmenu/recovery/sbin/dump_image:system/bootmenu/recovery/sbin/dump_image \

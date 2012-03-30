@@ -1,5 +1,5 @@
 /*
- * symsearch: - looks up for unexported kernel symbols
+ * symsearch: - looks up also for unexproted symbols in the kernel
  *
  * Copyright (C) 2010 Skrilax_CZ
  * GPL
@@ -83,12 +83,28 @@
 		return -EBUSY; \
 	}
 
+#define SYMSEARCH_BIND_FUNCTION_NORET(module,name) \
+	name = (name##_fp)lookup_symbol_address(#name); \
+	if(!name) \
+	{ \
+		printk(KERN_INFO #module ": Could not find symbol: " #name ".\n"); \
+		return; \
+	}
+
 #define SYMSEARCH_BIND_FUNCTION_TO(module,name,sym) \
 	sym = (sym##_fp)lookup_symbol_address(#name); \
 	if(!sym) \
 	{ \
 		printk(KERN_INFO #module ": Could not find symbol: " #name ".\n"); \
 		return -EBUSY; \
+	}
+
+#define SYMSEARCH_BIND_FUNCTION_TO_TYPED(module,type,name,sym) \
+	sym = (sym##_fp)lookup_symbol_address(#name); \
+	if(!sym) \
+	{ \
+		printk(KERN_INFO #module ": Could not find symbol: " #name ".\n"); \
+		return (type) -ENXIO; \
 	}
 
 #define SYMSEARCH_BIND_FUNCTION_TO_NORET(module,name,sym) \
@@ -117,3 +133,4 @@ struct hijack_info hijack_function(unsigned long hijack_address, unsigned long r
 void restore_function(struct hijack_info hijack);
 
 #endif
+

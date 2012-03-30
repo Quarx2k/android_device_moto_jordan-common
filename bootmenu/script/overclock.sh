@@ -1,4 +1,4 @@
-#!/system/bin/sh
+#!/system/bootmenu/binary/busybox ash
 
 ######## BootMenu Script
 ######## Overclock.sh
