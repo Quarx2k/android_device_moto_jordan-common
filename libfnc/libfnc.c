@@ -118,22 +118,3 @@ return 0 ;
 return 0 ;
 }
 
-//lissmgrd.so
- int PmIpcBPNormalPowerDown()
-{
- LOGW(__func__);
-return 0 ;
-}
-
- int PmIpcBPRestartInfra()
-{
- LOGW(__func__);
-return 0 ;
-}
-
- int PmIpcFilterUnsolicitedBPMsgs()
-{
- LOGW(__func__);
-return 0 ;
-}
-
