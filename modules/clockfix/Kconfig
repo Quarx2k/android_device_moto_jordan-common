@@ -1,0 +1,5 @@
+config DEFYPLUS_CLOCKFIX
+        tristate "Defy Plus: Fix warning in clocks"
+        default m
+        depends on SYMSEARCH
+
