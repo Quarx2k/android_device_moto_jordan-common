@@ -12,10 +12,10 @@ Add to your repo manifest \<project path="kernel" name="CyanogenDefy/kernel-omap
 "repo sync" and then, in root of your android repo :
 
     . build/envsetup.sh
-    lunch cyanogen_jordan-eng
+    lunch cm_jordan-userdebug
     
     make kernel
-    make jordan_modules
+    make device_modules
 
 ---
 
