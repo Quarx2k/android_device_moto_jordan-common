@@ -11,6 +11,10 @@ DEVICE_OUT=$ANDROID_BUILD_TOP/out/target/product/jordan
 DEVICE_TOP=$ANDROID_BUILD_TOP/device/motorola/jordan
 VENDOR_TOP=$ANDROID_BUILD_TOP/vendor/motorola/jordan
 
+CL_PFX="\033[33m"
+CL_INS="\033[36m"
+CL_RST="\033[0m"
+
 OUT_TARGET_HOST=`uname -a | grep Darwin`
 if [ -z "$OUT_TARGET_HOST" ]
 then
@@ -169,17 +173,17 @@ if [ -n "$CM_NIGHTLY" ]; then
 fi
 
 # Pack it up and sign
-printf "Zipping package..."
+echo "Zipping package..."
 ( cd $REPACK/ota; zip $QUIET -r $REPACK/update.zip . )
 echo
-printf "Signing package..."
+echo "Signing package..."
 SECURITYDIR=$ANDROID_BUILD_TOP/build/target/product/security
 java -Xmx768m \
 	-jar $ANDROID_BUILD_TOP/out/host/$OUT_TARGET_HOST/framework/signapk.jar \
 	-w $SECURITYDIR/testkey.x509.pem $SECURITYDIR/testkey.pk8 \
 	$REPACK/update.zip $OUTFILE
 echo
-printf "Cleaning up..."
+echo "Cleaning up..."
 rm -rf $REPACK
 echo
 
@@ -189,7 +193,7 @@ img=`basename $OUTFILE`
 cd `dirname $OUTFILE`
 $MD5 $img >$img.md5sum
 echo
-echo "Package complete: $OUTFILE"
+echo -e ${CL_INS}"Package complete: $OUTFILE" ${CL_RST}
 cat $img.md5sum
 echo
 # Build date and current time:
@@ -199,7 +203,9 @@ echo
 )
 
 if [ -x $DEVICE_TOP/releasetools/addons ]; then
-	$DEVICE_TOP/releasetools/addons recovery
+	$DEVICE_TOP/releasetools/addons kernel
+#	$DEVICE_TOP/releasetools/addons bootmenu
+#	$DEVICE_TOP/releasetools/addons twrp-recovery
 fi
 
 exit 0

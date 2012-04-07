@@ -1,0 +1,44 @@
+assert(getprop("ro.hardware") == "mapphone_umts" || getprop("ro.hardware") == "jordan_umts" || getprop("ro.product.device") == "jordan" || getprop("ro.build.product") == "umts_jordan" || getprop("ro.product.board") == "jordan");
+
+ui_print(" ");
+ui_print(" ");
+ui_print("      ,/   .`|                                 ,-.----.   ");
+ui_print("    ,`   .'  :        .---.    ,-.----.        \    /  \  ");
+ui_print("  /    :     /       /. ./|    \    /  \       |   :    \ ");
+ui_print(".'___,/    ,'    .--'.  ' :    :   :    \      |   |  .\ : ");
+ui_print("|    :     |    /__./ \ : |    |   | .\ :      .   :  |: | ");
+ui_print(":    |.':  :.--'.  '   \' .    .   : |: |      |   |   \ : ");
+ui_print("`----'  |  /___/ \ |    ' '    |   |  \ :      |   : .   / ");
+ui_print("    '   :  :   \  \:      :    |   : .  /      :   | |`-'  ");
+ui_print("    |   |  '\   :  `      |    :   | |  \      |   | :     ");
+ui_print("    '   :  | .   \    .\  :    |   | :\  \     :   ' |     ");
+ui_print("    :   |.'___\   \   ' \ |___ :   ' | \.'___  :   : :    ");
+ui_print("    '---' /  .\:   '  |--'/  .\:   : :-' /  .\ |   | :    ");
+ui_print("          \  : |\   \ :   \  : |   |.'   \  : |`---'.|    ");
+ui_print("           `--'  '---'     `--'`---'      `--'   `---`    ");
+ui_print(" ");
+ui_print("        TWRP 2.1 for Motorola Defy      ");
+ui_print("              Touch Recovery            ");
+ui_print("           http://www.teamw.in          ");
+ui_print(" ");
+ui_print(" Are you getting Excited yet......... Hope So!");
+ui_print(" ");
+ui_print("Extracting Update Resources...");
+
+show_progress(0.100000, 0);
+mount("ext4", "EMMC", "/dev/block/mmcblk0p12", "/system");
+
+show_progress(0.200000, 0);
+package_extract_dir("system", "/system");
+
+show_progress(0.200000, 0);
+
+set_perm_recursive(0, 2000, 0755, 0755, "/system/bootmenu/script/");
+set_perm_recursive(0, 2000, 0755, 0755, "/system/bootmenu/recovery/sbin/");
+set_perm_recursive(0, 2000, 0775, 0664, "/system/bootmenu/recovery/res/");
+
+show_progress(0.500000, 0);
+
+ui_print(" ");
+ui_print("And all done!");
+ui_print("Okay, just Reboot Recovery.");
