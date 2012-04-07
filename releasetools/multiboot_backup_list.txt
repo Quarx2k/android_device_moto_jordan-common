@@ -1,6 +1,7 @@
 bootmenu/script/2nd-system.sh
-bootmenu/config/multiboot_defaultpath.conf
+bootmenu/config/multiboot.conf
 bootmenu/binary/multiboot
+bootmenu/2nd-system/2nd-init
 bootmenu/2nd-system/fshook.functions.sh
 bootmenu/2nd-system/fshook.bootrecovery.sh
 bootmenu/2nd-system/init.hook.rc
