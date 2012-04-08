@@ -1,9 +1,8 @@
 on early-init
-    loglevel 9
     start ueventd
 
 on init
-    loglevel 7
+    loglevel 3
     log "== init.rc: on init -----------------------"
 
     # Set init and its forked children's oom_adj.

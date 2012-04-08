@@ -1,5 +1,14 @@
 # import init.mapphone_umts.usb.rc
 
+on init
+    log "== mapphone: on init ----------------------"
+    # change order or library location search
+    export LD_LIBRARY_PATH /system/lib:/vendor/lib
+
+    symlink mmcblk1p21 /dev/block/system
+    symlink mmcblk1p24 /dev/block/cache
+    symlink mmcblk1p25 /dev/block/userdata
+
 on fs
     log "== mapphone: on fs ------------------------"
 
@@ -20,6 +29,7 @@ on post-fs
     mount rootfs rootfs / rw remount
 
 # Busybox
+    mkdir /data/local/tmp 0777 system shell
     export HISTFILE /data/local/tmp/.ash_history
     export HISTFILESIZE 1000
     export ENV /system/etc/profile
