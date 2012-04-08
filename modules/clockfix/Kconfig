@@ -1,5 +1,5 @@
-config DEFYPLUS_CLOCKFIX
-        tristate "Defy Plus: Fix warning in clocks"
+config DEFY_CLOCKFIX
+        tristate "Defy: Fix dmesg warnings in clocks like 1.3GHz"
         default m
         depends on SYMSEARCH
 

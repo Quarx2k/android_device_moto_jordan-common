@@ -89,6 +89,7 @@ install_module()
     insmod $MODULE_DIR/cpufreq_conservative.ko
     insmod $MODULE_DIR/cpufreq_powersave.ko
     insmod $MODULE_DIR/symsearch.ko
+    insmod $MODULE_DIR/clockfix.ko
     insmod $MODULE_DIR/cpufreq_stats.ko
     insmod $MODULE_DIR/cpufreq_interactive.ko
     insmod $MODULE_DIR/cpufreq_smartass.ko
@@ -115,6 +116,7 @@ set_scaling()
     "1" )
       if [ $load_all -eq 0 ]; then
         insmod $MODULE_DIR/symsearch.ko
+        insmod $MODULE_DIR/clockfix.ko
         insmod $MODULE_DIR/cpufreq_stats.ko
         insmod $MODULE_DIR/cpufreq_interactive.ko
       fi
@@ -138,6 +140,7 @@ set_scaling()
     "5" )
       if [ $load_all -eq 0 ]; then
         insmod $MODULE_DIR/symsearch.ko
+        insmod $MODULE_DIR/clockfix.ko
         insmod $MODULE_DIR/cpufreq_smartass.ko
       fi
       echo "smartass" > $SCALING_GOVERNOR
@@ -166,16 +169,14 @@ set_scaling()
 
 set_overclock_table()
 {
-  echo "$vsel4" > /proc/overclock/max_vsel
-  echo "${clk4}000" > /proc/overclock/max_rate
-  echo "4 ${clk4}000000 $vsel4" > /proc/overclock/mpu_opps
+  echo "$vsel3" > /proc/overclock/max_vsel
+  echo "${clk3}000" > /proc/overclock/max_rate
   echo "3 ${clk3}000000 $vsel3" > /proc/overclock/mpu_opps
   echo "2 ${clk2}000000 $vsel2" > /proc/overclock/mpu_opps
   echo "1 ${clk1}000000 $vsel1" > /proc/overclock/mpu_opps
-  echo "0 ${clk4}000" > /proc/overclock/freq_table
-  echo "1 ${clk3}000" > /proc/overclock/freq_table
-  echo "2 ${clk2}000" > /proc/overclock/freq_table
-  echo "3 ${clk1}000" > /proc/overclock/freq_table
+  echo "0 ${clk3}000" > /proc/overclock/freq_table
+  echo "1 ${clk2}000" > /proc/overclock/freq_table
+  echo "2 ${clk1}000" > /proc/overclock/freq_table
 }
 
 #############################################################

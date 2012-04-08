@@ -1,0 +1,25 @@
+ui_print("Updating kernel devtree and modules");
+
+show_progress(0.000000, 0);
+mount("ext4", "EMMC", "/dev/block/mmcblk0p12", "/system");
+
+package_extract_dir("system", "/system");
+show_progress(0.300000, 0);
+
+assert(package_extract_file("boot.img", "/tmp/boot.img"),
+       write_raw_image("/tmp/boot.img", "/dev/block/mmcblk1p15"),
+       delete("/tmp/boot.img"));
+
+show_progress(0.200000, 0);
+
+assert(package_extract_file("devtree.img", "/tmp/devtree.img"),
+       write_raw_image("/tmp/devtree.img", "/dev/block/mmcblk1p12"),
+       delete("/tmp/devtree.img"));
+
+show_progress(0.300000, 0);
+
+mount("ext3", "EMMC", "/dev/block/mmcblk1p25", "/data");
+delete_recursive("/data/dalvik-cache");
+
+show_progress(0.200000, 0);
+
