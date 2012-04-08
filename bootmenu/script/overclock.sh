@@ -89,6 +89,7 @@ install_module()
     insmod $MODULE_DIR/cpufreq_conservative.ko
     insmod $MODULE_DIR/cpufreq_powersave.ko
     insmod $MODULE_DIR/symsearch.ko
+    insmod $MODULE_DIR/clockfix.ko
     insmod $MODULE_DIR/cpufreq_stats.ko
     insmod $MODULE_DIR/cpufreq_interactive.ko
     insmod $MODULE_DIR/cpufreq_smartass.ko
@@ -117,6 +118,7 @@ set_scaling()
         insmod $MODULE_DIR/symsearch.ko
         insmod $MODULE_DIR/cpufreq_stats.ko
         insmod $MODULE_DIR/cpufreq_interactive.ko
+        insmod $MODULE_DIR/clockfix.ko
       fi
       echo "interactive" > $SCALING_GOVERNOR
       echo $int_min_sample_rate > /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
@@ -139,6 +141,7 @@ set_scaling()
       if [ $load_all -eq 0 ]; then
         insmod $MODULE_DIR/symsearch.ko
         insmod $MODULE_DIR/cpufreq_smartass.ko
+        insmod $MODULE_DIR/clockfix.ko
       fi
       echo "smartass" > $SCALING_GOVERNOR
       echo $smt_min_cpu_load > /sys/devices/system/cpu/cpu0/cpufreq/smartass/min_cpu_load
