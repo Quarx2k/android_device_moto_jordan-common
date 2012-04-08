@@ -8,7 +8,8 @@ LOCAL_SRC_FILES := cpcap.c
 
 LOCAL_C_INCLUDES := bionic/libc/kernel/common
 
-LOCAL_SHARED_LIBRARIES := liblog libcutils
+LOCAL_STATIC_LIBRARIES = libc
+#LOCAL_FORCE_STATIC_EXECUTABLE := true
 
 LOCAL_MODULE := cpcap
 LOCAL_MODULE_TAGS := optional

@@ -2,10 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <fcntl.h>
 #include <linux/spi/cpcap.h>
-#include <cutils/log.h>
 
 #include "cpcap.h"
 
@@ -99,12 +97,12 @@ int main(int argc, char **argv) {
         printf("\n");
         printf(" dump <format>  Dump ADC registers\n");
         printf("       format : all/raw/phase/convert\n");
-        exit(1);
+        return 1;
     }
 
     cpcap_fd = open("/dev/cpcap_batt", O_RDONLY | O_NONBLOCK);
     if (cpcap_fd <= 0) {
-        exit(errno);
+        return errno;
     }
 
 

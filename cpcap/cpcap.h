@@ -3,9 +3,9 @@
 
 #define SUCCEED(...) \
   if (! (__VA_ARGS__)) { \
-    LOGI("%s:%d expression '%s' failed: %s", __FILE__, __LINE__, #__VA_ARGS__, strerror(errno)); \
+    fprintf(stderr, "%s:%d expression '%s' failed: %s", __func__, __LINE__, #__VA_ARGS__, strerror(errno)); \
     if (cpcap_fd > 0) { close(cpcap_fd); } \
-    exit(1); \
+    return 1; \
   }
 
 struct cpcap_batt_data_mb525 {
