@@ -45,6 +45,35 @@ int read_bank(int bank, int format) {
     return ret;
 }
 
+
+/**
+ * start/stop cpcap macros
+ */
+int macro_uc(int macro, int enable) {
+    int ret;
+
+    int cpcap_uc = open("/dev/cpcap_uc", O_RDWR | O_NONBLOCK);
+    if (cpcap_uc <= 0) {
+        fprintf(stderr, "%s: failed, errno=%d\n", __func__, errno);
+        return -errno;
+    }
+
+    if (enable)
+        ret = ioctl(cpcap_uc, CPCAP_IOCTL_UC_MACRO_START, macro);
+    else
+        ret = ioctl(cpcap_uc, CPCAP_IOCTL_UC_MACRO_STOP, macro);
+
+    if (ret != 0) {
+        fprintf(stderr, "%s: ioctl failed, ret=%d errno=%d\n", __func__, ret, errno);
+        return ret;
+    }
+
+    close(cpcap_uc);
+
+    return ret;
+}
+
+
 /**
  * Read battery data, doesnt works (blank, no error)
  */
@@ -61,7 +90,7 @@ int read_batt_ps() {
 
     ret = ioctl(cpcap_fd, CPCAP_IOCTL_BATT_DISPLAY_UPDATE, &batt_state);
     if (ret != 0) {
-        fprintf(stderr, "%s: ioctl failed, ret=%d errno=%d", __func__, ret, errno);
+        fprintf(stderr, "%s: ioctl failed, ret=%d errno=%d\n", __func__, ret, errno);
         return ret;
     }
 
@@ -92,8 +121,8 @@ int main(int argc, char **argv) {
         printf("\n");
         printf("commands:\n");
         printf("\n");
-        printf(" volt <source>  Get current battery voltage (mV)\n");
-        printf("       source : batt/battpi/average\n");
+        printf(" volt <source>  Get current voltage (mV)\n");
+        printf("       source : batt/vbus/battpi\n");
         printf("\n");
         printf(" dump <format>  Dump ADC registers\n");
         printf("       format : all/raw/phase/convert\n");
@@ -215,15 +244,15 @@ int main(int argc, char **argv) {
         printf("%d\n", req_us.result[CPCAP_ADC_BATTP]);
     }
 
-    /* volt battpi : battery voltage too */
-    if (!strcmp(argv[1], "volt") && !strcmp(argv[2], "battpi"))
+    /* volt vbus : +5V line (4400 or more on ac/usb, else 4000 to 4400) */
+    if (!strcmp(argv[1], "volt") && !strcmp(argv[2], "vbus"))
     {
-        ret = read_bank(CPCAP_ADC_TYPE_BATT_PI, CPCAP_ADC_FORMAT_CONVERTED);
-        printf("%d\n", req_us.result[0]);
+        ret = read_bank(CPCAP_ADC_TYPE_BANK_0, CPCAP_ADC_FORMAT_CONVERTED);
+        printf("%d\n", req_us.result[CPCAP_ADC_VBUS]);
     }
 
-    /* volt batt : battery voltage based on 4 (last?) values */
-    if (!strcmp(argv[1], "volt") && !strcmp(argv[2], "average"))
+    /* volt battpi : battery voltage based on 4 (last?) values */
+    if (!strcmp(argv[1], "volt") && !strcmp(argv[2], "battpi"))
     {
         int tot = 0;
         ret = read_bank(CPCAP_ADC_TYPE_BATT_PI, CPCAP_ADC_FORMAT_CONVERTED);
@@ -233,9 +262,18 @@ int main(int argc, char **argv) {
         printf("%d\n", tot / 4);
     }
 
-    //buggy, all is zero
+
+    // buggy, all is zero and breaks system battery report
     if (!strcmp(argv[1], "batt") && !strcmp(argv[2], "data")) {
-	read_batt_ps();
+        read_batt_ps();
+    }
+
+    if (!strcmp(argv[1], "macro") && argc >= 4) {
+        int macro  = atoi(argv[2]);
+        int enable = atoi(argv[3]);
+
+        printf("%s macro %d...\n", enable?"start":"stop", macro);
+        ret = macro_uc(macro, enable);
     }
 
     close(cpcap_fd);
