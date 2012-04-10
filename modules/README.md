@@ -5,14 +5,14 @@ These external kernel modules require the Defy kernel tree :
 
 It is available at https://github.com/CyanogenDefy/kernel-omap
 
-Add to your repo manifest \<project path="kernel" name="CyanogenDefy/kernel-omap" />
+Add to your repo manifest \<project path="kernel/moto/mb525" name="CyanogenDefy/kernel-omap" />
 
 ---
 
 "repo sync" and then, in root of your android repo :
 
     . build/envsetup.sh
-    lunch cm_jordan-userdebug
+    breakfast jordan
     
     make kernel
     make device_modules
