@@ -28,6 +28,7 @@ etc/motorola/bp_nvm_default/File_Audio2_AMR_WB
 etc/motorola/bp_nvm_default/File_Audio3_AMR_WB
 etc/motorola/bp_nvm_default/File_Audio4_AMR_WB
 etc/motorola/bp_nvm_default/File_Audio5_AMR_WB
+etc/motorola/bp_nvm_default/generic_pds_init
 EOF
 }
 

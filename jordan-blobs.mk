@@ -74,11 +74,12 @@ PRODUCT_COPY_FILES += \
 	${device_path}/releasetools/addon.d/60-baseband.sh:system/addon.d/60-baseband.sh \
 	${device_path}/releasetools/addon.d/70-multiboot.sh:system/addon.d/70-multiboot.sh \
 
-# CM7 backup lists (deprecated)
-ifdef CM_RELEASE
-    PRODUCT_COPY_FILES += ${device_path}/releasetools/custom_backup_release.txt:system/etc/custom_backup_list.txt
-else
-    PRODUCT_COPY_FILES += ${device_path}/releasetools/custom_backup_list.txt:system/etc/custom_backup_list.txt
+# Backup kernel modules and bootmenu overclock config
+ifndef CM_RELEASE
+PRODUCT_COPY_FILES += \
+	${device_path}/releasetools/addon.d/70-bootmenu.sh:system/addon.d/70-bootmenu.sh \
+	${device_path}/releasetools/addon.d/70-modules.sh:system/addon.d/70-modules.sh \
+
 endif
 
 #end of jordan-blobs.mk
