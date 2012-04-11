@@ -31,9 +31,6 @@ chmod +x $REPACK/ota/system/bin/mount_ext3.sh
 mkdir -p $REPACK/ota/system/etc/terminfo/x
 cp $REPACK/ota/system/etc/terminfo/l/linux $REPACK/ota/system/etc/terminfo/x/xterm
 
-# keep multiboot specific files, if installed
-cat $DEVICE_TOP/releasetools/multiboot_backup_list.txt >> $REPACK/ota/system/etc/custom_backup_list.txt
-
 # prebuilt boot, devtree, logo & updater-script
 
 rm -f $REPACK/ota/boot.img

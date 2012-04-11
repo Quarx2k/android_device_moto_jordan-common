@@ -63,6 +63,7 @@ PRODUCT_COPY_FILES += \
 
 # recovery
 PRODUCT_COPY_FILES += \
+	${bm_device}/bootmenu/recovery/recovery.fstab:system/etc/recovery.fstab \
 	${bm_device}/bootmenu/recovery/res/keys:system/bootmenu/recovery/res/keys \
 	${bm_device}/bootmenu/recovery/res/images/icon_error.png:system/bootmenu/recovery/res/images/icon_error.png \
 	${bm_device}/bootmenu/recovery/res/images/icon_done.png:system/bootmenu/recovery/res/images/icon_done.png \
