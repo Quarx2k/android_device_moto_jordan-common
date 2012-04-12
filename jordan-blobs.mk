@@ -72,6 +72,7 @@ PRODUCT_COPY_FILES += \
 # New CM9 backup list system (addon.d)
 PRODUCT_COPY_FILES += \
 	${device_path}/releasetools/addon.d/60-baseband.sh:system/addon.d/60-baseband.sh \
+	${device_path}/releasetools/addon.d/70-gapps.sh:system/addon.d/70-gapps.sh \
 	${device_path}/releasetools/addon.d/70-multiboot.sh:system/addon.d/70-multiboot.sh \
 
 # Backup kernel modules and bootmenu overclock config
