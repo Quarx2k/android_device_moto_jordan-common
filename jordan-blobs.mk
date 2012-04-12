@@ -78,8 +78,6 @@ PRODUCT_COPY_FILES += \
 ifndef CM_RELEASE
 PRODUCT_COPY_FILES += \
 	${device_path}/releasetools/addon.d/70-bootmenu.sh:system/addon.d/70-bootmenu.sh \
-	${device_path}/releasetools/addon.d/70-modules.sh:system/addon.d/70-modules.sh \
-
 endif
 
 #end of jordan-blobs.mk
