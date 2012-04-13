@@ -27,7 +27,6 @@
 
     <string name="other_settings_title">Andere instellingen</string>
     <string name="compass_calibrate">Kalibreer Kompas</string>
-    <string name="baseband_switcher">Smalbandversie kiesen</string>
 
 </resources>
 
