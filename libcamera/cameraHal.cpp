@@ -135,7 +135,8 @@ static inline void log_camera_params(const char* name, const CameraParameters pa
 //
 // http://code.google.com/p/android/issues/detail?id=823#c4
 //
-void Yuv420spToRgba8888(char* rgb, char* yuv420sp, int width, int height) {
+void 
+Yuv420spToRgba8888(char* rgb, char* yuv420sp, int width, int height) {
     int frameSize = width * height;
     int colr = 0;
     for (int j = 0, yp = 0, k = 0; j < height; j++) {
@@ -169,7 +170,8 @@ void Yuv420spToRgba8888(char* rgb, char* yuv420sp, int width, int height) {
     }
 }
 
-void Yuv420spToRgb565(char* rgb, char* yuv420sp, int width, int height, int stride) {
+void 
+Yuv420spToRgb565(char* rgb, char* yuv420sp, int width, int height, int stride) {
     int frameSize = width * height;
     int padding = (stride - width) * 2; //two bytes per pixel for rgb565
     int colr = 0;
@@ -204,7 +206,8 @@ void Yuv420spToRgb565(char* rgb, char* yuv420sp, int width, int height, int stri
     }
 }
 
-void Yuv422iToRgba8888 (char* rgb, char* yuv422i, int width, int height) {
+void 
+Yuv422iToRgba8888 (char* rgb, char* yuv422i, int width, int height) {
     int yuv_index = 0;
     int rgb_index = 0;
     int frame_size = width * height;
@@ -261,7 +264,8 @@ void Yuv422iToRgba8888 (char* rgb, char* yuv422i, int width, int height) {
     }
 }
 
-void Yuv422iToRgb565 (char* rgb, char* yuv422i, int width, int height, int stride) {
+void 
+Yuv422iToRgb565 (char* rgb, char* yuv422i, int width, int height, int stride) {
     int yuv_index = 0;
     int rgb_index = 0;
     int padding = (stride - width) * 2; //two bytes per pixel for rgb565
@@ -317,7 +321,8 @@ void Yuv422iToRgb565 (char* rgb, char* yuv422i, int width, int height, int strid
     }
 }
 
-void CameraHAL_ProcessPreviewData(char *frame, size_t size, legacy_camera_device *lcdev) {
+void 
+CameraHAL_ProcessPreviewData(char *frame, size_t size, legacy_camera_device *lcdev) {
 #ifdef LOG_EACH_FRAMES
     LOGV("%s: frame=%p, size=%d, camera=%p", __FUNCTION__, frame, size, lcdev);
 #endif
@@ -337,6 +342,7 @@ void CameraHAL_ProcessPreviewData(char *frame, size_t size, legacy_camera_device
                 int tries = 5;
                 int err = 0;
                 void *vaddr;
+
                 err = lcdev->gralloc->lock(lcdev->gralloc, *bufHandle, GRALLOC_USAGE_SW_WRITE_OFTEN | GRALLOC_USAGE_HW_TEXTURE | GRALLOC_USAGE_HW_RENDER,
                                            0, 0, lcdev->previewWidth, lcdev->previewHeight, &vaddr);
                 while (err && tries) {
@@ -388,32 +394,35 @@ void CameraHAL_ProcessPreviewData(char *frame, size_t size, legacy_camera_device
 }
 
 /* Overlay hooks */
-void queue_buffer_hook(void *data, void *buffer, size_t size) {
+void 
+queue_buffer_hook(void *data, void *buffer, size_t size) {
     if (data != NULL && buffer != NULL) {
         CameraHAL_ProcessPreviewData((char*)buffer, size, (legacy_camera_device*) data);
     }
 }
 
-void CameraHAL_HandlePreviewData(const sp<IMemory>& dataPtr, void* user)
+void 
+CameraHAL_HandlePreviewData(const android::sp<android::IMemory>& dataPtr, void* user)
 {
     LOGV("%s", __FUNCTION__);
     if (user != NULL) {
         struct legacy_camera_device *lcdev = (struct legacy_camera_device *) user;
         ssize_t  offset;
         size_t   size;
-        sp<IMemoryHeap> mHeap = dataPtr->getMemory(&offset, &size);
+        android::sp<android::IMemoryHeap> mHeap = dataPtr->getMemory(&offset, &size);
         char* buffer = (char*)mHeap->getBase() + offset;
         CameraHAL_ProcessPreviewData(buffer, size, lcdev);
     }
 }
 
-camera_memory_t* CameraHAL_GenClientData(const sp<IMemory> &dataPtr,
+camera_memory_t* 
+CameraHAL_GenClientData(const android::sp<android::IMemory> &dataPtr,
                                          legacy_camera_device *lcdev)
 {
     ssize_t          offset;
     size_t           size;
     camera_memory_t *clientData = NULL;
-    sp<IMemoryHeap> mHeap = dataPtr->getMemory(&offset, &size);
+    android::sp<android::IMemoryHeap> mHeap = dataPtr->getMemory(&offset, &size);
 
     LOGV("CameraHAL_GenClientData: offset:%#x size:%#x base:%p\n",
           (unsigned)offset, size, mHeap != NULL ? mHeap->base() : 0);
@@ -428,7 +437,8 @@ camera_memory_t* CameraHAL_GenClientData(const sp<IMemory> &dataPtr,
     return clientData;
 }
 
-void CameraHAL_DataCb(int32_t msg_type, const sp<IMemory>& dataPtr,
+void 
+CameraHAL_DataCb(int32_t msg_type, const android::sp<android::IMemory>& dataPtr,
                       void *user)
 {
     struct legacy_camera_device *lcdev = (struct legacy_camera_device *) user;
@@ -453,8 +463,9 @@ void CameraHAL_DataCb(int32_t msg_type, const sp<IMemory>& dataPtr,
     }
 }
 
-void CameraHAL_DataTSCb(nsecs_t timestamp, int32_t msg_type,
-                         const sp<IMemory>& dataPtr, void *user)
+void 
+CameraHAL_DataTSCb(nsecs_t timestamp, int32_t msg_type,
+                         const android::sp<android::IMemory>& dataPtr, void *user)
 {
     struct legacy_camera_device *lcdev = (struct legacy_camera_device *) user;
 
@@ -489,7 +500,8 @@ void CameraHAL_NotifyCb(int32_t msg_type, int32_t ext1, int32_t ext2, void *user
     }
 }
 
-int CameraHAL_GetCam_Info(int camera_id, struct camera_info *info)
+int 
+CameraHAL_GetCam_Info(int camera_id, struct camera_info *info)
 {
     int rv = 0;
     LOGV("CameraHAL_GetCam_Info()");
@@ -506,34 +518,58 @@ int CameraHAL_GetCam_Info(int camera_id, struct camera_info *info)
     return rv;
 }
 
-void CameraHAL_FixupParams(struct camera_device * device, CameraParameters &settings)
+void 
+CameraHAL_FixupParams(struct camera_device * device, CameraParameters &settings)
 {
-    /* Motorola omap cameras doesn't support YUV420sp...
-     * it advertises so, but then sends "yuv422i-yuyv"
-     * But nvidia tegra ones does...
-     */
+//Bayer Camera
+
+   const char *preview_sizes =
+      "1280x720,848x480,720x480,640x480,352x288,320x240,176x144";
+   const char *video_sizes = 
+      "1280x720,720x480,640x480,352x288,320x240,176x144";
+
+   const char *preferred_size       = "640x480";
+   const char *preview_frame_rates  = "30,28,25,24,20,15,10,5";
+   const char *preferred_frame_rate = "15";
+   const char *frame_rate_range     = "(15,30)";
+
     settings.set(CameraParameters::KEY_VIDEO_FRAME_FORMAT, YUV_CAM_FORMAT);
     settings.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FORMATS, YUV_CAM_FORMAT);
     settings.setPreviewFormat(YUV_CAM_FORMAT);
 
-    //LibSOCJordanCamera( 2113): Failed substring capabilities check, unsupported parameter newparam=on parseTable[i].key=focus-mode,currparam=auto
-    const char *str_focus = settings.get(android::CameraParameters::KEY_FOCUS_MODE);
-    if (strcmp(str_focus, "on") == 0) {
-        settings.set(android::CameraParameters::KEY_FOCUS_MODE, "auto");
-    }
+   if (!settings.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES)) {
+      settings.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES,
+                   preview_sizes);
+   }
 
-    /* defy: required to prevent panorama crash, but require also opengl ui */
-    const char *fps_range_values = "(1000,30000),(1000,25000),(1000,20000),"
-                                   "(1000,24000),(1000,15000),(1000,10000)";
-    if (!settings.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE))
-        settings.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE, fps_range_values);
+   if (!settings.get(android::CameraParameters::KEY_SUPPORTED_VIDEO_SIZES)) {
+      settings.set(android::CameraParameters::KEY_SUPPORTED_VIDEO_SIZES,
+                   video_sizes);
+   }
 
-   const char *preview_fps_range = "1000,30000";
-    if (!settings.get(android::CameraParameters::KEY_PREVIEW_FPS_RANGE))
-        settings.set(android::CameraParameters::KEY_PREVIEW_FPS_RANGE, preview_fps_range);
+   if (!settings.get(android::CameraParameters::KEY_VIDEO_SIZE)) {
+      settings.set(android::CameraParameters::KEY_VIDEO_SIZE, preferred_size);
+   }
 
-    // Fix preview ratio (for wide picture and video formats)
-    // should be fixed in camera app... ratio defines, to allow small sizes (panorama)
+   if (!settings.get(android::CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO)) {
+      settings.set(android::CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO,
+                   preferred_size);
+   }
+
+   if (!settings.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES)) {
+      settings.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES,
+                   preview_frame_rates);
+   }
+
+   if (!settings.get(android::CameraParameters::KEY_PREVIEW_FRAME_RATE)) {
+      settings.set(android::CameraParameters::KEY_PREVIEW_FRAME_RATE,
+                   preferred_frame_rate);
+   }
+
+   if (!settings.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE)) {
+      settings.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE,
+                   frame_rate_range);
+   }
 
     const char *target_size = settings.get("picture-size");
     float ratio = 0.0;
@@ -564,7 +600,8 @@ void CameraHAL_FixupParams(struct camera_device * device, CameraParameters &sett
     LOGD("Parameters fixed up");
 }
 
-inline void destroyOverlay(legacy_camera_device *lcdev) {
+inline void 
+destroyOverlay(legacy_camera_device *lcdev) {
     LOGV("%s\n", __FUNCTION__);
     if (lcdev->overlay != NULL && lcdev->hwif != NULL) {
         lcdev->hwif->setOverlay(false);
@@ -572,7 +609,8 @@ inline void destroyOverlay(legacy_camera_device *lcdev) {
     }
 }
 
-inline void clearHardwareIntf(legacy_camera_device *lcdev) {
+inline void 
+clearHardwareIntf(legacy_camera_device *lcdev) {
     LOGV("%s\n", __FUNCTION__);
     if (lcdev->hwif != NULL) {
         lcdev->hwif.clear();
@@ -581,7 +619,8 @@ inline void clearHardwareIntf(legacy_camera_device *lcdev) {
 }
 
 /* Hardware Camera interface handlers. */
-int camera_set_preview_window(struct camera_device * device, struct preview_stream_ops *window) {
+int 
+camera_set_preview_window(struct camera_device * device, struct preview_stream_ops *window) {
     int rv = -EINVAL;
     const int kBufferCount = 6;
     struct legacy_camera_device *lcdev = to_lcdev(device);
@@ -647,7 +686,7 @@ int camera_set_preview_window(struct camera_device * device, struct preview_stre
     lcdev->previewFormat = getOverlayFormatFromString(str_preview_format);
     lcdev->previewBpp = getBppFromOverlayFormat(lcdev->previewFormat);
 
-    if (window->set_usage(window, GRALLOC_USAGE_SW_WRITE_OFTEN | GRALLOC_USAGE_SW_READ_OFTEN)) {
+    if (window->set_usage(window, GRALLOC_USAGE_SW_READ_OFTEN)) {
         LOGE("%s: could not set usage on gralloc buffer", __FUNCTION__);
         return -1;
     }
@@ -666,7 +705,8 @@ int camera_set_preview_window(struct camera_device * device, struct preview_stre
     return NO_ERROR;
 }
 
-void camera_set_callbacks(struct camera_device * device,
+void 
+camera_set_callbacks(struct camera_device * device,
                              camera_notify_callback notify_cb,
                              camera_data_callback data_cb,
                              camera_data_timestamp_callback data_cb_timestamp,
@@ -687,13 +727,15 @@ void camera_set_callbacks(struct camera_device * device,
                                  CameraHAL_DataTSCb, (void *) lcdev);
 }
 
-void camera_enable_msg_type(struct camera_device * device, int32_t msg_type) {
+void 
+camera_enable_msg_type(struct camera_device * device, int32_t msg_type) {
     struct legacy_camera_device *lcdev = to_lcdev(device);
     LOGV("camera_enable_msg_type: msg_type:%d\n", msg_type);
     lcdev->hwif->enableMsgType(msg_type);
 }
 
-void camera_disable_msg_type(struct camera_device * device, int32_t msg_type) {
+void 
+camera_disable_msg_type(struct camera_device * device, int32_t msg_type) {
     struct legacy_camera_device *lcdev = to_lcdev(device);
     LOGV("camera_disable_msg_type: msg_type:%d\n", msg_type);
     if (msg_type == CAMERA_MSG_VIDEO_FRAME) {
@@ -707,7 +749,8 @@ void camera_disable_msg_type(struct camera_device * device, int32_t msg_type) {
     lcdev->hwif->disableMsgType(msg_type);
 }
 
-int camera_msg_type_enabled(struct camera_device * device, int32_t msg_type) {
+int 
+camera_msg_type_enabled(struct camera_device * device, int32_t msg_type) {
     struct legacy_camera_device *lcdev = to_lcdev(device);
     LOGV("camera_msg_type_enabled: msg_type:%d\n", msg_type);
     return lcdev->hwif->msgTypeEnabled(msg_type);
@@ -726,14 +769,16 @@ void camera_stop_preview(struct camera_device * device) {
     return;
 }
 
-int camera_preview_enabled(struct camera_device * device) {
+int 
+camera_preview_enabled(struct camera_device * device) {
     struct legacy_camera_device *lcdev = to_lcdev(device);
     int ret = lcdev->hwif->previewEnabled();
     LOGV("camera_preview_enabled: %d\n", ret);
     return ret;
 }
 
-int camera_store_meta_data_in_buffers(struct camera_device * device, int enable) {
+int 
+camera_store_meta_data_in_buffers(struct camera_device * device, int enable) {
 #ifdef STORE_METADATA_IN_BUFFER
     struct legacy_camera_device *lcdev = to_lcdev(device);
     LOGV("camera_store_meta_data_in_buffers:\n");
@@ -752,19 +797,22 @@ int camera_start_recording(struct camera_device * device) {
     return NO_ERROR;
 }
 
-void camera_stop_recording(struct camera_device * device) {
+void 
+camera_stop_recording(struct camera_device * device) {
     struct legacy_camera_device *lcdev = to_lcdev(device);
     LOGV("camera_stop_recording:\n");
     lcdev->hwif->stopRecording();
 }
 
-int camera_recording_enabled(struct camera_device * device) {
+int 
+camera_recording_enabled(struct camera_device * device) {
     struct legacy_camera_device *lcdev = to_lcdev(device);
     LOGV("camera_recording_enabled:\n");
     return (int)lcdev->hwif->recordingEnabled();
 }
 
-void camera_release_recording_frame(struct camera_device * device, const void *opaque) {
+void 
+camera_release_recording_frame(struct camera_device * device, const void *opaque) {
     LOGV("%s: opaque=%p\n", __FUNCTION__, opaque);
     struct legacy_camera_device *lcdev = to_lcdev(device);
     if (opaque != NULL) {
@@ -781,21 +829,24 @@ void camera_release_recording_frame(struct camera_device * device, const void *o
     }
 }
 
-int camera_auto_focus(struct camera_device * device) {
+int 
+camera_auto_focus(struct camera_device * device) {
     struct legacy_camera_device *lcdev = to_lcdev(device);
     LOGV("camera_auto_focus:\n");
     lcdev->hwif->autoFocus();
     return NO_ERROR;
 }
 
-int camera_cancel_auto_focus(struct camera_device * device) {
+int 
+camera_cancel_auto_focus(struct camera_device * device) {
     struct legacy_camera_device *lcdev = to_lcdev(device);
     LOGV("camera_cancel_auto_focus:\n");
     lcdev->hwif->cancelAutoFocus();
     return NO_ERROR;
 }
 
-int camera_take_picture(struct camera_device * device) {
+int 
+camera_take_picture(struct camera_device * device) {
     struct legacy_camera_device *lcdev = to_lcdev(device);
     LOGV("camera_take_picture:\n");
 
@@ -803,14 +854,16 @@ int camera_take_picture(struct camera_device * device) {
     return NO_ERROR;
 }
 
-int camera_cancel_picture(struct camera_device * device) {
+int 
+camera_cancel_picture(struct camera_device * device) {
     struct legacy_camera_device *lcdev = to_lcdev(device);
     LOGV("camera_cancel_picture:\n");
     lcdev->hwif->cancelPicture();
     return NO_ERROR;
 }
 
-int camera_set_parameters(struct camera_device * device, const char *params) {
+int 
+camera_set_parameters(struct camera_device * device, const char *params) {
     struct legacy_camera_device *lcdev = to_lcdev(device);
     String8 s(params);
     CameraParameters p(s);
@@ -819,7 +872,8 @@ int camera_set_parameters(struct camera_device * device, const char *params) {
     return NO_ERROR;
 }
 
-char* camera_get_parameters(struct camera_device * device) {
+char* 
+camera_get_parameters(struct camera_device * device) {
     struct legacy_camera_device *lcdev = to_lcdev(device);
     char *rc = NULL;
     CameraParameters params(lcdev->hwif->getParameters());
@@ -829,13 +883,15 @@ char* camera_get_parameters(struct camera_device * device) {
     return rc;
 }
 
-void camera_put_parameters(struct camera_device *device, char *params) {
+void 
+camera_put_parameters(struct camera_device *device, char *params) {
     if (params != NULL) {
         free(params);
     }
 }
 
-int camera_send_command(struct camera_device * device, int32_t cmd, int32_t arg0, int32_t arg1) {
+int 
+camera_send_command(struct camera_device * device, int32_t cmd, int32_t arg0, int32_t arg1) {
     struct legacy_camera_device *lcdev = to_lcdev(device);
     LOGV("camera_send_command: cmd:%d arg0:%d arg1:%d\n", cmd, arg0, arg1);
     return lcdev->hwif->sendCommand(cmd, arg0, arg1);
@@ -849,14 +905,16 @@ void camera_release(struct camera_device * device) {
    // lcdev->hwif->release();
 }
 
-int camera_dump(struct camera_device * device, int fd) {
+int 
+camera_dump(struct camera_device * device, int fd) {
     struct legacy_camera_device *lcdev = to_lcdev(device);
     LOGV("camera_dump:\n");
     Vector<String16> args;
     return lcdev->hwif->dump(fd, args);
 }
 
-int camera_device_close(hw_device_t* device) {
+int 
+camera_device_close(hw_device_t* device) {
     struct camera_device * hwdev = reinterpret_cast<struct camera_device *>(device);
     struct legacy_camera_device *lcdev = to_lcdev(hwdev);
     int rc = -EINVAL;
@@ -876,7 +934,8 @@ int camera_device_close(hw_device_t* device) {
     return rc;
 }
 
-int camera_device_open(const hw_module_t* module, const char* name, hw_device_t** device) {
+int 
+camera_device_open(const hw_module_t* module, const char* name, hw_device_t** device) {
     int ret;
     struct legacy_camera_device *lcdev;
     camera_device_t* camera_device;
@@ -891,7 +950,6 @@ int camera_device_open(const hw_module_t* module, const char* name, hw_device_t*
     LOGD("%s: name:%s device:%p cameraId:%d\n", __FUNCTION__, name, device, cameraId);
 
     lcdev = (struct legacy_camera_device *)calloc(1, sizeof(*lcdev));
-    //if lcdev = null -ENOMEM
     camera_ops = (camera_device_ops_t *)malloc(sizeof(*camera_ops));
     memset(camera_ops, 0, sizeof(*camera_ops));
 
