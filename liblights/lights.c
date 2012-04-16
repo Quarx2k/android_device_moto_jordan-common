@@ -169,9 +169,9 @@ set_light_buttons(struct light_device_t* dev,
         err = write_int(BUTTON_ON_FILE, brightness ? 1 : 0);
     }
 
-    if (err == 0 && brightness > 0 && brightness != g_last_button_brightness) {
+//    if (err == 0 && brightness > 0 && brightness != g_last_button_brightness) {
         err = write_int(BUTTON_BRIGHT_FILE, brightness);
-    }
+//    }
 
     g_last_button_brightness = brightness;
 
