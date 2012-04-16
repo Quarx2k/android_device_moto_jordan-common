@@ -150,7 +150,6 @@ set_light_buttons(struct light_device_t* dev,
 
     if (brightness > 0) {
         char prop[PROPERTY_VALUE_MAX];
-
         if (property_get("persist.sys.button_brightness", prop, NULL)) {
             int button_brightness_scale = atoi(prop);
             if (button_brightness_scale == 0) {
@@ -170,9 +169,9 @@ set_light_buttons(struct light_device_t* dev,
         err = write_int(BUTTON_ON_FILE, brightness ? 1 : 0);
     }
 
-    if (err == 0 && brightness > 0 && brightness != g_last_button_brightness) {
+//    if (err == 0 && brightness > 0 && brightness != g_last_button_brightness) {
         err = write_int(BUTTON_BRIGHT_FILE, brightness);
-    }
+//    }
 
     g_last_button_brightness = brightness;
 
