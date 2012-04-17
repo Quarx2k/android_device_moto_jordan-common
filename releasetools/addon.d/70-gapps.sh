@@ -15,6 +15,8 @@ app/GoogleCalendarSyncAdapter.apk
 app/GoogleContactsSyncAdapter.apk
 app/GoogleFeedback.apk
 app/GoogleLoginService.apk
+app/GooglePackageVerifier.apk
+app/GooglePackageVerifierUpdater.apk
 app/GooglePartnerSetup.apk
 app/GoogleQuickSearchBox.apk app/QuickSearchBox.apk
 app/GoogleServicesFramework.apk
