@@ -61,6 +61,11 @@
                              android:targetClass="com.itfunzbasebandswitcher.MainActivity" />
         </PreferenceScreen>
 
+        <com.cyanogenmod.defyparts.BasebandSelectionPreference
+                android:key="baseband_selection"
+                android:persistent="false"
+                android:title="@string/baseband_switcher" />
+
         <CheckBoxPreference android:key="kineto"
                             android:persistent="false"
                             android:defaultValue="false"

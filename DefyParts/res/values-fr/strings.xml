@@ -30,8 +30,7 @@
     <string name="kineto_support">Support des appels Wifi</string>
     <string name="kineto_support_summary">Activer l\'application T-Mobile pour les appels téléphoniques via Wifi.</string>
 
-    <string name="kineto_reboot_prompt_title">Nécessite un redémarrage</string>
-    <string name="kineto_reboot_prompt_message">Pour activer ou désactiver l\'application, un redémarrage est nécessaire.\n\nRedémarrer maintenant?</string>
+    <string name="reboot_prompt_title">Nécessite un redémarrage</string>
     <string name="yes">Oui</string>
     <string name="no">Non</string>
 
