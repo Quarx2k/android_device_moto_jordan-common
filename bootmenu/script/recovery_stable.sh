@@ -36,9 +36,8 @@ chmod 755 /res
 cp -r -f /system/bootmenu/recovery/res/* /res/
 cp -p -f /system/bootmenu/recovery/sbin/* /sbin/
 
-if [ ! -f /sbin/recovery_stable ]; then
-    ln -s /sbin/recovery /sbin/recovery_stable
-fi
+# recovery prebuilt
+cp -f /sbin/recovery_stable /sbin/recovery
 
 chmod +rx /sbin/*
 
@@ -111,8 +110,7 @@ echo 0 > /sys/class/leds/blue/brightness
 ln -s /sdcard /mnt/sdcard
 cd /sbin && ln -s adbd adbd.root
 
-/sbin/recovery_stable
-
+/sbin/recovery
 
 # Post Recovery (back to bootmenu)
 
