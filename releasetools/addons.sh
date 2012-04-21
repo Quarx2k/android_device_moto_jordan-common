@@ -15,13 +15,6 @@ if [ -z "$1" ]; then
 	exit 1;
 fi
 
-if [ "$1" = "kernel" ]; then
-	cat $DEVICE_TOP/releasetools/updater-addons-kernel > $REPACK/ota/META-INF/com/google/android/updater-script
-	cp -f $VENDOR_TOP/boot-222-179-4.smg $REPACK/ota/boot.img
-	cp -f $VENDOR_TOP/devtree-222-179-2.smg $REPACK/ota/devtree.img
-	OUTFILE=$OUT/kernel-froyo-222-179-4-signed.zip
-fi
-
 if [ "$1" = "bootmenu" ]; then
 
 	cd $REPACK/ota

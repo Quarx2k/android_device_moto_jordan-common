@@ -32,7 +32,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	ro.com.google.locationfeatures=1 \
 	ro.telephony.call_ring.multiple=false \
 	ro.telephony.call_ring.delay=3000 \
-	ro.url.safetylegal=http://www.motorola.com/staticfiles/Support/legal/?model=MB525 \
+	ro.url.safetylegal=http://www.motorola.com/staticfiles/Support/legal/?model=MB526 \
 	ro.media.dec.jpeg.memcap=20000000 \
 	dalvik.vm.lockprof.threshold=500 \
 	ro.kernel.android.checkjni=0 \
@@ -45,7 +45,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
 
-DEVICE_PACKAGE_OVERLAYS += device/motorola/jordan/overlay
+DEVICE_PACKAGE_OVERLAYS += device/motorola/jordan_plus/overlay
 
 # Permissions
 PRODUCT_COPY_FILES += \
@@ -108,23 +108,23 @@ PRODUCT_PACKAGES += DroidSSHd dropbear dropbearkey sftp-server scp ssh
 PRODUCT_PACKAGES += Trebuchet FileManager Torch
 
 # copy all vendor (motorola) kernel modules to system/lib/modules
-PRODUCT_COPY_FILES += $(shell test -d vendor/motorola/jordan/lib/modules &&  \
-	find vendor/motorola/jordan/lib/modules -name '*.ko' \
+PRODUCT_COPY_FILES += $(shell test -d vendor/motorola/jordan_plus/lib/modules &&  \
+	find vendor/motorola/jordan_plus/lib/modules -name '*.ko' \
 	-printf '%p:system/lib/modules/%f ')
 
 # copy all others kernel modules under the "modules" directory to system/lib/modules
-PRODUCT_COPY_FILES += $(shell test -d device/motorola/jordan/modules && \
-	find device/motorola/jordan/modules -name '*.ko' \
+PRODUCT_COPY_FILES += $(shell test -d device/motorola/jordan_plus/modules && \
+	find device/motorola/jordan_plus/modules -name '*.ko' \
 	-printf '%p:system/lib/modules/%f ')
 
 # Prebuilt boot.img
-LOCAL_KERNEL := device/motorola/jordan/kernel
+LOCAL_KERNEL := device/motorola/jordan_plus/kernel
 PRODUCT_COPY_FILES += \
 	$(LOCAL_KERNEL):kernel
 
 # Blobs and bootmenu stuff
-$(call inherit-product, device/motorola/jordan/jordan-blobs.mk)
-$(call inherit-product, device/motorola/jordan/bootmenu/bootmenu.mk)
+$(call inherit-product, device/motorola/jordan_plus/jordan-blobs.mk)
+$(call inherit-product, device/motorola/jordan_plus/bootmenu/bootmenu.mk)
 
 ######################################################################################################################################
 
@@ -133,6 +133,6 @@ $(call inherit-product, build/target/product/full_base.mk)
 # Should be after the full_base include, which loads languages_full
 PRODUCT_LOCALES += hdpi
 
-PRODUCT_NAME := full_jordan
+PRODUCT_NAME := full_jordan_plus
 PRODUCT_DEVICE := MB526
 

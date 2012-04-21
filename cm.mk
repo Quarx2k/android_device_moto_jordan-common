@@ -14,15 +14,15 @@
 # limitations under the License.
 #
 
-$(call inherit-product, device/motorola/jordan/full_jordan.mk)
+$(call inherit-product, device/motorola/jordan_plus/full_jordan.mk)
 
 # Inherit some common CM9 stuff.
 $(call inherit-product-if-exists, vendor/cm/config/common_full_phone.mk)
 $(call inherit-product-if-exists, vendor/cm/config/gsm.mk)
 
-PRODUCT_NAME := cm_jordan
+PRODUCT_NAME := cm_jordan_plus
 PRODUCT_BRAND := MOTO
-PRODUCT_DEVICE := jordan
+PRODUCT_DEVICE := jordan_plus
 PRODUCT_MODEL := MB526
 PRODUCT_MANUFACTURER := Motorola
 PRODUCT_SFX := DFP
