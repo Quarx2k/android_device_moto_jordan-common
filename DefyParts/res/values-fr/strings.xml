@@ -26,7 +26,7 @@
 
     <string name="other_settings_title">Autres paramètres</string>
     <string name="compass_calibrate">Calibration boussole</string>
-    <string name="baseband_switcher">Fréquences GSM (Baseband)</string>
+    <string name="baseband_selection">Fréquences GSM (Baseband)</string>
     <string name="kineto_support">Support des appels Wifi</string>
     <string name="kineto_support_summary">Activer l\'application T-Mobile pour les appels téléphoniques via Wifi.</string>
 

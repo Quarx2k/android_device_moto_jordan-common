@@ -30,7 +30,7 @@
 
     <string name="other_settings_title">Other settings</string>
     <string name="compass_calibrate">Compass calibrator</string>
-    <string name="baseband_switcher">Baseband selection</string>
+    <string name="baseband_selection">Baseband selection</string>
     <string name="kineto_support">Wifi calling support</string>
     <string name="kineto_support_summary">Enable the T-Mobile Wifi calling application</string>
 
@@ -64,4 +64,5 @@
     <string name="baseband_country">Country</string>
     <string name="baseband_version">Version</string>
     <string name="baseband_frequencies">Frequencies: %1$s MHz</string>
+    <string name="unknown">Unknown</string>
 </resources>

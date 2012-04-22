@@ -21,6 +21,13 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,8 +38,8 @@ public class BasebandSelectionPreference extends Preference implements Preferenc
 {
     private static final String TAG = "BasebandSelectionPreference";
 
-    private static final String PROP_NAME = "persist.sys.baseband";
-    private static final String DEFAULT_BASEBAND = "europe:ce:3.4.x";
+    private static final String PROP_NAME = "persist.sys.new_baseband";
+    private static final String CURRENT_BASEBAND_GSM_FILE = "/system/etc/motorola/bp_nvm_default/File_GSM";
 
     private static class RegionInfo {
         String name;
@@ -48,6 +55,7 @@ public class BasebandSelectionPreference extends Preference implements Preferenc
         String[] versions;
         /* version -> baseband */
         Map<String, BasebandInfo> basebands;
+        RegionInfo regionInfo;
     };
 
     private static class BasebandInfo {
@@ -56,13 +64,15 @@ public class BasebandSelectionPreference extends Preference implements Preferenc
         String version;
         List<String> frequencies;
         String filename;
+        String md5sum;
+        CountryInfo countryInfo;
     };
 
     private List<BasebandInfo> mBasebands;
     /* region name -> region info */
     private Map<String, RegionInfo> mRegions;
     private String[] mRegionValues;
-    private String[] mValue;
+    private BasebandInfo mCurrentBaseband;
     private Resources mResources;
 
     public BasebandSelectionPreference(Context context, AttributeSet attrs) {
@@ -77,26 +87,29 @@ public class BasebandSelectionPreference extends Preference implements Preferenc
 
     @Override
     public boolean onPreferenceClick(Preference pref) {
-        final RegionInfo region = mRegions.get(mValue[0]);
-        final CountryInfo country = region.countries.get(mValue[1]);
         int regionPos = -1, countryPos = -1, versionPos = -1;
 
-        for (int i = 0; i < mRegionValues.length; i++) {
-            if (mValue[0].equals(mRegionValues[i])) {
-                regionPos = i;
-                break;
+        if (mCurrentBaseband != null) {
+            final CountryInfo country = mCurrentBaseband.countryInfo;
+            final RegionInfo region = country.regionInfo;
+
+            for (int i = 0; i < mRegionValues.length; i++) {
+                if (region.name.equals(mRegionValues[i])) {
+                    regionPos = i;
+                    break;
+                }
             }
-        }
-        for (int i = 0; i < region.countryValues.length; i++) {
-            if (mValue[1].equals(region.countryValues[i])) {
-                countryPos = i;
-                break;
+            for (int i = 0; i < region.countryValues.length; i++) {
+                if (country.name.equals(region.countryValues[i])) {
+                    countryPos = i;
+                    break;
+                }
             }
-        }
-        for (int i = 0; i < country.versions.length; i++) {
-            if (mValue[2].equals(country.versions[i])) {
-                versionPos = i;
-                break;
+            for (int i = 0; i < country.versions.length; i++) {
+                if (mCurrentBaseband.version.equals(country.versions[i])) {
+                    versionPos = i;
+                    break;
+                }
             }
         }
 
@@ -108,69 +121,141 @@ public class BasebandSelectionPreference extends Preference implements Preferenc
 
     private void initValue() {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        final String basebandString = prefs.getString(getKey(), DEFAULT_BASEBAND);
-
-        mValue = TextUtils.split(basebandString, ":");
-
+        final String basebandString = prefs.getString(getKey(), null);
+        final String currentBasebandMd5 = getCurrentBasebandMd5Sum();
         BasebandInfo baseband = null;
-        if (mValue.length == 3) {
-            baseband = getBaseband(mValue[0], mValue[1], mValue[2]);
+        boolean needUpdate = false;
+
+        if (basebandString != null) {
+            final String[] values = TextUtils.split(basebandString, ":");
+            if (values.length == 3) {
+                baseband = getBaseband(values[0], values[1], values[2]);
+                if (baseband != null && !baseband.md5sum.equals(currentBasebandMd5)) {
+                    /* always trust the setting if we didn't reboot after setting it */
+                    if (SystemProperties.get(PROP_NAME) == null) {
+                        baseband = null;
+                        needUpdate = true;
+                    }
+                }
+            }
         }
+
         if (baseband == null) {
-            mValue = TextUtils.split(DEFAULT_BASEBAND, ":");
-            updateValue(mValue[0], mValue[1], mValue[2]);
+            /* check current MD5 against all known basebands */
+            for (BasebandInfo bb : mBasebands) {
+                if (bb.md5sum.equals(currentBasebandMd5)) {
+                    baseband = bb;
+                    needUpdate = true;
+                    break;
+                }
+            }
+        }
+
+        mCurrentBaseband = baseband;
+        if (needUpdate) {
+            updatePrefValue(baseband);
         }
 
         updateSummary();
     }
 
     private BasebandInfo getBaseband(final String region, final String country, final String version) {
-        final RegionInfo regionInfo = mRegions.get(region);
-        if (regionInfo != null) {
-            final CountryInfo countryInfo = regionInfo.countries.get(country);
-            if (countryInfo != null) {
-                return countryInfo.basebands.get(version);
+        if (region != null) {
+            final RegionInfo regionInfo = mRegions.get(region);
+            if (regionInfo != null) {
+                final CountryInfo countryInfo = regionInfo.countries.get(country);
+                if (countryInfo != null) {
+                    return countryInfo.basebands.get(version);
+                }
             }
         }
         return null;
     }
 
-    private void updateValue(final String region, final String country, final String version) {
+    private String getCurrentBasebandMd5Sum() {
+        byte[] digest = null;
+        FileInputStream fis = null;
+
+        try {
+            MessageDigest digester = MessageDigest.getInstance("MD5");
+            fis = new FileInputStream(CURRENT_BASEBAND_GSM_FILE);
+            DigestInputStream dis = new DigestInputStream(fis, digester);
+            byte[] buffer = new byte[1024];
+
+            while (dis.read(buffer) > 0);
+            digest = digester.digest();
+        } catch (NoSuchAlgorithmException e) {
+            Log.e(TAG, "Could not instantiate MD5 algorithm", e);
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "Baseband file " + CURRENT_BASEBAND_GSM_FILE + " not found", e);
+        } catch (IOException e) {
+            Log.e(TAG, "Could not read current baseband file", e);
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    Log.e(TAG, "Could not close current baseband file", e);
+                }
+            }
+        }
+
+        if (digest != null) {
+            BigInteger bi = new BigInteger(1, digest);
+            return String.format("%0" + (digest.length * 2) + "x", bi);
+        }
+        return null;
+    }
+
+    private void updateValue(final BasebandInfo baseband) {
+        updatePrefValue(baseband);
+        mCurrentBaseband = baseband;
+
+        if (baseband != null) {
+            SystemProperties.set(PROP_NAME, baseband.filename);
+        }
+
+        updateSummary();
+        callChangeListener(this);
+    }
+
+    private void updatePrefValue(final BasebandInfo baseband) {
         final SharedPreferences.Editor editor =
                 PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
-        final StringBuilder builder = new StringBuilder();
-        final BasebandInfo baseband = getBaseband(region, country, version);
 
         if (baseband == null) {
+            editor.remove(getKey());
+            editor.commit();
             return;
         }
 
-        builder.append(region);
+        final StringBuilder builder = new StringBuilder();
+        builder.append(baseband.countryInfo.regionInfo.name);
         builder.append(':');
-        builder.append(country);
+        builder.append(baseband.countryInfo.name);
         builder.append(':');
-        builder.append(version);
+        builder.append(baseband.version);
 
         final String prefValue = builder.toString();
         editor.putString(getKey(), prefValue);
         editor.commit();
 
-        mValue[0] = region;
-        mValue[1] = country;
-        mValue[2] = version;
-
-        SystemProperties.set(PROP_NAME, baseband.filename);
-        Log.i(TAG, "Updated baseband to " + prefValue + ", filename " + baseband.filename);
-        updateSummary();
-        callChangeListener(this);
-    }
+        Log.d(TAG, "Updated baseband to " + prefValue + ", filename " + baseband.filename);
+     }
 
     private void updateSummary() {
-        final RegionInfo region = mRegions.get(mValue[0]);
-        final CountryInfo country = region.countries.get(mValue[1]);
-        final BasebandInfo baseband = country.basebands.get(mValue[2]);
+        String countryString;
+        String versionString;
 
-        setSummary(mResources.getString(R.string.baseband_selection_summary, country.uiName, baseband.version));
+        if (mCurrentBaseband != null) {
+            countryString = mCurrentBaseband.countryInfo.uiName;
+            versionString = mCurrentBaseband.version;
+        } else {
+            countryString = mResources.getString(R.string.unknown);
+            versionString = "";
+        }
+
+        setSummary(mResources.getString(R.string.baseband_selection_summary, countryString, versionString));
     }
 
     private void buildBasebandList() {
@@ -179,7 +264,7 @@ public class BasebandSelectionPreference extends Preference implements Preferenc
 
         for (String item : res.getStringArray(R.array.available_basebands)) {
             String[] values = TextUtils.split(item, ":");
-            if (values.length != 5) {
+            if (values.length != 6) {
                 Log.w(TAG, "Ignoring invalid baseband specification " + item);
                 continue;
             }
@@ -190,6 +275,7 @@ public class BasebandSelectionPreference extends Preference implements Preferenc
             info.version = values[2];
             info.frequencies = new ArrayList<String>();
             info.filename = values[4];
+            info.md5sum = values[5];
 
             for (final String frequency : TextUtils.split(values[3], ",")) {
                 info.frequencies.add(frequency);
@@ -229,10 +315,12 @@ public class BasebandSelectionPreference extends Preference implements Preferenc
                     country.name = countryName;
                     country.uiName = region.countryEntries[cIndex];
                     country.basebands = new HashMap<String, BasebandInfo>();
+                    country.regionInfo = region;
 
                     for (final BasebandInfo baseband : mBasebands) {
                         if (regionName.equals(baseband.region) && countryName.equals(baseband.country)) {
                             country.basebands.put(baseband.version, baseband);
+                            baseband.countryInfo = country;
                         }
                     }
                     final Set<String> versions = country.basebands.keySet();
@@ -275,6 +363,7 @@ public class BasebandSelectionPreference extends Preference implements Preferenc
             updateVersionSpinner();
             mVersion.setSelection(mInitialPositions[2]);
             updateFrequencies();
+            validate();
         }
 
         @Override
@@ -313,14 +402,14 @@ public class BasebandSelectionPreference extends Preference implements Preferenc
             mFrequencies = (TextView) layout.findViewById(R.id.frequencies);
 
             setView(layout);
-            setTitle(R.string.baseband_switcher);
+            setTitle(R.string.baseband_selection);
         }
 
         private void initButtons() {
             setButton(BUTTON_POSITIVE, mResources.getString(android.R.string.ok), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    updateValue(getSelectedRegion().name, getSelectedCountry().name, getSelectedBaseband().version);
+                    updateValue(getSelectedBaseband());
                 }
             });
             setButton(BUTTON_NEGATIVE, mResources.getString(android.R.string.cancel), (DialogInterface.OnClickListener) null);
@@ -350,13 +439,9 @@ public class BasebandSelectionPreference extends Preference implements Preferenc
         }
 
         private void updateSpinner(Spinner spinner, String[] items) {
-            if (items == null) {
-                items = new String[0];
-            }
-
             SpinnerUpdateAdapter adapter = (SpinnerUpdateAdapter) spinner.getAdapter();
             adapter.update(items);
-            spinner.setEnabled(items.length > 0);
+            spinner.setEnabled(items != null && items.length > 0);
         }
 
         private void updateFrequencies() {
@@ -407,8 +492,10 @@ public class BasebandSelectionPreference extends Preference implements Preferenc
 
             public void update(String[] items) {
                 clear();
-                for (String item : items) {
-                    add(item);
+                if (items != null) {
+                    for (String item : items) {
+                        add(item);
+                    }
                 }
                 notifyDataSetChanged();
             }
