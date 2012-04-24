@@ -224,6 +224,7 @@ on property:service.adb.root=1
     log "on property service.adb.root=" $service.adb.root
     restart adbd
 
+#TODO: key shortcuts seems buggy in ics
 service reboot_key /system/bin/reboot
     user system
     group root
@@ -234,6 +235,8 @@ service reboot_key /system/bin/reboot
 service usbd /system/bin/usbd
     class main
     user root
+    socket usbd stream 666 root system
+
 service charge /system/bin/charge_only_mode
     group root
     oneshot
