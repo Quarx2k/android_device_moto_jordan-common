@@ -64,8 +64,6 @@
 
 #define USBD_DEV_EVENT_ADB_ENABLE           "adb_enable"
 #define USBD_DEV_EVENT_ADB_DISABLE          "adb_disable"
-#define USBD_DEV_EVENT_TETHERING_ENABLE     "tethering_enable"
-#define USBD_DEV_EVENT_TETHERING_DISABLE    "tethering_disable"
 #define USBD_DEV_EVENT_GET_DESCRIPTOR       "get_desc"
 #define USBD_DEV_EVENT_USB_ENUMERATED       "enumerated"
 
@@ -75,10 +73,6 @@
 /* adb status */
 #define USBD_ADB_STATUS_ON                  "usbd_adb_status_on"
 #define USBD_ADB_STATUS_OFF                 "usbd_adb_status_off"
-
-/* tethering status */
-#define USBD_TETHERING_STATUS_ON            "usbd_tethering_status_on"
-#define USBD_TETHERING_STATUS_OFF           "usbd_tethering_status_off"
 
 /* event prefixes */
 #define USBD_START_PREFIX                   "usbd_start_"
@@ -320,26 +314,6 @@ static int usbd_send_adb_status(int sockfd, int status)
 	{
 		LOGI("%s(): Send ADB Disable message\n", __func__);
 		ret = write(sockfd, USBD_ADB_STATUS_OFF, strlen(USBD_ADB_STATUS_OFF) + 1);
-	}
-	
-	return ret <= 0; /*1 = fail */
-}
-
-/* Sends tethering status to usb.apk */
-static int usbd_send_tethering_status(int sockfd, int status)
-{
-	int ret;
-	
-	if (status == 1)
-	{
-		LOGI("%s(): Send tethering Enable message\n", __func__);
-		ret = write(sockfd, USBD_TETHERING_STATUS_ON, strlen(USBD_TETHERING_STATUS_ON) + 1);
-		
-	}
-	else
-	{
-		LOGI("%s(): Send tethering Disable message\n", __func__);
-		ret = write(sockfd, USBD_TETHERING_STATUS_OFF, strlen(USBD_TETHERING_STATUS_OFF) + 1);
 	}
 	
 	return ret <= 0; /*1 = fail */
@@ -589,7 +563,7 @@ static int usbd_socket_event(int sockfd)
 	}
 	else if (res)
 	{
-		LOGI("%s(): recieved %s\n", __func__, buffer);
+		LOGI("%s(): received %s\n", __func__, buffer);
 		new_mode = usbd_get_mode_index(buffer, USBMOD_MODE);
 		
 		if (new_mode < 0)
@@ -772,7 +746,6 @@ int main(int argc, char **argv)
 {
 	char pc_switch_buf[32];
 	char adb_enable_buf[32];
-	char tethering_enable_buf[32];
 	char enum_buf[32];
 	char buffer[64];
 	const char* cable_msg;
@@ -897,17 +870,7 @@ int main(int argc, char **argv)
 					memset(adb_enable_buf, 0, sizeof(adb_enable_buf)); 
 				
 				LOGI("%s(): adb_enable_buf = %s\n", __func__, adb_enable_buf);
-				
-				/* Tethering */
-				pch = strtok(NULL, ":");
-				
-				if (pch != NULL)
-					strcpy(tethering_enable_buf, pch);
-				else
-					memset(tethering_enable_buf, 0, sizeof(tethering_enable_buf)); 
-				
-				LOGI("%s(): tethering_enable_buf = %s\n", __func__, tethering_enable_buf);
-				
+								
 				/* Enumeration */
 				pch = strtok(NULL, ":");
 				
@@ -926,12 +889,6 @@ int main(int argc, char **argv)
 						usbd_send_adb_status(usbd_app_fd, 1);
 					else if (!strcmp(adb_enable_buf, USBD_DEV_EVENT_ADB_DISABLE))
 						usbd_send_adb_status(usbd_app_fd, 0);
-					
-					/* Evaluate tethering status */
-					if (!strcmp(tethering_enable_buf, USBD_DEV_EVENT_TETHERING_ENABLE))
-						usbd_send_tethering_status(usbd_app_fd, 1);
-					else if (!strcmp(tethering_enable_buf, USBD_DEV_EVENT_TETHERING_DISABLE))
-						usbd_send_tethering_status(usbd_app_fd, 0);
 				}
 				
 				if (pc_switch_buf[0] != '\0' && strcmp(pc_switch_buf, "none"))
@@ -960,11 +917,11 @@ int main(int argc, char **argv)
 				}
 				else if (!strncmp(enum_buf, USBD_DEV_EVENT_USB_ENUMERATED, strlen(USBD_DEV_EVENT_USB_ENUMERATED)))
 				{
-					LOGI("%s(): recieved enumerated\n", __func__);
+					LOGI("%s(): received enumerated\n", __func__);
 					LOGI("%s(): usbd_app_fd  = %d\n", __func__, usbd_app_fd);
 					usb_state = USBDSTAT_USB_ENUMERATED;
 					
-					if (usbd_app_fd >= 0 && usbd_enum_process(usbd_app_fd) < 0)
+					if (usbd_app_fd >= 0 && usbd_enum_process(usbd_app_fd))
 					{
 						close(usbd_app_fd);
 						usbd_app_fd = -1;
