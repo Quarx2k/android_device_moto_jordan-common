@@ -42,6 +42,7 @@
     <string name="region_europe">Europe</string>
     <string name="region_america">America</string>
     <string name="region_asia">Asia</string>
+    <string name="region_africa">Africa</string>
     <string name="region_australia">Australia</string>
 
     <string name="country_central_europe">Central Europe</string>
@@ -58,6 +59,7 @@
     <string name="country_hongkong_taiwan">Hongkong, Taiwan</string>
     <string name="country_south_east_asia">South East Asia</string>
     <string name="country_arabia">Arabia</string>
+    <string name="country_south_africa">South Africa</string>
 
     <string name="baseband_selection_summary">Select the baseband suitable for your country\nCurrently selected: %1$s %2$s</string>
     <string name="baseband_region">Region</string>

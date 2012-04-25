@@ -32,6 +32,7 @@
         <item>@string/region_europe</item>
         <item>@string/region_america</item>
         <item>@string/region_asia</item>
+        <item>@string/region_africa</item>
         <item>@string/region_australia</item>
     </string-array>
 
@@ -39,6 +40,7 @@
         <item>europe</item>
         <item>america</item>
         <item>asia</item>
+        <item>africa</item>
         <item>australia</item>
     </string-array>
 
@@ -86,6 +88,14 @@
         <item>hktaiwan</item>
         <item>sea</item>
         <item>arab</item>
+    </string-array>
+
+    <string-array name="baseband_countries_africa_entries" translatable="false">
+        <item>@string/country_south_africa</item>
+    </string-array>
+
+    <string-array name="baseband_countries_africa_values" translatable="false">
+        <item>southafrica</item>
     </string-array>
 
     <string-array name="baseband_countries_australia_entries" translatable="false">
@@ -138,8 +148,10 @@
         <item>asia:hktaiwan:3.4.x:900,2100:europe/central_europe_34x:95f72d528a034e3af8cb1c89959ccbaf</item>
         <item>asia:sea:2.51:900,2100:asia/sea_251:5230b070802862413ad1da2e0d0e657b</item>
         <item>asia:sea:2.59:900,2100:asia/hktaiwan_259:787196b90d9a45f3eb28942de2c91c4b</item>
-        <item>asia:sea:3.4.3-331:900,2100:asia/sea_343:27c844cee399e22af86ddd4de4c29352</item>
+        <item>asia:sea:3.4.3-331:900,2100:asia/sea_343_331:27c844cee399e22af86ddd4de4c29352</item>
+        <item>asia:sea:3.4.3-361:900,2100:asia/sea_343_361:95f72d528a034e3af8cb1c89959ccbaf</item>
         <item>asia:southkorea:SKT 3.4.2-74:2100:asia/southkorea_342:ea18015f9758790fc57f1fdf8af4cc48</item>
+        <item>africa:southafrica:3.4.3-361:900,2100:asia/sea_343_361:95f72d528a034e3af8cb1c89959ccbaf</item>
         <item>australia:australia:OPTUS 3.4.2-145:900,2100:australia/optus_342:80bf9284fd91f092888f2d5b9fc72e10</item>
         <item>australia:australia:Telstra 2.26:850,2100:australia/telstra_226:170dec08e7e515806d2e193cab9a1b86</item>
     </string-array>

@@ -41,6 +41,7 @@
     <string name="region_europe">Europa</string>
     <string name="region_america">Amerika</string>
     <string name="region_asia">Asien</string>
+    <string name="region_africa">Afrika</string>
     <string name="region_australia">Australien</string>
 
     <string name="country_central_europe">Mitteleuropa</string>
@@ -57,6 +58,7 @@
     <string name="country_hongkong_taiwan">Hongkong, Taiwan</string>
     <string name="country_south_east_asia">Südostasien</string>
     <string name="country_arabia">Arabien</string>
+    <string name="country_south_africa">Südafrika</string>
 
     <string name="baseband_selection_summary">Auswahl des Telefon-Basebands\nMomentan gewählt: %1$s %2$s</string>
     <string name="baseband_region">Region</string>
