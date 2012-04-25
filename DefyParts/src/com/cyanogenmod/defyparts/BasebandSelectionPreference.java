@@ -132,7 +132,7 @@ public class BasebandSelectionPreference extends Preference implements Preferenc
                 baseband = getBaseband(values[0], values[1], values[2]);
                 if (baseband != null && !baseband.md5sum.equals(currentBasebandMd5)) {
                     /* always trust the setting if we didn't reboot after setting it */
-                    if (SystemProperties.get(PROP_NAME) == null) {
+                    if (TextUtils.isEmpty(SystemProperties.get(PROP_NAME))) {
                         baseband = null;
                         needUpdate = true;
                     }
