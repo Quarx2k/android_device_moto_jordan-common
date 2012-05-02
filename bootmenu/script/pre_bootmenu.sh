@@ -82,6 +82,10 @@ if [ -x /system/bootmenu/script/overclock.sh ]; then
     /system/bootmenu/script/overclock.sh safe
 fi
 
-echo 1 > /sys/class/leds/button-backlight/brightness
+# must be restored in stock.sh
+if [ -L /tmp ]; then
+  mv /tmp /tmp.bak
+  mkdir /tmp && busybox mount -t ramfs ramfs /tmp
+fi
 
 exit 0
