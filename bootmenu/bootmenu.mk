@@ -7,6 +7,9 @@ PRODUCT_PACKAGES += \
 	static_busybox \
 	static_logwrapper \
 	2nd-init.jordan \
+	utility_mke2fs \
+	utility_tune2fs \
+	e2fsck recovery_pigz \
 
 # config
 PRODUCT_COPY_FILES += \
@@ -83,7 +86,6 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/recovery/sbin/badblocks:system/bootmenu/recovery/sbin/badblocks \
 	${bm_device}/bootmenu/recovery/sbin/dedupe:system/bootmenu/recovery/sbin/dedupe \
 	${bm_device}/bootmenu/recovery/sbin/dump_image:system/bootmenu/recovery/sbin/dump_image \
-	${bm_device}/bootmenu/recovery/sbin/e2fsck:system/bootmenu/recovery/sbin/e2fsck \
 	${bm_device}/bootmenu/recovery/sbin/fix_permissions:system/bootmenu/recovery/sbin/fix_permissions \
 	${bm_device}/bootmenu/recovery/sbin/killrecovery.sh:system/bootmenu/recovery/sbin/killrecovery.sh \
 	${bm_device}/bootmenu/recovery/sbin/nandroid-md5.sh:system/bootmenu/recovery/sbin/nandroid-md5.sh \
@@ -94,11 +96,13 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/recovery/sbin/resize2fs:system/bootmenu/recovery/sbin/resize2fs \
 	${bm_device}/bootmenu/recovery/sbin/sdparted:system/bootmenu/recovery/sbin/sdparted \
 	${bm_device}/bootmenu/recovery/sbin/mke2fs:system/bootmenu/recovery/sbin/mke2fs \
-	${bm_device}/bootmenu/recovery/sbin/mke2fs.bin:system/bootmenu/recovery/sbin/mke2fs.bin \
-	${bm_device}/bootmenu/recovery/sbin/tune2fs.bin:system/bootmenu/recovery/sbin/tune2fs \
 	${bm_device}/bootmenu/recovery/recovery.fstab:system/bootmenu/recovery/recovery.fstab \
 
 # recovery tools
 PRODUCT_COPY_FILES += \
-	out/target/product/jordan_plus/recovery/root/sbin/tune2fs:system/bootmenu/recovery/sbin/tune2fs
+	out/target/product/jordan_plus/recovery/root/sbin/tune2fs:system/bootmenu/recovery/sbin/tune2fs \
+	out/target/product/jordan_plus/recovery/root/sbin/e2fsck:system/bootmenu/recovery/sbin/e2fsck \
+	out/target/product/jordan_plus/recovery/root/sbin/tune2fs:system/bootmenu/recovery/sbin/tune2fs \
+	out/target/product/jordan_plus/recovery/root/sbin/mke2fs:system/bootmenu/recovery/sbin/mke2fs.bin \
+	out/target/product/jordan_plus/recovery/root/sbin/pigz:system/bootmenu/recovery/sbin/pigz \
 
