@@ -435,14 +435,6 @@ JordanCameraWrapper::getParameters() const
         ret.set(CameraParameters::KEY_ZOOM_RATIOS, "100,200,300,400");
     }
 
-    /*
-     * Motorola omap cameras doesn't support YUV420sp...
-     * it advertises so, but then sends "yuv422i-yuyv"
-     */
-    ret.set(CameraParameters::KEY_VIDEO_FRAME_FORMAT, CameraParameters::PIXEL_FORMAT_YUV422I);
-    ret.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FORMATS, CameraParameters::PIXEL_FORMAT_YUV422I);
-    ret.setPreviewFormat(CameraParameters::PIXEL_FORMAT_YUV422I);
-
     /* cut down supported effects to values supported by framework */
     ret.set(CameraParameters::KEY_SUPPORTED_EFFECTS, "none,mono,sepia,negative,solarize,red-tint,green-tint,blue-tint");
 
