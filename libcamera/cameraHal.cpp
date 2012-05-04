@@ -45,9 +45,7 @@
 
 using namespace std;
 
-#include "CameraHardwareInterface.h"
-
-#define YUV_CAM_FORMAT CameraParameters::PIXEL_FORMAT_YUV422I
+#include "JordanCameraWrapper.h"
 
 #define DISPLAY_RGB565
 
@@ -59,16 +57,9 @@ using namespace std;
 #define HAL_PIXEL_FORMAT HAL_PIXEL_FORMAT_RGBA_8888
 #endif
 
-//Atrix :
-//#define YUV_CAM_FORMAT CameraParameters::PIXEL_FORMAT_YUV420P
-
-/* Prototypes and extern functions. */
-extern "C" android::sp<android::CameraHardwareInterface> HAL_openCameraHardware(int cameraId);
-extern "C" int HAL_getNumberOfCameras();
-extern "C" void HAL_getCameraInfo(int cameraId, struct CameraInfo* cameraInfo);
-
 namespace android {
      int camera_device_open(const hw_module_t* module, const char* name, hw_device_t** device);
+     int CameraHAL_GetNumberOfCameras(void);
      int CameraHAL_GetCam_Info(int camera_id, struct camera_info *info);
 }
 
@@ -88,7 +79,7 @@ camera_module_t HAL_MODULE_INFO_SYM = {
         dso: NULL,
         reserved: {0},
     },
-    get_number_of_cameras: android::HAL_getNumberOfCameras,
+    get_number_of_cameras: android::CameraHAL_GetNumberOfCameras,
     get_camera_info: android::CameraHAL_GetCam_Info,
 };
 
@@ -110,7 +101,7 @@ struct legacy_camera_device {
     preview_stream_ops            *window;
 
     // Old world
-    sp<CameraHardwareInterface>    hwif;
+    sp<JordanCameraWrapper>        hwif;
     gralloc_module_t const        *gralloc;
     vector<camera_memory_t*>       sentMem;
     sp<Overlay>                    overlay;
@@ -500,22 +491,22 @@ void CameraHAL_NotifyCb(int32_t msg_type, int32_t ext1, int32_t ext2, void *user
     }
 }
 
-int 
-CameraHAL_GetCam_Info(int camera_id, struct camera_info *info)
+int CameraHAL_GetNumberOfCameras(void)
 {
-    int rv = 0;
+    return 1;
+}
+
+int CameraHAL_GetCam_Info(int camera_id, struct camera_info *info)
+{
     LOGV("CameraHAL_GetCam_Info()");
 
-    CameraInfo cam_info;
-    HAL_getCameraInfo(camera_id, &cam_info);
-
-    info->facing = cam_info.facing;
+    info->facing = CAMERA_FACING_BACK;
     info->orientation = 90;
 
     LOGD("%s: id:%i faceing:%i orientation: %i", __FUNCTION__,
           camera_id, info->facing, info->orientation);
 
-    return rv;
+    return 0;
 }
 
 void 
@@ -571,28 +562,30 @@ CameraHAL_FixupParams(struct camera_device * device, CameraParameters &settings)
                    frame_rate_range);
    }
 
-    const char *target_size = settings.get("picture-size");
-    float ratio = 0.0;
-    int height = 0, width = atoi(target_size);
-    char *sh;
-    bool need_reset = false;
-    if (width > 0) {
-        sh = strstr(target_size, "x");
-        height = atoi(sh + 1);
-        ratio = (height * 1.0) / width;
+    // Fix preview ratio (for wide picture and video formats)
+    // should be fixed in camera app... ratio defines, to allow small sizes (panorama)
+
+    int width = 0, height = 0;
+    bool needReset = false;
+
+    settings.getPictureSize(&width, &height);
+    if (width > 0 && height > 0) {
+        float ratio = (height * 1.0) / width;
+
         if (ratio < 0.70 && width >= 640) {
             settings.setPreviewSize(848, 480);
             settings.set(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO, "848x480");
-            need_reset = true;
+            needReset = true;
         } else if (width == 848) {
             settings.setPreviewSize(640, 480);
             settings.set(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO, "640x480");
-            need_reset = true;
+            needReset = true;
         }
-        LOGV("%s: target size %s, ratio %f", __FUNCTION__, target_size, ratio);
+
+        LOGV("%s: target size %dx%d, ratio %f", __FUNCTION__, width, height, ratio);
     }
 
-    if (need_reset) {
+    if (needReset) {
         struct legacy_camera_device *lcdev = to_lcdev(device);
         camera_set_preview_window(device, lcdev->window);
     }
@@ -976,7 +969,8 @@ camera_device_open(const hw_module_t* module, const char* name, hw_device_t** de
     camera_ops->dump                       = camera_dump;
 
     lcdev->id = cameraId;
-    lcdev->hwif = HAL_openCameraHardware(cameraId);
+    lcdev->hwif = JordanCameraWrapper::createInstance(cameraId);
+
     if (lcdev->hwif == NULL) {
          ret = -EIO;
          goto err_create_camera_hw;
