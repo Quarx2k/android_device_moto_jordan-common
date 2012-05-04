@@ -197,26 +197,20 @@ public:
     virtual CameraParameters  getParameters() const = 0; // 0x58
 
     /**
-     * Set/return custom camera parameters
-     */
-    virtual status_t    setCustomParameters(const CameraParameters& params) = 0; // 0x5C
-    virtual CameraParameters  getCustomParameters() const = 0; // 0x60
-
-    /**
      * Send command to camera driver.
      */
-    virtual status_t sendCommand(int32_t cmd, int32_t arg1, int32_t arg2) = 0; // 0x64
+    virtual status_t sendCommand(int32_t cmd, int32_t arg1, int32_t arg2) = 0; // 0x5C
 
     /**
      * Release the hardware resources owned by this object.  Note that this is
      * *not* done in the destructor.
      */
-    virtual void release() = 0; // 0x68
+    virtual void release() = 0; // 0x60
 
     /**
      * Dump state of the camera hardware
      */
-    virtual status_t dump(int fd, const Vector<String16>& args) const = 0; // 0x6C
+    virtual status_t dump(int fd, const Vector<String16>& args) const = 0; // 0x64
 
 };
 
