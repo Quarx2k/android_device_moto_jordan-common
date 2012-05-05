@@ -69,15 +69,7 @@ struct legacy_camera_device {
 
     int32_t                        previewWidth;
     int32_t                        previewHeight;
-<<<<<<< HEAD
-<<<<<<< HEAD
     Overlay::Format                previewFormat;
-=======
-    OverlayFormats                 previewFormat;
->>>>>>> ad28871... Try to fix barcode scanner by allowing yuv420sp as preview format and
-=======
-    Overlay::Format                previewFormat;
->>>>>>> 6e2e89b... Adapt to overlay changes and always construct overlay as yuv422i.
 };
 
 /** camera_hw_device implementation **/
@@ -172,15 +164,7 @@ static void Yuv422iToRgb565(char* rgb, char* yuv422i, int width, int height, int
     }
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 static void processPreviewData(char *frame, size_t size, legacy_camera_device *lcdev, Overlay::Format format)
-=======
-static void processPreviewData(char *frame, size_t size, legacy_camera_device *lcdev, OverlayFormats format)
->>>>>>> ad28871... Try to fix barcode scanner by allowing yuv420sp as preview format and
-=======
-static void processPreviewData(char *frame, size_t size, legacy_camera_device *lcdev, Overlay::Format format)
->>>>>>> 6e2e89b... Adapt to overlay changes and always construct overlay as yuv422i.
 {
 #ifdef LOG_EACH_FRAME
     LOGV("%s: frame=%p, size=%d, camera=%p", __FUNCTION__, frame, size, lcdev);
@@ -228,15 +212,7 @@ static void processPreviewData(char *frame, size_t size, legacy_camera_device *l
     } else {
         // The data we get is in YUV... but Window is RGB565. It needs to be converted
         switch (format) {
-<<<<<<< HEAD
-<<<<<<< HEAD
             case Overlay::FORMAT_YUV422I:
-=======
-            case OVERLAY_FORMAT_YUV422I:
->>>>>>> ad28871... Try to fix barcode scanner by allowing yuv420sp as preview format and
-=======
-            case Overlay::FORMAT_YUV422I:
->>>>>>> 6e2e89b... Adapt to overlay changes and always construct overlay as yuv422i.
                 Yuv422iToRgb565((char*)vaddr, frame, lcdev->previewWidth, lcdev->previewHeight, stride);
                 break;
             case Overlay::FORMAT_YUV420SP:
@@ -259,19 +235,9 @@ static void processPreviewData(char *frame, size_t size, legacy_camera_device *l
 static void overlayQueueBuffer(void *data, void *buffer, size_t size)
 {
     if (data != NULL && buffer != NULL) {
-<<<<<<< HEAD
-<<<<<<< HEAD
         legacy_camera_device *lcdev = (legacy_camera_device *) data;
         Overlay::Format format = (Overlay::Format) lcdev->overlay->getFormat();
         processPreviewData((char*)buffer, size, lcdev, format);
-=======
-        processPreviewData((char*)buffer, size, (legacy_camera_device*) data, OVERLAY_FORMAT_YUV422I);
->>>>>>> ad28871... Try to fix barcode scanner by allowing yuv420sp as preview format and
-=======
-        legacy_camera_device *lcdev = (legacy_camera_device *) data;
-        Overlay::Format format = (Overlay::Format) lcdev->overlay->getFormat();
-        processPreviewData((char*)buffer, size, lcdev, format);
->>>>>>> 6e2e89b... Adapt to overlay changes and always construct overlay as yuv422i.
     }
 }
 
@@ -440,15 +406,7 @@ static int camera_set_preview_window(struct camera_device * device, struct previ
 
     const char *previewFormat = params.getPreviewFormat();
     LOGD("%s: preview format %s", __FUNCTION__, previewFormat);
-<<<<<<< HEAD
-<<<<<<< HEAD
     lcdev->previewFormat = Overlay::getFormatFromString(previewFormat);
-=======
-    lcdev->previewFormat = getOverlayFormatFromString(previewFormat);
->>>>>>> ad28871... Try to fix barcode scanner by allowing yuv420sp as preview format and
-=======
-    lcdev->previewFormat = Overlay::getFormatFromString(previewFormat);
->>>>>>> 6e2e89b... Adapt to overlay changes and always construct overlay as yuv422i.
 
     if (window->set_usage(window, GRALLOC_USAGE_SW_WRITE_OFTEN | GRALLOC_USAGE_SW_READ_OFTEN)) {
         LOGE("%s: could not set usage on gralloc buffer", __FUNCTION__);
@@ -463,15 +421,7 @@ static int camera_set_preview_window(struct camera_device * device, struct previ
     if (lcdev->hwif->useOverlay()) {
         LOGI("%s: Using overlay for device %p", __FUNCTION__, lcdev);
         lcdev->overlay = new Overlay(lcdev->previewWidth, lcdev->previewHeight,
-<<<<<<< HEAD
-<<<<<<< HEAD
                 Overlay::FORMAT_YUV422I, overlayQueueBuffer, (void*) lcdev);
-=======
-                lcdev->previewFormat, overlayQueueBuffer, (void*) lcdev);
->>>>>>> ad28871... Try to fix barcode scanner by allowing yuv420sp as preview format and
-=======
-                Overlay::FORMAT_YUV422I, overlayQueueBuffer, (void*) lcdev);
->>>>>>> 6e2e89b... Adapt to overlay changes and always construct overlay as yuv422i.
         lcdev->hwif->setOverlay(lcdev->overlay);
     }
 
