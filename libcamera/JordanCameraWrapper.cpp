@@ -450,6 +450,7 @@ JordanCameraWrapper::getParameters() const
     ret.set(CameraParameters::KEY_MIN_EXPOSURE_COMPENSATION, "-9");
     ret.set(CameraParameters::KEY_EXPOSURE_COMPENSATION_STEP, "0.3333333333333");
 
+    ret.set(CameraParameters::KEY_VIDEO_FRAME_FORMAT, CameraParameters::PIXEL_FORMAT_YUV422I);
     ret.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE,
             "(1000,30000),(1000,25000),(1000,20000),(1000,24000),(1000,15000),(1000,10000)");
     ret.set(CameraParameters::KEY_PREVIEW_FPS_RANGE, "1000, 30000");
