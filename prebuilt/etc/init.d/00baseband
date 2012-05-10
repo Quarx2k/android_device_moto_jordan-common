@@ -15,7 +15,7 @@ if [ -e $BASEBAND_SWITCH_PROP_FILE ]; then
     if [ -f $NEW_BASEBAND_ZIP ]; then
         busybox mount -o remount,rw /system
         busybox rm -f $BASEBAND_DEFAULT/*
-	busybox unzip -q $NEW_BASEBAND_ZIP -d $BASEBAND_DEFAULT
+        busybox unzip -q $NEW_BASEBAND_ZIP -d $BASEBAND_DEFAULT
         busybox mount -o remount,ro /system
     fi
 fi
