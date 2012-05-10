@@ -41,13 +41,9 @@ public class DeviceSettings extends PreferenceActivity implements OnPreferenceCh
         touchPointsPref = (ListPreference) generalSettings.findPreference("touch_points");
         touchPointsPref.setOnPreferenceChangeListener(this);
 
-        try {
-            PreferenceCategory otherSettings = (PreferenceCategory) getPreferenceScreen().findPreference("other");
-            basebandPref = (Preference) otherSettings.findPreference("baseband_selection");
-        } catch (Exception e) {}
-        if (basebandPref != null) {
-            basebandPref.setOnPreferenceChangeListener(this);
-        }
+        PreferenceCategory otherSettings = (PreferenceCategory) getPreferenceScreen().findPreference("other");
+        basebandPref = (Preference) otherSettings.findPreference("baseband_selection");
+        basebandPref.setOnPreferenceChangeListener(this);
     }
 
     @Override
