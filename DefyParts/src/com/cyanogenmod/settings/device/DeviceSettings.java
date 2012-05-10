@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.os.SystemProperties;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -23,6 +24,7 @@ public class DeviceSettings extends PreferenceActivity implements OnPreferenceCh
     private PreferenceCategory generalSettings;
     private ListPreference chargeLedModePref;
     private ListPreference touchPointsPref;
+    private Preference basebandPref = null;
 
     private static final String PROP_CHARGE_LED_MODE = "persist.sys.charge_led";
     private static final String PROP_TOUCH_POINTS = "persist.sys.multitouch";
@@ -38,6 +40,14 @@ public class DeviceSettings extends PreferenceActivity implements OnPreferenceCh
         chargeLedModePref.setOnPreferenceChangeListener(this);
         touchPointsPref = (ListPreference) generalSettings.findPreference("touch_points");
         touchPointsPref.setOnPreferenceChangeListener(this);
+
+        try {
+            PreferenceCategory otherSettings = (PreferenceCategory) getPreferenceScreen().findPreference("other");
+            basebandPref = (Preference) otherSettings.findPreference("baseband_selection");
+        } catch (Exception e) {}
+        if (basebandPref != null) {
+            basebandPref.setOnPreferenceChangeListener(this);
+        }
     }
 
     @Override
@@ -79,9 +89,28 @@ public class DeviceSettings extends PreferenceActivity implements OnPreferenceCh
                 dialog.show();
                 return false;
             }
+        } else if (preference == basebandPref) {
+            showRebootPrompt();
         }
 
         return true;
+    }
+
+    private void showRebootPrompt() {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.reboot_prompt_title)
+                .setMessage(R.string.reboot_prompt_message)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+                        pm.reboot(null);
+                    }
+                })
+                .setNegativeButton(R.string.no, null)
+                .create();
+
+        dialog.show();
     }
 
     private void setTouchPointSetting(String value) {

@@ -28,4 +28,8 @@
     <string name="other_settings_title">Другие настройки</string>
     <string name="compass_calibrate">Калибровка компаса</string>
 
+    <string name="reboot_prompt_title">Требуется перезагрузка</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+
 </resources>
