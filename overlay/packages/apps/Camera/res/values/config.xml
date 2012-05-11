@@ -21,9 +21,6 @@
      for different hardware and product builds. -->
 <resources>
 
-<!-- Allow setting video size before recording starts, parameter "video-size=640x480" -->
-<bool name="needsEarlyVideoSize">true</bool>
-
 <!-- Add parameter "cam_mode" instead of "cam-mode" for camcorder mode (photo or video) -->
 <bool name="needsSamsungCamMode">false</bool>
 
