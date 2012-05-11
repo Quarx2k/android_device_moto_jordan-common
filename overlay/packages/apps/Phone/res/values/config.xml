@@ -44,11 +44,10 @@
          pull the phone out of your pocket.)  So devices that *don't* want
          this behavior should set this flag to false via the resource
          overlay. 
-    <bool name="allow_back_key_to_reject_incoming_call">false</bool>
+    <bool name="allow_back_key_to_reject_incoming_call">false</bool>-->
 
     <string name="voice_quality_param">motoVoiceQualityConfig</string>
 
-ICS -->
     <!-- Determines if device implements a noise suppression device for in call audio-->
     <bool name="has_in_call_noise_suppression">true</bool>
 
