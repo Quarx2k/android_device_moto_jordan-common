@@ -29,6 +29,8 @@ fi
 
 if [ -z "$R" ]; then
   rm -f $BM_CONFIG
+else
+  echo $R > $BM_CONFIG
 fi
 
 sync
