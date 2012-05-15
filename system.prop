@@ -70,8 +70,8 @@ ro.product.use_charge_counter=1
 hwui.print_config=choice
 
 # force enable or force disable of hw renderer for the listed processes
-#hwui.whitelist=com.android.browser
-hwui.blacklist=ui
+hwui.whitelist=com.android.browser
+hwui.blacklist=
 
 #=========================================================================================
 # Note about persist.xxx properties :
