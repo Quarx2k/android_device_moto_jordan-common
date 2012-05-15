@@ -102,7 +102,7 @@ install_module()
     insmod $MODULE_DIR/cpufreq_powersave.ko
     insmod $MODULE_DIR/symsearch.ko
     insmod $MODULE_DIR/clockfix.ko
-    insmod $MODULE_DIR/sio-iosched.ko
+    insmod $MODULE_DIR/sio_iosched.ko
     insmod $MODULE_DIR/cpufreq_stats.ko
     insmod $MODULE_DIR/cpufreq_interactive.ko
     insmod $MODULE_DIR/cpufreq_smartass.ko
@@ -156,25 +156,25 @@ set_scaling()
     "5" )
       if [ "$load_all" -eq "0" ]; then
         insmod $MODULE_DIR/symsearch.ko
-        insmod $MODULE_DIR/sio-iosched.ko
+        insmod $MODULE_DIR/sio_iosched.ko
         insmod $MODULE_DIR/clockfix.ko
         insmod $MODULE_DIR/cpufreq_boosted.ko
       fi
 
       # options: 'noop cfq sio'
       SCHED="sio"
-#     for i in /sys/block/mmc*/queue; do
-#       [ -f "$i/scheduler" ]             && echo $SCHED > $i/scheduler
-#       [ -f "$i/rotational" ]            && [ "`cat $i/rotational`" -ne "0" ] && echo 0 > $i/rotational
-#       [ -f "$i/iosched/low_latency" ]   && echo 1 > $i/iosched/low_latency
-#       [ -f "$i/iosched/back_seek_penalty" ] && echo 1 > $i/iosched/back_seek_penalty
-#       [ -f "$i/iosched/back_seek_max" ] && echo 1000000000 > $i/iosched/back_seek_max
-#       [ -f "$i/iosched/slice_idle" ]    && echo 0 > $i/iosched/slice_idle
-#       [ -f "$i/iosched/fifo_batch" ]    && echo 1 > $i/iosched/fifo_batch
-#       [ -f "$i/iosched/quantum" ]       && echo 16 > $i/iosched/quantum
-#       [ -f "$i/nr_requests" ]           && echo 512 > $i/nr_requests
-#       [ -f "$i/iostats" ]               && [ "`cat $i/iostats`" -ne "0" ] && echo 0 > $i/iostats
-#     done
+      for i in /sys/block/mmc*/queue; do
+        [ -f "$i/scheduler" ]             && echo $SCHED > $i/scheduler
+        [ -f "$i/rotational" ]            && [ "`cat $i/rotational`" -ne "0" ] && echo 0 > $i/rotational
+        [ -f "$i/iosched/low_latency" ]   && echo 1 > $i/iosched/low_latency
+        [ -f "$i/iosched/back_seek_penalty" ] && echo 1 > $i/iosched/back_seek_penalty
+        [ -f "$i/iosched/back_seek_max" ] && echo 1000000000 > $i/iosched/back_seek_max
+        [ -f "$i/iosched/slice_idle" ]    && echo 0 > $i/iosched/slice_idle
+        [ -f "$i/iosched/fifo_batch" ]    && echo 1 > $i/iosched/fifo_batch
+        [ -f "$i/iosched/quantum" ]       && echo 16 > $i/iosched/quantum
+        [ -f "$i/nr_requests" ]           && echo 512 > $i/nr_requests
+        [ -f "$i/iostats" ]               && [ "`cat $i/iostats`" -ne "0" ] && echo 0 > $i/iostats
+      done
 
       echo boosted > $SCALING_GOVERNOR
       usleep 200000
