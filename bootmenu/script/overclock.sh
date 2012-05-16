@@ -48,6 +48,7 @@ ASKED_MODE=$1
 # bst_sleep_wakeup_freq 300000
 # bst_up_rate_us 52000
 # bst_debug_mask 0
+# iosched_sio 0
 
 param_load()
 {
@@ -102,13 +103,13 @@ install_module()
     insmod $MODULE_DIR/cpufreq_powersave.ko
     insmod $MODULE_DIR/symsearch.ko
     insmod $MODULE_DIR/clockfix.ko
-    insmod $MODULE_DIR/sio_iosched.ko
     insmod $MODULE_DIR/cpufreq_stats.ko
     insmod $MODULE_DIR/cpufreq_interactive.ko
     insmod $MODULE_DIR/cpufreq_smartass.ko
     insmod $MODULE_DIR/cpufreq_boosted.ko
   fi
   busybox chown -R system /sys/devices/system/cpu
+  busybox chown -R system /sys/class/block/mmc*/queue
 }
 
 #############################################################
@@ -156,25 +157,9 @@ set_scaling()
     "5" )
       if [ "$load_all" -eq "0" ]; then
         insmod $MODULE_DIR/symsearch.ko
-        insmod $MODULE_DIR/sio_iosched.ko
         insmod $MODULE_DIR/clockfix.ko
         insmod $MODULE_DIR/cpufreq_boosted.ko
       fi
-
-      # options: 'noop cfq sio'
-      SCHED="sio"
-      for i in /sys/block/mmc*/queue; do
-        [ -f "$i/scheduler" ]             && echo $SCHED > $i/scheduler
-        [ -f "$i/rotational" ]            && [ "`cat $i/rotational`" -ne "0" ] && echo 0 > $i/rotational
-        [ -f "$i/iosched/low_latency" ]   && echo 1 > $i/iosched/low_latency
-        [ -f "$i/iosched/back_seek_penalty" ] && echo 1 > $i/iosched/back_seek_penalty
-        [ -f "$i/iosched/back_seek_max" ] && echo 1000000000 > $i/iosched/back_seek_max
-        [ -f "$i/iosched/slice_idle" ]    && echo 0 > $i/iosched/slice_idle
-        [ -f "$i/iosched/fifo_batch" ]    && echo 1 > $i/iosched/fifo_batch
-        [ -f "$i/iosched/quantum" ]       && echo 16 > $i/iosched/quantum
-        [ -f "$i/nr_requests" ]           && echo 512 > $i/nr_requests
-        [ -f "$i/iostats" ]               && [ "`cat $i/iostats`" -ne "0" ] && echo 0 > $i/iostats
-      done
 
       echo boosted > $SCALING_GOVERNOR
       usleep 200000
@@ -230,6 +215,46 @@ set_scaling()
 }
 
 #############################################################
+# Alternative I/O Schedulers
+#
+# Default linux I/O Schedulers are optimized for Hard disks
+# The alternative ones are optimized for flash disks
+#############################################################
+
+set_ioscheduler()
+{
+  iosched="cfq"
+  if [ "$iosched_sio" -eq "1" ]; then
+      iosched="sio"
+  fi
+
+  # options: 'noop cfq sio'
+  case "$iosched" in
+    "cfq" )
+    ;;
+    "sio" )
+      insmod $MODULE_DIR/sio_iosched.ko
+      for i in /sys/block/mmc*/queue; do
+        [ -f "$i/scheduler" ]                 && echo $iosched > $i/scheduler
+
+        [ -f "$i/iosched/low_latency" ]       && echo 1 > $i/iosched/low_latency
+        [ -f "$i/iosched/back_seek_penalty" ] && echo 1 > $i/iosched/back_seek_penalty
+        [ -f "$i/iosched/back_seek_max" ]     && echo 1000000000 > $i/iosched/back_seek_max
+        [ -f "$i/iosched/slice_idle" ]        && echo 0 > $i/iosched/slice_idle
+        [ -f "$i/iosched/fifo_batch" ]        && echo 1 > $i/iosched/fifo_batch
+        [ -f "$i/iosched/quantum" ]           && echo 16 > $i/iosched/quantum
+        [ -f "$i/nr_requests" ]               && echo 512 > $i/nr_requests
+
+        [ -f "$i/rotational" ]  && [ "`cat $i/rotational`" -ne "0" ] && echo 0 > $i/rotational
+        [ -f "$i/iostats" ]     && [ "`cat $i/iostats`" -ne "0" ]    && echo 0 > $i/iostats
+      done
+    ;;
+     * )
+    ;;
+  esac
+}
+
+#############################################################
 # Set Clock Table
 #############################################################
 
@@ -262,12 +287,18 @@ else
 fi
 
 if [ $enable -eq 1 ]; then
+
   get_address
   install_module
-  echo "set_scaling..."
+
+  echo "set scaling..."
   set_scaling
-  echo "set_overclock_table..."
+  echo "set overclock table..."
   set_overclock_table
+  echo "set ioscheduler..."
+  set_ioscheduler
+
   busybox chown -R system /sys/devices/system/cpu
+
 fi
 
