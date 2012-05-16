@@ -137,7 +137,6 @@ set_scaling()
         insmod $MODULE_DIR/clockfix.ko
       fi
       echo "interactive" > $SCALING_GOVERNOR
-      usleep 500000
       echo $int_min_sample_rate > /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
     ;;
     "2" )
@@ -162,28 +161,16 @@ set_scaling()
       fi
 
       echo boosted > $SCALING_GOVERNOR
-      usleep 200000
-      echo $bst_debug_mask
       echo $bst_debug_mask     > /sys/devices/system/cpu/cpufreq/boosted/debug_mask
-      echo $bst_awake_ideal_freq
       echo $bst_awake_ideal_freq > /sys/devices/system/cpu/cpufreq/boosted/awake_ideal_freq
-      echo $bst_down_rate_us
       echo $bst_down_rate_us   > /sys/devices/system/cpu/cpufreq/boosted/down_rate_us
-      echo $bst_max_cpu_load
       echo $bst_max_cpu_load   > /sys/devices/system/cpu/cpufreq/boosted/max_cpu_load
-      echo $bst_min_cpu_load
       echo $bst_min_cpu_load   > /sys/devices/system/cpu/cpufreq/boosted/min_cpu_load
-      echo $bst_ramp_down_step
       echo $bst_ramp_down_step > /sys/devices/system/cpu/cpufreq/boosted/ramp_down_step
-      echo $bst_ramp_up_step
       echo $bst_ramp_up_step   > /sys/devices/system/cpu/cpufreq/boosted/ramp_up_step
-      echo $bst_sample_rate_jiffies
       echo $bst_sample_rate_jiffies > /sys/devices/system/cpu/cpufreq/boosted/sample_rate_jiffies
-      echo $bst_sleep_ideal_freq
       echo $bst_sleep_ideal_freq    > /sys/devices/system/cpu/cpufreq/boosted/sleep_ideal_freq
-      echo $bst_sleep_wakeup_freq
       echo $bst_sleep_wakeup_freq   > /sys/devices/system/cpu/cpufreq/boosted/sleep_wakeup_freq
-      echo $bst_up_rate_us
       echo $bst_up_rate_us     > /sys/devices/system/cpu/cpufreq/boosted/up_rate_us
     ;;
     "6" )
@@ -193,7 +180,6 @@ set_scaling()
         insmod $MODULE_DIR/clockfix.ko
       fi
       echo "smartass" > $SCALING_GOVERNOR
-      usleep 500000
       echo $smt_min_cpu_load > /sys/devices/system/cpu/cpu0/cpufreq/smartass/min_cpu_load
       echo $smt_max_cpu_load > /sys/devices/system/cpu/cpu0/cpufreq/smartass/max_cpu_load
       echo $smt_awake_min_freq > /sys/devices/system/cpu/cpu0/cpufreq/smartass/awake_min_freq
@@ -211,7 +197,6 @@ set_scaling()
      * )
     ;;
   esac
-  echo `cat $SCALING_GOVERNOR` set
 }
 
 #############################################################
