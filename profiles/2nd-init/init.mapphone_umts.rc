@@ -78,7 +78,7 @@ on post-fs
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
     chmod 0660 /sys/class/rfkill/rfkill0/state
 # Tweaks
-    write /sys/block/mmcblk0/bdi/read_ahead_kb 512
+    write /sys/block/mmcblk0/bdi/read_ahead_kb 2048
 
     # module made to emulate sammy usb
     # insmod /system/lib/modules/android_usb.ko
