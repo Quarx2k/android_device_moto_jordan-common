@@ -73,6 +73,9 @@ hwui.print_config=choice
 hwui.whitelist=com.android.browser
 hwui.blacklist=
 
+# CpuGovernorService (require ondemand cpu governor)
+dev.pm.dyn_samplingrate=1
+
 #=========================================================================================
 # Note about persist.xxx properties :
 #
