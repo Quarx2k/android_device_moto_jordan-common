@@ -1,5 +1,5 @@
 # Makefile for Android Defy kernel-omap tree
-# "make jordan_modules" in repo root (not here)
+# "make device_modules" in repo root (not here)
 
 
 # list of modules to build :
@@ -12,7 +12,14 @@ obj-m += gpiofix/
 obj-m += clockfix/
 obj-m += logcap/
 obj-m += usbled/
+obj-m += netfilter/
 
+# mb525/mb526 specific
+obj-m += proximity/
+
+# experimental
+#obj-m += ion/
+>>>>>>> 5ed42bf... Real xt_owner.ko qtaguid module backported to our 2.6.32.9
 
 PWD := $(shell pwd)
 
