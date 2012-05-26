@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 CyanogenDefy
+ * Copyright (C) 2011-2012 CyanogenDefy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -14,6 +14,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307, USA
+ *
+ * TODO: set sysfs default credentials to system instead of root
+ *
  */
 
 #include <linux/leds.h>
@@ -36,10 +39,16 @@ SYMSEARCH_DECLARE_FUNCTION_STATIC(int, _cpcap_device_unregister,struct platform_
 SYMSEARCH_DECLARE_FUNCTION_STATIC(int, _cpcap_regacc_write, struct cpcap_device *cpcap, enum cpcap_reg reg, unsigned short value, unsigned short mask);
 SYMSEARCH_DECLARE_FUNCTION_STATIC(int, _cpcap_regacc_read, struct cpcap_device *cpcap, enum cpcap_reg reg, unsigned short *value_ptr);
 
+static void ld_cpcap_usbled_release(struct device *dev)
+{
+	pr_debug("%s\n", __func__);
+}
+
 static struct platform_device cpcap_usbled_device = {
 	.name   = "cpcap_usbled",
 	.id     = -1,
 	.dev.platform_data  = NULL,
+	.dev.release = ld_cpcap_usbled_release,
 };
 
 static void ld_cpcap_usbled_store(struct led_classdev *led_cdev,
@@ -115,6 +124,12 @@ static int ld_cpcap_usbled_remove(struct platform_device *pdev)
 
 	led_classdev_unregister(&info->ld_cpcap_usbled_class_dev);
 
+	if (info != NULL) {
+		info->cpcap = NULL;
+		kfree(info);
+		info = NULL;
+	}
+
 	return 0;
 }
 
@@ -145,12 +160,12 @@ static int __init ld_cpcap_usbled_init(void)
 
 	ret = cpcap_driver_register(&ld_cpcap_usbled_driver);
 	if (ret < 0) {
-		pr_err("%s: init cpcap usb led driver failed: \n", __func__);
+		pr_err("%s: init cpcap usb led driver failed: err %d\n", __func__, ret);
 		return ret;
 	}
 	ret = _cpcap_device_register(&cpcap_usbled_device);
 	if (ret < 0) {
-		pr_err("%s: init cpcap usb led device failed: \n", __func__);
+		pr_err("%s: init cpcap usb led device failed: err %d\n", __func__, ret);
 		return ret;
 	}
 
@@ -169,4 +184,5 @@ module_exit(ld_cpcap_usbled_exit);
 
 MODULE_DESCRIPTION("USB Charge LED Driver");
 MODULE_AUTHOR("Tanguy Pruvot, CyanogenDefy");
+MODULE_VERSION("1.1");
 MODULE_LICENSE("GPL");
