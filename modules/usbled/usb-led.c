@@ -14,9 +14,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307, USA
- *
- * TODO: set sysfs default credentials to system instead of root
- *
  */
 
 #include <linux/leds.h>
@@ -24,6 +21,8 @@
 #include <linux/platform_device.h>
 #include <linux/spi/cpcap.h>
 #include <linux/spi/cpcap-regbits.h>
+#include <linux/sysfs.h>
+
 #include "../symsearch/symsearch.h"
 
 #define SYS_LD_USBLED_DEV "usb"
@@ -114,7 +113,15 @@ static int ld_cpcap_usbled_probe(struct platform_device *pdev)
 		pr_err("%s: Register led class failed: \n", __func__);
 		kfree(info);
 		return ret;
+	} else {
+		/* update sysfs attributes to allow changes by all */
+		struct device *dev = info->ld_cpcap_usbled_class_dev.dev;
+		if (dev) {
+			struct attribute attr = { .name="brightness" };
+			ret = sysfs_chmod_file(&dev->kobj, &attr, 0666);
+		}
 	}
+
 	return ret;
 }
 
@@ -127,7 +134,6 @@ static int ld_cpcap_usbled_remove(struct platform_device *pdev)
 	if (info != NULL) {
 		info->cpcap = NULL;
 		kfree(info);
-		info = NULL;
 	}
 
 	return 0;
@@ -184,5 +190,5 @@ module_exit(ld_cpcap_usbled_exit);
 
 MODULE_DESCRIPTION("USB Charge LED Driver");
 MODULE_AUTHOR("Tanguy Pruvot, CyanogenDefy");
-MODULE_VERSION("1.1");
+MODULE_VERSION("1.2");
 MODULE_LICENSE("GPL");
