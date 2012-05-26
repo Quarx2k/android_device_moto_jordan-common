@@ -15,7 +15,6 @@
 #include <linux/spinlock_types.h>
 #include <linux/workqueue.h>
 
-#undef XT_SOCKET_HAVE_IPV6
 #define rtnl_link_stats64 net_device_stats
 
 #ifndef _LINUX_ANDROID_AID_H
@@ -356,15 +355,23 @@ static inline long __must_check IS_ERR_OR_NULL(const void *ptr)
 	return !ptr || IS_ERR_VALUE((unsigned long)ptr);
 }
 
+/*----------------------------------------------*/
+
 #ifdef TAG
+
+/* TAG is defined before the includes only in main module file */
 unsigned int qtaguid_debug_mask = DEFAULT_DEBUG_MASK;
 unsigned int qtaguid_get_debug_mask(void) {
 	return qtaguid_debug_mask;
 }
 EXPORT_SYMBOL(qtaguid_get_debug_mask);
+
 #else
+
 extern unsigned int qtaguid_get_debug_mask(void);
-#endif
+#define qtaguid_debug_mask qtaguid_get_debug_mask()
+
+#endif /* TAG */
 
 /*----------------------------------------------*/
 #endif  /* ifndef __XT_QTAGUID_INTERNAL_H__ */

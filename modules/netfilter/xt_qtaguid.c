@@ -15,7 +15,6 @@
 #define DEBUG
 #define TAG "qtaguid"
 
-#include <linux/types.h>
 #include "atomic.h"
 
 #include <linux/module.h>
@@ -25,7 +24,6 @@
 #include <linux/file.h>
 #include <linux/inetdevice.h>
 #include <linux/netfilter/x_tables.h>
-//#include <linux/netfilter/xt_qtaguid.h>
 #include <linux/skbuff.h>
 #include <linux/miscdevice.h>
 #include <linux/workqueue.h>
@@ -34,24 +32,17 @@
 #include <net/tcp.h>
 #include <net/udp.h>
 
-/* TODO: We dont have all the ip6_tables in our kernel (ipv6_find_hdr) */
-#include <linux/netfilter_ipv6/ip6_tables.h>
-
 #include <linux/netfilter/xt_socket.h>
 #include "xt_qtaguid_internal.h"
 #include "xt_qtaguid_print.h"
 
-
+/* Compat */
 #define pr_warn_once pr_warning
-#define xt_action_param xt_match_param
-#define xt_socket_put_sk(sk) if (sk != NULL) sock_put(sk);
+#define xt_socket_put_sk(sk) qtaguid_put_sk(sk)
 
-/*
- * We only use the xt_socket funcs within a similar context to avoid unexpected
- * return values.
- */
-#define XT_SOCKET_SUPPORTED_HOOKS \
-	((1 << NF_INET_PRE_ROUTING) | (1 << NF_INET_LOCAL_IN))
+/* in a separate sockets file */
+struct sock *qtaguid_find_sk(const struct sk_buff *skb, const struct xt_match_param *par);
+void qtaguid_put_sk(struct sock *sk);
 
 
 static const char *module_procdirname = "xt_qtaguid";
@@ -1505,74 +1496,9 @@ err:
 	return err;
 }
 
-/* static struct sock * qtaguid_find_sk(const struct sk_buff *skb, struct xt_action_param *par) */
-static struct sock *qtaguid_find_sk(const struct sk_buff *skb, const struct xt_match_param *par)
-{
-	const struct iphdr *iph = NULL;
-	struct ipv6hdr *iph6 = NULL;
-	struct udphdr _hdr, *hp;
-	int tproto = 0, thoff;
-	struct sock *sk = NULL;
-	unsigned int hook_type = (1 << par->hooknum);
-
-	MT_DEBUG(TAG": find_sk(skb=%p) hooknum=%d family=%d\n", skb,
-		 par->hooknum, par->family);
-
-	/*
-	 * Let's not abuse the the xt_socket_get*_sk(), or else it will
-	 * return garbage SKs.
-	 */
-	if (!(hook_type & XT_SOCKET_SUPPORTED_HOOKS))
-		return NULL;
-
-	switch (par->family) {
-	case NFPROTO_IPV4:
-		/* sk = xt_socket_get4_sk(skb, par); */
-		iph = ip_hdr(skb);
-		if (iph->protocol == IPPROTO_UDP || iph->protocol == IPPROTO_TCP) {
-			hp = skb_header_pointer(skb, ip_hdrlen(skb), sizeof(_hdr), &_hdr);
-			pr_info(TAG": IPV4(%u) packet hdr=%p\n", par->family, hp);
-		}
-		break;
-	case NFPROTO_IPV6:
-		/* sk = xt_socket_get6_sk(skb, par); */
-		iph6 = ipv6_hdr(skb);
-		//TODO: ipv6_find_tlv is available, but not ipv6_find_hdr
-		//tproto = ipv6_find_hdr(skb, &thoff, -1, NULL);
-		if (tproto == IPPROTO_UDP || tproto == IPPROTO_TCP) {
-			hp = skb_header_pointer(skb, thoff, sizeof(_hdr), &_hdr);
-
-		/*	saddr = &iph6->saddr;
-			sport = hp->source;
-			daddr = &iph6->daddr;
-			dport = hp->dest;
-		*/
-			pr_info(TAG": IPV6(%u) packet hdr=%p\n", par->family, iph6);
-		}
-		break;
-	default:
-		pr_warning(TAG": unknown protocol %u\n", par->family);
-	}
-
-	/*
-	 * Seems to be issues on the file ptr for TCP_TIME_WAIT SKs.
-	 * http://kerneltrap.org/mailarchive/linux-netdev/2010/10/21/6287959
-	 * Not fixed in 3.0-r3 :(
-	 */
-	if (sk) {
-		MT_DEBUG(TAG": %p->sk_proto=%u "
-			 "->sk_state=%d\n", sk, sk->sk_protocol, sk->sk_state);
-		if (sk->sk_state  == TCP_TIME_WAIT) {
-			xt_socket_put_sk(sk);
-			sk = NULL;
-		}
-	}
-	return sk;
-}
-
 static void account_for_uid(const struct sk_buff *skb,
 			    struct sock *alternate_sk, uid_t uid,
-			    const struct xt_action_param *par)
+			    const struct xt_match_param *par)
 {
 	const struct net_device *el_dev;
 
@@ -1608,7 +1534,6 @@ static void account_for_uid(const struct sk_buff *skb,
 	}
 }
 
-/* static bool qtaguid_mt(const struct sk_buff *skb, struct xt_action_param *par) */
 static bool qtaguid_mt(const struct sk_buff *skb, const struct xt_match_param *par)
 {
 	const struct xt_qtaguid_match_info *info = par->matchinfo;
@@ -2816,7 +2741,7 @@ MODULE_AUTHOR("jpa <jpa@google.com>");
 MODULE_AUTHOR("Backported-by: Tanguy Pruvot <tpruvot@github>");
 MODULE_DESCRIPTION("Xtables: socket owner+tag matching and associated stats");
 MODULE_LICENSE("GPL");
-MODULE_VERSION("1.0");
+MODULE_VERSION("1.1");
 MODULE_ALIAS("ipt_owner");
 MODULE_ALIAS("ip6t_owner");
 MODULE_ALIAS("ipt_qtaguid");

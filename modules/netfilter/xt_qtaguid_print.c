@@ -18,7 +18,6 @@
 
 #define DEBUG
 
-#include <linux/types.h>
 #include "atomic.h"
 
 #include <linux/fs.h>
@@ -32,8 +31,6 @@
 #include "xt_qtaguid_print.h"
 
 #ifdef DDEBUG
-
-#define qtaguid_debug_mask qtaguid_get_debug_mask()
 
 static void _bug_on_err_or_null(void *ptr)
 {
