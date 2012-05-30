@@ -54,6 +54,12 @@ public class SettingsActivity extends PreferenceActivity
     private CheckBoxPreference mLtoDownloadWifiOnlyPref;
     private Preference mLtoDownloadNowPref;
 
+    private CheckBoxPreference mLtoDownloadEnabledPref;
+    private ListPreference mLtoDownloadIntervalPref;
+    private ListPreference mLtoDownloadFilePref;
+    private CheckBoxPreference mLtoDownloadWifiOnlyPref;
+    private Preference mLtoDownloadNowPref;
+
     private static final String PROP_CHARGE_LED_MODE = "persist.sys.charge_led";
     private static final String PROP_TOUCH_POINTS = "persist.sys.multitouch";
     private static final String PROP_KINETO_ENABLED = "persist.sys.kineto.enable";
