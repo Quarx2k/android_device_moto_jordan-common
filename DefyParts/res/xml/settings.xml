@@ -66,4 +66,28 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory android:key="lto_download"
+                        android:title="@string/lto_download_title">
+
+        <CheckBoxPreference android:key="lto_download_enabled"
+                            android:title="@string/lto_download_enabled_title"
+                            android:summary="@string/lto_download_enabled_summary" />
+
+        <ListPreference android:key="lto_download_interval"
+                        android:dependency="lto_download_enabled"
+                        android:title="@string/lto_download_interval_title"
+                        android:entries="@array/lto_download_interval_entries"
+                        android:entryValues="@array/lto_download_interval_values"
+                        android:defaultValue="259200" />
+
+        <CheckBoxPreference android:key="lto_download_wifi_only"
+                            android:dependency="lto_download_enabled"
+                            android:title="@string/lto_download_wifi_only_title"
+                            android:summary="@string/lto_download_wifi_only_summary"
+                            android:defaultValue="true" />
+
+        <Preference android:key="lto_download_now"
+                    android:title="@string/lto_download_now" />
+
+    </PreferenceCategory>
 </PreferenceScreen>
