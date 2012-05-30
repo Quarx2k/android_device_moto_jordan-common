@@ -57,6 +57,11 @@ public class LtoDownloadService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (mTask != null && mTask.getStatus() != AsyncTask.Status.FINISHED) {
+            if (LOGV) Log.v(TAG, "LTO download is still active, not starting new download");
+            return START_REDELIVER_INTENT;
+        }
+
         boolean forceDownload = intent.getBooleanExtra(EXTRA_FORCE_DOWNLOAD, false);
         if (!shouldDownload(forceDownload)) {
             Log.d(TAG, "Service started, but shouldn't download ... stopping");
@@ -84,11 +89,6 @@ public class LtoDownloadService extends Service {
     }
 
     private boolean shouldDownload(boolean forceDownload) {
-        if (mTask != null && mTask.getStatus() != AsyncTask.Status.FINISHED) {
-            if (LOGV) Log.v(TAG, "LTO download is still active, not starting new download");
-            return false;
-        }
-
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo info = cm.getActiveNetworkInfo();
