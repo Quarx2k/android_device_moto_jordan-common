@@ -1,6 +1,6 @@
 /*
-	Motorola Milestone overclock module
-	version 1.4.8 - 2011-03-20
+	Motorola OMAP3 overclock module
+	version 1.4.9 - 2011-03-20
 	by Tiago Sousa <mirage@kaotik.org>
 	License: GNU GPLv2
 	<http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
@@ -10,6 +10,9 @@
 
 	Changelog:
 
+	version 1.4.9 - 2012-05-31 (CyanogenDefy)
+	- printk level tuneup, add Defy in Description
+	  restore original max rate/vsel on module unload
 	version 1.4.8 - 2011-03-20
 	- build process for motorola milestone 2.2
 	version 1.4.7 - 2011-01-16
@@ -162,8 +165,8 @@
 #endif
 
 #define DRIVER_AUTHOR "Tiago Sousa <mirage@kaotik.org>"
-#define DRIVER_DESCRIPTION "Motorola Milestone/Droid/DroidX CPU overclocking"
-#define DRIVER_VERSION "1.4.8"
+#define DRIVER_DESCRIPTION "Motorola Milestone/Defy/Droid/DroidX CPU overclocking"
+#define DRIVER_VERSION "1.4.9"
 
 #ifdef OMAP36XX
 #define DRIVER_DEFAULT_RATE 1000000
@@ -174,16 +177,24 @@
 #endif
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
+MODULE_AUTHOR("CyanogenDefy");
+#ifdef SMARTREFLEX
+MODULE_DESCRIPTION("With SmartReflex support");
+#endif
 MODULE_DESCRIPTION(DRIVER_DESCRIPTION);
 MODULE_VERSION(DRIVER_VERSION);
 MODULE_LICENSE("GPL");
 
 static uint max_rate = DRIVER_DEFAULT_RATE;
 static uint max_vsel = DRIVER_DEFAULT_VSEL;
+static uint bak_rate = 0;
+static uint bak_vsel = 0;
 static uint mpu_opps_addr = 0;
 static uint cpufreq_stats_table_addr = 0;
 static uint omap2_clk_init_cpufreq_table_addr = 0;
 static uint cpufreq_stats_update_addr = 0;
+
+struct proc_dir_entry *proc_root = NULL;
 
 module_param(max_rate, uint, 0444);
 module_param(max_vsel, uint, 0444);
@@ -223,7 +234,7 @@ static struct cpufreq_policy *policy;
 static struct clk *mpu_clk;
 
 #define BUF_SIZE PAGE_SIZE
-static char *buf;
+static char *buf = NULL;
 
 #ifdef LOOKUP
 extern unsigned long lookup_symbol_address(const char *name);
@@ -231,22 +242,29 @@ extern unsigned long lookup_symbol_address(const char *name);
 
 static void error_mpu_opps(void)
 {
-	printk(KERN_INFO "overclock: mpu_opps address not configured, aborting action\n");
+	pr_err("overclock: mpu_opps address not configured, aborting action\n");
 }
 
 static void error_cpufreq_stats_table(void)
 {
-	printk(KERN_INFO "overclock: cpufreq_stats_table address not configured, aborting action\n");
+	pr_err("overclock: cpufreq_stats_table address not configured, aborting action\n");
 }
 
 static void set_max_speed(void)
 {
-	printk(KERN_INFO "overclock: setting max_rate %u and max_vsel %u\n",
+	pr_info("overclock: setting max_rate %u and max_vsel %u\n",
 		max_rate, max_vsel);
 	if(!my_mpu_opps) {
 		error_mpu_opps();
 		return;
 	}
+
+	if (!bak_vsel) {
+		/* save original config for module unload */
+		bak_vsel = my_mpu_opps[MAX_VDD1_OPP].vsel;
+		bak_rate = freq_table[0].frequency;
+	}
+
 	freq_table[0].frequency = policy->max = policy->cpuinfo.max_freq =
 		policy->user_policy.max = max_rate;
 	if(cpufreq_stats_table)	/* can overclock without it */
@@ -270,7 +288,7 @@ static void omap2_find_addr(void)
 			&& func[i+2] == 0x9f) { /* [pc, */
 			addr = (void *)((uint)func)+i+8+func[i];
 			mpu_opps_addr = *addr;
-			printk (KERN_INFO "overclock: found mpu_opps_addr at 0x%x\n",
+			pr_info("overclock: found mpu_opps_addr at 0x%x\n",
 				mpu_opps_addr);
 			break;
 		}
@@ -287,7 +305,7 @@ static void stats_find_addr(void)
 			&& func[i+2] == 0x9f) { /* [pc, */
 			addr = (void *)((uint)func)+i+8+func[i];
 			cpufreq_stats_table_addr = *addr;
-			printk (KERN_INFO "overclock: found cpufreq_stats_table_addr at 0x%x\n",
+			pr_info("overclock: found cpufreq_stats_table_addr at 0x%x\n",
 				cpufreq_stats_table_addr);
 			break;
 		}
@@ -560,7 +578,7 @@ static int proc_freq_table_write(struct file *filp, const char __user *buffer,
 			error_cpufreq_stats_table();
 
 	} else
-		printk(KERN_INFO "overclock: insufficient parameters for freq_table\n");
+		pr_warning("overclock: insufficient parameters for freq_table\n");
 
 	return len;
 }
@@ -615,7 +633,7 @@ static int proc_mpu_opps_write(struct file *filp, const char __user *buffer,
 		my_mpu_opps[index].sr_adjust_vsel = vsel;
 #endif
 	} else
-		printk(KERN_INFO "overclock: insufficient parameters for mpu_opps\n");
+		pr_warning("overclock: insufficient parameters for mpu_opps\n");
 
 	return len;
 }
@@ -637,8 +655,12 @@ static int __init overclock_init(void)
 {
 	struct proc_dir_entry *proc_entry;
 
-	printk(KERN_INFO "overclock: %s version %s\n", DRIVER_DESCRIPTION, DRIVER_VERSION);
-	printk(KERN_INFO "overclock: by %s\n", DRIVER_AUTHOR);
+	pr_info("overclock: %s version %s\n", DRIVER_DESCRIPTION, DRIVER_VERSION);
+
+	buf = (char *)vmalloc(BUF_SIZE);
+	if (!buf) {
+		return -ENOMEM;
+	}
 
 #ifdef LOOKUP
 	if(!omap2_clk_init_cpufreq_table_addr)
@@ -667,9 +689,7 @@ static int __init overclock_init(void)
 	if(max_rate != DRIVER_DEFAULT_RATE || max_vsel != DRIVER_DEFAULT_VSEL)
 		set_max_speed();
 
-	buf = (char *)vmalloc(BUF_SIZE);
-
-	proc_mkdir("overclock", NULL);
+	proc_root = proc_mkdir("overclock", NULL);
 	proc_entry = create_proc_read_entry("overclock/info", 0444, NULL, proc_info_read, NULL);
 	proc_entry = create_proc_read_entry("overclock/max_rate", 0644, NULL, proc_max_rate_read, NULL);
 	proc_entry->write_proc = proc_max_rate_write;
@@ -706,15 +726,19 @@ static void __exit overclock_exit(void)
 	remove_proc_entry("overclock/info", NULL);
 	remove_proc_entry("overclock", NULL);
 
-	vfree(buf);
+	if (buf) vfree(buf);
 
 	if(max_rate != DRIVER_DEFAULT_RATE || max_vsel != DRIVER_DEFAULT_VSEL) {
 		max_rate = DRIVER_DEFAULT_RATE;
 		max_vsel = DRIVER_DEFAULT_VSEL;
+		if (bak_vsel && bak_rate) {
+			max_vsel = bak_vsel;
+			max_rate = bak_rate;
+		}
 		set_max_speed();
 	}
 
-	printk(KERN_INFO "overclock: removed overclocking and unloaded\n");
+	pr_info("overclock: overclocking disabled and module unloaded\n");
 }
 
 module_init(overclock_init);
