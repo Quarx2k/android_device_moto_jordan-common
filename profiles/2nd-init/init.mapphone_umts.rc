@@ -107,8 +107,8 @@ on post-fs-data
     chmod 0770 /pds/bp_nvm
     chmod 0770 /pds/security
     # wifi dirs
-    mkdir /data/misc/wifi/hostapd.sockets 0770 wifi wifi
-    mkdir /data/misc/wifi/sockets 0770 wifi wifi
+    mkdir /data/misc/wifi/hostapd 0770 system wifi
+    mkdir /data/misc/wifi/sockets 0770 system wifi
     mkdir /data/misc/dhcp 0770 dhcp dhcp
     mkdir /data/comm_drv 0770 radio radio
     chown dhcp dhcp /data/misc/dhcp
@@ -289,12 +289,22 @@ service wlan_loader /system/bin/wlan_loader -f /system/etc/wifi/fw_wlan1271.bin 
     class main
     disabled
     oneshot
+service wlan_ap_loader /system/bin/tiap_loader -f /system/etc/wifi/fw_tiwlan_ap.bin -i /system/etc/wifi/tiwlan_ap.ini -e /pds/wifi/nvs_map.bin
+    class main
+    disabled
+    oneshot
+
 service wpa_supplicant /system/bin/wpa_supplicant -Dtiwlan0 -itiwlan0 -c/data/misc/wifi/wpa_supplicant.conf
     class main
     socket wpa_tiwlan0 dgram 660 wifi wifi
     disabled
     oneshot
-service wlan_ap_loader /system/bin/tiap_loader -f /system/etc/wifi/fw_tiwlan_ap.bin -i /system/etc/wifi/tiwlan_ap.ini -e /pds/wifi/nvs_map.bin
+
+service hostapd /system/bin/logwrapper.bin /system/bin/hostapd -d /data/misc/wifi/hostapd.conf
+    class main
+    group wifi system
+    socket netd dgram 660 root wifi
+    socket tiap0 dgram 660 wifi wifi
     disabled
     oneshot
 
