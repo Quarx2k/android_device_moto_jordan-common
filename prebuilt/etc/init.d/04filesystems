@@ -1,0 +1,11 @@
+#!/system/xbin/ash
+#
+# Load cifs and ext4 kernel modules
+
+#insmod /system/lib/modules/slow-work.ko
+busybox insmod /system/lib/modules/nls_utf8.ko
+busybox insmod /system/lib/modules/cifs.ko
+
+busybox insmod /system/lib/modules/jbd2.ko
+busybox insmod /system/lib/modules/ext4.ko
+

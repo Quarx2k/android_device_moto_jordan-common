@@ -27,6 +27,8 @@ em_u32.ko:
 dummy.ko:
 cls_u32.ko:
 cifs.ko: nls_utf8.ko
+ext4.ko: jbd2.ko
+jbd2.ko:
 act_police.ko:
 act_mirred.ko:
 act_gact.ko:
@@ -37,11 +39,11 @@ cpufreq_interactive.ko: symsearch.ko cpufreq_stats.ko
 cpufreq_boosted.ko: symsearch.ko
 cpufreq_conservative.ko:
 sio_iosched.ko:
+ip6_tables.ko:
 xt_owner2:
-xt_quota2:
+xt_quota2: ip6_tables.ko
 xt_multiport.ko:
 camise.ko:
 camera.ko: symsearch.ko camise.ko
-ip6_tables.ko:
 android_usb.ko:
 
