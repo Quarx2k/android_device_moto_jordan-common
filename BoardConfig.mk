@@ -71,7 +71,7 @@ BOARD_HOSTAPD_DRIVER        := true
 BOARD_HOSTAPD_DRIVER_NAME   := wilink
 
 # Netfilter
-BOARD_WITHOUT_IPV6_QUOTA := true
+#BOARD_WITHOUT_IPV6_QUOTA := true
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
