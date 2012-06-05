@@ -8,7 +8,3 @@ ccflags-y += -UDDEBUG
 obj-m  += xt_owner2.o
 
 xt_owner2-objs := xt_qtaguid.o xt_qtaguid_print.o xt_qtaguid_sockets.o
-
-# Previous (stub and migration tests)
-#xt_owner2-objs += xt_qtafake.o xt_qtaguid_print.o
-

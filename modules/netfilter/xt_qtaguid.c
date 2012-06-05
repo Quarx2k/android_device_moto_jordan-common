@@ -37,7 +37,10 @@
 #include "xt_qtaguid_print.h"
 
 /* Compat */
-#define pr_warn_once pr_warning
+#ifndef pr_warn_once
+#define pr_warn_once(fmt, ...) \
+        printk_once(KERN_WARNING pr_fmt(fmt), ##__VA_ARGS__)
+#endif
 #define xt_socket_put_sk(sk) qtaguid_put_sk(sk)
 
 /* in a separate sockets file */
@@ -2148,7 +2151,7 @@ static int ctrl_cmd_tag(const char *input)
 		 */
 		if (IS_ERR_OR_NULL(pqd_entry))
 			pr_warn_once(
-				"qtaguid: %s(): "
+				TAG": %s(): "
 				"User space forgot to open /dev/xt_qtaguid? "
 				"pid=%u tgid=%u uid=%u\n", __func__,
 				current->pid, current->tgid,
@@ -2741,7 +2744,7 @@ MODULE_AUTHOR("jpa <jpa@google.com>");
 MODULE_AUTHOR("Backported-by: Tanguy Pruvot <tpruvot@github>");
 MODULE_DESCRIPTION("Xtables: socket owner+tag matching and associated stats");
 MODULE_LICENSE("GPL");
-MODULE_VERSION("1.1");
+MODULE_VERSION("1.2");
 MODULE_ALIAS("ipt_owner");
 MODULE_ALIAS("ip6t_owner");
 MODULE_ALIAS("ipt_qtaguid");

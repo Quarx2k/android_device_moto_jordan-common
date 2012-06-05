@@ -38,6 +38,10 @@
 #define XT_SOCKET_SUPPORTED_HOOKS \
 	((1 << NF_INET_PRE_ROUTING) | (1 << NF_INET_LOCAL_IN))
 
+#ifndef pr_warn_once
+#define pr_warn_once(fmt, ...) \
+        printk_once(KERN_WARNING pr_fmt(fmt), ##__VA_ARGS__)
+#endif
 
 /*
  * find the offset to specified header or the protocol number of last header
@@ -159,6 +163,8 @@ struct sock *qtaguid_find_sk(const struct sk_buff *skb, const struct xt_match_pa
 		break;
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
 	case NFPROTO_IPV6:
+		MT_DEBUG(TAG": IPv6 packets not tracked yet\n");
+#if 0 // to (deep) check
 		/* sk = xt_socket_get6_sk(skb, par); */
 		iph6 = ipv6_hdr(skb);
 		tproto = qta_ipv6_find_hdr(skb, &thoff, -1, NULL);
@@ -174,10 +180,11 @@ struct sock *qtaguid_find_sk(const struct sk_buff *skb, const struct xt_match_pa
 		} else if (iph->protocol == IPPROTO_UDP) {
 			MT_DEBUG(TAG": IPv6 udp packet not supported\n");
 		}
+#endif
 		break;
 #endif
 	default:
-		pr_warning(TAG": unknown protocol %u\n", par->family);
+		pr_warn_once(TAG": unknown protocol %u\n", par->family);
 	}
 
 	/*
