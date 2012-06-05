@@ -16,6 +16,13 @@ on init
     insmod /system/lib/modules/netmux_linkdriver.ko
     insmod /system/lib/modules/modem_pm_driver.ko
 
+    insmod /system/lib/modules/ip6_tables.ko
+    insmod /system/lib/modules/ip6table_filter.ko
+    insmod /system/lib/modules/ip6table_mangle.ko
+
+    insmod /system/lib/modules/xt_tcpmss.ko
+    insmod /system/lib/modules/xt_TCPMSS.ko
+    insmod /system/lib/modules/iptable_mangle.ko
     insmod /system/lib/modules/xt_multiport.ko
     insmod /system/lib/modules/xt_quota2.ko
     insmod /system/lib/modules/xt_owner2.ko
