@@ -34,10 +34,11 @@ public class LtoDownloadService extends Service {
     private static final String TAG = "LtoDownloadService";
     private static final boolean LOGV = true;
 
-    private static final String LTO_SOURCE_URI = "http://gllto.glpals.com/7day/v2/latest/lto2.dat";
+    private static final String LTO_SOURCE_URI_PATTERN = "http://gllto.glpals.com/%s/v2/latest/lto2.dat";
     private static final File LTO_DESTINATION_FILE = new File("/data/location/lto.dat");
 
     public static final String KEY_ENABLED = "lto_download_enabled";
+    public static final String KEY_FILE_TYPE = "lto_download_file";
     public static final String KEY_INTERVAL = "lto_download_interval";
     public static final String KEY_WIFI_ONLY = "lto_download_wifi_only";
     public static final String KEY_LAST_DOWNLOAD = "last_lto_download";
@@ -51,6 +52,7 @@ public class LtoDownloadService extends Service {
     public static final int STATE_IDLE = 0;
     public static final int STATE_DOWNLOADING = 1;
 
+    private static final String FILE_TYPE_DEFAULT = "7day";
     private static final boolean WIFI_ONLY_DEFAULT = true;
 
     private LtoDownloadTask mTask;
@@ -69,7 +71,11 @@ public class LtoDownloadService extends Service {
             return START_NOT_STICKY;
         }
 
-        mTask = new LtoDownloadTask(LTO_SOURCE_URI, LTO_DESTINATION_FILE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String type = prefs.getString(KEY_FILE_TYPE, FILE_TYPE_DEFAULT);
+        String uri = String.format(LTO_SOURCE_URI_PATTERN, type);
+
+        mTask = new LtoDownloadTask(uri, LTO_DESTINATION_FILE);
         mTask.execute();
 
         return START_REDELIVER_INTENT;

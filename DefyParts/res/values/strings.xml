@@ -77,6 +77,11 @@
     <string name="lto_download_interval_1day">1 day</string>
     <string name="lto_download_interval_3days">3 days</string>
     <string name="lto_download_interval_1week">1 week</string>
+    <string name="lto_download_interval_2weeks">2 weeks</string>
+    <string name="lto_download_interval_1month">1 month</string>
+    <string name="lto_download_file_title">Download file type</string>
+    <string name="lto_download_file_7days">7 days validity</string>
+    <string name="lto_download_file_30days">30 days validity</string>
     <string name="lto_download_wifi_only_title">Wifi only</string>
     <string name="lto_download_wifi_only_summary">Only download assistive data over Wifi connection</string>
     <string name="lto_download_now">Download now</string>

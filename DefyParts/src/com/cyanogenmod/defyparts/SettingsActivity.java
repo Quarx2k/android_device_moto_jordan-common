@@ -44,6 +44,7 @@ public class SettingsActivity extends PreferenceActivity
 
     private CheckBoxPreference mLtoDownloadEnabledPref;
     private ListPreference mLtoDownloadIntervalPref;
+    private ListPreference mLtoDownloadFilePref;
     private CheckBoxPreference mLtoDownloadWifiOnlyPref;
     private Preference mLtoDownloadNowPref;
 
@@ -95,6 +96,8 @@ public class SettingsActivity extends PreferenceActivity
         mLtoDownloadEnabledPref.setOnPreferenceChangeListener(this);
         mLtoDownloadIntervalPref = (ListPreference) ltoSettings.findPreference("lto_download_interval");
         mLtoDownloadIntervalPref.setOnPreferenceChangeListener(this);
+        mLtoDownloadFilePref = (ListPreference) ltoSettings.findPreference("lto_download_file");
+        mLtoDownloadFilePref.setOnPreferenceChangeListener(this);
         mLtoDownloadWifiOnlyPref = (CheckBoxPreference) ltoSettings.findPreference("lto_download_wifi_only");
         mLtoDownloadWifiOnlyPref.setOnPreferenceChangeListener(this);
         mLtoDownloadNowPref = ltoSettings.findPreference("lto_download_now");
@@ -181,6 +184,7 @@ public class SettingsActivity extends PreferenceActivity
             showRebootPrompt();
         } else if (preference == mLtoDownloadEnabledPref
                 || preference == mLtoDownloadIntervalPref
+                || preference == mLtoDownloadFilePref
                 || preference == mLtoDownloadWifiOnlyPref) {
             invokeLtoDownloadService(false);
         }

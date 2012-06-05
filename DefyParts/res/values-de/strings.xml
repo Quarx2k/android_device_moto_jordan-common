@@ -76,6 +76,11 @@
     <string name="lto_download_interval_1day">1 Tag</string>
     <string name="lto_download_interval_3days">3 Tage</string>
     <string name="lto_download_interval_1week">1 Woche</string>
+    <string name="lto_download_interval_2weeks">2 Wochen</string>
+    <string name="lto_download_interval_1month">1 Monat</string>
+    <string name="lto_download_file_title">Datei-Typ</string>
+    <string name="lto_download_file_7days">7 Tage Gültigkeit</string>
+    <string name="lto_download_file_30days">30 Tage Gültigkeit</string>
     <string name="lto_download_wifi_only_title">Nur über WLAN</string>
     <string name="lto_download_wifi_only_summary">AGPS-Daten nur via WLAN downloaden</string>
     <string name="lto_download_now">Jetzt downloaden</string>

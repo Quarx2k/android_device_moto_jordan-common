@@ -161,6 +161,8 @@
         <item>@string/lto_download_interval_1day</item>
         <item>@string/lto_download_interval_3days</item>
         <item>@string/lto_download_interval_1week</item>
+        <item>@string/lto_download_interval_2weeks</item>
+        <item>@string/lto_download_interval_1month</item>
     </string-array>
 
     <string-array name="lto_download_interval_values" translatable="false">
@@ -168,5 +170,17 @@
         <item>86400</item>
         <item>259200</item>
         <item>604800</item>
+        <item>1209600</item>
+        <item>2592000</item>
+    </string-array>
+
+    <string-array name="lto_download_file_entries" translatable="false">
+        <item>@string/lto_download_file_7days</item>
+        <item>@string/lto_download_file_30days</item>
+    </string-array>
+
+    <string-array name="lto_download_file_values" translatable="false">
+        <item>7day</item>
+        <item>30day</item>
     </string-array>
 </resources>
