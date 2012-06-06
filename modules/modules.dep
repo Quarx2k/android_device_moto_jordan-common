@@ -39,10 +39,17 @@ cpufreq_interactive.ko: symsearch.ko cpufreq_stats.ko
 cpufreq_boosted.ko: symsearch.ko
 cpufreq_conservative.ko:
 sio_iosched.ko:
+iptable_mangle.ko:
+ip6table_mangle.ko: ip6_tables.ko
+ip6table_filter.ko: ip6_tables.ko
 ip6_tables.ko:
 xt_owner2:
-xt_quota2: ip6_tables.ko
+xt_quota2:
 xt_multiport.ko:
+ip6t_REJECT.ko:
+ip6t_LOG.ko: ip6_tables.ko
+xt_tcpmss.ko:
+xt_TCPMSS.ko:
 camise.ko:
 camera.ko: symsearch.ko camise.ko
 android_usb.ko:

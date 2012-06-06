@@ -19,6 +19,8 @@ on init
     insmod /system/lib/modules/ip6_tables.ko
     insmod /system/lib/modules/ip6table_filter.ko
     insmod /system/lib/modules/ip6table_mangle.ko
+    insmod /system/lib/modules/ip6t_REJECT.ko
+    insmod /system/lib/modules/ip6t_LOG.ko
 
     insmod /system/lib/modules/xt_tcpmss.ko
     insmod /system/lib/modules/xt_TCPMSS.ko
