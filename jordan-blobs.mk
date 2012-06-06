@@ -42,8 +42,8 @@ PRODUCT_COPY_FILES += \
 	${device_path}/media_profiles.xml:system/etc/media_profiles.xml \
 	${device_path}/modules/modules.alias:system/lib/modules/modules.alias \
 	${device_path}/modules/modules.dep:system/lib/modules/modules.dep \
-	$(DEVICE_PREBUILT)/etc/init.d/00baseband:system/etc/init.d/00baseband \
 	$(DEVICE_PREBUILT)/etc/init.d/01sysctl:system/etc/init.d/01sysctl \
+	$(DEVICE_PREBUILT)/etc/init.d/02baseband:system/etc/init.d/02baseband \
 	$(DEVICE_PREBUILT)/etc/init.d/03firstboot:system/etc/init.d/03firstboot \
 	$(DEVICE_PREBUILT)/etc/init.d/04filesystems:system/etc/init.d/04filesystems \
 	$(DEVICE_PREBUILT)/etc/init.d/05mountsd:system/etc/init.d/05mountsd \
