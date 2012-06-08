@@ -72,6 +72,7 @@
 /dev/i2c-3                0660   media      camera
 /dev/pvrsrvkm             0666   system     graphics
 /dev/netmon               0660   root       radio
+/dev/rfkill               0660   wifi       wifi
 /dev/block/mmcblk0p1      0660   root       sdcard_rw
 /dev/block/misc           0660   root       misc
 /dev/block/mmcblk1p1      0660   root       system
