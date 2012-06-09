@@ -13,9 +13,6 @@ rm -f $REPACK/ota/system/app/VideoEditor.apk
 # Remove big videos
 rm -f $REPACK/ota/system/media/video/*.480p.mp4
 
-# Apk required, (forbidden in product copy files in ics)
-cp -f $VENDOR_TOP/app/* $REPACK/ota/system/app/
-
 # these scripts are not required or bad
 rm -f $REPACK/ota/system/etc/init.d/04modules
 
@@ -37,7 +34,6 @@ cp -f $DEVICE_OUT/root/init $REPACK/ota/system/bootmenu/2nd-init/init
 
 # Use a prebuilt adbd configured for root access instead of normal one, for dev purpose
 cp -f $REPACK/ota/system/bootmenu/binary/adbd $REPACK/ota/system/bin/adbd
-#cp -f $DEVICE_OUT/root/sbin/adbd $REPACK/ota/system/bin/adbd
 
 cp -f $DEVICE_TOP/bootmenu/binary/2nd-init $REPACK/ota/system/bootmenu/binary/2nd-init
 

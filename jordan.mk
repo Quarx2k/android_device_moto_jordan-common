@@ -101,10 +101,8 @@ PRODUCT_PACKAGES += VisualizationWallpapers librs_jni
 # Add DroidSSHd (dropbear) Management App - tpruvot/android_external_droidsshd @ github
 PRODUCT_PACKAGES += DroidSSHd dropbear dropbearkey sftp-server scp ssh rsync
 
-
 # CM9 apps
-PRODUCT_PACKAGES += FileManager Torch
-PRODUCT_PACKAGES += Androidian Apollo
+PRODUCT_PACKAGES += FileManager Torch Apollo
 
 # Experimental TI OpenLink
 PRODUCT_PACKAGES += libnl_2 iw
@@ -127,8 +125,6 @@ PRODUCT_COPY_FILES += \
 # Blobs and bootmenu stuff
 $(call inherit-product, device/motorola/jordan_plus/jordan-blobs.mk)
 $(call inherit-product, device/motorola/jordan_plus/bootmenu/bootmenu.mk)
-
-######################################################################################################################################
 
 $(call inherit-product, build/target/product/full_base.mk)
 

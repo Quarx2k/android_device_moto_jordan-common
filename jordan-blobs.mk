@@ -16,10 +16,6 @@ device_path = device/motorola/jordan_plus
 
 DEVICE_PREBUILT := ${device_path}/prebuilt
 
-# Temporary cm9 bootanimation
-PRODUCT_COPY_FILES += \
-	$(DEVICE_PREBUILT)/bootanimation.zip:system/media/bootanimation.zip
-
 PRODUCT_COPY_FILES += \
 	$(DEVICE_PREBUILT)/etc/terminfo/l/linux:system/etc/terminfo/l/linux \
 	$(DEVICE_PREBUILT)/etc/terminfo/x/xterm:system/etc/terminfo/x/xterm \
