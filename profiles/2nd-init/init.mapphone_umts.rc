@@ -309,7 +309,7 @@ service wpa_supplicant /system/bin/wpa_supplicant -Dtiwlan0 -itiwlan0 -c/data/mi
     disabled
     oneshot
 
-service hostapd /system/bin/logwrapper.bin /system/bin/hostapd -d /data/misc/wifi/hostapd.conf
+service hostapd /system/bin/hostapd -d /data/misc/wifi/hostapd.conf
     class main
     group wifi system inet net_admin
     socket wpa_tiap0 dgram 660 wifi wifi

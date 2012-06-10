@@ -69,6 +69,7 @@ BOARD_HOSTAPD_SERVICE_NAME  := hostapd
 BOARD_HOSTAPD_NO_ENTROPY    := true
 BOARD_HOSTAPD_DRIVER        := true
 BOARD_HOSTAPD_DRIVER_NAME   := wilink
+BOARD_HOSTAPD_TIAP_ROOT     := system/wlan/ti/WiLink_AP
 
 # Netfilter
 #BOARD_WITHOUT_IPV6_QUOTA := true
