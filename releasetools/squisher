@@ -183,7 +183,7 @@ OUTFILE=$OUT/cm-$MODVERSION-signed.zip
 
 if [ -n "$CM_NIGHTLY_BOOT" ]; then
 	MODVERSION=`echo $MODVERSION | sed -r 's/NIGHTLY/BOOT'$CM_NIGHTLY_BOOT'/'`
-	OUTFILE=$OUT/cm$MODVERSION.zip
+	OUTFILE=$OUT/CM$MODVERSION.zip
 fi
 
 # Pack it up and sign
