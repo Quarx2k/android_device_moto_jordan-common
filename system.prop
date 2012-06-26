@@ -72,7 +72,7 @@ hwui.print_config=choice
 # disable hw renderer by default for stability, except for browser
 # Limited to 91 chars ! You can also use "*" and place files named
 # by process names in /data/local/hwui.allow/ (or use HWA Selector app)
-hwui.whitelist=com.android.browser
+hwui.whitelist=
 hwui.blacklist=0
 
 # CpuGovernorService (require ondemand cpu governor)
