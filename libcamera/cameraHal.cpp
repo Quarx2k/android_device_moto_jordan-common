@@ -458,7 +458,7 @@ static int camera_set_preview_window(struct camera_device * device, struct previ
     LOGD("%s: preview format %s", __FUNCTION__, previewFormat);
     lcdev->previewFormat = Overlay::getFormatFromString(previewFormat);
 
-    if (window->set_usage(window, GRALLOC_USAGE_SW_WRITE_OFTEN | GRALLOC_USAGE_SW_READ_OFTEN)) {
+    if (window->set_usage(window, GRALLOC_USAGE_SW_WRITE_OFTEN | GRALLOC_USAGE_HW_RENDER)) {
         LOGE("%s: could not set usage on gralloc buffer", __FUNCTION__);
         return -1;
     }
