@@ -13,7 +13,7 @@ on init
 
     #PVR Drivers
     insmod /system/lib/modules/symsearch.ko
-    insmod /system/lib/modules/pvr-off.ko
+    insmod /system/lib/modules/pvroff.ko
     write /sys/devices/platform/omapdss/overlay0/enabled 0
     write /sys/devices/platform/omapfb/graphics/fb0/size 4194304
     write /sys/devices/platform/omapdss/overlay0/enabled 1
