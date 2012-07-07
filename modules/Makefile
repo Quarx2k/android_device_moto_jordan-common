@@ -16,10 +16,10 @@ obj-m += netfilter/
 
 # mb525/mb526 specific
 obj-m += proximity/
-
+obj-m += pvr/
 # experimental
 #obj-m += ion/
->>>>>>> 5ed42bf... Real xt_owner.ko qtaguid module backported to our 2.6.32.9
+
 
 PWD := $(shell pwd)
 
@@ -35,7 +35,7 @@ clean:
 	@cd $(PWD) && git checkout *.ko
 
 
-EXTRA_CFLAGS += -I$(KERNEL_DIR) -DUTS_RELEASE=\\\"2.6.32.9\\\"
+EXTRA_CFLAGS += -I$(KERNEL_DIR) -DUTS_RELEASE=\\\"2.6.32.9\\\" -DDEFYPLUS
 
 .PHONY: all
 #######################################################################################
