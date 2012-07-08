@@ -36,7 +36,7 @@
     <storage android:mountPoint="/mnt/sdcard"
              android:storageDescription="@string/storage_internal"
              android:primary="true"
-             android:emulated="true"
+             android:emulated="false"
              android:mtpReserve="100" 
              android:allowMassStorage="true" />
 </StorageList>
