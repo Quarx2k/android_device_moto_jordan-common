@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-device_path = device/motorola/jordan_plus
+device_path = device/motorola/defy_common
 
 DEVICE_PREBUILT := ${device_path}/prebuilt
 
@@ -59,10 +59,10 @@ PRODUCT_COPY_FILES += \
 	$(DEVICE_PREBUILT)/etc/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
 	$(DEVICE_PREBUILT)/etc/gpsconfig.xml:system/etc/gpsconfig.xml \
 	$(DEVICE_PREBUILT)/etc/location.cfg:system/etc/location.cfg \
-	device/motorola/jordan_plus/vold.fstab:system/etc/vold.fstab \
-	device/motorola/jordan_plus/media_profiles.xml:system/etc/media_profiles.xml \
-	device/motorola/jordan_plus/modules/modules.alias:system/lib/modules/modules.alias \
-	device/motorola/jordan_plus/modules/modules.dep:system/lib/modules/modules.dep \
+	device/motorola/defy_common/vold.fstab:system/etc/vold.fstab \
+	device/motorola/defy_common/media_profiles.xml:system/etc/media_profiles.xml \
+	device/motorola/defy_common/modules/modules.alias:system/lib/modules/modules.alias \
+	device/motorola/defy_common/modules/modules.dep:system/lib/modules/modules.dep \
 
 # New CM9 backup list system (addon.d)
 PRODUCT_COPY_FILES += \

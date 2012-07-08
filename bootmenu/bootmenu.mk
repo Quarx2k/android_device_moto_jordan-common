@@ -1,5 +1,5 @@
 # Required tools and blobs for bootmenu
-bm_device = device/motorola/jordan_plus
+bm_device = device/motorola/defy_common
 
 PRODUCT_PACKAGES += \
 	bootmenu \
@@ -99,11 +99,4 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/recovery/sbin/mke2fs:system/bootmenu/recovery/sbin/mke2fs \
 	${bm_device}/bootmenu/recovery/recovery.fstab:system/bootmenu/recovery/recovery.fstab \
 
-# recovery tools
-PRODUCT_COPY_FILES += \
-	out/target/product/jordan_plus/recovery/root/sbin/tune2fs:system/bootmenu/recovery/sbin/tune2fs \
-	out/target/product/jordan_plus/recovery/root/sbin/e2fsck:system/bootmenu/recovery/sbin/e2fsck \
-	out/target/product/jordan_plus/recovery/root/sbin/tune2fs:system/bootmenu/recovery/sbin/tune2fs \
-	out/target/product/jordan_plus/recovery/root/sbin/mke2fs:system/bootmenu/recovery/sbin/mke2fs.bin \
-	out/target/product/jordan_plus/recovery/root/sbin/pigz:system/bootmenu/recovery/sbin/pigz \
 

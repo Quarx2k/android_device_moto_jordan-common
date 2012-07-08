@@ -24,12 +24,12 @@
 # Inherit from those products. Most specific first.
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 $(call inherit-product, frameworks/base/build/phone-hdpi-512-dalvik-heap.mk)
-$(call inherit-product, device/motorola/jordan_plus/jordan.mk)
+$(call inherit-product, device/motorola/defy_common/jordan.mk)
 # Also get non-open-source files if available
-$(call inherit-product-if-exists, vendor/motorola/jordan_plus/jordan-vendor.mk)
+#$(call inherit-product, vendor/motorola/jordan_common/jordan-vendor.mk)
 
-PRODUCT_NAME := full_jordan_plus
-PRODUCT_DEVICE := jordan_plus
+PRODUCT_NAME := full_jordan
+PRODUCT_DEVICE := jordan
 PRODUCT_BRAND := Android
-PRODUCT_MODEL := MB526
+PRODUCT_MODEL := MB52x
 PRODUCT_MANUFACTURER := motorola

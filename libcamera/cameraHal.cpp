@@ -228,7 +228,7 @@ static void processPreviewData(char *frame, size_t size, legacy_camera_device *l
 
     do {
         ret = lcdev->gralloc->lock(lcdev->gralloc, *bufHandle,
-                                   GRALLOC_USAGE_SW_WRITE_OFTEN | GRALLOC_USAGE_HW_TEXTURE | GRALLOC_USAGE_HW_RENDER,
+                                    GRALLOC_USAGE_SW_WRITE_OFTEN | GRALLOC_USAGE_HW_TEXTURE | GRALLOC_USAGE_HW_RENDER,
                                    0, 0, lcdev->previewWidth, lcdev->previewHeight, &vaddr);
         tries--;
         if (ret) {
@@ -330,7 +330,7 @@ static void dataTimestampCallback(nsecs_t timestamp, int32_t msgType, const sp<I
 
     LOGV("%s: timestamp:%lld msg_type:%d user:%p",
             __FUNCTION__, timestamp /1000, msgType, user);
-    int framesSent = lcdev->sentFrames.size();
+    unsigned int framesSent = lcdev->sentFrames.size();
     if (framesSent > PREVIEW_THROTTLE_THRESHOLD) {
         mThrottlePreview = true;
         LOGV("%s: preview throttled (fr. queued/throttle thres.: %d/%d)",
