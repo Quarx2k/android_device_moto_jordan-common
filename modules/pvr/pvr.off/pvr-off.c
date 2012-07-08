@@ -25,6 +25,7 @@
 #include <linux/fs.h>
 #include <linux/io.h>
 #include <linux/module.h>
+#include <linux/moduleparam.h>
 #include <linux/platform_device.h>
 #include <linux/smp_lock.h>
 #include <linux/omapfb.h>
@@ -36,17 +37,13 @@
 #include "syscommon.h"
 #include "symsearch.h"
 
-#ifndef DEFYPLUS
-# define PVR_DEV_MAJOR 252
-#else
-# define PVR_DEV_MAJOR 246
-#endif
-
 #define TAG "PVR-off"
 #include "hook.h"
 
 static bool hooked = false;
 static bool job_is_done = false;
+static short major_number = -1;
+static bool hook_enable = 0;
 
 struct driver_private {
 	struct kobject kobj;
@@ -170,8 +167,7 @@ static int unload_pvr_stack(void)
 {
 	struct device_driver *drv;
 	struct kobject *kobj;
-	IMG_INT AssignedMajorNumber = PVR_DEV_MAJOR;
-
+	IMG_INT AssignedMajorNumber = major_number;
 	SYMSEARCH_BIND_FUNCTION(pvroff, OMAPLFBDeinit);
 	SYMSEARCH_BIND_FUNCTION(pvroff, PVRSRVDriverRemove);
 	SYMSEARCH_BIND_FUNCTION(pvroff, PVRMMapCleanup);
@@ -276,9 +272,14 @@ struct hook_info g_hi[] = {
 static int __init pvroff_init(void)
 {
 	pr_info(TAG ": init\n");
+        printk("pvrmajor %d, hook %d",major_number, hook_enable);
 
-	hooked = (hook_init() == 0);
-
+        if (hook_enable) 
+        {
+         hooked = (hook_init() == 0);
+        } else {
+         unload_pvr_stack();
+        }
 	return 0;
 }
 
@@ -289,6 +290,11 @@ static void __exit pvroff_exit(void)
 		hooked = false;
 	}
 }
+
+module_param(hook_enable, bool, 0);
+MODULE_PARM_DESC(hook_enable,  "hook_enable");
+module_param(major_number, short, 0);
+MODULE_PARM_DESC(major_number,  "major_number");
 
 module_init(pvroff_init);
 module_exit(pvroff_exit);
