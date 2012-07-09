@@ -242,7 +242,7 @@ int lock_fb_info(struct fb_info *info)
 
 	pr_info(TAG ": %s() ret=%d\n", __func__, ret);
 
-	if (job_is_done) 
+	if (job_is_done)
 		return ret;
 
 	for (i = 0; i < ofbi->num_overlays; i++) {
@@ -265,21 +265,19 @@ int lock_fb_info(struct fb_info *info)
 }
 
 struct hook_info g_hi[] = {
-        HOOK_INIT(lock_fb_info),
-        HOOK_INIT_END
+	HOOK_INIT(lock_fb_info),
+	HOOK_INIT_END
 };
 
 static int __init pvroff_init(void)
 {
-	pr_info(TAG ": init\n");
-        printk("pvrmajor %d, hook %d",major_number, hook_enable);
+	pr_info(TAG ": init, pvrmajor %d, hook %d\n",major_number, hook_enable);
 
-        if (hook_enable) 
-        {
-         hooked = (hook_init() == 0);
-        } else {
-         unload_pvr_stack();
-        }
+	if (hook_enable) {
+		hooked = (hook_init() == 0);
+	} else {
+		unload_pvr_stack();
+	}
 	return 0;
 }
 
@@ -291,9 +289,9 @@ static void __exit pvroff_exit(void)
 	}
 }
 
-module_param(hook_enable, bool, 0);
+module_param(hook_enable, bool, S_IRUGO|S_IWUSR);
 MODULE_PARM_DESC(hook_enable,  "hook_enable");
-module_param(major_number, short, 0);
+module_param(major_number, short, S_IRUGO|S_IWUSR);
 MODULE_PARM_DESC(major_number,  "major_number");
 
 module_init(pvroff_init);
@@ -301,7 +299,7 @@ module_exit(pvroff_exit);
 
 MODULE_ALIAS("PVR-off");
 MODULE_DESCRIPTION("unload built-in pvr and omaplfb drivers");
-MODULE_VERSION("1.0");
+MODULE_VERSION("1.1");
 MODULE_AUTHOR("Nadlabak");
 MODULE_AUTHOR("CyanogenDefy");
 MODULE_LICENSE("GPL");
