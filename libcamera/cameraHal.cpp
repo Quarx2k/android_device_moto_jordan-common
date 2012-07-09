@@ -95,13 +95,6 @@ const unsigned int PREVIEW_THROTTLE_THRESHOLD = 6;
 const unsigned int SOFT_DROP_THRESHOLD = 12;
 const unsigned int HARD_DROP_THRESHOLD = 15;
 
-/* The following values (in nsecs) are used to limit the preview framerate
-   to reduce the CPU usage. */
-
-const int MIN_PREVIEW_FRAME_INTERVAL = 80000000;
-const int MIN_PREVIEW_FRAME_INTERVAL_THROTTLED = 200000000;
-
-
 /** camera_hw_device implementation **/
 static inline struct legacy_camera_device * to_lcdev(struct camera_device *dev)
 {
@@ -267,6 +260,7 @@ static void processPreviewData(char *frame, size_t size, legacy_camera_device *l
         tries--;
         if (ret) {
             LOGW("%s: gralloc lock retry", __FUNCTION__);
+
             usleep(1000);
         }
     } while (ret && tries > 0);
@@ -294,16 +288,11 @@ static void processPreviewData(char *frame, size_t size, legacy_camera_device *l
 }
 
 static void overlayQueueBuffer(void *data, void *buffer, size_t size) {
-    long long now = systemTime();
-    if ((now - mLastPreviewTime) > (mThrottlePreview ?
-            MIN_PREVIEW_FRAME_INTERVAL_THROTTLED : MIN_PREVIEW_FRAME_INTERVAL)) {
-        mLastPreviewTime = now;
         if (data != NULL && buffer != NULL) {
             legacy_camera_device *lcdev = (legacy_camera_device *) data;
             Overlay::Format format = (Overlay::Format) lcdev->overlay->getFormat();
             processPreviewData((char*)buffer, size, lcdev, format);
         }
-    }
 }
 
 static camera_memory_t* genClientData(legacy_camera_device *lcdev,
@@ -381,11 +370,14 @@ static void dataTimestampCallback(nsecs_t timestamp, int32_t msgType, const sp<I
     if (lcdev->data_timestamp_callback != NULL && lcdev->request_memory != NULL) {
         camera_memory_t *mem = genClientData(lcdev, dataPtr);
         if (mem != NULL) {
-            mPreviousVideoFrameDropped = false;
+
             LOGV("%s: Posting data to client timestamp:%lld", __FUNCTION__, systemTime());
             lcdev->sentFrames.push_back(mem);
             lcdev->data_timestamp_callback(timestamp, msgType, mem, /*index*/0, lcdev->user);
             lcdev->hwif->releaseRecordingFrame(dataPtr);
+            if (mPreviousVideoFrameDropped) {
+                mPreviousVideoFrameDropped = false;
+            }
         } else {
             LOGV("%s: ERROR allocating memory from client", __FUNCTION__);
         }
@@ -406,10 +398,8 @@ inline void destroyOverlay(legacy_camera_device *lcdev)
 {
     LOGV("%s\n", __FUNCTION__);
     if (lcdev->overlay != NULL) {
-        lcdev->overlay.clear();
-        if (lcdev->hwif != NULL) {
-            lcdev->hwif->setOverlay(lcdev->overlay);
-        }
+        lcdev->hwif->setOverlay(NULL);
+        lcdev->overlay = NULL;
     }
 }
 
@@ -417,7 +407,9 @@ static void releaseCameraFrames(legacy_camera_device *lcdev)
 {
     vector<camera_memory_t*>::iterator it;
     for (it = lcdev->sentFrames.begin(); it != lcdev->sentFrames.end(); ++it) {
-        (*it)->release(*it);
+        camera_memory_t *mem = *it;
+        LOGV("%s: releasing mem->data:%p", __FUNCTION__, mem->data);
+        mem->release(mem);
     }
     lcdev->sentFrames.clear();
 }
@@ -679,27 +671,7 @@ static char* camera_get_parameters(struct camera_device * device)
     struct legacy_camera_device *lcdev = to_lcdev(device);
     CameraParameters params(lcdev->hwif->getParameters());
 
-    int width = 0, height = 0;
-
-    params.getPictureSize(&width, &height);
-    if (width > 0 && height > 0) {
-        float ratio = (height * 1.0) / width;
-
-        if (ratio < 0.70 && width >= 640) {
-            params.setPreviewSize(848, 480);
-            params.set(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO, "848x480");
-        } else if (width == 848) {
-            params.setPreviewSize(640, 480);
-            params.set(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO, "640x480");
-        }
-
-        LOGV("%s: target size %dx%d, ratio %f", __FUNCTION__, width, height, ratio);
-    }
-
-    params.getPreviewSize(&width, &height);
-    if (width != lcdev->previewWidth || height != lcdev->previewHeight) {
-        camera_set_preview_window(device, lcdev->window);
-    }
+    
 
 #ifdef LOG_FULL_PARAMS
     LOGV("%s: Parameters");
