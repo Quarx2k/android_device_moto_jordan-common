@@ -149,10 +149,10 @@ static int find_pvr_class_struct(void)
 			&& func[i+1] == match1 && func[i] == match0)
 		{ 
 			psPvrClass = (void *)((uint)func + i);
-			printk(KERN_INFO "PVR-off: found possible pvr class struct at 0x%p\n", psPvrClass);
-			printk(KERN_INFO "PVR-off: name of the found class is %s\n", psPvrClass->name);
+			pr_info(TAG ": found possible pvr class struct at 0x%p\n", psPvrClass);
+			pr_info(TAG ": name of the found class is %s\n", psPvrClass->name);
 			if (!strcmp("pvr", psPvrClass->name)) break;
-			printk(KERN_WARNING "PVR-off: the class pointer seems wrong, continue search");
+			pr_info(TAG ": the class pointer seems wrong, continue search");
 		}
 	}
 	if (!psPvrClass)
@@ -289,9 +289,9 @@ static void __exit pvroff_exit(void)
 	}
 }
 
-module_param(hook_enable, bool, S_IRUGO|S_IWUSR);
+module_param(hook_enable, bool, 0);
 MODULE_PARM_DESC(hook_enable,  "hook_enable");
-module_param(major_number, short, S_IRUGO|S_IWUSR);
+module_param(major_number, short, 0);
 MODULE_PARM_DESC(major_number,  "major_number");
 
 module_init(pvroff_init);
@@ -299,7 +299,7 @@ module_exit(pvroff_exit);
 
 MODULE_ALIAS("PVR-off");
 MODULE_DESCRIPTION("unload built-in pvr and omaplfb drivers");
-MODULE_VERSION("1.1");
+MODULE_VERSION("1.2");
 MODULE_AUTHOR("Nadlabak");
 MODULE_AUTHOR("CyanogenDefy");
 MODULE_LICENSE("GPL");
