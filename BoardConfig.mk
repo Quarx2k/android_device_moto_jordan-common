@@ -90,6 +90,7 @@ BOARD_BOOTIMAGE_MAX_SIZE := $(call image-size-from-data-size,0x00280000)
 BOARD_RECOVERYIMAGE_MAX_SIZE := $(call image-size-from-data-size,0x00500000)
 BOARD_SYSTEMIMAGE_MAX_SIZE := $(call image-size-from-data-size,0x07500000)
 BOARD_USERDATAIMAGE_MAX_SIZE := $(call image-size-from-data-size,0x04ac0000)
+BOARD_SYSTEMIMAGE_PARTITION_SIZE := 325000000
 BOARD_FLASH_BLOCK_SIZE := 131072
 
 # OMX Stuff

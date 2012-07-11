@@ -62,7 +62,7 @@ void screen_brightness_animation_alarm2(void *_)
 
     if (shutdown)
     {
-        LOGD("power off after 5-10 display cycle!\n");
+        ALOGD("power off after 5-10 display cycle!\n");
         reboot(RB_POWER_OFF);
     }
     display_blank();
@@ -93,9 +93,9 @@ void power_key_alarm(void *_)
 
     /* Set powerup reason outof-charge-only to MBM. */
     int ret = __reboot(LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART2, "outofcharge");
-    LOGD("reboot to outofcharge!\n");
+    ALOGD("reboot to outofcharge!\n");
     if(ret < 0) {
-        LOGD("reboot fail!\n");
+        ALOGD("reboot fail!\n");
     }
     else {
         quit = 1;
@@ -110,7 +110,7 @@ void power_event(int update_leds)
 
     if (state.voltage_level >= POWERUP_VOLTAGE) {
         powerup = 1;
-        LOGD("voltage ok for PU %d\n", state.voltage_level);
+        ALOGD("voltage ok for PU %d\n", state.voltage_level);
     }
     screen_update(state.charge_level,
             state.is_unknown || !state.is_battery_present);

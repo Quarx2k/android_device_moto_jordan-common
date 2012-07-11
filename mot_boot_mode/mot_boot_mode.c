@@ -52,7 +52,7 @@ int boot_reason_charge_only(void)
     memset(powerup_reason, 0, 32);
 
     pwrup_rsn = strstr(data, "POWERUPREASON");
-    LOGD("MOTO : pwr_rsn = %s\n", pwrup_rsn);
+    ALOGD("MOTO : pwr_rsn = %s\n", pwrup_rsn);
     if (pwrup_rsn) {
         x = strstr(pwrup_rsn, ": ");
         if (x) {
@@ -64,7 +64,7 @@ int boot_reason_charge_only(void)
                 if (n == 31) break;
             }
             powerup_reason[n] = '\0';
-            LOGD("MOTO_PUPD: powerup_reason=%s\n", powerup_reason);
+            ALOGD("MOTO_PUPD: powerup_reason=%s\n", powerup_reason);
             reason = strtoul(powerup_reason, NULL, 0);
         }
     }
@@ -109,7 +109,7 @@ int check_cid_recover_boot(void)
                 if (n == 31) break;
             }
             cid_recover_boot[n] = '\0';
-            LOGD("MOTO_PUPD: cid_recover_boot=%s\n", cid_recover_boot);
+           ALOGD("MOTO_PUPD: cid_recover_boot=%s\n", cid_recover_boot);
         }
     }
 
@@ -142,28 +142,28 @@ int check_data_12m(void)
  ********************************************************************/
 int main(int argc, char **argv)
 {    
-    LOGD("MOTO_PUPD: mot_boot_mode\n");
+    ALOGD("MOTO_PUPD: mot_boot_mode\n");
 
     if (check_cid_recover_boot()){
 
-        LOGD("MOTO_PUPD: check_cid_recover_boot: 1\n");
+        ALOGD("MOTO_PUPD: check_cid_recover_boot: 1\n");
         property_set("tcmd.cid.recover.boot", "1");
         property_set("tcmd.suspend", "1");
 
     }else if (boot_reason_charge_only()){
 
-    	LOGD("MOTO_PUPD: boot_reason_charge_only: 1\n");
+    	ALOGD("MOTO_PUPD: boot_reason_charge_only: 1\n");
         property_set("sys.chargeonly.mode", "1");
 
     }else if (check_data_12m()){
 
-        LOGD("MOTO_PUPD: mot_boot_mode 12m: 1\n");
+        ALOGD("MOTO_PUPD: mot_boot_mode 12m: 1\n");
         property_set("tcmd.12m.test", "1");
         property_set("tcmd.suspend", "1");
 
     }else{
 
-       	LOGD("MOTO_PUPD: mot_boot_mode 12m: 0\n");
+       	ALOGD("MOTO_PUPD: mot_boot_mode 12m: 0\n");
        	property_set("tcmd.suspend", "0");
     }
 

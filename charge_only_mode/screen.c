@@ -69,17 +69,17 @@ static int fb_open(struct FB *fb)
     fb->fd = open("/dev/graphics/fb0", O_RDWR);
     if (fb->fd < 0)
     {
-    LOGD("fb open failed!\n");
+    ALOGD("fb open failed!\n");
         return -1;
     }
     if (ioctl(fb->fd, FBIOGET_FSCREENINFO, &fb->fi) < 0)
     {
-    LOGD("fb ioctl FBIOGET_FSCREENINFO failed \n");
+    ALOGD("fb ioctl FBIOGET_FSCREENINFO failed \n");
         goto err1;
     }
     if (ioctl(fb->fd, FBIOGET_VSCREENINFO, &fb->vi) < 0)
     {
-    LOGD("fb ioctl FBIOGET_VSCREENINFO failed \n");
+    ALOGD("fb ioctl FBIOGET_VSCREENINFO failed \n");
         goto err1;
     }
 
@@ -87,7 +87,7 @@ static int fb_open(struct FB *fb)
                     MAP_SHARED, fb->fd, 0);
     if (fb->bits == MAP_FAILED)
     {
-        LOGD("fb mapping failed!\n");
+        ALOGD("fb mapping failed!\n");
             goto err1;
     }
     return 0;
@@ -145,7 +145,7 @@ static int show_565rle(const char *fn)
 
     fd = open(fn, O_RDONLY);
     if (fd < 0) {
-        LOGD("cannot open '%s'\n", fn);
+       ALOGD("cannot open '%s'\n", fn);
         goto err1;
     }
 
@@ -200,11 +200,11 @@ void screen_uninit(void)
 void display_blank(void)
 {
    if (ioctl(fb->fd, FBIOBLANK, VESA_POWERDOWN) < 0)
-       LOGD("display blank failed, fb.fd %d\n", fb->fd);
+       ALOGD("display blank failed, fb.fd %d\n", fb->fd);
 }
 
 void display_unblank(void)
 {
    if (ioctl(fb->fd, FBIOBLANK, VESA_NO_BLANKING) < 0)
-       LOGD("display unblank failed, fb.fd %d\n", fb->fd);
+       ALOGD("display unblank failed, fb.fd %d\n", fb->fd);
 }

@@ -1,7 +1,6 @@
 # import init.mapphone_umts.usb.rc
 
 on init
-    log "== mapphone: on init ----------------------"
     # change order or library location search
     export LD_LIBRARY_PATH /system/lib:/vendor/lib
 
@@ -45,7 +44,6 @@ on init
     # insmod /system/lib/modules/ext4.ko
 
 on fs
-    log "== mapphone: on fs ------------------------"
 
 # Mount mmc partitions
     mkdir /pds 0775 system system
@@ -54,7 +52,6 @@ on fs
     mount ext3 /dev/block/mmcblk1p25 /data nosuid nodev noatime nodiratime barrier=0
 
 on post-fs
-    log "== mapphone: on post-fs -------------------"
 
 # Backward compatibility
     symlink /dev /dev/netmux
@@ -119,7 +116,6 @@ on post-fs
     # insmod /system/lib/modules/android_usb.ko
 
 on post-fs-data
-    log "== mapphone: on post-fs-data -------------------"
 
     # event in bootmenu (cpu settings & postbootmenu)
     exec /system/bin/logwrapper postbootmenu
@@ -173,7 +169,6 @@ on post-fs-data
     setprop vold.post_fs_data_done 1
 
 on charger
-    log "== mapphone: on charger -------------------"
     start console
     start battd
     write /data/simpin lock
@@ -181,10 +176,8 @@ on charger
     stop zygote
 
 on early-boot
-    log "== mapphone: on early-boot ----------------"
 
 on boot
-    log "== mapphone: on boot ----------------------"
 
     # Enable panic on softlockup
     write /proc/sys/kernel/softlockup_panic 1
@@ -220,7 +213,6 @@ on boot
     exec /system/bin/mot_boot_mode
 
 on property:sys.chargeonly.mode=1
-    log "on property sys.chargeonly.mode=1 starting charger"
     class_reset main
     class_reset late_start
     class_start charger
@@ -237,15 +229,12 @@ on property:service.adb.tcp.port=-1
 on property:persist.sys.usb.config=adb
     start adbd
     setprop sys.usb.state $persist.sys.usb.config
-    log "on property persist.sys.usb.config=" $persist.sys.usb.config
 
 on property:persist.sys.usb.config=none
     stop adbd
     setprop sys.usb.state $persist.sys.usb.config
-    log "on property persist.sys.usb.config=" $persist.sys.usb.config
 
 on property:service.adb.root=1
-    log "on property service.adb.root=" $service.adb.root
     restart adbd
 
 #TODO: key shortcuts seems buggy in ics

@@ -57,7 +57,7 @@ static int init_rfkill() {
         snprintf(path, sizeof(path), "/sys/class/rfkill/rfkill%d/type", id);
         fd = open(path, O_RDONLY);
         if (fd < 0) {
-            LOGW("open(%s) failed: %s (%d)\n", path, strerror(errno), errno);
+            ALOGW("open(%s) failed: %s (%d)\n", path, strerror(errno), errno);
             return -1;
         }
         sz = read(fd, &buf, sizeof(buf));
@@ -84,13 +84,13 @@ static int check_bluetooth_power() {
 
     fd = open(rfkill_state_path, O_RDONLY);
     if (fd < 0) {
-        LOGE("open(%s) failed: %s (%d)", rfkill_state_path, strerror(errno),
+        ALOGE("open(%s) failed: %s (%d)", rfkill_state_path, strerror(errno),
              errno);
         goto out;
     }
     sz = read(fd, &buffer, 1);
     if (sz != 1) {
-        LOGE("read(%s) failed: %s (%d)", rfkill_state_path, strerror(errno),
+        ALOGE("read(%s) failed: %s (%d)", rfkill_state_path, strerror(errno),
              errno);
         goto out;
     }
@@ -121,13 +121,13 @@ static int set_bluetooth_power(int on) {
 
     fd = open(rfkill_state_path, O_WRONLY);
     if (fd < 0) {
-        LOGE("open(%s) for write failed: %s (%d)", rfkill_state_path,
+        ALOGE("open(%s) for write failed: %s (%d)", rfkill_state_path,
              strerror(errno), errno);
         goto out;
     }
     sz = write(fd, &buffer, 1);
     if (sz < 0) {
-        LOGE("write(%s) failed: %s (%d)", rfkill_state_path, strerror(errno),
+        ALOGE("write(%s) failed: %s (%d)", rfkill_state_path, strerror(errno),
              errno);
         goto out;
     }
@@ -141,7 +141,7 @@ out:
 static inline int create_hci_sock() {
     int sk = socket(AF_BLUETOOTH, SOCK_RAW, BTPROTO_HCI);
     if (sk < 0) {
-        LOGE("Failed to create bluetooth hci socket: %s (%d)",
+        ALOGE("Failed to create bluetooth hci socket: %s (%d)",
              strerror(errno), errno);
     }
     return sk;
@@ -164,41 +164,41 @@ static int inc_atomic()
     int ret = -1;
     int magic = MAGIC;
 
-    LOGV("Enter inc_atomic");
+    ALOGV("Enter inc_atomic");
 
     if ((fd = open(REF_FILE, O_RDWR | O_CREAT, S_IRWXU | S_IRWXG | S_IRWXO)) == -1)
     {
-        LOGW("btdroid warning: open or create bluedroid_ref error");
+        ALOGW("btdroid warning: open or create bluedroid_ref error");
         ret = -2;
         goto out;
     }
 
-    LOGV("Trying to get lock in inc_atomic....");
+    ALOGV("Trying to get lock in inc_atomic....");
 
     if (fcntl(fd, F_SETLKW, &fl) == -1)
     {
-        LOGW("btdroid waring: F_SETLKW failed");
+        ALOGW("btdroid waring: F_SETLKW failed");
         ret = -1;
         goto out;
     }
 
-    LOGV("got lock");
+    ALOGV("got lock");
 
     if (read(fd, (void *)&ref, sizeof(ref)) == -1)
     {
-        LOGW("btdroid waring: read reference count error");
+        ALOGW("btdroid waring: read reference count error");
         ret = -1;
         goto out;
     }
 
     if(ref.magic != MAGIC)
     {
-        LOGV("btdroid reference file magic number is 0x5566");
+        ALOGV("btdroid reference file magic number is 0x5566");
         ref.magic = MAGIC;
         ref.base = 0;
     }
 
-    if(ref.base > 3) LOGW("btdroid waring: btdroid reference count > 3 base = %d", ref.base);
+    if(ref.base > 3) ALOGW("btdroid waring: btdroid reference count > 3 base = %d", ref.base);
 
     ref.base += 1;
 
@@ -206,7 +206,7 @@ static int inc_atomic()
 
     if (fcntl(fd, F_SETLK, &fl) == -1)
     {
-        LOGW("btdroid waring: F_SETLK : F_UNLCK failed");
+        ALOGW("btdroid waring: F_SETLK : F_UNLCK failed");
         ret = -1;
         goto out;
     }
@@ -215,7 +215,7 @@ static int inc_atomic()
 
     if (fcntl(fd, F_SETLKW, &fl) == -1)
     {
-        LOGW("btdroid waring: F_SETLKW : F_WRLCK failed");
+        ALOGW("btdroid waring: F_SETLKW : F_WRLCK failed");
         ret = -1;
         goto out;
     }
@@ -224,13 +224,13 @@ static int inc_atomic()
 
     if (write(fd, (const void*)&ref, sizeof(ref)) == -1)
     {
-        LOGW("btdroid waring: write reference count failed");
+        ALOGW("btdroid waring: write reference count failed");
         ret = -1;
         goto out;
     }
 
     ret = ref.base;
-    LOGV("Exit inc_atomic ref = %d", ret);
+    ALOGV("Exit inc_atomic ref = %d", ret);
 out:
     if(fd != -1) close(fd);
     return ret;
@@ -245,43 +245,43 @@ static int dec_atomic()
     int ret = -1;
     int magic = MAGIC;
 
-    LOGV("Enter dec_atomic");
+    ALOGV("Enter dec_atomic");
 
     if ((fd = open(REF_FILE, O_RDWR)) == -1)
     {
-        LOGW("btdroid warning: open or create bluedroid_ref error");
+        ALOGW("btdroid warning: open or create bluedroid_ref error");
         ret = -2;
         goto out;
     }
 
-    LOGV("Trying to get lock in inc_atomic....");
+    ALOGV("Trying to get lock in inc_atomic....");
 
     if (fcntl(fd, F_SETLKW, &fl) == -1)
     {
-        LOGW("btdroid waring: F_SETLKW failed");
+        ALOGW("btdroid waring: F_SETLKW failed");
         ret = -1;
         goto out;
     }
 
-    LOGV("got lock");
+    ALOGV("got lock");
 
     if (read(fd, (void *)&ref, sizeof(ref)) == -1)
     {
-        LOGW("btdroid waring: read reference count error");
+        ALOGW("btdroid waring: read reference count error");
         ret = -1;
         goto out;
     }
 
     if(ref.magic != MAGIC)
     {
-        LOGV("btdroid reference file magic number is 0x5566");
+        ALOGV("btdroid reference file magic number is 0x5566");
         ref.magic = MAGIC;
         ref.base = 1;
     }
 
     if(ref.base == 0)
     {
-        LOGW("btdroid waring: dereference btdroid reference  base = %d", ref.base);
+        ALOGW("btdroid waring: dereference btdroid reference  base = %d", ref.base);
         ref.base = 1;
     }
 
@@ -291,7 +291,7 @@ static int dec_atomic()
 
     if (fcntl(fd, F_SETLK, &fl) == -1)
     {
-        LOGW("btdroid waring: F_SETLK : F_UNLCK failed");
+        ALOGW("btdroid waring: F_SETLK : F_UNLCK failed");
         ret = -1;
         goto out;
     }
@@ -300,7 +300,7 @@ static int dec_atomic()
 
     if (fcntl(fd, F_SETLKW, &fl) == -1)
     {
-        LOGW("btdroid waring: F_SETLKW : F_WRLCK failed");
+        ALOGW("btdroid waring: F_SETLKW : F_WRLCK failed");
         ret = -1;
         goto out;
     }
@@ -309,27 +309,27 @@ static int dec_atomic()
 
     if (write(fd, (const void*)&ref, sizeof(ref)) == -1)
     {
-        LOGW("btdroid waring: write reference count failed");
+        ALOGW("btdroid waring: write reference count failed");
         ret = -1;
         goto out;
     }
 
     ret = ref.base;
-    LOGV("Exit inc_atomic ref = %d", ret);
+    ALOGV("Exit inc_atomic ref = %d", ret);
 out:
     if(fd != -1) close(fd);
     return ret;
 }
 
 int bt_enable() {
-    LOGV(__FUNCTION__);
+    ALOGV(__FUNCTION__);
 
     int ret = -1;
     int hci_sock = -1;
     int attempt;
 
     if (bt_is_enabled() == 1) {
-        LOGI("bt has been enabled already. inc reference count only");
+        ALOGI("bt has been enabled already. inc reference count only");
         ret = 0;
         goto out;
     }
@@ -344,12 +344,12 @@ int bt_enable() {
     property_get("init.svc.fmradio",prop,"");
     if (!strcmp(prop, "running")) {
         property_set("persist.sys.fm_disabled","1");
-        LOGE("FM Radio workaround");
+        ALOGE("FM Radio workaround");
     }
 
-    LOGI("Starting hciattach daemon");
+    ALOGI("Starting hciattach daemon");
     if (property_set("ctl.start", "hciattach") < 0) {
-        LOGE("Failed to start hciattach");
+        ALOGE("Failed to start hciattach");
         set_bluetooth_power(0);
         goto out;
     }
@@ -366,14 +366,14 @@ int bt_enable() {
         usleep(10000);  // 10 ms retry delay
     }
     if (attempt == 0) {
-        LOGE("%s: Timeout waiting for HCI device to come up", __FUNCTION__);
+        ALOGE("%s: Timeout waiting for HCI device to come up", __FUNCTION__);
         set_bluetooth_power(0);
         goto out;
     }
 
-    LOGI("Starting bluetoothd deamon");
+    ALOGI("Starting bluetoothd deamon");
     if (property_set("ctl.start", "bluetoothd") < 0) {
-        LOGE("Failed to start bluetoothd");
+        ALOGE("Failed to start bluetoothd");
         set_bluetooth_power(0);
         goto out;
     }
@@ -387,28 +387,28 @@ out:
     if(0 == ret)
     {
         inc_atomic();
-        LOGV("after inc : reference count = %d", refcount);
+        //ALOGV("after inc : reference count = %d", refcount);
     }
     return ret;
 }
 
 int bt_disable() {
-    LOGV(__FUNCTION__);
+    ALOGV(__FUNCTION__);
 
     int ret = -1;
     int refcount = dec_atomic();
     int hci_sock = -1;
 
-    LOGV("bt_disable() : reference count now = %d", refcount);
+    ALOGV("bt_disable() : reference count now = %d", refcount);
     if(refcount > 0)
     {
-        LOGV("bt_disable: other app using bt so just do noting");
+        ALOGV("bt_disable: other app using bt so just do noting");
         return 0;
     }
 
-    LOGI("Stopping bluetoothd deamon");
+    ALOGI("Stopping bluetoothd deamon");
     if (property_set("ctl.stop", "bluetoothd") < 0) {
-        LOGE("Error stopping bluetoothd");
+        ALOGE("Error stopping bluetoothd");
         goto out;
     }
     usleep(HCID_STOP_DELAY_USEC);
@@ -417,9 +417,9 @@ int bt_disable() {
     if (hci_sock < 0) goto out;
     ioctl(hci_sock, HCIDEVDOWN, HCI_DEV_ID);
 
-    LOGI("Stopping hciattach deamon");
+    ALOGI("Stopping hciattach deamon");
     if (property_set("ctl.stop", "hciattach") < 0) {
-        LOGE("Error stopping hciattach");
+        ALOGE("Error stopping hciattach");
         goto out;
     }
 
@@ -434,7 +434,7 @@ out:
 }
 
 int bt_is_enabled() {
-    LOGV(__FUNCTION__);
+    ALOGV(__FUNCTION__);
 
     int hci_sock = -1;
     int ret = -1;
@@ -446,7 +446,7 @@ int bt_is_enabled() {
         usleep(HCID_STOP_DELAY_USEC);
         hci_sock = create_hci_sock();
         ioctl(hci_sock, HCIDEVDOWN, HCI_DEV_ID);
-        LOGE("FM Radio turned off");
+        ALOGE("FM Radio turned off");
     }
 
     // Check power first

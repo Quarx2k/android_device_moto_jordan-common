@@ -46,7 +46,7 @@ deviceCardMatches(const char *device, const char *matchCard)
     } else {
         const char *card = (const char *) caps.card;
 
-        LOGD("device %s card is %s\n", device, card);
+        ALOGD("device %s card is %s\n", device, card);
         ret = strstr(card, matchCard) != NULL;
     }
 
@@ -67,10 +67,10 @@ openMotoInterface(const char *libName, const char *funcName)
         if (func != NULL) {
             interface = func();
         } else {
-            LOGE("Could not find library entry point!");
+            ALOGE("Could not find library entry point!");
         }
     } else {
-        LOGE("dlopen() error: %s\n", dlerror());
+        ALOGE("dlopen() error: %s\n", dlerror());
     }
 
     return interface;
@@ -89,7 +89,7 @@ setSocTorchMode(bool enable)
 
 sp<JordanCameraWrapper> JordanCameraWrapper::createInstance(int cameraId)
 {
-    LOGV("%s :", __func__);
+    ALOGV("%s :", __func__);
     if (singleton != NULL) {
         sp<JordanCameraWrapper> hardware = singleton.promote();
         if (hardware != NULL) {
@@ -102,24 +102,24 @@ sp<JordanCameraWrapper> JordanCameraWrapper::createInstance(int cameraId)
     sp<JordanCameraWrapper> hardware;
 
     if (deviceCardMatches("/dev/video3", "camise")) {
-        LOGI("Detected SOC device\n");
+        ALOGI("Detected SOC device\n");
         /* entry point of SOC driver is android::CameraHalSocImpl::createInstance() */
         motoInterface = openMotoInterface("libsoccamera.so", "_ZN7android16CameraHalSocImpl14createInstanceEv");
         type = CAM_SOC;
     } else if (deviceCardMatches("/dev/video0", "mt9p012")) {
-        LOGI("Detected BAYER device\n");
+        ALOGI("Detected BAYER device\n");
         /* entry point of Bayer driver is android::CameraHal::createInstance() */
         motoInterface = openMotoInterface("libbayercamera.so", "_ZN7android9CameraHal14createInstanceEv");
         type = CAM_BAYER;
     } else {
-        LOGE("Camera type detection failed");
+        ALOGE("Camera type detection failed");
     }
 
     if (motoInterface != NULL) {
         hardware = new JordanCameraWrapper(motoInterface, type);
         singleton = hardware;
     } else {
-        LOGE("Could not open hardware interface");
+        ALOGE("Could not open hardware interface");
     }
 
     return hardware;
@@ -263,7 +263,7 @@ JordanCameraWrapper::fixUpBrokenGpsLatitudeRef(const sp<IMemory>& dataPtr)
             if (memcmp(data + i, sLatitudeRefMarker, sizeof(sLatitudeRefMarker)) == 0) {
                 char *ref = (char *) (data + i + sizeof(sLatitudeRefMarker));
                 if ((*ref == 'W' || *ref == 'E') && *(ref + 1) == '\0') {
-                    LOGI("Found broken GPS latitude ref marker, offset %d, item %c",
+                    ALOGI("Found broken GPS latitude ref marker, offset %d, item %c",
                          i + sizeof(sLatitudeRefMarker), *ref);
                     *ref = (*ref == 'W') ? 'N' : 'S';
                 }

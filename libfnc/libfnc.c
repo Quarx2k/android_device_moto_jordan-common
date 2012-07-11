@@ -38,169 +38,169 @@ EXPORTS
 
  int TPA_SECCLK_Get_NITZ_Time()
 {
- LOGW(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
  int TPA_SECCLK_Set_NITZ_Time()
 {
- LOGW(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
  int TPA_SECCLK_Get_Alarm_Time()
 {
- LOGW(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
  int TPA_SECCLK_Set_Alarm_Time()
 {
- LOGW(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
  int TPA_SECCLK_Get_User_Time()
 {
- LOGW(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
  int TPA_SECCLK_Set_User_Time()
 {
- LOGW(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
  int TPA_SECCLK_Get_GPS_Time()
 {
- LOGW(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
  int TPA_SECCLK_Set_GPS_Time()
 {
- LOGW(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
 //libtpa.so
  int TPA_LIB_KDF_Gen()
 {
- LOGW(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
 //libmotodbgutils.so
  int moto_panic()
 {
- LOGW(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
 //libsmiledetect.so
  int destroySmileDetectEngine()
 {
- LOGW(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
  int createSmileDetectEngine()
 {
- LOGW(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
 //libbattd.so
  int BATTD_send_daemon_cmd()
 {
- LOGW(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
 //libmetainfo.so
  int MM_MediaExtractor_DetectMediaType()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0;
 }
 
  int MM_MediaExtractor_GetTrackType()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0;
 }
 
 //libjanus.so
  int WMDRM_MTPE_CleanDataStore()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0;
 }
 
  int WMDRM_MTPE_GetDeviceCertification()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0;
 }
 
  int WMDRM_MTPE_GetLicenseState()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0;
 }
 
  int WMDRM_MTPE_GetMeterChallenge()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0;
 }
 
  int WMDRM_MTPE_GetSecClock()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0;
 }
 
  int WMDRM_MTPE_GetSecureTimeChallenge()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0;
 }
 
  int WMDRM_MTPE_GetSyncList()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0;
 }
 
  int WMDRM_MTPE_SendWMDRMPDCommand()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0;
 }
 
  int WMDRM_MTPE_SendWMDRMPDRequest()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0;
 }
 
  int WMDRM_MTPE_SetLicenseResponse()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0;
 }
 
  int WMDRM_MTPE_SetMeterResponse()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0;
 }
 
  int WMDRM_MTPE_SetSecureTimeResponse()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0;
 }
 

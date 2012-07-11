@@ -3,7 +3,6 @@ on early-init
 
 on init
     loglevel 3
-    log "== init.rc: on init -----------------------"
 
     # Set init and its forked children's oom_adj.
     write /proc/1/oom_adj -16
@@ -93,10 +92,8 @@ on init
     #chmod 0644 /dev/xt_qtaguid
 
 on fs
-    log "== init.rc: on fs -------------------------"
 
 on post-fs
-    log "== init.rc: on post-fs --------------------"
 
     # once everything is setup, no need to modify /
     mount rootfs rootfs / ro remount
@@ -123,7 +120,6 @@ on post-fs
     mkdir /cache/lost+found 0770 root root
 
 on post-fs-data
-    log "== init.rc: on post-fs-data ---------------"
 
     # We chown/chmod /data again so because mount is run as root + defaults
     chown system system /data
@@ -195,7 +191,6 @@ on post-fs-data
     import /system/etc/init.local.rc
 
 on boot
-    log "== init.rc: on boot -----------------------"
 
 # basic network init
     ifup lo
@@ -286,11 +281,9 @@ on boot
     class_start main
 
 on nonencrypted
-    log "== init.rc: on nonencrypted ---------------"
     class_start late_start
 
 on charger
-    log "== init.rc: on charger --------------------"
     class_start charger
 
 on property:vold.decrypt=trigger_reset_main
@@ -315,7 +308,6 @@ on property:vold.decrypt=trigger_shutdown_framework
 
 # Used to disable USB when switching states
 on property:sys.usb.config=none
-    log "on property sys.usb.config:" $sys.usb.config
     stop adbd
     #write /sys/class/android_usb/android0/enable 0
     #write /sys/class/android_usb/android0/bDeviceClass 0
@@ -351,12 +343,10 @@ on property:sys.usb.config=accessory,adb
     setprop sys.usb.state $sys.usb.config
 
 on property:sys.usb.config=*
-    log "on property sys.usb.config:" $sys.usb.config
 
 # Used to set USB configuration at boot and to switch the configuration
 # when changing the default configuration
 on property:persist.sys.usb.config=*
-    log "on property persist.sys.usb.config:" $persist.sys.usb.config
     setprop sys.usb.config $persist.sys.usb.config
 
 ## Daemon processes to be run by init.
@@ -479,11 +469,6 @@ service bluetoothd /system/bin/bluetoothd -n
 service installd /system/bin/installd
     class main
     socket installd stream 600 system system
-
-service flash_recovery /system/bin/log "flash_recovery service is disabled"
-    class main
-    oneshot
-    disabled
 
 service racoon /system/bin/racoon
     class main

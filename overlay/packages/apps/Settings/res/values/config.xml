@@ -16,7 +16,7 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <!-- LED Flashlight -->
-    <bool name="has_led_flash">true</bool>
+    <!-- LED Flashlight 
+    <bool name="has_led_flash">true</bool> -->
 
 </resources>

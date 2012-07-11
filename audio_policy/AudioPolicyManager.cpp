@@ -71,18 +71,18 @@ AudioPolicyManagerBase::routing_strategy AudioPolicyManager::getStrategy(
         return STRATEGY_ENFORCED_AUDIBLE;
 
     default:
-        LOGE("unknown stream type 0x%x", (uint32_t) stream);
-        LOGI("known ones :");
-        LOGI(" %x VOICE_CALL", AudioSystem::VOICE_CALL);
-        LOGI(" %x BLUETOOTH_SCO", AudioSystem::BLUETOOTH_SCO);
-        LOGI(" %x RING", AudioSystem::RING);
-        LOGI(" %x NOTIFICATION", AudioSystem::NOTIFICATION);
-        LOGI(" %x ALARM", AudioSystem::ALARM);
-        LOGI(" %x DTMF", AudioSystem::DTMF);
-        LOGI(" %x SYSTEM", AudioSystem::SYSTEM);
-        LOGI(" %x TTS", AudioSystem::TTS);
-        LOGI(" %x MUSIC", AudioSystem::MUSIC);
-        LOGI(" %x ENFORCED_AUDIBLE", AudioSystem::ENFORCED_AUDIBLE);
+        ALOGE("unknown stream type 0x%x", (uint32_t) stream);
+        ALOGI("known ones :");
+        ALOGI(" %x VOICE_CALL", AudioSystem::VOICE_CALL);
+        ALOGI(" %x BLUETOOTH_SCO", AudioSystem::BLUETOOTH_SCO);
+        ALOGI(" %x RING", AudioSystem::RING);
+        ALOGI(" %x NOTIFICATION", AudioSystem::NOTIFICATION);
+        ALOGI(" %x ALARM", AudioSystem::ALARM);
+        ALOGI(" %x DTMF", AudioSystem::DTMF);
+        ALOGI(" %x SYSTEM", AudioSystem::SYSTEM);
+        ALOGI(" %x TTS", AudioSystem::TTS);
+        ALOGI(" %x MUSIC", AudioSystem::MUSIC);
+        ALOGI(" %x ENFORCED_AUDIBLE", AudioSystem::ENFORCED_AUDIBLE);
         return STRATEGY_MEDIA;
     }
 }

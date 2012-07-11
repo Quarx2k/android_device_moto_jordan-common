@@ -176,7 +176,7 @@ int ev_get(int timeout_ms)
                 ;
             if(strstr(msg, "cpcap_battery"))
             {
-                LOGD("cpcap_battery UEVENT msg : %s\n", msg);
+                ALOGD("cpcap_battery UEVENT msg : %s\n", msg);
                 return EVENT_BATTERY;
             }
 

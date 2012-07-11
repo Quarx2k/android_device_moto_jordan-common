@@ -110,7 +110,7 @@ int SensorAK8973::enable(int32_t handle, int en)
         err = ioctl(dev_fd, cmd, &flags);
         err = err < 0 ? -errno : 0;
 
-        LOGE_IF(err, TAG ": ECS_IOCTL_APP_SET_XXX failed (%s)", strerror(-err));
+        ALOGE_IF(err, TAG ": ECS_IOCTL_APP_SET_XXX failed (%s)", strerror(-err));
 
         if (!err)
         {
@@ -234,7 +234,7 @@ int SensorAK8973::readEvents(sensors_event_t* data, int count)
         }
         else
         {
-            LOGE(TAG ": unknown event (type=0x%x, code=0x%x, value=0x%x)", type, event->code, event->value);
+            ALOGE(TAG ": unknown event (type=0x%x, code=0x%x, value=0x%x)", type, event->code, event->value);
             mInputReader.next();
         }
     }
@@ -259,22 +259,22 @@ void SensorAK8973::processEvent(int code, int value)
         case ABS_X:
             mPendingMask |= 1 << Accelerometer;
             mPendingEvents[Accelerometer].acceleration.x = value * AK8973_CONVERT_A_X;
-            LOGV(TAG ": acceleration X event value=0x%x (%.1f)", value, (value * AK8973_CONVERT_A_X));
+            ALOGV(TAG ": acceleration X event value=0x%x (%.1f)", value, (value * AK8973_CONVERT_A_X));
             break;
         case ABS_Y:
             mPendingMask |= 1 << Accelerometer;
             mPendingEvents[Accelerometer].acceleration.y = value * AK8973_CONVERT_A_Y;
-            LOGV(TAG ": acceleration Y event value=0x%x (%.1f)", value, (value * AK8973_CONVERT_A_Y));
+            ALOGV(TAG ": acceleration Y event value=0x%x (%.1f)", value, (value * AK8973_CONVERT_A_Y));
             break;
         case ABS_Z:
             mPendingMask |= 1 << Accelerometer;
             mPendingEvents[Accelerometer].acceleration.z = value * AK8973_CONVERT_A_Z;
-            LOGV(TAG ": acceleration Z event value=0x%x (%.1f)", value, (value * AK8973_CONVERT_A_Z));
+            ALOGV(TAG ": acceleration Z event value=0x%x (%.1f)", value, (value * AK8973_CONVERT_A_Z));
             break;
         case ABS_WHEEL:
             mPendingMask |= 1 << Accelerometer;
             status = value & AK8973_SENSOR_STATE_MASK & 3;
-            LOGV(TAG ": acceleration WHEEL (value=0x%x)", value);
+            ALOGV(TAG ": acceleration WHEEL (value=0x%x)", value);
             mPendingEvents[Accelerometer].acceleration.status = uint8_t(status);
             break;
 
@@ -299,14 +299,14 @@ void SensorAK8973::processEvent(int code, int value)
             converted = value * AK8973_CONVERT_O_A; //0 to 0x59FF -> x/64
             if (converted > 359.98f) converted = 0;
             mPendingEvents[Orientation].orientation.azimuth = converted;
-            LOGV(TAG ": orientation X event value=0x%x (%.1f)", value, converted);;
+            ALOGV(TAG ": orientation X event value=0x%x (%.1f)", value, converted);;
             break;
         case ABS_RY:
             mPendingMask |= 1 << Orientation;
             // -180 to 180°: lcd on upside or downside (0° on a flat table)
             converted = value * AK8973_CONVERT_O_P;
             mPendingEvents[Orientation].orientation.pitch = converted;
-            LOGV(TAG ": orientation Y event value=0x%x (%.1f)", value, converted);
+            ALOGV(TAG ": orientation Y event value=0x%x (%.1f)", value, converted);
             break;
         case ABS_RZ:
             mPendingMask |= 1 << Orientation;
@@ -315,13 +315,13 @@ void SensorAK8973::processEvent(int code, int value)
             if (converted > 90.0f) converted  = 90.0f;
             if (converted < -90.0f) converted = -90.0f;
             mPendingEvents[Orientation].orientation.roll = converted;
-            LOGV(TAG ": orientation Z event value=0x%x (%.1f)", value, converted);
+            ALOGV(TAG ": orientation Z event value=0x%x (%.1f)", value, converted);
             break;
         case ABS_RUDDER:
             mPendingMask |= 1 << Orientation;
             // seems always 3 (SENSOR_STATUS_ACCURACY_HIGH)
             status = value & AK8973_SENSOR_STATE_MASK;
-            LOGV(TAG ": orientation RUDDER (value=0x%x)", value);
+            ALOGV(TAG ": orientation RUDDER (value=0x%x)", value);
             mPendingEvents[Orientation].orientation.status = uint8_t(status);
             break;
 
@@ -331,7 +331,7 @@ void SensorAK8973::processEvent(int code, int value)
             break;
 
         default:
-            LOGE(TAG ": unknown event (code=0x%x, value=0x%x)", code, value);
+            ALOGE(TAG ": unknown event (code=0x%x, value=0x%x)", code, value);
             break;
     }
 }

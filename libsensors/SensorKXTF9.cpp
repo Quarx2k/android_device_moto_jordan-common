@@ -65,7 +65,7 @@ int SensorKXTF9::enable(int32_t handle, int en)
 
     err = ioctl(dev_fd, KXTF9_IOCTL_SET_ENABLE, &newState);
     err = err < 0 ? -errno : 0;
-    LOGE_IF(err, "SensorKXTF9: KXTF9_IOCTL_SET_ENABLE failed (%s)", strerror(-err));
+    ALOGE_IF(err, "SensorKXTF9: KXTF9_IOCTL_SET_ENABLE failed (%s)", strerror(-err));
 
     if (!err || !newState)
     {
@@ -92,7 +92,7 @@ int SensorKXTF9::setDelay(int32_t handle, int64_t ns)
 
         err = ioctl(dev_fd, KXTF9_IOCTL_SET_DELAY, &delay);
         err = err < 0 ? -errno : 0;
-        LOGE_IF(err, "SensorKXTF9: KXTF9_IOCTL_SET_DELAY failed (%s)", strerror(-err));
+        ALOGE_IF(err, "SensorKXTF9: KXTF9_IOCTL_SET_DELAY failed (%s)", strerror(-err));
     }
 
     return err;
@@ -126,7 +126,7 @@ int SensorKXTF9::readEvents(sensors_event_t* data, int count)
         }
         else
         {
-            LOGE("SensorKXTF9: unknown event (type=0x%x, code=0x%x, value=0x%x)", type, event->code, event->value);
+            ALOGE("SensorKXTF9: unknown event (type=0x%x, code=0x%x, value=0x%x)", type, event->code, event->value);
         }
         mInputReader.next();
     }
@@ -154,7 +154,7 @@ void SensorKXTF9::processEvent(int code, int value)
             break;
 
         default:
-            LOGE("SensorKXTF9: unknown event (code=0x%x, value=0x%x)", code, value);
+            ALOGE("SensorKXTF9: unknown event (code=0x%x, value=0x%x)", code, value);
             break;
     }
 }
@@ -166,7 +166,7 @@ int SensorKXTF9::isEnabled()
 
     err = ioctl(dev_fd, KXTF9_IOCTL_GET_ENABLE, &enabled);
     err = err < 0 ? -errno : 0;
-    LOGE_IF(err, "SensorKXTF9: KXTF9_IOCTL_GET_ENABLE failed (%s)", strerror(-err));
+    ALOGE_IF(err, "SensorKXTF9: KXTF9_IOCTL_GET_ENABLE failed (%s)", strerror(-err));
 
     return (err ? 0 : enabled);
 }

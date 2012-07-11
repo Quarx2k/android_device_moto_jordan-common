@@ -280,44 +280,26 @@ ICS -->
          will not debounce light sensor readings, 500ms is also the minimum interval -->
     <integer name="config_lightSensorWarmupTime">500</integer>
 
-    <!-- Enables special filtering code in the framework for raw touch events
-         from the touch driver.  This code exists for one particular device,
-         and should not be enabled for any others.  Hopefully in the future
-         it will be removed when the lower-level touch driver generates better
-         data. 
-    <bool name="config_filterTouchEvents">false</bool>
-ICS -->
-    <!-- Enables special filtering code in the framework for raw touch events
-         from the touch driver. This code exists for one particular device,
-         and should not be enabled for any others. 
-    <bool name="config_filterJumpyTouchEvents">false</bool>
-ICS -->
     <!-- Component name of the default wallpaper. This will be ImageWallpaper if not
          specified -->
     <string name="default_wallpaper_component">@null</string>
 
     <!-- Component name of the service providing network location support. -->
-    <string name="config_networkLocationProvider">com.google.android.location.NetworkLocationProvider</string>
+      <!--   <string name="config_networkLocationProvider">com.google.android.location.NetworkLocationProvider</string> -->
 
     <!-- Component name of the service providing geocoder API support. -->
-    <string name="config_geocodeProvider">com.google.android.location.GeocodeProvider</string>
+    <!--    <string name="config_geocodeProvider">com.google.android.location.GeocodeProvider</string> -->
 
     <!-- The default iface on which to monitor data use -->
     <string name="config_datause_iface">rmnet0</string>
 
-    <!-- Allows the light sensor to be ignored when flashlight is on 
-    <bool name="config_flashlight_affects_lightsensor">false</bool>
-ICS -->
-    <!-- Enables SIP on WIFI only
-    <bool name="config_sip_wifi_only">false</bool>
-ICS -->
-
     <!-- whether Softap rely on a different interface (beware these flags can be badly understood) -->
-    <bool name="config_wifi_ap_use_single_interface">true</bool>
+    <!--    <bool name="config_wifi_ap_use_single_interface">true</bool> -->
 
     <!-- Dont reload the firmware via the framework, let wifi legacy and tiap_loader do that -->
-    <bool name="config_wifi_ap_firmware_reload">false</bool>
+    <!--   <bool name="config_wifi_ap_firmware_reload">false</bool> -->
 
-    <bool name="config_usesLegacyUsbDeviceManager">true</bool>
+     <!--   <bool name="config_usesLegacyUsbDeviceManager">true</bool>-->
+    <string name="config_legacyUmsLunFile">/sys/devices/platform/usb_mass_storage/lun0/file</string>
 
 </resources>
