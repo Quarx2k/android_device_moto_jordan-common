@@ -30,4 +30,38 @@
 
     <string name="other_settings_title">其它设置</string>
     <string name="compass_calibrate">指南针校准</string>
+
+    <string name="baseband_selection">基带切换</string>
+    <string name="reboot_prompt_title">需要重新启动</string>
+    <string name="reboot_prompt_message">"已更改的设置需要重新启动后才能生效。
+现在要重新启动吗？"</string>
+    <string name="yes">确定</string>
+    <string name="no">取消</string>
+    <string name="region_europe">欧洲</string>
+    <string name="region_america">美洲</string>
+    <string name="region_asia">亚洲</string>
+    <string name="region_africa">非洲</string>
+    <string name="region_australia">澳洲</string>
+    <string name="country_central_europe">中欧</string>
+    <string name="country_france">法国</string>
+    <string name="country_great_britain">英国</string>
+    <string name="country_italy">意大利</string>
+    <string name="country_poland">波兰</string>
+    <string name="country_usa">美国</string>
+    <string name="country_brasil">巴西</string>
+    <string name="country_argentina">阿根廷</string>
+    <string name="country_colombia">哥伦比亚</string>
+    <string name="country_china">中国</string>
+    <string name="country_south_korea">南韩</string>
+    <string name="country_hongkong_taiwan">香港，台湾</string>
+    <string name="country_south_east_asia">东南亚</string>
+    <string name="country_arabia">阿拉伯</string>
+    <string name="country_south_africa">南非</string>
+    <string name="baseband_selection_summary" formatted="false">"选择适合所在区域、国家的基带
+目前选取: %1$s %2$s"</string>
+    <string name="baseband_region">地区</string>
+    <string name="baseband_country">国家</string>
+    <string name="baseband_version">版本</string>
+    <string name="baseband_frequencies">频段: %1$s MHz</string>
+    <string name="unknown">未知</string>
 </resources>
