@@ -59,6 +59,7 @@ PRODUCT_COPY_FILES += \
 	$(DEVICE_PREBUILT)/etc/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
 	$(DEVICE_PREBUILT)/etc/gpsconfig.xml:system/etc/gpsconfig.xml \
 	$(DEVICE_PREBUILT)/etc/location.cfg:system/etc/location.cfg \
+	$(DEVICE_PREBUILT)/etc/media_codecs.xml:system/etc/media_codecs.xml \
 	device/motorola/defy_common/vold.fstab:system/etc/vold.fstab \
 	device/motorola/defy_common/media_profiles.xml:system/etc/media_profiles.xml \
 	device/motorola/defy_common/modules/modules.alias:system/lib/modules/modules.alias \
