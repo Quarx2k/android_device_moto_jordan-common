@@ -36,7 +36,7 @@
 //#define LOG_EACH_FRAME
 
 #include <hardware/camera.h>
-#include <ui/Overlay.h>
+#include <camera/Overlay.h>
 #include <binder/IMemory.h>
 #include <hardware/gralloc.h>
 #include <utils/Errors.h>
