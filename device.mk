@@ -62,6 +62,9 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
 	packages/wallpapers/LivePicker/android.software.live_wallpaper.xml:/system/etc/permissions/android.software.live_wallpaper.xml \
 
+# FIXME in repo 
+PRODUCT_PACKAGES += rild
+
 # ICS sound
 PRODUCT_PACKAGES += \
 	hcitool hciattach hcidump \
@@ -69,7 +72,7 @@ PRODUCT_PACKAGES += \
 	libaudiohw_legacy audio.primary.jordan \
 
 # TO FIX for ICS
-PRODUCT_PACKAGES += gralloc.default hwcomposer.default
+PRODUCT_PACKAGES += gralloc.default hwcomposer.default 
 
 # ICS Camera
 PRODUCT_PACKAGES += camera.jordan
