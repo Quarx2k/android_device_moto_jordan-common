@@ -165,10 +165,10 @@ on post-fs-data
     # create dropbear directory
     mkdir /data/dropbear 0755 root shell
 
-    # hwui config folder for process names white list
-    mkdir /data/local/hwui.allow
-    chown system nobody /data/local/hwui.allow
-    chmod 0775 /data/local/hwui.allow
+    # hwui config folder for process names black list
+    mkdir /data/local/hwui.deny
+    chown system nobody /data/local/hwui.deny
+    chmod 0775 /data/local/hwui.deny
 
     setprop vold.post_fs_data_done 1
 
