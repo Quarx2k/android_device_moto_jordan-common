@@ -27,6 +27,7 @@
 # Model variant (DEFY_FROYO, DEFY_GINGER, DEFY_PLUS)
 
 BOARD_USES_GENERIC_AUDIO := false
+USE_CAMERA_STUB := false
 
 TARGET_NO_RADIOIMAGE := true
 TARGET_NO_BOOTLOADER := true
@@ -119,8 +120,6 @@ BOARD_HAS_SMALL_RECOVERY := true
 BOARD_HAS_LARGE_FILESYSTEM := true
 BOARD_NEVER_UMOUNT_SYSTEM := true
 BOARD_CUSTOM_RECOVERY_KEYMAPPING:= ../../device/motorola/defy_common/recovery_keys.c
-BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext3
-TARGET_USERIMAGES_USE_EXT4 := false
 #TARGET_RECOVERY_UI_LIB := librecovery_ui_generic
 #TARGET_RECOVERY_UPDATER_LIBS += librecovery_updater_generic
 TARGET_RECOVERY_PRE_COMMAND := "/system/bootmenu/script/reboot_command.sh"
@@ -139,8 +138,8 @@ BOARD_USE_YUV422I_DEFAULT_COLORFORMAT := true
 BOARD_USES_OVERLAY := true
 BOARD_WITHOUT_HW_COMPOSER := true
 ENABLE_WEBGL := true
+
 # Camera
-USE_CAMERA_STUB := false
 BOARD_OVERLAY_BASED_CAMERA_HAL := true
 
 # Other..
