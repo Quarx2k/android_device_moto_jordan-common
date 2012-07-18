@@ -83,6 +83,7 @@ on post-fs
     chmod 0755 /mnt/asec
     chown root system /mnt/obb
     chmod 0755 /mnt/obb
+    mkdir /data/app-asec 0775
 
 # Configure kernel options
     # Enable automatic power control for EHCI USB IPC
