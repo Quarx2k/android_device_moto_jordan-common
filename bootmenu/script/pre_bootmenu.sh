@@ -68,6 +68,9 @@ if [ -x /system/bin/mount_ext3.sh ]; then
     /system/bin/mount_ext3.sh cache /cache
 fi
 
+mkdir -p /tmp/data
+mount -t $FS_DATA -o ro $PART_DATA /tmp/data
+
 # mount cache for boot mode and recovery logs
 if [ ! -d /cache/recovery ]; then
     mount -t $FS_CACHE -o nosuid,nodev,noatime,nodiratime,barrier=1 $PART_CACHE /cache

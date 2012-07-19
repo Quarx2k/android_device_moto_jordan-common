@@ -39,6 +39,7 @@ umount /mnt/obb
 umount /cache
 umount /data/tmp
 umount /data
+umount /tmp/data
 
 ######## Cleanup
 

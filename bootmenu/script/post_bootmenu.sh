@@ -14,6 +14,8 @@ export PATH=/system/xbin:/system/bin:/sbin
 
 echo 0 > /sys/class/leds/blue/brightness
 
+umount /tmp/data
+
 ## Run Init Script
 
 ######## Don't Delete.... ########################
