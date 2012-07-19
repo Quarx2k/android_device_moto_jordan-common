@@ -25,6 +25,10 @@
     <string name="touch_point_warning_title">Warning</string>
     <string name="touch_point_warning_message">Increasing the number of touch points may degrade the responsiveness of the touch screen.\nAre you sure you want to change the setting?</string>
 
+    <string name="bootmenu_title">Boot menu</string>
+    <string name="bootmenu_pin">Boot menu PIN</string>
+    <string name="bootmenu_pin_summary">A sequence of keystrokes to protect direct boot menu access</string>
+
     <string name="audio_settings_title">Audio Settings</string>
     <string name="audio_effects">Audio Effects and DSP</string>
 

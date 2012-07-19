@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.SystemProperties;
 import android.preference.CheckBoxPreference;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -24,7 +25,10 @@ import android.preference.PreferenceScreen;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -41,6 +45,7 @@ public class SettingsActivity extends PreferenceActivity
     private ListPreference touchPointsPref;
     private CheckBoxPreference kinetoPref;
     private Preference basebandPref;
+    private EditTextPreference bootmenuPinPref;
 
     private CheckBoxPreference mLtoDownloadEnabledPref;
     private ListPreference mLtoDownloadIntervalPref;
@@ -52,6 +57,7 @@ public class SettingsActivity extends PreferenceActivity
     private static final String PROP_TOUCH_POINTS = "persist.sys.multitouch";
     private static final String PROP_KINETO_ENABLED = "persist.sys.kineto.enable";
     private static final String FILE_TOUCH_POINTS = "/proc/multitouch/num";
+    private static final String FILE_BOOTMENU_PIN = "/data/secure/bootmenu_pin";
     private static final String KINETO_PACKAGE = "com.android.kineto";
 
     private BroadcastReceiver mLtoStateReceiver = new BroadcastReceiver() {
@@ -91,6 +97,10 @@ public class SettingsActivity extends PreferenceActivity
         basebandPref = otherSettings.findPreference("baseband_selection");
         basebandPref.setOnPreferenceChangeListener(this);
 
+        PreferenceCategory bootmenuSettings = (PreferenceCategory) prefs.findPreference("bootmenu");
+        bootmenuPinPref = (EditTextPreference) bootmenuSettings.findPreference("bootmenu_pin");
+        bootmenuPinPref.setOnPreferenceChangeListener(this);
+
         PreferenceCategory ltoSettings = (PreferenceCategory) prefs.findPreference("lto_download");
         mLtoDownloadEnabledPref = (CheckBoxPreference) ltoSettings.findPreference("lto_download_enabled");
         mLtoDownloadEnabledPref.setOnPreferenceChangeListener(this);
@@ -109,6 +119,7 @@ public class SettingsActivity extends PreferenceActivity
 
         chargeLedModePref.setValue(SystemProperties.get(PROP_CHARGE_LED_MODE));
         touchPointsPref.setValue(SystemProperties.get(PROP_TOUCH_POINTS));
+        bootmenuPinPref.setText(readLineFromFile(FILE_BOOTMENU_PIN));
         updateLtoDownloadDateSummary(true);
         updateLtoIntervalSummary();
 
@@ -172,6 +183,9 @@ public class SettingsActivity extends PreferenceActivity
                 dialog.show();
                 return false;
             }
+        } else if (preference == bootmenuPinPref) {
+	    Log.d(TAG, "pin changed -> " + newValue);
+            writeValueToFile(FILE_BOOTMENU_PIN, (String) newValue);
         } else if (preference == kinetoPref) {
             final Boolean value = (Boolean) newValue;
             final int setting = value ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
@@ -258,20 +272,48 @@ public class SettingsActivity extends PreferenceActivity
         SystemProperties.set(PROP_TOUCH_POINTS, value);
 
         /* and also write it into the file to make it apply instantly */
-        File touchPointsFile = new File(FILE_TOUCH_POINTS);
-        FileWriter writer = null;
+        writeValueToFile(FILE_TOUCH_POINTS, value);
+    }
+
+    private String readLineFromFile(String path) {
+        String result = null;
+        File inFile = new File(path);
+        BufferedReader reader = null;
+
         try {
-            writer = new FileWriter(touchPointsFile);
+            reader = new BufferedReader(new FileReader(inFile));
+            result = reader.readLine();
+        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
+            Log.e(TAG, "Could not read from file " + path, e);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    Log.w(TAG, "Closing the file " + path + " failed.", e);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private void writeValueToFile(String path, String value) {
+        File outFile = new File(path);
+        FileWriter writer = null;
+
+        try {
+            writer = new FileWriter(outFile);
             writer.write(value);
         } catch (IOException e) {
-            Log.e(TAG, "Could not apply touch point setting.", e);
-            return;
+            Log.e(TAG, "Could not write to file " + path, e);
         } finally {
             if (writer != null) {
                 try {
                     writer.close();
                 } catch (IOException e) {
-                    Log.w(TAG, "Closing the touch point file failed.", e);
+                    Log.w(TAG, "Closing the file " + path + " failed.", e);
                 }
             }
         }

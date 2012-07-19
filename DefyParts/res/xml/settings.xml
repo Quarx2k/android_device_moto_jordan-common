@@ -30,6 +30,16 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory android:key="bootmenu"
+                        android:title="@string/bootmenu_title">
+
+        <EditTextPreference android:key="bootmenu_pin"
+                            android:persistent="false"
+                            android:title="@string/bootmenu_pin"
+                            android:summary="@string/bootmenu_pin_summary" />
+
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/audio_settings_title">
 
         <PreferenceScreen android:key="audio_effects"

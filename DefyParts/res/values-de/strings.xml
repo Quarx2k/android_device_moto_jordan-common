@@ -24,6 +24,10 @@
     <string name="touch_point_warning_title">Warnung</string>
     <string name="touch_point_warning_message">Das Erhöhen der Anzahl der Multi-Touch-Punkte kann die Reaktionsfähigkeit des Touchscreens verschlechtern.\nSind Sie sicher, die Einstellung verändern zu wollen?</string>
 
+    <string name="bootmenu_title">Bootmenü</string>
+    <string name="bootmenu_pin">Bootmenü-PIN</string>
+    <string name="bootmenu_pin_summary">Tastensequenz, um direkten Bootmenü-Zugriff zu schützen</string>
+
     <string name="audio_settings_title">Ton-Einstellungen</string>
     <string name="audio_effects">Audio-Effekte</string>
 
