@@ -92,6 +92,8 @@ PRODUCT_PACKAGES += \
 	hostapd.conf \
 	libhostapdcli \
 	DefyParts \
+	MotoFM \
+	MotoFMService \
 	Usb \
 	su \
 	mot_boot_mode \
