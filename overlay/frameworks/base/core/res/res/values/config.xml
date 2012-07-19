@@ -302,4 +302,8 @@ ICS -->
      <!--   <bool name="config_usesLegacyUsbDeviceManager">true</bool>-->
     <string name="config_legacyUmsLunFile">/sys/devices/platform/usb_mass_storage/lun0/file</string>
 
+    <!-- Boolean indicating if current platform supports quick switch-on/off of
+         Bluetooth Module -->
+    <bool name="config_bluetooth_adapter_quick_switch">false</bool>
+
 </resources>
