@@ -10,8 +10,9 @@ on init
 
     # note: we use 2nd-init, /system is already mounted
 
+    start pvr_reloader
+
     #PVR Drivers
-    exec /system/bootmenu/script/pvr.sh
 
     # Load kernel modules
     insmod /system/lib/modules/netmux.ko
@@ -237,6 +238,10 @@ on property:persist.sys.usb.config=none
 
 on property:service.adb.root=1
     restart adbd
+
+service pvr_reloader /system/xbin/ash /system/bootmenu/script/pvr.sh
+    oneshot
+    disabled
 
 #TODO: key shortcuts seems buggy in ics
 service reboot_key /system/bin/reboot

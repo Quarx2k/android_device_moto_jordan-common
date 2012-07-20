@@ -4,7 +4,7 @@
 # This is a common source of Android security bugs.
 #
 
-import /init.${ro.hardware}.rc
+import /init.mapphone_umts.rc
 #import /init.usb.rc
 #import /init.trace.rc
 

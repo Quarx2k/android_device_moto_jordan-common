@@ -77,6 +77,8 @@ fi
 
 mkdir -p /cache/bootmenu
 
+insmod /system/lib/modules/symsearch.ko
+
 # load ondemand safe settings to reduce heat and battery use
 if [ -x /system/bootmenu/script/overclock.sh ]; then
     /system/bootmenu/script/overclock.sh safe
