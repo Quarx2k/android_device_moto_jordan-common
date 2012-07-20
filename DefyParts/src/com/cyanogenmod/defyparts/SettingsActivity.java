@@ -22,6 +22,9 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.text.method.NumberKeyListener;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -59,6 +62,10 @@ public class SettingsActivity extends PreferenceActivity
     private static final String FILE_TOUCH_POINTS = "/proc/multitouch/num";
     private static final String FILE_BOOTMENU_PIN = "/data/secure/bootmenu_pin";
     private static final String KINETO_PACKAGE = "com.android.kineto";
+
+    private static final char[] BOOTMENU_PIN_ALLOWED_CHARS = new char[] {
+        'M', 'H', 'B', 'S'
+    };
 
     private BroadcastReceiver mLtoStateReceiver = new BroadcastReceiver() {
         @Override
@@ -100,6 +107,16 @@ public class SettingsActivity extends PreferenceActivity
         PreferenceCategory bootmenuSettings = (PreferenceCategory) prefs.findPreference("bootmenu");
         bootmenuPinPref = (EditTextPreference) bootmenuSettings.findPreference("bootmenu_pin");
         bootmenuPinPref.setOnPreferenceChangeListener(this);
+        bootmenuPinPref.getEditText().setFilters(new InputFilter[] { new NumberKeyListener() {
+            @Override
+            public int getInputType() {
+                return InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS;
+            }
+            @Override
+            protected char[] getAcceptedChars() {
+                return BOOTMENU_PIN_ALLOWED_CHARS;
+            }
+        }});
 
         PreferenceCategory ltoSettings = (PreferenceCategory) prefs.findPreference("lto_download");
         mLtoDownloadEnabledPref = (CheckBoxPreference) ltoSettings.findPreference("lto_download_enabled");

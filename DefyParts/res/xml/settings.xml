@@ -35,7 +35,10 @@
 
         <EditTextPreference android:key="bootmenu_pin"
                             android:persistent="false"
+                            android:autoText="false"
+                            android:inputType="text|textCapCharacters"
                             android:title="@string/bootmenu_pin"
+                            android:dialogMessage="@string/bootmenu_pin_message"
                             android:summary="@string/bootmenu_pin_summary" />
 
     </PreferenceCategory>

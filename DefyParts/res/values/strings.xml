@@ -27,6 +27,7 @@
 
     <string name="bootmenu_title">Boot menu</string>
     <string name="bootmenu_pin">Boot menu PIN</string>
+    <string name="bootmenu_pin_message">Please enter the sequence of keys that need to be entered when running bootmenu.\nM = Menu key\nH = home key\nB = back key\nS = search key</string>
     <string name="bootmenu_pin_summary">A sequence of keystrokes to protect direct boot menu access</string>
 
     <string name="audio_settings_title">Audio Settings</string>

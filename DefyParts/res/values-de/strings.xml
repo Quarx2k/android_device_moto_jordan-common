@@ -26,6 +26,7 @@
 
     <string name="bootmenu_title">Bootmenü</string>
     <string name="bootmenu_pin">Bootmenü-PIN</string>
+    <string name="bootmenu_pin_message">Die Tastensequenz zum Bootmenü-Schutz kann aus folgenden Zeichen bestehen:\nM = Menü-Taste\nH = Home-Taste\nB = Zurück-Taste\nS = Such-Taste</string>
     <string name="bootmenu_pin_summary">Tastensequenz, um direkten Bootmenü-Zugriff zu schützen</string>
 
     <string name="audio_settings_title">Ton-Einstellungen</string>
