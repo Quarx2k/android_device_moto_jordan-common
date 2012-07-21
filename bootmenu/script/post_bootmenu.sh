@@ -38,6 +38,10 @@ if [ -d /system/bootmenu/init.d ]; then
     run-parts /system/bootmenu/init.d
 fi
 
+# reset any root perms for hwa settings
+chown -R system.nobody /data/local/hwui.deny
+chmod +rw /data/local/hwui.deny/*
+
 # adb shell
 ln -s /system/xbin/busybox /sbin/sh
 

@@ -1,4 +1,4 @@
-#!/system/bin/sh
+#!/system/bootmenu/binary/busybox ash
 
 ######## BootMenu Script
 ######## Overclock.sh
@@ -37,7 +37,7 @@ ASKED_MODE=$1
 # smt_up_min_freq 1000000
 # smt_wakeup_freq 1000000
 # smt_ramp_up_step 250000
-# bst_awake_ideal_freq 600000
+# bst_awake_ideal_freq 800000
 # bst_down_rate_us 97000
 # bst_max_cpu_load 70
 # bst_min_cpu_load 40
@@ -76,6 +76,7 @@ param_safe()
   export scaling=2
   export ond_up_threshold=86
   export ond_sampling_rate=50000
+  echo 1 > /sys/power/sr_vdd2_autocomp
 }
 
 #############################################################
@@ -132,9 +133,9 @@ set_scaling()
     "1" )
       if [ $load_all -eq 0 ]; then
         insmod $MODULE_DIR/symsearch.ko
+        insmod $MODULE_DIR/clockfix.ko
         insmod $MODULE_DIR/cpufreq_stats.ko
         insmod $MODULE_DIR/cpufreq_interactive.ko
-        insmod $MODULE_DIR/clockfix.ko
       fi
       echo "interactive" > $SCALING_GOVERNOR
       echo $int_min_sample_rate > /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
@@ -176,8 +177,8 @@ set_scaling()
     "6" )
       if [ $load_all -eq 0 ]; then
         insmod $MODULE_DIR/symsearch.ko
-        insmod $MODULE_DIR/cpufreq_smartass.ko
         insmod $MODULE_DIR/clockfix.ko
+        insmod $MODULE_DIR/cpufreq_smartass.ko
       fi
       echo "smartass" > $SCALING_GOVERNOR
       echo $smt_min_cpu_load > /sys/devices/system/cpu/cpu0/cpufreq/smartass/min_cpu_load
