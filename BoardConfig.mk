@@ -76,10 +76,10 @@ BOARD_HOSTAPD_DRIVER_NAME   := wilink
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
-TARGET_CUSTOM_BLUEDROID := ../../../device/motorola/defy_common/bluedroid.c
+TARGET_CUSTOM_BLUEDROID := ../../../device/moto/jordan-common/bluedroid.c
 
 # Usb Specific
-BOARD_CUSTOM_USB_CONTROLLER := ../../device/motorola/defy_common/UsbController.cpp
+BOARD_CUSTOM_USB_CONTROLLER := ../../device/moto/jordan-common/UsbController.cpp
 BOARD_USE_USB_MASS_STORAGE_SWITCH := true
 BOARD_MASS_STORAGE_FILE_PATH := "/sys/devices/platform/usb_mass_storage/lun0/file"
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/usb_mass_storage/lun0/file"
@@ -119,7 +119,7 @@ BOARD_HAS_NO_SELECT_BUTTON := true
 BOARD_HAS_SMALL_RECOVERY := true
 BOARD_HAS_LARGE_FILESYSTEM := true
 BOARD_NEVER_UMOUNT_SYSTEM := true
-BOARD_CUSTOM_RECOVERY_KEYMAPPING:= ../../device/motorola/defy_common/recovery_keys.c
+BOARD_CUSTOM_RECOVERY_KEYMAPPING:= ../../device/moto/jordan-common/recovery_keys.c
 #TARGET_RECOVERY_UI_LIB := librecovery_ui_generic
 #TARGET_RECOVERY_UPDATER_LIBS += librecovery_updater_generic
 TARGET_RECOVERY_PRE_COMMAND := "/system/bootmenu/script/reboot_command.sh"
@@ -132,7 +132,7 @@ TARGET_RECOVERY_PRE_COMMAND_CLEAR_REASON := true
 
 # Egl Specific
 USE_OPENGL_RENDERER := true
-BOARD_EGL_CFG := device/motorola/defy_common/egl.cfg
+BOARD_EGL_CFG := device/moto/jordan-common/egl.cfg
 DEFAULT_FB_NUM := 0
 BOARD_USE_YUV422I_DEFAULT_COLORFORMAT := true
 BOARD_USES_OVERLAY := true
@@ -155,7 +155,7 @@ TARGET_BOOTANIMATION_TEXTURE_CACHE := true
 # If kernel sources are present in repo, here is the location
 #TARGET_KERNEL_SOURCE := $(ANDROID_BUILD_TOP)/kernel-omap
 #TARGET_KERNEL_CONFIG   := mapphone_mb525_defconfig
-TARGET_PREBUILT_KERNEL := $(ANDROID_BUILD_TOP)/device/motorola/defy_common/kernel
+TARGET_PREBUILT_KERNEL := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/kernel
 # Extra : external modules sources
-#TARGET_KERNEL_MODULES_EXT := $(ANDROID_BUILD_TOP)/device/motorola/defy_common/modules
+#TARGET_KERNEL_MODULES_EXT := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/modules
 

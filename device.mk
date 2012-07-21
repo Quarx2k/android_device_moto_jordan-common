@@ -45,7 +45,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
 
-DEVICE_PACKAGE_OVERLAYS += device/motorola/defy_common/overlay
+DEVICE_PACKAGE_OVERLAYS += device/moto/jordan-common/overlay
 
 # Permissions
 PRODUCT_COPY_FILES += \
@@ -116,18 +116,18 @@ PRODUCT_COPY_FILES += $(shell test -d vendor/motorola/defy_common/lib/modules &&
 	-printf '%p:system/lib/modules/%f ')
 
 # copy all others kernel modules under the "modules" directory to system/lib/modules
-PRODUCT_COPY_FILES += $(shell test -d device/motorola/defy_common/modules && \
-	find device/motorola/defy_common/modules -name '*.ko' \
+PRODUCT_COPY_FILES += $(shell test -d device/moto/jordan-common/modules && \
+	find device/moto/jordan-common/modules -name '*.ko' \
 	-printf '%p:system/lib/modules/%f ')
 
 # Prebuilt boot.img
-LOCAL_KERNEL := device/motorola/defy_common/kernel
+LOCAL_KERNEL := device/moto/jordan-common/kernel
 PRODUCT_COPY_FILES += \
 	$(LOCAL_KERNEL):kernel
 
 # Blobs and bootmenu stuff
-$(call inherit-product, device/motorola/defy_common/jordan-blobs.mk)
-$(call inherit-product, device/motorola/defy_common/bootmenu/bootmenu.mk)
+$(call inherit-product, device/moto/jordan-common/jordan-blobs.mk)
+$(call inherit-product, device/moto/jordan-common/bootmenu/bootmenu.mk)
 
 $(call inherit-product, build/target/product/full_base.mk)
 

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-device_path = device/motorola/defy_common
+device_path = device/moto/jordan-common
 
 DEVICE_PREBUILT := ${device_path}/prebuilt
 
@@ -61,10 +61,10 @@ PRODUCT_COPY_FILES += \
 	$(DEVICE_PREBUILT)/etc/location.cfg:system/etc/location.cfg \
 	$(DEVICE_PREBUILT)/etc/media_codecs.xml:system/etc/media_codecs.xml \
 	$(DEVICE_PREBUILT)/etc/audio_policy.conf:system/etc/audio_policy.conf \
-	device/motorola/defy_common/vold.fstab:system/etc/vold.fstab \
-	device/motorola/defy_common/media_profiles.xml:system/etc/media_profiles.xml \
-	device/motorola/defy_common/modules/modules.alias:system/lib/modules/modules.alias \
-	device/motorola/defy_common/modules/modules.dep:system/lib/modules/modules.dep \
+	device/moto/jordan-common/vold.fstab:system/etc/vold.fstab \
+	device/moto/jordan-common/media_profiles.xml:system/etc/media_profiles.xml \
+	device/moto/jordan-common/modules/modules.alias:system/lib/modules/modules.alias \
+	device/moto/jordan-common/modules/modules.dep:system/lib/modules/modules.dep \
 
 # New CM9 backup list system (addon.d)
 PRODUCT_COPY_FILES += \
