@@ -42,7 +42,7 @@ TARGET_ARCH_VARIANT := armv7-a-neon
 TARGET_GLOBAL_CFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 TARGET_OMAP3 := true
-COMMON_GLOBAL_CFLAGS += -DTARGET_OMAP3 -DOMAP_COMPAT -DBINDER_COMPAT
+COMMON_GLOBAL_CFLAGS += -DTARGET_OMAP3 -DOMAP_COMPAT -DBINDER_COMPAT -DICS_AUDIO_BLOB
 ARCH_ARM_HAVE_TLS_REGISTER := false
 
 # Wifi related defines
