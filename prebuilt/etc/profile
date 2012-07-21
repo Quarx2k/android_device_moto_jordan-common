@@ -1,7 +1,17 @@
 [ -f /system/etc/banner ] && cat /system/etc/banner
 
-export TERM=linux
+export TERM=xterm
 
-alias l='ls -al --color=auto'
+alias ifconfig='busybox ifconfig'
+
+alias la='toolbox ls -a -l'
+alias ll='busybox ls -al --color=auto'
+
+alias sysro='busybox mount -o remount,ro /system'
+alias sysrw='busybox mount -o remount,rw /system'
+
+alias rootro='busybox mount -o remount,ro /'
+alias rootrw='busybox mount -o remount,rw /'
 
 alias findinfiles='find . -type f | xargs grep -insI '
+
