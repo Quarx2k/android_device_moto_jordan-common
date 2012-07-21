@@ -61,6 +61,7 @@ chmod 4750 /sbin/adbd
 ## /default.prop replace.. (TODO: check if that works)
 rm -f /default.prop
 cp -f /system/bootmenu/config/default.prop /default.prop
+chmod 640 /default.prop
 
 ## mount cache
 mkdir -p /cache
