@@ -280,6 +280,10 @@ ICS -->
          will not debounce light sensor readings, 500ms is also the minimum interval -->
     <integer name="config_lightSensorWarmupTime">500</integer>
 
+    <!-- Flag indicating whether the button and keyboard backlights need the light
+         sensor always enabled. -->
+    <bool name="config_alwaysEnableLightSensor">true</bool>
+
     <!-- Component name of the default wallpaper. This will be ImageWallpaper if not
          specified -->
     <string name="default_wallpaper_component">@null</string>
