@@ -1,4 +1,5 @@
 symsearch.ko:
+clockfix.ko: symsearch.ko
 usbled.ko: symsearch.ko
 mmcfix.ko: symsearch.ko
 backlight.ko: symsearch.ko
@@ -6,6 +7,13 @@ gpiofix.ko: symsearch.ko
 logcap.ko: symsearch.ko
 multitouch.ko: symsearch.ko
 proximity.ko: symsearch.ko
+ionpvr.ko: symsearch.ko
+pvroff.ko: symsearch.ko
+pvrsrvkm.ko:
+omaplfb.ko: pvrsrvkm.ko
+ion.ko: symsearch.ko ionpvr.ko
+klogger.ko:
+thumbee.ko:
 sysfs_egl.ko:
 wl127x_test.ko:
 vpnclient.ko:
@@ -40,6 +48,8 @@ cpufreq_boosted.ko: symsearch.ko
 cpufreq_conservative.ko:
 sio_iosched.ko:
 iptable_mangle.ko:
+iptable_raw.ko:
+ip6table_raw.ko: ip6_tables.ko
 ip6table_mangle.ko: ip6_tables.ko
 ip6table_filter.ko: ip6_tables.ko
 ip6_tables.ko:

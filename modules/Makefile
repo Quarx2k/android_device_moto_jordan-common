@@ -13,10 +13,13 @@ obj-m += clockfix/
 obj-m += logcap/
 obj-m += usbled/
 obj-m += netfilter/
+obj-m += thumbee/
 
 # mb525/mb526 specific
 obj-m += proximity/
 obj-m += pvr/
+obj-m += klogger/
+
 # experimental
 #obj-m += ion/
 
