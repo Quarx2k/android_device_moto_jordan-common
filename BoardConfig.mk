@@ -136,7 +136,6 @@ BOARD_EGL_CFG := device/moto/jordan-common/egl.cfg
 DEFAULT_FB_NUM := 0
 BOARD_USE_YUV422I_DEFAULT_COLORFORMAT := true
 BOARD_USES_OVERLAY := true
-BOARD_WITHOUT_HW_COMPOSER := true
 ENABLE_WEBGL := true
 
 # Camera
