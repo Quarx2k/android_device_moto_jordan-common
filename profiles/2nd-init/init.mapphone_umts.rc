@@ -2,7 +2,7 @@
 
 on init
     # change order or library location search
-    export LD_LIBRARY_PATH /system/lib:/vendor/lib
+    export LD_LIBRARY_PATH /system/lib
 
     symlink mmcblk1p21 /dev/block/system
     symlink mmcblk1p24 /dev/block/cache
@@ -84,7 +84,6 @@ on post-fs
     chmod 0755 /mnt/asec
     chown root system /mnt/obb
     chmod 0755 /mnt/obb
-    mkdir /data/app-asec 0775
 
 # Configure kernel options
     # Enable automatic power control for EHCI USB IPC
@@ -221,23 +220,6 @@ on property:sys.chargeonly.mode=1
 
 on property:init.svc.wpa_supplicant=stopped
     stop dhcpcd
-
-# Adb over Network
-on property:service.adb.tcp.port=5555
-    restart adbd
-on property:service.adb.tcp.port=-1
-    restart adbd
-
-on property:persist.sys.usb.config=adb
-    start adbd
-    setprop sys.usb.state $persist.sys.usb.config
-
-on property:persist.sys.usb.config=none
-    stop adbd
-    setprop sys.usb.state $persist.sys.usb.config
-
-on property:service.adb.root=1
-    restart adbd
 
 service pvr_reloader /system/xbin/ash /system/bootmenu/script/pvr.sh
     oneshot
