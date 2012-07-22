@@ -14,7 +14,8 @@ rm -f /*.rc
 rm -f /osh
 rm -rf /preinstall
 cp -r -f /system/bootmenu/2nd-boot/* /
-chmod 750 /init*
+chmod 640 /*.rc
+chmod 750 /init
 killall ueventd
 
 ADBD_RUNNING=`ps | grep adbd | grep -v grep`

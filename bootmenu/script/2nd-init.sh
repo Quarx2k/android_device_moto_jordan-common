@@ -13,7 +13,8 @@ rm -f /*.sh
 rm -f /osh
 rm -rf /preinstall
 cp -f /system/bootmenu/2nd-init/* /
-chmod 750 /init*
+chmod 640 /*.rc
+chmod 750 /init
 rm -f /sbin/ueventd
 ln -s /init /sbin/ueventd
 cp -f /system/bootmenu/binary/adbd /sbin/adbd

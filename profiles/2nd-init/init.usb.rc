@@ -34,3 +34,6 @@ on property:sys.usb.config=*
 on property:persist.sys.usb.config=*
     setprop sys.usb.config ${persist.sys.usb.config}
 
+on property:service.adb.root=1
+    restart adbd
+
