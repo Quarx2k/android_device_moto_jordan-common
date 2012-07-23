@@ -306,4 +306,5 @@ ICS -->
          Bluetooth Module -->
     <bool name="config_bluetooth_adapter_quick_switch">false</bool>
 
+    <bool name="config_fmSeparateVolumeControl">true</bool>
 </resources>
