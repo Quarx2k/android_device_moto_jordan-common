@@ -86,7 +86,7 @@ PRODUCT_PACKAGES += tiap_loader tiap_cu ndc
 
 # OMX stuff
 PRODUCT_PACKAGES += dspexec libbridge libLCML libOMX_Core
-PRODUCT_PACKAGES += libOMX.TI.AAC.encode libOMX.TI.AAC.decode libOMX.TI.AMR.decode
+PRODUCT_PACKAGES += libOMX.TI.AAC.encode libOMX.TI.AAC.decode libOMX.TI.AMR.decode libOMX.TI.AMR.encode
 PRODUCT_PACKAGES += libOMX.TI.WBAMR.encode libOMX.TI.MP3.decode libOMX.TI.WBAMR.decode
 PRODUCT_PACKAGES += libOMX.TI.WMA.decode libOMX.TI.Video.Decoder libOMX.TI.Video.encoder
 #PRODUCT_PACKAGES += libOMX.TI.VPP
@@ -112,8 +112,8 @@ PRODUCT_PACKAGES += FileManager Torch Apollo HwaSettings make_ext4fs
 PRODUCT_PACKAGES += libnl_2 iw
 
 # copy all vendor (motorola) kernel modules to system/lib/modules
-PRODUCT_COPY_FILES += $(shell test -d vendor/motorola/defy_common/lib/modules &&  \
-	find vendor/motorola/defy_common/lib/modules -name '*.ko' \
+PRODUCT_COPY_FILES += $(shell test -d vendor/motorola/jordan-common/lib/modules &&  \
+	find vendor/motorola/jordan-common/lib/modules -name '*.ko' \
 	-printf '%p:system/lib/modules/%f ')
 
 # copy all others kernel modules under the "modules" directory to system/lib/modules
