@@ -24,8 +24,6 @@
 # Inherit from those products. Most specific first.
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 $(call inherit-product, device/moto/jordan-common/device.mk)
-# Also get non-open-source files if available
-#$(call inherit-product, vendor/motorola/jordan_common/jordan-vendor.mk)
 
 PRODUCT_NAME := full_jordan
 PRODUCT_DEVICE := jordan
