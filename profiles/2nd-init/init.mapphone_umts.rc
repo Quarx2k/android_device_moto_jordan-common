@@ -324,7 +324,7 @@ service iprenew_bnep0 /system/bin/dhcpcd -n
     oneshot
 
 # 3D init
-service pvrsrvinit /system/bin/pvrsrvinit
+service pvrsrvctl /system/bin/pvrsrvctl --start --no-module
     class core
     user root
     group root
