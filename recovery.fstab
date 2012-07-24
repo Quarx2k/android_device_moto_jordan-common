@@ -2,7 +2,7 @@
 # dont change this file, it is not related to recovery
 #
 # the recovery one  : bootmenu/recovery/recovery.fstab
-# the busybox fstab : prebuilt/etc/busybox.fstab
+# the busybox fstab : etc/busybox.fstab
 #
 # mount point   fstype  device
 
