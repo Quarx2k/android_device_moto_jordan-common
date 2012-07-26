@@ -267,9 +267,9 @@ ICS -->
          than the size of the config_autoBrightnessLevels array.
          This must be overridden in platform specific overlays -->
     <integer-array name="config_autoBrightnessKeyboardBacklightValues">
-        <item>0</item>
-        <item>0</item>
-        <item>0</item>
+        <item>32</item>
+        <item>48</item>
+        <item>96</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
