@@ -103,6 +103,9 @@ PRODUCT_PACKAGES += \
 # for jpeg hw encoder/decoder
 # PRODUCT_PACKAGES += libskiahw libOMX.TI.JPEG.Encoder libOMX.TI.JPEG.decoder
 
+# add bash
+PRODUCT_PACKAGES += bash
+
 # Add DroidSSHd (dropbear) Management App - tpruvot/android_external_droidsshd @ github
 PRODUCT_PACKAGES += DroidSSHd
 
