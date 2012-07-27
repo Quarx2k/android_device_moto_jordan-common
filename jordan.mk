@@ -69,6 +69,7 @@ PRODUCT_PACKAGES += \
 	wlan_cu \
 	libtiOsLib \
 	wlan_loader \
+	tiap_loader \
 	libCustomWifi \
 	wpa_supplicant.conf \
 	dhcpcd.conf \
