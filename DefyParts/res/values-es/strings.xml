@@ -28,5 +28,39 @@
 
     <string name="other_settings_title">Otros ajustes</string>
     <string name="compass_calibrate">Calibrar la brujula</string>
+    <string name="baseband_selection">Baseband selection</string>
 
+    <string name="reboot_prompt_title">Requiere Reiniciar</string>
+    <string name="reboot_prompt_message">Para poder aplicar la configuración, es necesario reiniciar.\n\nDesea reiniciar?</string>
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+
+    <string name="region_europe">Europa</string>
+    <string name="region_america">América</string>
+    <string name="region_asia">Asia</string>
+    <string name="region_africa">Africa</string>
+    <string name="region_australia">Australia</string>
+
+    <string name="country_central_europe">Europa Central</string>
+    <string name="country_france">Francia</string>
+    <string name="country_great_britain">Gran Bretaña</string>
+    <string name="country_italy">Italia</string>
+    <string name="country_poland">Polonia</string>
+    <string name="country_usa">E.E.U.U.</string>
+    <string name="country_brasil">Brazil</string>
+    <string name="country_argentina">Argentina</string>
+    <string name="country_colombia">Colombia</string>
+    <string name="country_china">China</string>
+    <string name="country_south_korea">Sur Corea</string>
+    <string name="country_hongkong_taiwan">Hongkong, Taiwan</string>
+    <string name="country_south_east_asia">Sudeste de Asia</string>
+    <string name="country_arabia">Arabia</string>
+    <string name="country_south_africa">Sudáfrica</string>
+
+    <string name="baseband_selection_summary">Seleccione la base de banda necesaria para su país\nActualmente seleccionada: %1$s %2$s</string>
+    <string name="baseband_region">Región</string>
+    <string name="baseband_country">País</string>
+    <string name="baseband_version">Versión</string>
+    <string name="baseband_frequencies">Frecuencias: %1$s MHz</string>
+    <string name="unknown">Desconocido</string>
 </resources>
