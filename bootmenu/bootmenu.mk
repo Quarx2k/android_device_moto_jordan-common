@@ -25,6 +25,7 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/profiles/2nd-init/init.usb.rc:system/bootmenu/2nd-init/init.usb.rc \
 	${bm_device}/profiles/2nd-init/init.mapphone_umts.rc:system/bootmenu/2nd-init/init.mapphone_umts.rc \
 	${bm_device}/profiles/2nd-init/ueventd.rc:system/bootmenu/2nd-init/ueventd.rc \
+	${bm_device}/profiles/2nd-init/fstab.jordan:system/bootmenu/2nd-init/fstab.jordan \
 	${bm_device}/profiles/backup/init.rc:system/bootmenu/2nd-boot/init.rc \
 	${bm_device}/profiles/backup/init.mapphone_umts.rc:system/bootmenu/2nd-boot/init.mapphone_umts.rc \
 	${bm_device}/profiles/backup/ueventd.rc:system/bootmenu/2nd-boot/ueventd.rc \

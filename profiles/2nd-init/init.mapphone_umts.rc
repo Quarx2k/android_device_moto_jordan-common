@@ -52,6 +52,9 @@ on fs
     mount ext3 /dev/block/mmcblk1p24 /cache nosuid nodev noatime nodiratime barrier=0
     mount ext3 /dev/block/mmcblk1p25 /data nosuid nodev noatime nodiratime barrier=0
 
+    mount_all /fstab.jordan
+    export SECONDARY_STORAGE /mnt/sd-ext
+
 on post-fs
 
 # Backward compatibility
