@@ -19,6 +19,7 @@ obj-m += thumbee/
 obj-m += proximity/
 obj-m += pvr/
 obj-m += klogger/
+obj-m += tls/
 
 # experimental
 #obj-m += ion/
