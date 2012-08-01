@@ -43,7 +43,7 @@ TARGET_GLOBAL_CFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 TARGET_OMAP3 := true
 COMMON_GLOBAL_CFLAGS += -DTARGET_OMAP3 -DOMAP_COMPAT -DBINDER_COMPAT
-ARCH_ARM_HAVE_TLS_REGISTER := false
+ARCH_ARM_HAVE_TLS_REGISTER := true
 
 # Wifi related defines
 BOARD_WLAN_DEVICE           := wl1271
