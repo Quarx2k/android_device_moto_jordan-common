@@ -3,6 +3,10 @@
 ######## BootMenu Script
 ######## Execute Pre BootMenu
 
+#We should insmod TLS Module before start bootmenu
+/system/bootmenu/binary/busybox insmod /system/lib/modules/symsearch.ko
+/system/bootmenu/binary/busybox insmod /system/lib/modules/tls-enable.ko
+
 source /system/bootmenu/script/_config.sh
 
 ######## Main Script
