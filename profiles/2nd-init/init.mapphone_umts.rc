@@ -53,7 +53,7 @@ on fs
     mount ext3 /dev/block/mmcblk1p25 /data nosuid nodev noatime nodiratime barrier=0
 
     mount_all /fstab.jordan
-    export SECONDARY_STORAGE /mnt/sd-ext
+    export SECONDARY_STORAGE /sd-ext
 
 on post-fs
 

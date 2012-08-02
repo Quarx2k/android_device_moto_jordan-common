@@ -67,14 +67,11 @@ PRODUCT_PACKAGES += rild
 # ICS sound
 PRODUCT_PACKAGES += \
 	hcitool hciattach hcidump \
-	libaudioutils audio.a2dp.default audio_policy.jordan \
-	libaudiohw_legacy audio.primary.jordan \
+	libaudioutils audio.a2dp.default  \
+	libaudiohw_legacy \
 
 # TO FIX for ICS
-PRODUCT_PACKAGES += gralloc.default hwcomposer.default 
-
-# ICS Camera
-PRODUCT_PACKAGES += camera.jordan
+PRODUCT_PACKAGES += hwcomposer.default 
 
 # Wifi packages
 PRODUCT_PACKAGES += iwmulticall hostap wlan_loader wlan_cu wpa_supplicant
@@ -94,17 +91,16 @@ PRODUCT_PACKAGES += libOMX.TI.JPEG.Encoder #libskiahw libOMX.TI.JPEG.decoder
 PRODUCT_PACKAGES += libfnc DefyParts Usb MotoFM  
 
 # Core stuff
-PRODUCT_PACKAGES += charge_only_mode mot_boot_mode lights.jordan sensors.jordan
+PRODUCT_PACKAGES += charge_only_mode mot_boot_mode
 
 # Publish that we support the live wallpaper feature.
-PRODUCT_PACKAGES += LiveWallpapers LiveWallpapersPicker MagicSmokeWallpapers 
-PRODUCT_PACKAGES += VisualizationWallpapers librs_jni
+PRODUCT_PACKAGES += librs_jni
 
 # Add DroidSSHd (dropbear) Management App - tpruvot/android_external_droidsshd @ github
 PRODUCT_PACKAGES += DroidSSHd dropbear dropbearkey sftp-server scp ssh rsync
 
 # CM9 apps
-PRODUCT_PACKAGES += FileManager Torch Apollo HwaSettings make_ext4fs
+PRODUCT_PACKAGES += FileManager Torch HwaSettings make_ext4fs
 
 # Experimental TI OpenLink
 PRODUCT_PACKAGES += libnl_2 iw
