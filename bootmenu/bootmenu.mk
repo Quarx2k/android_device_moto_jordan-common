@@ -6,7 +6,7 @@ PRODUCT_PACKAGES += \
 	utility_lsof \
 	static_busybox \
 	static_logwrapper \
-	2nd-init.jordan \
+	2nd-init \
 	utility_mke2fs \
 	utility_tune2fs \
 	e2fsck recovery_pigz \
