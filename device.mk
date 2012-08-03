@@ -100,7 +100,7 @@ PRODUCT_PACKAGES += librs_jni
 PRODUCT_PACKAGES += DroidSSHd dropbear dropbearkey sftp-server scp ssh rsync
 
 # CM9 apps
-PRODUCT_PACKAGES += FileManager Torch HwaSettings make_ext4fs
+PRODUCT_PACKAGES += FileManager Torch HwaSettings make_ext4fs RomUpdater
 
 # Experimental TI OpenLink
 PRODUCT_PACKAGES += libnl_2 iw
