@@ -39,7 +39,7 @@ then
     if [ "$e2fsk_exitcode" -lt 2 ];
     then
         # mount and set perms
-        $BB mount -o noatime,nodiratime,barrier=1 -t ext3 $SD_EXT_PART $SD_EXT_DIRECTORY;
+        $BB mount -o noatime,nodiratime,barrier=1 -t auto $SD_EXT_PART $SD_EXT_DIRECTORY;
         if [ "$?" = 0 ];
         then
             $BB chown 1000.1015 $SD_EXT_DIRECTORY;
