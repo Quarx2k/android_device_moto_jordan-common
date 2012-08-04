@@ -44,6 +44,8 @@
 #define CHARGE_LED_RGB   1
 #define CHARGE_LED_WHITE 2
 
+//#define HAVE_KEYBOARD
+
 static pthread_once_t g_init = PTHREAD_ONCE_INIT;
 static pthread_mutex_t g_lock = PTHREAD_MUTEX_INITIALIZER;
 
@@ -296,6 +298,11 @@ static int open_lights(const struct hw_module_t* module, char const* name,
     if (0 == strcmp(LIGHT_ID_BACKLIGHT, name)) {
         set_light = set_light_backlight;
     }
+#ifdef HAVE_KEYBOARD
+    else if (0 == strcmp(LIGHT_ID_KEYBOARD, name)) {
+        set_light = set_light_buttons;
+    }
+#endif
     else if (0 == strcmp(LIGHT_ID_BUTTONS, name)) {
         set_light = set_light_buttons;
     }
@@ -309,6 +316,7 @@ static int open_lights(const struct hw_module_t* module, char const* name,
         set_light = set_light_attention;
     }
     else {
+        ALOGW("%s: unknown led id %s", __FUNCTION__, name);
         return -EINVAL;
     }
 
