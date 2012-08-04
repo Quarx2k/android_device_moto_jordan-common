@@ -107,7 +107,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += bash
 
 # Add DroidSSHd (dropbear) Management App - tpruvot/android_external_droidsshd @ github
-PRODUCT_PACKAGES += DroidSSHd
+PRODUCT_PACKAGES += DroidSSHd dropbear
 
 # hw video prepost processor (require dsp lib)
 # PRODUCT_PACKAGES += libOMX.TI.VPP
