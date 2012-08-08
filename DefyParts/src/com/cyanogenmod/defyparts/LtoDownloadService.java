@@ -253,7 +253,7 @@ public class LtoDownloadService extends Service {
 
         @Override
         protected void onPostExecute(Integer result) {
-            if (result != null && result != RESULT_CANCELLED) {
+            if (result != null) {
                 finish(result);
             }
         }
