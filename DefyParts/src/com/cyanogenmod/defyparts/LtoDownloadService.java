@@ -28,7 +28,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 public class LtoDownloadService extends Service {
     private static final String TAG = "LtoDownloadService";
@@ -49,11 +51,14 @@ public class LtoDownloadService extends Service {
     public static final String EXTRA_STATE = "state";
     public static final String EXTRA_SUCCESS = "success";
     public static final String EXTRA_PROGRESS = "progress";
+    public static final String EXTRA_TIMESTAMP = "timestamp";
     public static final int STATE_IDLE = 0;
     public static final int STATE_DOWNLOADING = 1;
 
     private static final String FILE_TYPE_DEFAULT = "7day";
     private static final boolean WIFI_ONLY_DEFAULT = true;
+
+    private static final int DOWNLOAD_TIMEOUT = 20000; /* 20 seconds */
 
     private LtoDownloadTask mTask;
 
@@ -179,7 +184,11 @@ public class LtoDownloadService extends Service {
             int result = RESULT_SUCCESS;
 
             try {
-                HttpClient client = new DefaultHttpClient();
+                HttpParams httpParams = new BasicHttpParams();
+                HttpConnectionParams.setConnectionTimeout(httpParams, DOWNLOAD_TIMEOUT);
+                HttpConnectionParams.setSoTimeout(httpParams, DOWNLOAD_TIMEOUT);
+
+                HttpClient client = new DefaultHttpClient(httpParams);
                 HttpGet request = new HttpGet();
                 request.setURI(new URI(mSource));
 
@@ -209,7 +218,7 @@ public class LtoDownloadService extends Service {
                 }
 
                 Log.d(TAG, "Downloaded " + total + "/" + length + " bytes of LTO data");
-                if (length > 0 && total != length) {
+                if (total == 0 || (length > 0 && total != length)) {
                     result = RESULT_FAILURE;
                 }
                 in.close();
@@ -233,6 +242,7 @@ public class LtoDownloadService extends Service {
                 }
             }
 
+            Log.d(TAG, "return " + result);
             return result;
         }
 
@@ -243,6 +253,17 @@ public class LtoDownloadService extends Service {
 
         @Override
         protected void onPostExecute(Integer result) {
+            if (result != null && result != RESULT_CANCELLED) {
+                finish(result);
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            finish(RESULT_CANCELLED);
+        }
+
+        private void finish(int result) {
             if (mTempFile != null) {
                 if (result == RESULT_SUCCESS) {
                     mDestination.delete();
@@ -295,6 +316,7 @@ public class LtoDownloadService extends Service {
         if (progress != null) {
             intent.putExtra(EXTRA_PROGRESS, progress);
         }
+        intent.putExtra(EXTRA_TIMESTAMP, new Date().getTime());
         sendStickyBroadcast(intent);
     }
 }

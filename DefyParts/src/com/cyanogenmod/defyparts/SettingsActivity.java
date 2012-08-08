@@ -75,7 +75,8 @@ public class SettingsActivity extends PreferenceActivity
             mLtoDownloadNowPref.setEnabled(state == LtoDownloadService.STATE_IDLE);
             if (state == LtoDownloadService.STATE_IDLE) {
                 boolean success = intent.getBooleanExtra(LtoDownloadService.EXTRA_SUCCESS, true);
-                updateLtoDownloadDateSummary(success);
+                long timestamp = intent.getLongExtra(LtoDownloadService.EXTRA_TIMESTAMP, 0);
+                updateLtoDownloadDateSummary(success, timestamp == 0 ? null : new Date(timestamp));
             } else {
                 int progress = intent.getIntExtra(LtoDownloadService.EXTRA_PROGRESS, 0);
                 updateLtoDownloadProgressSummary(progress);
@@ -137,7 +138,7 @@ public class SettingsActivity extends PreferenceActivity
         chargeLedModePref.setValue(SystemProperties.get(PROP_CHARGE_LED_MODE));
         touchPointsPref.setValue(SystemProperties.get(PROP_TOUCH_POINTS));
         bootmenuPinPref.setText(readLineFromFile(FILE_BOOTMENU_PIN));
-        updateLtoDownloadDateSummary(true);
+        updateLtoDownloadDateSummary(true, null);
         updateLtoIntervalSummary();
 
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
@@ -241,16 +242,21 @@ public class SettingsActivity extends PreferenceActivity
                 getResources().getString(R.string.lto_downloading_data, progress));
     }
 
-    private void updateLtoDownloadDateSummary(boolean success) {
+    private void updateLtoDownloadDateSummary(boolean success, Date timestamp) {
         Resources res = getResources();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        long lastDownload = prefs.getLong(LtoDownloadService.KEY_LAST_DOWNLOAD, 0);
         final String lastDownloadString;
         int resId = R.string.lto_last_download_date;
 
-        if (lastDownload != 0) {
-            Date date = new Date(lastDownload);
-            lastDownloadString = DateFormat.getDateTimeInstance().format(date);
+        if (timestamp == null) {
+            long lastDownload = prefs.getLong(LtoDownloadService.KEY_LAST_DOWNLOAD, 0);
+            if (lastDownload != 0) {
+                timestamp = new Date(lastDownload);
+            }
+        }
+
+        if (timestamp != null) {
+            lastDownloadString = DateFormat.getDateTimeInstance().format(timestamp);
             if (!success) {
                 resId = R.string.lto_last_download_date_failure;
             }
