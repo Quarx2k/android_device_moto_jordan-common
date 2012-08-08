@@ -19,7 +19,6 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.text.InputFilter;
@@ -43,7 +42,6 @@ public class SettingsActivity extends PreferenceActivity
 
     private PackageManager mPm;
 
-    private PreferenceCategory generalSettings;
     private ListPreference chargeLedModePref;
     private ListPreference touchPointsPref;
     private CheckBoxPreference kinetoPref;
@@ -93,20 +91,17 @@ public class SettingsActivity extends PreferenceActivity
 
         PreferenceScreen prefs = getPreferenceScreen();
 
-        generalSettings = (PreferenceCategory) prefs.findPreference("general");
-        chargeLedModePref = (ListPreference) generalSettings.findPreference("charge_led_mode");
+        chargeLedModePref = (ListPreference) prefs.findPreference("charge_led_mode");
         chargeLedModePref.setOnPreferenceChangeListener(this);
-        touchPointsPref = (ListPreference) generalSettings.findPreference("touch_points");
+        touchPointsPref = (ListPreference) prefs.findPreference("touch_points");
         touchPointsPref.setOnPreferenceChangeListener(this);
 
-        PreferenceCategory otherSettings = (PreferenceCategory) prefs.findPreference("other");
-        kinetoPref = (CheckBoxPreference) otherSettings.findPreference("kineto");
+        kinetoPref = (CheckBoxPreference) prefs.findPreference("kineto");
         kinetoPref.setOnPreferenceChangeListener(this);
-        basebandPref = otherSettings.findPreference("baseband_selection");
+        basebandPref = prefs.findPreference("baseband_selection");
         basebandPref.setOnPreferenceChangeListener(this);
 
-        PreferenceCategory bootmenuSettings = (PreferenceCategory) prefs.findPreference("bootmenu");
-        bootmenuPinPref = (EditTextPreference) bootmenuSettings.findPreference("bootmenu_pin");
+        bootmenuPinPref = (EditTextPreference) prefs.findPreference("bootmenu_pin");
         bootmenuPinPref.setOnPreferenceChangeListener(this);
         bootmenuPinPref.getEditText().setFilters(new InputFilter[] { new NumberKeyListener() {
             @Override
@@ -119,16 +114,15 @@ public class SettingsActivity extends PreferenceActivity
             }
         }});
 
-        PreferenceCategory ltoSettings = (PreferenceCategory) prefs.findPreference("lto_download");
-        mLtoDownloadEnabledPref = (CheckBoxPreference) ltoSettings.findPreference("lto_download_enabled");
+        mLtoDownloadEnabledPref = (CheckBoxPreference) prefs.findPreference("lto_download_enabled");
         mLtoDownloadEnabledPref.setOnPreferenceChangeListener(this);
-        mLtoDownloadIntervalPref = (ListPreference) ltoSettings.findPreference("lto_download_interval");
+        mLtoDownloadIntervalPref = (ListPreference) prefs.findPreference("lto_download_interval");
         mLtoDownloadIntervalPref.setOnPreferenceChangeListener(this);
-        mLtoDownloadFilePref = (ListPreference) ltoSettings.findPreference("lto_download_file");
+        mLtoDownloadFilePref = (ListPreference) prefs.findPreference("lto_download_file");
         mLtoDownloadFilePref.setOnPreferenceChangeListener(this);
-        mLtoDownloadWifiOnlyPref = (CheckBoxPreference) ltoSettings.findPreference("lto_download_wifi_only");
+        mLtoDownloadWifiOnlyPref = (CheckBoxPreference) prefs.findPreference("lto_download_wifi_only");
         mLtoDownloadWifiOnlyPref.setOnPreferenceChangeListener(this);
-        mLtoDownloadNowPref = ltoSettings.findPreference("lto_download_now");
+        mLtoDownloadNowPref = prefs.findPreference("lto_download_now");
     }
 
     @Override

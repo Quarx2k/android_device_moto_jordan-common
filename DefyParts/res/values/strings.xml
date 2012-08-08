@@ -73,9 +73,10 @@
     <string name="baseband_frequencies">Frequencies: %1$s MHz</string>
     <string name="unknown">Unknown</string>
 
-    <string name="lto_download_title">Offline A-GPS Data Download</string>
+    <string name="lto_download_title">LTO Data Download</string>
+    <string name="lto_download_summary">Download of assistive data which can help improving GPS performance</string>
     <string name="lto_download_enabled_title">Automatic download</string>
-    <string name="lto_download_enabled_summary">Download A-GPS data automatically if a network connection is available</string>
+    <string name="lto_download_enabled_summary">Download data automatically if a network connection is available</string>
     <string name="lto_download_interval_title">Download interval</string>
     <string name="lto_download_interval_summary">Interval: %1$s</string>
     <string name="lto_download_interval_12hours">12 hours</string>

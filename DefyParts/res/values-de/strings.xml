@@ -72,9 +72,10 @@
     <string name="baseband_frequencies">Frequenz: %1$s MHz</string>
     <string name="unknown">Unbekannt</string>
 
-    <string name="lto_download_title">Download von Offline-AGPS-Daten</string>
+    <string name="lto_download_title">LTO-Daten-Download</string>
+    <string name="lto_download_summary">Download von Hilfsdaten, die die GPS-Performance verbessern können</string>
     <string name="lto_download_enabled_title">Automat. Download</string>
-    <string name="lto_download_enabled_summary">AGPS-Daten bei bestehender Netzverbindung automatisch downloaden</string>
+    <string name="lto_download_enabled_summary">Daten bei bestehender Netzverbindung automatisch downloaden</string>
     <string name="lto_download_interval_title">Download-Intervall</string>
     <string name="lto_download_interval_summary">Intervall: %1$s</string>
     <string name="lto_download_interval_12hours">12 Stunden</string>
