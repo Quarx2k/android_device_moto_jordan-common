@@ -1,4 +1,0 @@
-<resources>
-    <bool name="config_largeHeap">false</bool>
-    <bool name="config_defaultAutoRotate">true</bool>
-</resources>
