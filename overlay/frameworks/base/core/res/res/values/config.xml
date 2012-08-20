@@ -112,21 +112,6 @@
          updated config_tether_dhcp_range has to be updated appropriately. -->
     <integer translateable="false" name="config_max_pan_devices">5</integer>
 
-    <!-- Regex array of allowable upstream ifaces for tethering - for example if you want
-         tethering on a new interface called "foo2" add <item>"foo\\d"</item> to the array
-    <string-array translatable="false" name="config_tether_upstream_regexs">
-        <item>rmnet\\d</item>
-        <item>tiwlan\\d</item>
-    </string-array>
-ICS -->
-
-    <!-- Boolean indicating if we require the use of DUN on mobile for tethering.
-         Note that this defaults to false so that if you move to a carrier that
-         hasn't configured anything tethering will still work.  If you'd rather
-         make the device untetherable on unconfigured devices, set to true 
-    <bool translatable="false" name="config_tether_dun_required">false</bool>
-ICS -->
-
     <!-- If true, the screen can be rotated via the accelerometer in all 4
          rotations as the default behavior. -->
     <bool name="config_allowAllRotations">true</bool>
@@ -287,12 +272,6 @@ ICS -->
     <!-- Component name of the default wallpaper. This will be ImageWallpaper if not
          specified -->
     <string name="default_wallpaper_component">@null</string>
-
-    <!-- Component name of the service providing network location support. -->
-      <!--   <string name="config_networkLocationProvider">com.google.android.location.NetworkLocationProvider</string> -->
-
-    <!-- Component name of the service providing geocoder API support. -->
-    <!--    <string name="config_geocodeProvider">com.google.android.location.GeocodeProvider</string> -->
 
     <!-- The default iface on which to monitor data use -->
     <string name="config_datause_iface">rmnet0</string>
