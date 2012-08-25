@@ -121,11 +121,6 @@ on post-fs-data
     # event in bootmenu (cpu settings & postbootmenu)
     exec /system/bin/logwrapper postbootmenu
 
-    #Disable get local ipv6 adress
-    write /proc/sys/net/ipv6/conf/all/disable_ipv6 1
-    write /proc/sys/net/ipv6/conf/default/disable_ipv6 1
-    write /proc/sys/net/ipv6/conf/lo/disable_ipv6 1
-
     # Enable ADB mode (made in init.d)
     #write /dev/usb_device_mode charge_adb
     #write /tmp/usbd_current_state usb_mode_charge_adb
