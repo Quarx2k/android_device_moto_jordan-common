@@ -42,6 +42,10 @@ c0039dc0 T arm_syscall
 SYMSEARCH_DECLARE_ADDRESS_STATIC(__switch_to);
 SYMSEARCH_DECLARE_ADDRESS_STATIC(arm_syscall);
 
+static int backup_switch_to[8];
+static int backup_arm_syscall[8];
+static int backup___kuser_get_tls[4];
+
 static int __init tls_enable_init(void)
 {
     SYMSEARCH_BIND_ADDRESS(tls_enable, __switch_to);
@@ -64,6 +68,16 @@ static int __init tls_enable_init(void)
 */
 
     instr = func + 0x10; // __switch_to + 0x10
+    // backup
+    backup_switch_to[3] = instr[3];
+    backup_switch_to[2] = instr[2];
+    backup_switch_to[1] = instr[1];
+    backup_switch_to[0] = instr[0];
+    backup_switch_to[7] = instr[7];
+    backup_switch_to[6] = instr[6];
+    backup_switch_to[5] = instr[5];
+    backup_switch_to[4] = instr[4];
+    // set
     instr[3] = 0xee;
     instr[2] = 0x0d;
     instr[1] = 0x3f;
@@ -83,6 +97,16 @@ static int __init tls_enable_init(void)
 */
 
     instr = func2 + 0x1cc ;//arm_syscall + 0x1cc;
+    // backup
+    backup_arm_syscall[3] = instr[3];
+    backup_arm_syscall[2] = instr[2];
+    backup_arm_syscall[1] = instr[1];
+    backup_arm_syscall[0] = instr[0];
+    backup_arm_syscall[7] = instr[7];
+    backup_arm_syscall[6] = instr[6];
+    backup_arm_syscall[5] = instr[5];
+    backup_arm_syscall[4] = instr[4];
+    // set
     instr[3] = 0xee;
     instr[2] = 0x0d;
     instr[1] = 0x3f;
@@ -100,6 +124,12 @@ static int __init tls_enable_init(void)
 */
 
     instr = 0xffff0fe0; // __kuser_get_tls (fixed relocated addr, not from kallsyms!)
+    // backup
+    backup___kuser_get_tls[3] = instr[3];
+    backup___kuser_get_tls[2] = instr[2];
+    backup___kuser_get_tls[1] = instr[1];
+    backup___kuser_get_tls[0] = instr[0];
+    // set 
     instr[3] = 0xee;
     instr[2] = 0x1d;
     instr[1] = 0x0f;
@@ -116,6 +146,57 @@ static int __init tls_enable_init(void)
 
 static void __exit tls_enable_exit(void)
 {
+    unsigned char *instr;
+    unsigned long func = SYMSEARCH_GET_ADDRESS(__switch_to);
+    unsigned long func2 = SYMSEARCH_GET_ADDRESS(arm_syscall);
+
+    printk(KERN_INFO "TLS-enable exit\n");
+    lock_kernel();
+
+/*
+    restore __switch_to (arch/arm/kernel/entry_arm.S)
+*/
+
+    instr = func + 0x10; // __switch_to + 0x10
+    instr[3] = backup_switch_to[3];
+    instr[2] = backup_switch_to[2];
+    instr[1] = backup_switch_to[1];
+    instr[0] = backup_switch_to[0];
+    instr[7] = backup_switch_to[7];
+    instr[6] = backup_switch_to[6];
+    instr[5] = backup_switch_to[5];
+    instr[4] = backup_switch_to[4];
+
+/*
+    restore arm_syscall (arch/arm/kernel/traps.c)
+*/
+
+    instr = func2 + 0x1cc ;//arm_syscall + 0x1cc;
+    instr[3] = backup_arm_syscall[3];
+    instr[2] = backup_arm_syscall[2];
+    instr[1] = backup_arm_syscall[1];
+    instr[0] = backup_arm_syscall[0];
+    instr[7] = backup_arm_syscall[7];
+    instr[6] = backup_arm_syscall[6];
+    instr[5] = backup_arm_syscall[5];
+    instr[4] = backup_arm_syscall[4];
+
+/*
+    restore __kuser_get_tls (arch/arm/kernel/entry_arm.S)
+*/
+
+    instr = 0xffff0fe0; // __kuser_get_tls (fixed relocated addr, not from kallsyms!)
+    instr[3] = backup___kuser_get_tls[3];
+    instr[2] = backup___kuser_get_tls[2];
+    instr[1] = backup___kuser_get_tls[1];
+    instr[0] = backup___kuser_get_tls[0];
+
+    // store the currently set value in TLS register
+    asm ("mov r4, #0xffff0fff;"
+         "ldr r3, [r4, #-15];"
+         "mcr p15, 0, r3, c13, c0, 3;");
+
+    unlock_kernel();
 }
 
 module_init(tls_enable_init);
