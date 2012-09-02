@@ -89,7 +89,7 @@
             <Audio codec="aac"
                    bitRate="96000"
                    sampleRate="44100"
-                   channels="1" />
+                   channels="2" />
         </EncoderProfile>
 
         <EncoderProfile quality="480p" fileFormat="mp4" duration="30">
@@ -220,7 +220,7 @@
     <AudioEncoderCap name="aac" enabled="true"
         minBitRate="8192" maxBitRate="96000"
         minSampleRate="16000" maxSampleRate="44100"
-        minChannels="1" maxChannels="1" />
+        minChannels="1" maxChannels="2" />
 
     <AudioEncoderCap name="amrnb" enabled="true"
         minBitRate="5525" maxBitRate="12200"
