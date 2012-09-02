@@ -77,6 +77,11 @@ static bool mThrottlePreview = false;
 static bool mPreviousVideoFrameDropped = false;
 static int mNumVideoFramesDropped = 0;
 
+#define CAMHAL_GRALLOC_USAGE GRALLOC_USAGE_HW_TEXTURE | \
+                             GRALLOC_USAGE_HW_RENDER | \
+                             GRALLOC_USAGE_SW_READ_RARELY | \
+                             GRALLOC_USAGE_SW_WRITE_NEVER
+
 /* When the media encoder is not working fast enough,
    the number of allocated but yet unreleased frames
    in memory could start to grow without limit.
@@ -94,6 +99,12 @@ static int mNumVideoFramesDropped = 0;
 const unsigned int PREVIEW_THROTTLE_THRESHOLD = 6;
 const unsigned int SOFT_DROP_THRESHOLD = 12;
 const unsigned int HARD_DROP_THRESHOLD = 15;
+
+/* The following values (in nsecs) are used to limit the preview framerate
+   to reduce the CPU usage. */
+
+const int MIN_PREVIEW_FRAME_INTERVAL = 90000000;
+const int MIN_PREVIEW_FRAME_INTERVAL_THROTTLED = 90000000;
 
 /** camera_hw_device implementation **/
 static inline struct legacy_camera_device * to_lcdev(struct camera_device *dev)
@@ -259,9 +270,9 @@ static void processPreviewData(char *frame, size_t size, legacy_camera_device *l
     void *vaddr;
 
     do {
-        ret = lcdev->gralloc->lock(lcdev->gralloc, *bufHandle,
-                                    GRALLOC_USAGE_SW_WRITE_OFTEN | GRALLOC_USAGE_HW_TEXTURE | GRALLOC_USAGE_HW_RENDER,
-                                   0, 0, lcdev->previewWidth, lcdev->previewHeight, &vaddr);
+        ret = lcdev->gralloc->lock(lcdev->gralloc, *bufHandle, CAMHAL_GRALLOC_USAGE, 0, 0,lcdev->previewWidth, lcdev->previewHeight, &vaddr);
+                                  // GRALLOC_USAGE_SW_WRITE_OFTEN | GRALLOC_USAGE_HW_TEXTURE | GRALLOC_USAGE_HW_RENDER,
+                                  // 0, 0, lcdev->previewWidth, lcdev->previewHeight, &vaddr);
         tries--;
         if (ret) {
             ALOGW("%s: gralloc lock retry", __FUNCTION__);
@@ -293,11 +304,16 @@ static void processPreviewData(char *frame, size_t size, legacy_camera_device *l
 }
 
 static void overlayQueueBuffer(void *data, void *buffer, size_t size) {
+    long long now = systemTime();
+    if ((now - mLastPreviewTime) > (mThrottlePreview ?
+            MIN_PREVIEW_FRAME_INTERVAL_THROTTLED : MIN_PREVIEW_FRAME_INTERVAL)) {
+        mLastPreviewTime = now;
         if (data != NULL && buffer != NULL) {
             legacy_camera_device *lcdev = (legacy_camera_device *) data;
             Overlay::Format format = (Overlay::Format) lcdev->overlay->getFormat();
             processPreviewData((char*)buffer, size, lcdev, format);
         }
+    }
 }
 
 static camera_memory_t* genClientData(legacy_camera_device *lcdev,
@@ -427,7 +443,6 @@ static void releaseCameraFrames(legacy_camera_device *lcdev)
 static int camera_set_preview_window(struct camera_device * device, struct preview_stream_ops *window)
 {
     int rv = -EINVAL;
-    const int kBufferCount = 6;
     struct legacy_camera_device *lcdev = to_lcdev(device);
 
     ALOGV("%s: Window %p\n", __FUNCTION__, window);
@@ -469,14 +484,11 @@ static int camera_set_preview_window(struct camera_device * device, struct previ
         ALOGE("%s: could not retrieve min undequeued buffer count", __FUNCTION__);
         return -1;
     }
-    ALOGD("%s: OK get_min_undequeued_buffer_count", __FUNCTION__);
 
-    ALOGD("%s: minimum buffer count is %i", __FUNCTION__, min_bufs);
-    if (min_bufs >= kBufferCount) {
-        ALOGE("%s: min undequeued buffer count %i is too high (expecting at most %i)", __FUNCTION__, min_bufs, kBufferCount - 1);
-    }
+    ALOGV("%s: min bufs:%i", __FUNCTION__, min_bufs);
 
-    ALOGD("%s: setting buffer count to %i", __FUNCTION__, kBufferCount);
+    int kBufferCount = min_bufs + 2;
+    ALOGV("%s: setting buffer count to %i", __FUNCTION__, kBufferCount);
     if (window->set_buffer_count(window, kBufferCount)) {
         ALOGE("%s: could not set buffer count", __FUNCTION__);
         return -1;
@@ -489,7 +501,7 @@ static int camera_set_preview_window(struct camera_device * device, struct previ
     ALOGD("%s: preview format %s", __FUNCTION__, previewFormat);
     lcdev->previewFormat = Overlay::getFormatFromString(previewFormat);
 
-    if (window->set_usage(window, GRALLOC_USAGE_SW_WRITE_OFTEN | GRALLOC_USAGE_HW_RENDER)) {
+    if (window->set_usage(window, CAMHAL_GRALLOC_USAGE)) { //GRALLOC_USAGE_SW_WRITE_OFTEN | GRALLOC_USAGE_SW_READ_OFTEN)) {
         ALOGE("%s: could not set usage on gralloc buffer", __FUNCTION__);
         return -1;
     }
