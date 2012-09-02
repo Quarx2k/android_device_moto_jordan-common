@@ -55,6 +55,7 @@ PRODUCT_COPY_FILES += \
 	$(device_path)/etc/wifi/tiwlan.ini:system/etc/wifi/tiwlan.ini \
 	$(device_path)/etc/wifi/tiwlan_ap.ini:system/etc/wifi/tiwlan_ap.ini \
 	$(device_path)/etc/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
+	$(device_path)/etc/wifi/hostap_wrapper.sh:system/etc/wifi/hostap_wrapper.sh \
 	$(device_path)/etc/gpsconfig.xml:system/etc/gpsconfig.xml \
 	$(device_path)/etc/location.cfg:system/etc/location.cfg \
 	$(device_path)/etc/media_codecs.xml:system/etc/media_codecs.xml \
