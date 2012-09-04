@@ -119,7 +119,7 @@ pvr_common-y := \
 	perproc.o \
 	lists.o \
 	mem_debug.o \
-	osfunc_common.o
+	osfunc_common.o \
 
 pvr540-$(CONFIG_SGX540) := \
 	omap4/sysconfig.o \
@@ -141,10 +141,6 @@ sgx-y :=  \
 	sgx/pb.o
 
 pvr530-$(CONFIG_ION_OMAP) += ion.o
-
-sgx_displayclass-y := \
-	display/omap_sgx_displayclass.o \
-	display/omap_display.o
 
 omaplfb-y := \
 	omaplfb/omaplfb_displayclass.o \

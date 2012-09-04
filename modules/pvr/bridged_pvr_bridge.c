@@ -1,28 +1,46 @@
-/**********************************************************************
- *
- * Copyright (C) Imagination Technologies Ltd. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or modify it
- * under the terms and conditions of the GNU General Public License,
- * version 2, as published by the Free Software Foundation.
- * 
- * This program is distributed in the hope it will be useful but, except 
- * as otherwise stated in writing, without any warranty; without even the 
- * implied warranty of merchantability or fitness for a particular purpose. 
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
- * 
- * The full GNU General Public License is included in this distribution in
- * the file called "COPYING".
- *
- * Contact Information:
- * Imagination Technologies Ltd. <gpl-support@imgtec.com>
- * Home Park Estate, Kings Langley, Herts, WD4 8LZ, UK 
- *
- ******************************************************************************/
+/*************************************************************************/ /*!
+@Title          PVR Common Bridge Module (kernel side)
+@Copyright      Copyright (c) Imagination Technologies Ltd. All Rights Reserved
+@Description    Receives calls from the user portion of services and
+                despatches them to functions in the kernel portion.
+@License        Dual MIT/GPLv2
+
+The contents of this file are subject to the MIT license as set out below.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+Alternatively, the contents of this file may be used under the terms of
+the GNU General Public License Version 2 ("GPL") in which case the provisions
+of GPL are applicable instead of those above.
+
+If you wish to allow use of your version of this file only under the terms of
+GPL, and not to allow others to use your version of this file under the terms
+of the MIT license, indicate your decision by deleting the provisions above
+and replace them with the notice and other provisions required by GPL as set
+out in the file called "GPL-COPYING" included in this distribution. If you do
+not delete the provisions above, a recipient may use your version of this file
+under the terms of either the MIT license or GPL.
+
+This License is also included in this distribution in the file called
+"MIT-COPYING".
+
+EXCEPT AS OTHERWISE STATED IN A NEGOTIATED AGREEMENT: (A) THE SOFTWARE IS
+PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE AND NONINFRINGEMENT; AND (B) IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  
+*/ /**************************************************************************/
 
 
 
@@ -64,12 +82,24 @@
 
 #include "env_data.h"
 
-#if defined (__linux__)
+#if defined (__linux__) || defined(__QNXNTO__)
 #include "mmap.h"
 #endif
 
 
 #include "srvkm.h"
+
+/* FIXME: we should include an OS specific header here to allow configuration of
+ * which functions should be excluded (like the shared srvclient bridge code)
+ * so that ports may choose to override certain things. */
+
+/* For the purpose of maintainability, it is intended that this file should not
+ * contain large amounts of OS specific #ifdefs. Headers are fine, and perhaps
+ * a few one liners, but for anything more, please find a way to add e.g.
+ * an osfunc.c abstraction or override the entire function in question within
+ * env,*,pvr_bridge_k.c
+ */
+
 
 PVRSRV_BRIDGE_DISPATCH_TABLE_ENTRY g_BridgeDispatchTable[BRIDGE_DISPATCH_TABLE_ENTRY_COUNT];
 
@@ -148,7 +178,10 @@ PVRSRVAcquireDeviceDataBW(IMG_UINT32 ui32BridgeID,
 		return 0;
 	}
 
-	
+	/*
+	 * Handle is not allocated in batch mode, as there is no resource
+	 * allocation to undo if the handle allocation fails.
+	 */
 		psAcquireDevInfoOUT->eError =
 		PVRSRVAllocHandle(psPerProc->psHandleBase,
 						  &psAcquireDevInfoOUT->hDevCookie,
@@ -176,7 +209,10 @@ PVRSRVCreateDeviceMemContextBW(IMG_UINT32 ui32BridgeID,
 
 	PVRSRV_BRIDGE_ASSERT_CMD(ui32BridgeID, PVRSRV_BRIDGE_CREATE_DEVMEMCONTEXT);
 
-	
+	/*
+	 * We potentially need one handle for the device memory context,
+	 * and one handle for each client heap.
+	 */
 	NEW_HANDLE_BATCH_OR_ERROR(psCreateDevMemContextOUT->eError, psPerProc, PVRSRV_MAX_CLIENT_HEAPS + 1)
 
 	psCreateDevMemContextOUT->eError =
@@ -207,7 +243,11 @@ PVRSRVCreateDeviceMemContextBW(IMG_UINT32 ui32BridgeID,
 		return 0;
 	}
 
-	
+	/*
+	 * Only allocate a handle if the device memory context was created.
+	 * If an existing context was returned, lookup the existing
+	 * handle.
+	 */
 	if(bCreated)
 	{
 		PVRSRVAllocHandleNR(psPerProc->psHandleBase,
@@ -241,7 +281,13 @@ PVRSRVCreateDeviceMemContextBW(IMG_UINT32 ui32BridgeID,
 		if(abSharedDeviceMemHeap[i])
 #endif
 		{
-			
+			/*
+			 * Heaps shared by everybody.  These heaps are not
+			 * created as part of the device memory context
+			 * creation, and exist for the lifetime of the
+			 * driver, hence, we use shared handles for these
+			 * heaps.
+			 */
 #if defined (SUPPORT_SID_INTERFACE)
 			PVRSRVAllocHandleNR(psPerProc->psHandleBase,
 								&hDevMemHeapExt,
@@ -258,7 +304,12 @@ PVRSRVCreateDeviceMemContextBW(IMG_UINT32 ui32BridgeID,
 #if defined(PVR_SECURE_HANDLES) || defined (SUPPORT_SID_INTERFACE)
 		else
 		{
-			
+			/*
+			 * Heaps belonging to this context.  The handles for
+			 * these are made subhandles of the memory context
+			 * handle, so that they are automatically deallocated
+			 * when the memory context handle is deallocated.
+			 */
 			if(bCreated)
 			{
 #if defined (SUPPORT_SID_INTERFACE)
@@ -426,7 +477,13 @@ PVRSRVGetDeviceMemHeapInfoBW(IMG_UINT32 ui32BridgeID,
 		if(abSharedDeviceMemHeap[i])
 #endif
 		{
-			
+			/*
+			 * Heaps shared by everybody.  These heaps are not
+			 * created as part of the device memory context
+			 * creation, and exist for the lifetime of the
+			 * driver, hence, we use shared handles for these
+			 * heaps.
+			 */
 #if defined (SUPPORT_SID_INTERFACE)
 			PVRSRVAllocHandleNR(psPerProc->psHandleBase,
 								&hDevMemHeapExt,
@@ -443,7 +500,12 @@ PVRSRVGetDeviceMemHeapInfoBW(IMG_UINT32 ui32BridgeID,
 #if defined(PVR_SECURE_HANDLES) || defined (SUPPORT_SID_INTERFACE)
 		else
 		{
-			
+			/*
+			 * Heaps belonging to this context.  The handles for
+			 * these are made subhandles of the memory context
+			 * handle, so that they are automatically deallocated
+			 * when the memory context handle is deallocated.
+			 */
 			psGetDevMemHeapInfoOUT->eError =
 				PVRSRVFindHandle(psPerProc->psHandleBase,
 								 &hDevMemHeapExt,
@@ -476,6 +538,7 @@ PVRSRVGetDeviceMemHeapInfoBW(IMG_UINT32 ui32BridgeID,
 
 
 #if defined(OS_PVRSRV_ALLOC_DEVICE_MEM_BW)
+/* customised version */
 IMG_INT
 PVRSRVAllocDeviceMemBW(IMG_UINT32 ui32BridgeID,
 					   PVRSRV_BRIDGE_IN_ALLOCDEVICEMEM *psAllocDeviceMemIN,
@@ -493,10 +556,29 @@ PVRSRVAllocDeviceMemBW(IMG_UINT32 ui32BridgeID,
 	IMG_HANDLE hDevMemHeapInt;
 	IMG_UINT32 ui32ShareIndex;
 	IMG_BOOL bUseShareMemWorkaround;
+	IMG_BOOL *pabMapChunk = IMG_NULL;
 
 	PVRSRV_BRIDGE_ASSERT_CMD(ui32BridgeID, PVRSRV_BRIDGE_ALLOC_DEVICEMEM);
 
 	NEW_HANDLE_BATCH_OR_ERROR(psAllocDeviceMemOUT->eError, psPerProc, 2)
+
+	/* Do same sanity checking */
+	if (psAllocDeviceMemIN->ui32Attribs & PVRSRV_MEM_SPARSE)
+	{
+		if (psAllocDeviceMemIN->ui32NumPhysChunks > psAllocDeviceMemIN->ui32NumVirtChunks)
+		{
+			PVR_DPF((PVR_DBG_ERROR, "PVRSRVAllocDeviceMemBW: more physical chunks then virtual space"));
+			psAllocDeviceMemOUT->eError = PVRSRV_ERROR_INVALID_PARAMS;
+			return 0;
+		}
+	
+		if (psAllocDeviceMemIN->pabMapChunk == IMG_NULL)
+		{
+			PVR_DPF((PVR_DBG_ERROR, "PVRSRVAllocDeviceMemBW: Called in sparse mapping mode but without MapChunk array"));
+			psAllocDeviceMemOUT->eError = PVRSRV_ERROR_INVALID_PARAMS;
+			return 0;
+		}
+	}
 
 	psAllocDeviceMemOUT->eError =
 		PVRSRVLookupHandle(psPerProc->psHandleBase, &hDevCookieInt,
@@ -518,15 +600,17 @@ PVRSRVAllocDeviceMemBW(IMG_UINT32 ui32BridgeID,
 		return 0;
 	}
 
-	
+	/* Memory sharing workaround, version 2 */
 
 	bUseShareMemWorkaround = ((psAllocDeviceMemIN->ui32Attribs & PVRSRV_MEM_XPROC) != 0) ? IMG_TRUE : IMG_FALSE;
-	ui32ShareIndex = 7654321; 
+	ui32ShareIndex = 7654321; /* stops MSVC compiler warning */
 
 	if (bUseShareMemWorkaround)
 	{
-		
-		
+		/* allocate a shared-surface ID, prior to the call to AllocDeviceMem */
+		/* We could plumb in an extra argument, but for now, we'll keep the
+		   shared-surface ID as a piece of global state, and rely upon the
+		   bridge mutex to make it safe for us */
 
 		psAllocDeviceMemOUT->eError =
 			BM_XProcWorkaroundFindNewBufferAndSetShareIndex(&ui32ShareIndex);
@@ -536,7 +620,7 @@ PVRSRVAllocDeviceMemBW(IMG_UINT32 ui32BridgeID,
 		}
 	}
 
-	
+	/* Check access to private data, if provided */
 	if(psAllocDeviceMemIN->pvPrivData)
 	{
 		if(!OSAccessOK(PVR_VERIFY_READ,
@@ -548,6 +632,42 @@ PVRSRVAllocDeviceMemBW(IMG_UINT32 ui32BridgeID,
 		}
 	}
 
+	if (psAllocDeviceMemIN->ui32Attribs & PVRSRV_MEM_SPARSE)
+	{
+		/* Check access to the sparse mapping table, if provided */
+		if(!OSAccessOK(PVR_VERIFY_READ,
+					   psAllocDeviceMemIN->pabMapChunk,
+					   psAllocDeviceMemIN->ui32NumVirtChunks))
+		{
+			PVR_DPF((PVR_DBG_ERROR, "PVRSRVAllocDeviceMemBW: Access check failed for pabMapChunk"));
+			return -EFAULT;
+		}
+
+		psAllocDeviceMemOUT->eError = OSAllocMem(PVRSRV_OS_PAGEABLE_HEAP,
+												 sizeof(IMG_BOOL) * psAllocDeviceMemIN->ui32NumVirtChunks,
+												 (IMG_VOID **) &pabMapChunk,
+												 0,
+												 "MapChunk kernel copy");
+		if (psAllocDeviceMemOUT->eError != PVRSRV_OK)
+		{
+			return 0;
+		}
+
+		psAllocDeviceMemOUT->eError = OSCopyFromUser(psPerProc,
+													 pabMapChunk,
+													 psAllocDeviceMemIN->pabMapChunk,
+													 sizeof(IMG_BOOL) * psAllocDeviceMemIN->ui32NumVirtChunks);
+		if (psAllocDeviceMemOUT->eError != PVRSRV_OK)
+		{
+			OSFreeMem(PVRSRV_OS_PAGEABLE_HEAP,
+					  sizeof(IMG_BOOL) * psAllocDeviceMemIN->ui32NumVirtChunks,
+					  pabMapChunk,
+					  0);
+			return 0;
+		}
+	}
+
+
 	psAllocDeviceMemOUT->eError =
 		PVRSRVAllocDeviceMemKM(hDevCookieInt,
 							   psPerProc,
@@ -557,8 +677,12 @@ PVRSRVAllocDeviceMemBW(IMG_UINT32 ui32BridgeID,
 							   psAllocDeviceMemIN->ui32Alignment,
 							   psAllocDeviceMemIN->pvPrivData,
 							   psAllocDeviceMemIN->ui32PrivDataLength,
+							   psAllocDeviceMemIN->ui32ChunkSize,
+							   psAllocDeviceMemIN->ui32NumVirtChunks,
+							   psAllocDeviceMemIN->ui32NumPhysChunks,
+							   pabMapChunk,
 							   &psMemInfo,
-							   "" );
+							   "" /*FIXME: add something meaningful*/);
 
 	if (bUseShareMemWorkaround)
 	{
@@ -598,7 +722,7 @@ PVRSRVAllocDeviceMemBW(IMG_UINT32 ui32BridgeID,
 	psAllocDeviceMemOUT->sClientMemInfo.ui32Flags = psMemInfo->ui32Flags;
 	psAllocDeviceMemOUT->sClientMemInfo.uAllocSize = psMemInfo->uAllocSize;
 #if defined (SUPPORT_SID_INTERFACE)
-	
+	/* see below */
 #else
 	psAllocDeviceMemOUT->sClientMemInfo.hMappingInfo = psMemInfo->sMemBlk.hOSMemHandle;
 #endif
@@ -629,7 +753,7 @@ PVRSRVAllocDeviceMemBW(IMG_UINT32 ui32BridgeID,
 
 	if(psAllocDeviceMemIN->ui32Attribs & PVRSRV_MEM_NO_SYNCOBJ)
 	{
-		
+		/* signal no syncinfo */
 		OSMemSet(&psAllocDeviceMemOUT->sClientSyncInfo,
 				 0,
 				 sizeof (PVRSRV_CLIENT_SYNC_INFO));
@@ -637,7 +761,7 @@ PVRSRVAllocDeviceMemBW(IMG_UINT32 ui32BridgeID,
 	}
 	else
 	{
-		
+		/* and setup the sync info */
 
 #if !defined(PVRSRV_DISABLE_UM_SYNCOBJ_MAPPINGS)
 		psAllocDeviceMemOUT->sClientSyncInfo.psSyncData =
@@ -685,7 +809,7 @@ PVRSRVAllocDeviceMemBW(IMG_UINT32 ui32BridgeID,
 	return 0;
 }
 
-#endif 
+#endif /* OS_PVRSRV_ALLOC_DEVICE_MEM_BW */
 
 static IMG_INT
 PVRSRVFreeDeviceMemBW(IMG_UINT32 ui32BridgeID,
@@ -760,7 +884,7 @@ PVRSRVExportDeviceMemBW(IMG_UINT32 ui32BridgeID,
 			   ui32BridgeID == PVRSRV_GET_BRIDGE_ID(PVRSRV_BRIDGE_EXPORT_DEVICEMEM_2));
 	PVR_UNREFERENCED_PARAMETER(ui32BridgeID);
 
-	
+	/* find the device cookie */
 	psExportDeviceMemOUT->eError =
         PVRSRVLookupHandle(psPerProc->psHandleBase,
                            &hDevCookieInt,
@@ -773,7 +897,7 @@ PVRSRVExportDeviceMemBW(IMG_UINT32 ui32BridgeID,
 		return 0;
 	}
 
-	
+	/* find the kernel meminfo from the process handle list */
 	psExportDeviceMemOUT->eError =
 		PVRSRVLookupHandle(psPerProc->psHandleBase,
 						   (IMG_PVOID *)&psKernelMemInfo,
@@ -790,7 +914,7 @@ PVRSRVExportDeviceMemBW(IMG_UINT32 ui32BridgeID,
 		return 0;
 	}
 
-	
+	/* see if it's already exported */
 	psExportDeviceMemOUT->eError =
 		PVRSRVFindHandle(KERNEL_HANDLE_BASE,
 							 &psExportDeviceMemOUT->hMemInfo,
@@ -798,12 +922,12 @@ PVRSRVExportDeviceMemBW(IMG_UINT32 ui32BridgeID,
 							 PVRSRV_HANDLE_TYPE_MEM_INFO);
 	if(psExportDeviceMemOUT->eError == PVRSRV_OK)
 	{
-		
+		/* it's already exported */
 		PVR_DPF((PVR_DBG_MESSAGE, "PVRSRVExportDeviceMemBW: allocation is already exported"));
 		return 0;
 	}
 
-	
+	/* export the allocation */
 	psExportDeviceMemOUT->eError = PVRSRVAllocHandle(KERNEL_HANDLE_BASE,
 													&psExportDeviceMemOUT->hMemInfo,
 													psKernelMemInfo,
@@ -815,7 +939,7 @@ PVRSRVExportDeviceMemBW(IMG_UINT32 ui32BridgeID,
 		return 0;
 	}
 
-	
+	/* mark the meminfo as 'exported' */
 	psKernelMemInfo->ui32Flags |= PVRSRV_MEM_EXPORTED;
 
 	return 0;
@@ -838,7 +962,7 @@ PVRSRVMapDeviceMemoryBW(IMG_UINT32 ui32BridgeID,
 
 	NEW_HANDLE_BATCH_OR_ERROR(psMapDevMemOUT->eError, psPerProc, 2)
 
-	
+	/* lookup srcmeminfo handle */
 	psMapDevMemOUT->eError = PVRSRVLookupHandle(KERNEL_HANDLE_BASE,
 												(IMG_VOID**)&psSrcKernelMemInfo,
 												psMapDevMemIN->hKernelMemInfo,
@@ -848,7 +972,7 @@ PVRSRVMapDeviceMemoryBW(IMG_UINT32 ui32BridgeID,
 		return 0;
 	}
 
-	
+	/* lookup dev mem heap handle */
 	psMapDevMemOUT->eError = PVRSRVLookupHandle(psPerProc->psHandleBase,
 												&hDstDevMemHeap,
 												psMapDevMemIN->hDstDevMemHeap,
@@ -858,19 +982,20 @@ PVRSRVMapDeviceMemoryBW(IMG_UINT32 ui32BridgeID,
 		return 0;
 	}
 
-	
+	/* check for workaround */
 	if (psSrcKernelMemInfo->sShareMemWorkaround.bInUse)
 	{
 		PVR_DPF((PVR_DBG_MESSAGE, "using the mem wrap workaround."));
 
-		
-
-
-
-
-
-
-
+		/* Ensure we get the same ID for this allocation, such that it
+		   inherits the same physical block.  Rather than add a lot of
+		   plumbing to several APIs, we call into buffer manager directly
+		   to set "global" state.  This works only if we make
+		   this allocation while holding the bridge mutex and don't
+		   make any other allocations (because the state persists and
+		   would affect other device memory allocations too).  It is
+		   important that we bracket the PVRSRVAllocDeviceMemKM() call
+		   with this Set/Unset pair. */
 		psMapDevMemOUT->eError = BM_XProcWorkaroundSetShareIndex(psSrcKernelMemInfo->sShareMemWorkaround.ui32ShareIndex);
 		if(psMapDevMemOUT->eError != PVRSRV_OK)
 		{
@@ -887,10 +1012,13 @@ PVRSRVMapDeviceMemoryBW(IMG_UINT32 ui32BridgeID,
 								   psSrcKernelMemInfo->sShareMemWorkaround.ui32OrigReqAlignment,
 								   IMG_NULL,
 								   0,
+								   /* FIXME: Do we need to be able to export sparse memory? */
+								   0,0,0,IMG_NULL,	/* No sparse mapping data */
 								   &psDstKernelMemInfo,
-								   "" );
-		
-
+								   "" /*FIXME: add something meaningful*/);
+		/* counterpart of the above "SetShareIndex".  NB: this must be
+		   done in both the success and failure paths of the
+		   AllocDeviceMemKM() call */
 		BM_XProcWorkaroundUnsetShareIndex(psSrcKernelMemInfo->sShareMemWorkaround.ui32ShareIndex);
 		if(psMapDevMemOUT->eError != PVRSRV_OK)
 		{
@@ -907,7 +1035,7 @@ PVRSRVMapDeviceMemoryBW(IMG_UINT32 ui32BridgeID,
 	}
 	else
 	{
-		
+		/* map the meminfo to the target heap and memory context */
 		psMapDevMemOUT->eError = PVRSRVMapDeviceMemoryKM(psPerProc,
 														 psSrcKernelMemInfo,
 														 hDstDevMemHeap,
@@ -918,7 +1046,7 @@ PVRSRVMapDeviceMemoryBW(IMG_UINT32 ui32BridgeID,
 		}
 	}
 
-	
+	/* copy the workaround info */
 	psDstKernelMemInfo->sShareMemWorkaround = psSrcKernelMemInfo->sShareMemWorkaround;
 
 	OSMemSet(&psMapDevMemOUT->sDstClientMemInfo,
@@ -936,12 +1064,12 @@ PVRSRVMapDeviceMemoryBW(IMG_UINT32 ui32BridgeID,
 	psMapDevMemOUT->sDstClientMemInfo.ui32Flags = psDstKernelMemInfo->ui32Flags;
     psMapDevMemOUT->sDstClientMemInfo.uAllocSize = psDstKernelMemInfo->uAllocSize;
 #if defined (SUPPORT_SID_INTERFACE)
-	
+	/* see below */
 #else
 	psMapDevMemOUT->sDstClientMemInfo.hMappingInfo = psDstKernelMemInfo->sMemBlk.hOSMemHandle;
 #endif
 
-	
+	/* allocate handle to the DST kernel meminfo */
 	PVRSRVAllocHandleNR(psPerProc->psHandleBase,
 					  &psMapDevMemOUT->sDstClientMemInfo.hKernelMemInfo,
 					  psDstKernelMemInfo,
@@ -950,7 +1078,7 @@ PVRSRVMapDeviceMemoryBW(IMG_UINT32 ui32BridgeID,
 	psMapDevMemOUT->sDstClientSyncInfo.hKernelSyncInfo = IMG_NULL;
 
 #if defined (SUPPORT_SID_INTERFACE)
-	
+	/* alloc subhandle for the mapping info */
 	if (psDstKernelMemInfo->sMemBlk.hOSMemHandle != IMG_NULL)
 	{
 		PVRSRVAllocSubHandleNR(psPerProc->psHandleBase,
@@ -966,7 +1094,7 @@ PVRSRVMapDeviceMemoryBW(IMG_UINT32 ui32BridgeID,
 	}
 #endif
 
-	
+	/* and setup the sync info */
 	if(psDstKernelMemInfo->psKernelSyncInfo)
 	{
 #if !defined(PVRSRV_DISABLE_UM_SYNCOBJ_MAPPINGS)
@@ -980,7 +1108,7 @@ PVRSRVMapDeviceMemoryBW(IMG_UINT32 ui32BridgeID,
 			psDstKernelMemInfo->psKernelSyncInfo->sReadOps2CompleteDevVAddr;
 
 #if defined (SUPPORT_SID_INTERFACE)
-		
+		/* alloc subhandle for the mapping info */
 		if (psDstKernelMemInfo->psKernelSyncInfo->psSyncDataMemInfoKM->sMemBlk.hOSMemHandle != IMG_NULL)
 		{
 			PVRSRVAllocSubHandleNR(psPerProc->psHandleBase,
@@ -1001,7 +1129,11 @@ PVRSRVMapDeviceMemoryBW(IMG_UINT32 ui32BridgeID,
 #endif
 
 		psMapDevMemOUT->sDstClientMemInfo.psClientSyncInfo = &psMapDevMemOUT->sDstClientSyncInfo;
-		
+		/*
+		 * The sync info is associated with the device buffer,
+		 * and not allocated here.  It isn't exported when created,
+		 * hence the handle allocation rather than a lookup.
+		 */
 		PVRSRVAllocSubHandleNR(psPerProc->psHandleBase,
 					  &psMapDevMemOUT->sDstClientSyncInfo.hKernelSyncInfo,
 					  psDstKernelMemInfo->psKernelSyncInfo,
@@ -1086,7 +1218,11 @@ PVRSRVMapDeviceClassMemoryBW(IMG_UINT32 ui32BridgeID,
 
 	NEW_HANDLE_BATCH_OR_ERROR(psMapDevClassMemOUT->eError, psPerProc, 2)
 
-	
+	/*
+	 * The buffer to be mapped can belong to a 3rd party display or
+	 * buffer driver, and we don't know which type we have at this
+	 * point.
+	 */
 	psMapDevClassMemOUT->eError =
         PVRSRVLookupHandleAnyType(psPerProc->psHandleBase,
 								  &hDeviceClassBufferInt,
@@ -1098,7 +1234,7 @@ PVRSRVMapDeviceClassMemoryBW(IMG_UINT32 ui32BridgeID,
 		return 0;
 	}
 
-	
+	/* get the device memory context */
 	psMapDevClassMemOUT->eError =
 		PVRSRVLookupHandle(psPerProc->psHandleBase,
 				   &hDevMemContextInt,
@@ -1110,7 +1246,7 @@ PVRSRVMapDeviceClassMemoryBW(IMG_UINT32 ui32BridgeID,
 		return 0;
 	}
 
-	
+	/* Having looked up the handle, now check its type */
 	switch(eHandleType)
 	{
 #if defined(PVR_SECURE_HANDLES) || defined (SUPPORT_SID_INTERFACE)
@@ -1177,7 +1313,7 @@ PVRSRVMapDeviceClassMemoryBW(IMG_UINT32 ui32BridgeID,
 
 	psMapDevClassMemOUT->sClientSyncInfo.hKernelSyncInfo = IMG_NULL;
 
-	
+	/* and setup the sync info */
 	if(psMemInfo->psKernelSyncInfo)
 	{
 #if !defined(PVRSRV_DISABLE_UM_SYNCOBJ_MAPPINGS)
@@ -1211,7 +1347,12 @@ PVRSRVMapDeviceClassMemoryBW(IMG_UINT32 ui32BridgeID,
 #endif
 
 		psMapDevClassMemOUT->sClientMemInfo.psClientSyncInfo = &psMapDevClassMemOUT->sClientSyncInfo;
-		
+		/*
+		 * The sync info is associated with the device buffer,
+		 * and not allocated here.  It isn't exported when
+		 * created, hence the handle allocation rather than a
+		 * lookup.
+		 */
 		PVRSRVAllocSubHandleNR(psPerProc->psHandleBase,
 						  &psMapDevClassMemOUT->sClientSyncInfo.hKernelSyncInfo,
 						  psMemInfo->psKernelSyncInfo,
@@ -1274,7 +1415,7 @@ PVRSRVWrapExtMemoryBW(IMG_UINT32 ui32BridgeID,
 					  PVRSRV_BRIDGE_IN_WRAP_EXT_MEMORY *psWrapExtMemIN,
 					  PVRSRV_BRIDGE_OUT_WRAP_EXT_MEMORY *psWrapExtMemOUT,
 					  PVRSRV_PER_PROCESS_DATA *psPerProc);
-#else 
+#else /* OS_PVRSRV_WRAP_EXT_MEM_BW */
 static IMG_INT
 PVRSRVWrapExtMemoryBW(IMG_UINT32 ui32BridgeID,
 					  PVRSRV_BRIDGE_IN_WRAP_EXT_MEMORY *psWrapExtMemIN,
@@ -1291,7 +1432,10 @@ PVRSRVWrapExtMemoryBW(IMG_UINT32 ui32BridgeID,
 
 	NEW_HANDLE_BATCH_OR_ERROR(psWrapExtMemOUT->eError, psPerProc, 2)
 
-	
+	/*
+	 * FIXME: This needs reworking - don't use the user supplied page
+	 * table list, get the list from the OS.
+	 */
 	psWrapExtMemOUT->eError =
 		PVRSRVLookupHandle(psPerProc->psHandleBase, &hDevCookieInt,
 						   psWrapExtMemIN->hDevCookie,
@@ -1301,7 +1445,7 @@ PVRSRVWrapExtMemoryBW(IMG_UINT32 ui32BridgeID,
 		return 0;
 	}
 
-	
+	/* get the device memory context */
 	psWrapExtMemOUT->eError =
 	PVRSRVLookupHandle(psPerProc->psHandleBase, &hDevMemContextInt,
 				   psWrapExtMemIN->hDevMemContext,
@@ -1330,7 +1474,7 @@ PVRSRVWrapExtMemoryBW(IMG_UINT32 ui32BridgeID,
 							   ui32PageTableSize) != PVRSRV_OK)
 		{
 			OSFreeMem(PVRSRV_OS_PAGEABLE_HEAP, 	ui32PageTableSize, (IMG_VOID *)psSysPAddr, 0);
-			
+			/*not nulling pointer, out of scope*/
 			return -EFAULT;
 		}
 	}
@@ -1352,7 +1496,7 @@ PVRSRVWrapExtMemoryBW(IMG_UINT32 ui32BridgeID,
 		OSFreeMem(PVRSRV_OS_PAGEABLE_HEAP,
 			  ui32PageTableSize,
 			  (IMG_VOID *)psSysPAddr, 0);
-		
+		/*not nulling pointer, out of scope*/
 	}
 
 	if(psWrapExtMemOUT->eError != PVRSRV_OK)
@@ -1363,12 +1507,13 @@ PVRSRVWrapExtMemoryBW(IMG_UINT32 ui32BridgeID,
 	psWrapExtMemOUT->sClientMemInfo.pvLinAddrKM =
 			psMemInfo->pvLinAddrKM;
 
-	
+	/* setup the mem info */
 	psWrapExtMemOUT->sClientMemInfo.pvLinAddr = 0;
 	psWrapExtMemOUT->sClientMemInfo.sDevVAddr = psMemInfo->sDevVAddr;
 	psWrapExtMemOUT->sClientMemInfo.ui32Flags = psMemInfo->ui32Flags;
     psWrapExtMemOUT->sClientMemInfo.uAllocSize = psMemInfo->uAllocSize;
 #if defined (SUPPORT_SID_INTERFACE)
+/* see below */
 #else
 	psWrapExtMemOUT->sClientMemInfo.hMappingInfo = psMemInfo->sMemBlk.hOSMemHandle;
 #endif
@@ -1380,7 +1525,7 @@ PVRSRVWrapExtMemoryBW(IMG_UINT32 ui32BridgeID,
 					  PVRSRV_HANDLE_ALLOC_FLAG_NONE);
 
 #if defined (SUPPORT_SID_INTERFACE)
-	
+	/* alloc subhandle for the mapping info */
 	if (psMemInfo->sMemBlk.hOSMemHandle != IMG_NULL)
 	{
 		PVRSRVAllocSubHandleNR(psPerProc->psHandleBase,
@@ -1396,7 +1541,7 @@ PVRSRVWrapExtMemoryBW(IMG_UINT32 ui32BridgeID,
 	}
 #endif
 
-	
+	/* setup the sync info */
 #if !defined(PVRSRV_DISABLE_UM_SYNCOBJ_MAPPINGS)
 	psWrapExtMemOUT->sClientSyncInfo.psSyncData =
 		psMemInfo->psKernelSyncInfo->psSyncData;
@@ -1408,7 +1553,7 @@ PVRSRVWrapExtMemoryBW(IMG_UINT32 ui32BridgeID,
 		psMemInfo->psKernelSyncInfo->sReadOps2CompleteDevVAddr;
 
 #if defined (SUPPORT_SID_INTERFACE)
-	
+	/* alloc subhandle for the mapping info */
 	if (psMemInfo->psKernelSyncInfo->psSyncDataMemInfoKM->sMemBlk.hOSMemHandle != IMG_NULL)
 	{
 		PVRSRVAllocSubHandleNR(psPerProc->psHandleBase,
@@ -1441,7 +1586,7 @@ PVRSRVWrapExtMemoryBW(IMG_UINT32 ui32BridgeID,
 
 	return 0;
 }
-#endif 
+#endif /* OS_PVRSRV_WRAP_EXT_MEM_BW */
 
 static IMG_INT
 PVRSRVUnwrapExtMemoryBW(IMG_UINT32 ui32BridgeID,
@@ -1478,6 +1623,169 @@ PVRSRVUnwrapExtMemoryBW(IMG_UINT32 ui32BridgeID,
 	return 0;
 }
 
+#if defined(SUPPORT_ION)
+static IMG_INT
+PVRSRVMapIonHandleBW(IMG_UINT32 ui32BridgeID,
+					   PVRSRV_BRIDGE_IN_MAP_ION_HANDLE *psMapIonIN,
+					   PVRSRV_BRIDGE_OUT_MAP_ION_HANDLE *psMapIonOUT,
+					   PVRSRV_PER_PROCESS_DATA *psPerProc)
+{
+	PVRSRV_KERNEL_MEM_INFO  *psKernelMemInfo;
+
+	psMapIonOUT->eError = PVRSRVLookupHandle(psPerProc->psHandleBase,
+											 &psMapIonIN->hDevCookie,
+											 psMapIonIN->hDevCookie,
+											 PVRSRV_HANDLE_TYPE_DEV_NODE);
+	if (psMapIonOUT->eError != PVRSRV_OK)
+	{
+		PVR_DPF((PVR_DBG_ERROR, "%s: Failed to lookup device node handle", __FUNCTION__));
+		return 0;
+	}
+
+	psMapIonOUT->eError = PVRSRVLookupHandle(psPerProc->psHandleBase,
+											 &psMapIonIN->hDevMemContext,
+											 psMapIonIN->hDevMemContext,
+											 PVRSRV_HANDLE_TYPE_DEV_MEM_CONTEXT);
+	if (psMapIonOUT->eError != PVRSRV_OK)
+	{
+		PVR_DPF((PVR_DBG_ERROR, "%s: Failed to lookup memory context handle", __FUNCTION__));
+		return 0;
+	}
+
+	psMapIonOUT->eError = PVRSRVMapIonHandleKM(psPerProc,
+											   psMapIonIN->hDevCookie,
+											   psMapIonIN->hDevMemContext,
+											   psMapIonIN->handle,
+											   psMapIonIN->ui32Attribs,
+											   psMapIonIN->ui32Size,
+											   &psKernelMemInfo);
+	if (psMapIonOUT->eError != PVRSRV_OK)
+	{
+		PVR_DPF((PVR_DBG_ERROR, "%s: Failed to map ion handle", __FUNCTION__));
+		return 0;
+	}
+
+	OSMemSet(&psMapIonOUT->sClientMemInfo,
+			 0,
+			 sizeof(psMapIonOUT->sClientMemInfo));
+
+	psMapIonOUT->sClientMemInfo.pvLinAddrKM =
+			psKernelMemInfo->pvLinAddrKM;
+
+	psMapIonOUT->sClientMemInfo.pvLinAddr = 0;
+	psMapIonOUT->sClientMemInfo.sDevVAddr = psKernelMemInfo->sDevVAddr;
+	psMapIonOUT->sClientMemInfo.ui32Flags = psKernelMemInfo->ui32Flags;
+	psMapIonOUT->sClientMemInfo.uAllocSize = psKernelMemInfo->uAllocSize;
+
+	/* No mapping info, we map through ion */
+	psMapIonOUT->sClientMemInfo.hMappingInfo = IMG_NULL;
+
+
+	PVRSRVAllocHandleNR(psPerProc->psHandleBase,
+						&psMapIonOUT->sClientMemInfo.hKernelMemInfo,
+						psKernelMemInfo,
+						PVRSRV_HANDLE_TYPE_MEM_INFO,
+						PVRSRV_HANDLE_ALLOC_FLAG_NONE);
+
+	if(psMapIonIN->ui32Attribs & PVRSRV_MEM_NO_SYNCOBJ)
+	{
+		/* signal no syncinfo */
+		OSMemSet(&psMapIonOUT->sClientSyncInfo,
+				 0,
+				 sizeof (PVRSRV_CLIENT_SYNC_INFO));
+		psMapIonOUT->sClientMemInfo.psClientSyncInfo = IMG_NULL;
+	}
+	else
+	{
+		/* and setup the sync info */
+#if !defined(PVRSRV_DISABLE_UM_SYNCOBJ_MAPPINGS)
+		psMapIonOUT->sClientSyncInfo.psSyncData =
+			psKernelMemInfo->psKernelSyncInfo->psSyncData;
+		psMapIonOUT->sClientSyncInfo.sWriteOpsCompleteDevVAddr =
+			psKernelMemInfo->psKernelSyncInfo->sWriteOpsCompleteDevVAddr;
+		psMapIonOUT->sClientSyncInfo.sReadOpsCompleteDevVAddr =
+			psKernelMemInfo->psKernelSyncInfo->sReadOpsCompleteDevVAddr;
+		psMapIonOUT->sClientSyncInfo.sReadOps2CompleteDevVAddr =
+			psKernelMemInfo->psKernelSyncInfo->sReadOps2CompleteDevVAddr;
+
+#if defined (SUPPORT_SID_INTERFACE)
+		if (psKernelMemInfo->psKernelSyncInfo->psSyncDataMemInfoKM->sMemBlk.hOSMemHandle != IMG_NULL)
+		{
+				PVRSRVAllocSubHandleNR(psPerProc->psHandleBase,
+									   &psMapIonOUT->sClientSyncInfo.hMappingInfo,
+									   psMemInfo->psKernelSyncInfo->psSyncDataMemInfoKM->sMemBlk.hOSMemHandle,
+									   PVRSRV_HANDLE_TYPE_SYNC_INFO,
+									   PVRSRV_HANDLE_ALLOC_FLAG_NONE,
+									   psMapIonOUT->sClientMemInfo.hKernelMemInfo);
+		}
+		else
+		{
+			psMapIonOUT->sClientSyncInfo.hMappingInfo = 0;
+		}
+#else
+		psMapIonOUT->sClientSyncInfo.hMappingInfo =
+			psKernelMemInfo->psKernelSyncInfo->psSyncDataMemInfoKM->sMemBlk.hOSMemHandle;
+#endif
+#endif
+
+		PVRSRVAllocSubHandleNR(psPerProc->psHandleBase,
+							   &psMapIonOUT->sClientSyncInfo.hKernelSyncInfo,
+							   psKernelMemInfo->psKernelSyncInfo,
+							   PVRSRV_HANDLE_TYPE_SYNC_INFO,
+							   PVRSRV_HANDLE_ALLOC_FLAG_NONE,
+							   psMapIonOUT->sClientMemInfo.hKernelMemInfo);
+
+		psMapIonOUT->sClientMemInfo.psClientSyncInfo =
+			&psMapIonOUT->sClientSyncInfo;
+	}
+	return 0;
+}
+
+static IMG_INT
+PVRSRVUnmapIonHandleBW(IMG_UINT32 ui32BridgeID,
+					   PVRSRV_BRIDGE_IN_UNMAP_ION_HANDLE *psUnmapIonIN,
+					   PVRSRV_BRIDGE_RETURN *psUnmapIonOUT,
+					   PVRSRV_PER_PROCESS_DATA *psPerProc)
+{
+	IMG_VOID *pvKernelMemInfo;
+
+	PVRSRV_BRIDGE_ASSERT_CMD(ui32BridgeID, PVRSRV_BRIDGE_UNMAP_ION_HANDLE);
+
+	psUnmapIonOUT->eError =
+        PVRSRVLookupHandle(psPerProc->psHandleBase,
+                           &pvKernelMemInfo,
+#if defined (SUPPORT_SID_INTERFACE)
+						   psUnmapIonIN->hKernelMemInfo,
+#else
+						   psUnmapIonIN->psKernelMemInfo,
+#endif
+						   PVRSRV_HANDLE_TYPE_MEM_INFO);
+
+	if(psUnmapIonOUT->eError != PVRSRV_OK)
+	{
+		return 0;
+	}
+
+	psUnmapIonOUT->eError = PVRSRVUnmapIonHandleKM(pvKernelMemInfo);
+
+	if(psUnmapIonOUT->eError != PVRSRV_OK)
+	{
+		return 0;
+	}
+
+	psUnmapIonOUT->eError =
+		PVRSRVReleaseHandle(psPerProc->psHandleBase,
+#if defined (SUPPORT_SID_INTERFACE)
+							psUnmapIonIN->hKernelMemInfo,
+#else
+							psUnmapIonIN->psKernelMemInfo,
+#endif
+							PVRSRV_HANDLE_TYPE_MEM_INFO);
+
+	return 0;
+}
+#endif	/* SUPPORT_ION */
+
 static IMG_INT
 PVRSRVGetFreeDeviceMemBW(IMG_UINT32 ui32BridgeID,
 						 PVRSRV_BRIDGE_IN_GETFREEDEVICEMEM *psGetFreeDeviceMemIN,
@@ -1505,7 +1813,7 @@ PVRMMapOSMemHandleToMMapDataBW(IMG_UINT32 ui32BridgeID,
 {
 	PVRSRV_BRIDGE_ASSERT_CMD(ui32BridgeID, PVRSRV_BRIDGE_MHANDLE_TO_MMAP_DATA);
 
-#if defined (__linux__)
+#if defined (__linux__) || defined (__QNXNTO__)
 	psMMapDataOUT->eError =
 		PVRMMapOSMemHandleToMMapData(psPerProc,
 										psMMapDataIN->hMHandle,
@@ -1531,7 +1839,7 @@ PVRMMapReleaseMMapDataBW(IMG_UINT32 ui32BridgeID,
 {
 	PVRSRV_BRIDGE_ASSERT_CMD(ui32BridgeID, PVRSRV_BRIDGE_RELEASE_MMAP_DATA);
 
-#if defined (__linux__)
+#if defined (__linux__) || defined (__QNXNTO__)
 	psMMapDataOUT->eError =
 		PVRMMapReleaseMMapData(psPerProc,
 										psMMapDataIN->hMHandle,
@@ -1961,7 +2269,7 @@ PDumpSyncPolBW(IMG_UINT32 ui32BridgeID,
 		ui32Offset = offsetof(PVRSRV_SYNC_DATA, ui32WriteOpsComplete);
 	}
 
-	
+	/* FIXME:  Move this code to somewhere outside of the bridge */
 	if (psPDumpSyncPolIN->bUseLastOpDumpVal)
 	{
 		if(psPDumpSyncPolIN->bIsRead)
@@ -2080,7 +2388,7 @@ PDumpStopInitPhaseBW(IMG_UINT32 ui32BridgeID,
 	return 0;
 }
 
-#endif 
+#endif /* PDUMP */
 
 
 static IMG_INT
@@ -2118,7 +2426,8 @@ PVRSRVGetMiscInfoBW(IMG_UINT32 ui32BridgeID,
 	    ((psGetMiscInfoIN->sMiscInfo.ui32StateRequest & PVRSRV_MISC_INFO_DDKVERSION_PRESENT) != 0) &&
 	    ((psGetMiscInfoIN->sMiscInfo.ui32StateRequest & PVRSRV_MISC_INFO_FREEMEM_PRESENT) != 0))
 	{
-		
+		/* Client must choose which of memstats and DDK version will be written to
+		 * kernel side buffer */
 		psGetMiscInfoOUT->eError = PVRSRV_ERROR_INVALID_PARAMS;
 		return 0;
 	}
@@ -2127,7 +2436,7 @@ PVRSRVGetMiscInfoBW(IMG_UINT32 ui32BridgeID,
 	    ((psGetMiscInfoIN->sMiscInfo.ui32StateRequest & PVRSRV_MISC_INFO_DDKVERSION_PRESENT) != 0) ||
 	    ((psGetMiscInfoIN->sMiscInfo.ui32StateRequest & PVRSRV_MISC_INFO_FREEMEM_PRESENT) != 0))
 	{
-		
+		/* Alloc kernel side buffer to write into */
 #if defined (SUPPORT_SID_INTERFACE)
 		ASSIGN_AND_EXIT_ON_ERROR(psGetMiscInfoOUT->eError,
 					OSAllocMem(PVRSRV_OS_PAGEABLE_HEAP,
@@ -2136,7 +2445,7 @@ PVRSRVGetMiscInfoBW(IMG_UINT32 ui32BridgeID,
 							"Output string buffer"));
 		psGetMiscInfoOUT->eError = PVRSRVGetMiscInfoKM(&sMiscInfo);
 
-		
+		/* Copy result to user */
 		eError = CopyToUserWrapper(psPerProc, ui32BridgeID,
 									psGetMiscInfoIN->sMiscInfo.pszMemoryStr,
 									sMiscInfo.pszMemoryStr,
@@ -2150,14 +2459,14 @@ PVRSRVGetMiscInfoBW(IMG_UINT32 ui32BridgeID,
 
 		psGetMiscInfoOUT->eError = PVRSRVGetMiscInfoKM(&psGetMiscInfoOUT->sMiscInfo);
 
-		
+		/* Copy result to user */
 		eError = CopyToUserWrapper(psPerProc, ui32BridgeID,
 		                           psGetMiscInfoIN->sMiscInfo.pszMemoryStr,
 		                           psGetMiscInfoOUT->sMiscInfo.pszMemoryStr,
 		                           psGetMiscInfoOUT->sMiscInfo.ui32MemoryStrLen);
 #endif
 
-		
+		/* Free kernel side buffer again */
 #if defined (SUPPORT_SID_INTERFACE)
 		OSFreeMem(PVRSRV_OS_PAGEABLE_HEAP,
 					sMiscInfo.ui32MemoryStrLen,
@@ -2168,12 +2477,16 @@ PVRSRVGetMiscInfoBW(IMG_UINT32 ui32BridgeID,
 		         (IMG_VOID *)psGetMiscInfoOUT->sMiscInfo.pszMemoryStr, 0);
 #endif
 
-		
+		/* Replace output buffer pointer with input pointer, as both are expected
+		 * to point to the same userspace memory.
+		 */
 		psGetMiscInfoOUT->sMiscInfo.pszMemoryStr = psGetMiscInfoIN->sMiscInfo.pszMemoryStr;
 
 		if(eError != PVRSRV_OK)
 		{
-			
+			/* Do error check at the end as we always have to free and reset the
+			 * pointer.
+			 */
 			PVR_DPF((PVR_DBG_ERROR, "PVRSRVGetMiscInfoBW Error copy to user"));
 			return -EFAULT;
 		}
@@ -2187,13 +2500,19 @@ PVRSRVGetMiscInfoBW(IMG_UINT32 ui32BridgeID,
 #endif
 	}
 
-	
+	/* Return on error so exit status of PVRSRVGetMiscInfoKM is propagated to client.
+	 * Don't alloc handles for event object or timer; if error exit status is returned
+	 * the handles should not be used (even if not null) */
 	if (psGetMiscInfoOUT->eError != PVRSRV_OK)
 	{
 		return 0;
 	}
 
-	
+	/*
+	 * The handles are not allocated in batch mode as they are shared
+	 * (a shared handle is allocated at most once), and there is no
+	 * resource allocation to undo if the handle allocation fails.
+	 */
 #if defined (SUPPORT_SID_INTERFACE)
 	if (sMiscInfo.ui32StateRequest & PVRSRV_MISC_INFO_GLOBALEVENTOBJECT_PRESENT)
 #else
@@ -2228,7 +2547,7 @@ PVRSRVGetMiscInfoBW(IMG_UINT32 ui32BridgeID,
 	if (psGetMiscInfoOUT->sMiscInfo.hSOCTimerRegisterOSMemHandle)
 #endif
 	{
-		
+		/* Allocate handle for SOC OSMemHandle */
 		psGetMiscInfoOUT->eError = PVRSRVAllocHandle(psPerProc->psHandleBase,
 						  &psGetMiscInfoOUT->sMiscInfo.hSOCTimerRegisterOSMemHandle,
 #if defined (SUPPORT_SID_INTERFACE)
@@ -2250,7 +2569,7 @@ PVRSRVGetMiscInfoBW(IMG_UINT32 ui32BridgeID,
 		psGetMiscInfoOUT->sMiscInfo.hSOCTimerRegisterOSMemHandle = 0;
 	}
 
-	
+	/* copy data from local sMiscInfo to OUT */
 	psGetMiscInfoOUT->sMiscInfo.ui32StateRequest = sMiscInfo.ui32StateRequest;
 	psGetMiscInfoOUT->sMiscInfo.ui32StatePresent = sMiscInfo.ui32StatePresent;
 
@@ -2283,19 +2602,27 @@ PVRSRVConnectBW(IMG_UINT32 ui32BridgeID,
 	PVRSRV_BRIDGE_ASSERT_CMD(ui32BridgeID, PVRSRV_BRIDGE_CONNECT_SERVICES);
 
 #if defined(PDUMP)
-	
+	/* Store the per process connection info.
+	 * The Xserver initially connects via PVR2D which sets the persistent flag.
+	 * But, later the Xserver may connect via SGL which doesn't carry the flag (in
+	 * general SGL clients aren't persistent). So we OR in the flag so if it was set
+	 * before it remains set.
+	 */
 	if ((psConnectServicesIN->ui32Flags & SRV_FLAGS_PERSIST) != 0)
 	{
     	psPerProc->bPDumpPersistent = IMG_TRUE;
 	}
 
 #if defined(SUPPORT_PDUMP_MULTI_PROCESS)
-	
+	/* Select whether this client is our 'active' target for pdumping in a
+	 * multi-process environment.
+	 * NOTE: only 1 active target is supported at present.
+	 */
 	if ((psConnectServicesIN->ui32Flags & SRV_FLAGS_PDUMP_ACTIVE) != 0)
 	{
     	psPerProc->bPDumpActive = IMG_TRUE;
 	}
-#endif 
+#endif /* SUPPORT_PDUMP_MULTI_PROCESS */
 #else
 	PVR_UNREFERENCED_PARAMETER(psConnectServicesIN);
 #endif
@@ -2316,7 +2643,7 @@ PVRSRVDisconnectBW(IMG_UINT32 ui32BridgeID,
 
 	PVRSRV_BRIDGE_ASSERT_CMD(ui32BridgeID, PVRSRV_BRIDGE_DISCONNECT_SERVICES);
 
-	
+	/* just return OK, per-process data is cleaned up by resmgr */
 	psRetOUT->eError = PVRSRV_OK;
 
 	return 0;
@@ -2405,7 +2732,7 @@ PVRSRVCloseDCDeviceBW(IMG_UINT32 ui32BridgeID,
 		return 0;
 	}
 
-	psRetOUT->eError = PVRSRVCloseDCDeviceKM(pvDispClassInfoInt, IMG_FALSE);
+	psRetOUT->eError = PVRSRVCloseDCDeviceKM(pvDispClassInfoInt);
 	if(psRetOUT->eError != PVRSRV_OK)
 	{
 		return 0;
@@ -2479,7 +2806,7 @@ PVRSRVEnumDCDimsBW(IMG_UINT32 ui32BridgeID,
 #if defined(SUPPORT_PVRSRV_GET_DC_SYSTEM_BUFFER)
 static IMG_INT
 PVRSRVGetDCSystemBufferBW(IMG_UINT32 ui32BridgeID,
-						  PVRSRV_BRIDGE_IN_GET_DISPCLASS_SYSBUFFER *psGetDispClassSysBufferIN,  
+						  PVRSRV_BRIDGE_IN_GET_DISPCLASS_SYSBUFFER *psGetDispClassSysBufferIN,  //IMG_HANDLE *phGetDispClassSysBufferIN,
 						  PVRSRV_BRIDGE_OUT_GET_DISPCLASS_SYSBUFFER *psGetDispClassSysBufferOUT,
 						  PVRSRV_PER_PROCESS_DATA *psPerProc)
 {
@@ -2509,7 +2836,7 @@ PVRSRVGetDCSystemBufferBW(IMG_UINT32 ui32BridgeID,
 		return 0;
 	}
 
-	 
+	/* PRQA S 1461 6 */ /* ignore warning about enum type being converted */
 	PVRSRVAllocSubHandleNR(psPerProc->psHandleBase,
 						 &psGetDispClassSysBufferOUT->hBuffer,
 						 hBufferInt,
@@ -2575,7 +2902,7 @@ PVRSRVCreateDCSwapChainBW(IMG_UINT32 ui32BridgeID,
 		return 0;
 	}
 
-	
+	/* Get ui32SwapChainID from input */
 	ui32SwapChainID = psCreateDispClassSwapChainIN->ui32SwapChainID;
 
 	psCreateDispClassSwapChainOUT->eError =
@@ -2593,7 +2920,7 @@ PVRSRVCreateDCSwapChainBW(IMG_UINT32 ui32BridgeID,
 		return 0;
 	}
 
-	
+	/* Pass ui32SwapChainID to output */
 	psCreateDispClassSwapChainOUT->ui32SwapChainID = ui32SwapChainID;
 
 	PVRSRVAllocSubHandleNR(psPerProc->psHandleBase,
@@ -2874,7 +3201,7 @@ PVRSRVGetDCBuffersBW(IMG_UINT32 ui32BridgeID,
 		IMG_HANDLE hBufferExt;
 #endif
 
-	 
+	/* PRQA S 1461 15 */ /* ignore warning about enum type being converted */
 #if defined (SUPPORT_SID_INTERFACE)
 	PVRSRVAllocSubHandleNR(psPerProc->psHandleBase,
 							&hBufferExt,
@@ -3208,7 +3535,7 @@ PVRSRVCloseBCDeviceBW(IMG_UINT32 ui32BridgeID,
 	}
 
 	psRetOUT->eError =
-		PVRSRVCloseBCDeviceKM(pvBufClassInfo, IMG_FALSE);
+		PVRSRVCloseBCDeviceKM(pvBufClassInfo);
 
 	if(psRetOUT->eError != PVRSRV_OK)
 	{
@@ -3281,7 +3608,7 @@ PVRSRVGetBCBufferBW(IMG_UINT32 ui32BridgeID,
 		return 0;
 	}
 
-	 
+	/* PRQA S 1461 6 */ /* ignore warning about enum type being converted */
 	PVRSRVAllocSubHandleNR(psPerProc->psHandleBase,
 						 &psGetBufferClassBufferOUT->hBuffer,
 						 hBufferInt,
@@ -3451,7 +3778,11 @@ PVRSRVMapMemInfoMemBW(IMG_UINT32 ui32BridgeID,
 			return 0;
 	}
 
-	
+	/*
+	 * To prevent the building up of deep chains of subhandles, parent
+	 * the new meminfo off the parent of the input meminfo, if it has
+	 * a parent.
+	 */
 	psMapMemInfoMemOUT->eError =
 		PVRSRVGetParentHandle(psPerProc->psHandleBase,
 					&hParent,
@@ -3511,14 +3842,14 @@ PVRSRVMapMemInfoMemBW(IMG_UINT32 ui32BridgeID,
 
 	if(psKernelMemInfo->ui32Flags & PVRSRV_MEM_NO_SYNCOBJ)
 	{
-		
+		/* signal no syncinfo */
 		OSMemSet(&psMapMemInfoMemOUT->sClientSyncInfo,
 				 0,
 				 sizeof (PVRSRV_CLIENT_SYNC_INFO));
 	}
 	else
 	{
-		
+		/* and setup the sync info */
 #if !defined(PVRSRV_DISABLE_UM_SYNCOBJ_MAPPINGS)
 		psMapMemInfoMemOUT->sClientSyncInfo.psSyncData =
 			psKernelMemInfo->psKernelSyncInfo->psSyncData;
@@ -3526,8 +3857,6 @@ PVRSRVMapMemInfoMemBW(IMG_UINT32 ui32BridgeID,
 			psKernelMemInfo->psKernelSyncInfo->sWriteOpsCompleteDevVAddr;
 		psMapMemInfoMemOUT->sClientSyncInfo.sReadOpsCompleteDevVAddr =
 			psKernelMemInfo->psKernelSyncInfo->sReadOpsCompleteDevVAddr;
-		psMapMemInfoMemOUT->sClientSyncInfo.sReadOps2CompleteDevVAddr =
-			psKernelMemInfo->psKernelSyncInfo->sReadOps2CompleteDevVAddr;
 		psMapMemInfoMemOUT->sClientSyncInfo.sReadOps2CompleteDevVAddr =
 			psKernelMemInfo->psKernelSyncInfo->sReadOps2CompleteDevVAddr;
 
@@ -3568,40 +3897,6 @@ PVRSRVMapMemInfoMemBW(IMG_UINT32 ui32BridgeID,
 
 
 
-static IMG_INT
-MMU_GetPDDevPAddrBW(IMG_UINT32 ui32BridgeID,
-					PVRSRV_BRIDGE_IN_GETMMU_PD_DEVPADDR *psGetMmuPDDevPAddrIN,
-					PVRSRV_BRIDGE_OUT_GETMMU_PD_DEVPADDR *psGetMmuPDDevPAddrOUT,
-					PVRSRV_PER_PROCESS_DATA *psPerProc)
-{
-	IMG_HANDLE hDevMemContextInt;
-
-	PVRSRV_BRIDGE_ASSERT_CMD(ui32BridgeID, PVRSRV_BRIDGE_GETMMU_PD_DEVPADDR);
-
-	psGetMmuPDDevPAddrOUT->eError =
-		PVRSRVLookupHandle(psPerProc->psHandleBase, &hDevMemContextInt,
-						   psGetMmuPDDevPAddrIN->hDevMemContext,
-						   PVRSRV_HANDLE_TYPE_DEV_MEM_CONTEXT);
-	if(psGetMmuPDDevPAddrOUT->eError != PVRSRV_OK)
-	{
-		return 0;
-	}
-
-	psGetMmuPDDevPAddrOUT->sPDDevPAddr =
-		BM_GetDeviceNode(hDevMemContextInt)->pfnMMUGetPDDevPAddr(BM_GetMMUContextFromMemContext(hDevMemContextInt));
-	if(psGetMmuPDDevPAddrOUT->sPDDevPAddr.uiAddr)
-	{
-		psGetMmuPDDevPAddrOUT->eError = PVRSRV_OK;
-	}
-	else
-	{
-		psGetMmuPDDevPAddrOUT->eError = PVRSRV_ERROR_INVALID_PHYS_ADDR;
-	}
-	return 0;
-}
-
-
-
 IMG_INT
 DummyBW(IMG_UINT32 ui32BridgeID,
 		IMG_VOID *psBridgeIn,
@@ -3628,13 +3923,25 @@ DummyBW(IMG_UINT32 ui32BridgeID,
 }
 
 
+/*!
+ * *****************************************************************************
+ * @brief A wrapper for filling in the g_BridgeDispatchTable array that does
+ * 		  error checking.
+ *
+ * @param ui32Index
+ * @param pszIOCName
+ * @param pfFunction
+ * @param pszFunctionName
+ *
+ * @return
+ ********************************************************************************/
 IMG_VOID
 _SetDispatchTableEntry(IMG_UINT32 ui32Index,
 					   const IMG_CHAR *pszIOCName,
 					   BridgeWrapperFunction pfFunction,
 					   const IMG_CHAR *pszFunctionName)
 {
-	static IMG_UINT32 ui32PrevIndex = ~0UL;		
+	static IMG_UINT32 ui32PrevIndex = ~0UL;		/* -1 */
 #if !defined(DEBUG)
 	PVR_UNREFERENCED_PARAMETER(pszIOCName);
 #endif
@@ -3643,11 +3950,16 @@ _SetDispatchTableEntry(IMG_UINT32 ui32Index,
 #endif
 
 #if defined(DEBUG_BRIDGE_KM_DISPATCH_TABLE)
-	
+	/* INTEGRATION_POINT: Enable this to dump out the dispatch table entries */
 	PVR_DPF((PVR_DBG_WARNING, "%s: %d %s %s", __FUNCTION__, ui32Index, pszIOCName, pszFunctionName));
 #endif
 
-	
+	/* We should never be over-writing a previous entry.
+	 * If we are, tell the world about it.
+	 * NOTE: This shouldn't be debug only since switching from debug->release
+	 * etc is likly to modify the available ioctls and thus be a point where
+	 * mistakes are exposed. This isn't run at at a performance critical time.
+	 */
 	if(g_BridgeDispatchTable[ui32Index].pfFunction)
 	{
 #if defined(DEBUG_BRIDGE_KM)
@@ -3662,7 +3974,17 @@ _SetDispatchTableEntry(IMG_UINT32 ui32Index,
 		PVR_DPF((PVR_DBG_ERROR, "NOTE: Enabling DEBUG_BRIDGE_KM_DISPATCH_TABLE may help debug this issue."));
 	}
 
-	
+	/* Any gaps are sub-optimal in-terms of memory usage, but we are mainly
+	 * interested in spotting any large gap of wasted memory that could be
+	 * accidentally introduced.
+	 *
+	 * This will currently flag up any gaps > 5 entries.
+	 *
+	 * NOTE: This shouldn't be debug only since switching from debug->release
+	 * etc is likly to modify the available ioctls and thus be a point where
+	 * mistakes are exposed. This isn't run at at a performance critical time.
+	 */
+//	if((ui32PrevIndex != (IMG_UINT32)-1) &&
 	if((ui32PrevIndex != ~0UL) &&
 	   ((ui32Index >= ui32PrevIndex + DISPATCH_TABLE_GAP_THRESHOLD) ||
 		(ui32Index <= ui32PrevIndex)))
@@ -3702,14 +4024,14 @@ PVRSRVInitSrvConnectBW(IMG_UINT32 ui32BridgeID,
 	PVRSRV_BRIDGE_ASSERT_CMD(ui32BridgeID, PVRSRV_BRIDGE_INITSRV_CONNECT);
 	PVR_UNREFERENCED_PARAMETER(psBridgeIn);
 
-	 
+	/* PRQA S 3415 1 */ /* side effects needed - if any step fails */
 	if((OSProcHasPrivSrvInit() == IMG_FALSE) || PVRSRVGetInitServerState(PVRSRV_INIT_SERVER_RUNNING) || PVRSRVGetInitServerState(PVRSRV_INIT_SERVER_RAN))
 	{
 		psRetOUT->eError = PVRSRV_ERROR_SRV_CONNECT_FAILED;
 		return 0;
 	}
 
-#if defined (__linux__)
+#if defined (__linux__) || defined (__QNXNTO__)
 	PVRSRVSetInitServerState(PVRSRV_INIT_SERVER_RUNNING, IMG_TRUE);
 #endif
 	psPerProc->bInitProcess = IMG_TRUE;
@@ -3821,6 +4143,8 @@ PVRSRVEventObjectOpenBW(IMG_UINT32 ui32BridgeID,
 	}
 
 #if defined (SUPPORT_SID_INTERFACE)
+/* Windows7, WinXP and Vista already use an Index type handle which the client glue uses directly */
+/* Linux requires a SID handle */
 #if !defined (WINXP) && !defined(SUPPORT_VISTA)
 	PVRSRVAllocHandleNR(psPerProc->psHandleBase,
 						&psEventObjectOpenOUT->hOSEvent,
@@ -3885,7 +4209,7 @@ PVRSRVEventObjectCloseBW(IMG_UINT32 ui32BridgeID,
 							&psEventObjectCloseIN->sEventObject.szName,
 							EVENTOBJNAME_MAXLENGTH) != PVRSRV_OK)
 	{
-		
+		/*not nulling pointer, out of scope*/
 		return -EFAULT;
 	}
 
@@ -3918,22 +4242,29 @@ static PVRSRV_ERROR DoQuerySyncOpsSatisfied(PVRSRV_KERNEL_SYNC_INFO *psKernelSyn
 	IMG_UINT32 ui32ReadOpsPending;
 	IMG_UINT32 ui32ReadOps2Pending;
 
-	
+	/*
+	 *
+	 * We wait until the complete count reaches _or_moves_past_ the
+	 * snapshot value.
+	 *
+	 */
+
 	if (!psKernelSyncInfo)
 	{
 		return PVRSRV_ERROR_INVALID_PARAMS;
 	}
 
-	
+	/*
+	 let p be the pending ops count
+	 let c be the complete ops count
+	 let p' be the previously taken snapshot
 
+	 if p exceeds c by an amount greater than that by which
+	 p exceeds p', then the condition is not yet satisfied.
 
-
-
-
-
-
-
-
+	 Note that (p - c) can never be negative, and neither can (p - p')
+	 so we can do the comparison using unsigned arithmetic
+	*/
 	ui32WriteOpsPending = psKernelSyncInfo->psSyncData->ui32WriteOpsPending;
 	ui32ReadOpsPending = psKernelSyncInfo->psSyncData->ui32ReadOpsPending;
 	ui32ReadOps2Pending = psKernelSyncInfo->psSyncData->ui32ReadOps2Pending;
@@ -3946,7 +4277,7 @@ static PVRSRV_ERROR DoQuerySyncOpsSatisfied(PVRSRV_KERNEL_SYNC_INFO *psKernelSyn
 		ui32ReadOps2Pending - psKernelSyncInfo->psSyncData->ui32ReadOps2Complete))
 	{
 #if defined(PDUMP) && !defined(SUPPORT_VGX)
-		
+		/* pdump the sync pol: reads */
 		PDumpComment("Poll for read ops complete to reach value (pdump: %u, actual snapshot: %u)",
 					 psKernelSyncInfo->psSyncData->ui32LastReadOpDumpVal,
 					 ui32ReadOpsPendingSnapShot);
@@ -3954,11 +4285,11 @@ static PVRSRV_ERROR DoQuerySyncOpsSatisfied(PVRSRV_KERNEL_SYNC_INFO *psKernelSyn
 					  offsetof(PVRSRV_SYNC_DATA, ui32ReadOpsComplete),
 					  psKernelSyncInfo->psSyncData->ui32LastReadOpDumpVal,
 					  0xFFFFFFFF,
-					  PDUMP_POLL_OPERATOR_EQUAL, 
+					  PDUMP_POLL_OPERATOR_EQUAL, /*  * see "NB" below */
 					  0,
 					  MAKEUNIQUETAG(psKernelSyncInfo->psSyncDataMemInfoKM));
 
-		
+		/* pdump the sync pol: writes */
 		PDumpComment("Poll for write ops complete to reach value (pdump: %u, actual snapshot: %u)",
 					 psKernelSyncInfo->psSyncData->ui32LastOpDumpVal,
 					 ui32WriteOpsPendingSnapShot);
@@ -3966,11 +4297,12 @@ static PVRSRV_ERROR DoQuerySyncOpsSatisfied(PVRSRV_KERNEL_SYNC_INFO *psKernelSyn
 					  offsetof(PVRSRV_SYNC_DATA, ui32WriteOpsComplete),
 					  psKernelSyncInfo->psSyncData->ui32LastOpDumpVal,
 					  0xFFFFFFFF,
-					  PDUMP_POLL_OPERATOR_EQUAL, 
+					  PDUMP_POLL_OPERATOR_EQUAL, /*  * see "NB" below */
 					  0,
 					  MAKEUNIQUETAG(psKernelSyncInfo->psSyncDataMemInfoKM));
-		
-
+		/* NB: FIXME -- really need to POL on an expression to
+		   accurately reflect the condition we need to check.  How to
+		   do this in PDUMP? */
 #endif
 		return PVRSRV_OK;
 	}
@@ -3992,20 +4324,21 @@ static PVRSRV_ERROR DoModifyCompleteSyncOps(MODIFY_SYNC_OP_INFO *psModSyncOpInfo
 		return PVRSRV_ERROR_INVALID_PARAMS;
 	}
 
-	
+	/* If user has used the API correctly, we will always have reached the pending snapshot.
+	   We should catch this error on the client side of the bridge and report it in an obvious way */
 	if((psModSyncOpInfo->ui32WriteOpsPendingSnapShot != psKernelSyncInfo->psSyncData->ui32WriteOpsComplete)
 	   || (psModSyncOpInfo->ui32ReadOpsPendingSnapShot != psKernelSyncInfo->psSyncData->ui32ReadOpsComplete))
 	{
 		return PVRSRV_ERROR_BAD_SYNC_STATE;
 	}
 
-	
+	/* update the WOpComplete */
 	if(psModSyncOpInfo->ui32ModifyFlags & PVRSRV_MODIFYSYNCOPS_FLAGS_WO_INC)
 	{
 		psKernelSyncInfo->psSyncData->ui32WriteOpsComplete++;
 	}
 
-	
+	/* update the ROpComplete */
 	if(psModSyncOpInfo->ui32ModifyFlags & PVRSRV_MODIFYSYNCOPS_FLAGS_RO_INC)
 	{
 		psKernelSyncInfo->psSyncData->ui32ReadOpsComplete++;
@@ -4034,7 +4367,6 @@ static PVRSRV_ERROR ModifyCompleteSyncOpsCallBack(IMG_PVOID		pvParam,
 
 	if (psModSyncOpInfo->psKernelSyncInfo)
 	{
-		
 		LOOP_UNTIL_TIMEOUT(MAX_HW_TIME_US)
 		{
 			if (DoQuerySyncOpsSatisfied(psModSyncOpInfo->psKernelSyncInfo,
@@ -4062,12 +4394,12 @@ static PVRSRV_ERROR ModifyCompleteSyncOpsCallBack(IMG_PVOID		pvParam,
 
 OpFlushedComplete:
 		DoModifyCompleteSyncOps(psModSyncOpInfo);
+		PVRSRVKernelSyncInfoDecRef(psModSyncOpInfo->psKernelSyncInfo, IMG_NULL);
 	}
 
 	OSFreeMem(PVRSRV_OS_PAGEABLE_HEAP, 	sizeof(MODIFY_SYNC_OP_INFO), (IMG_VOID *)psModSyncOpInfo, 0);
-	
 
-	
+	/* re-kick all services managed devices */
 	PVRSRVScheduleDeviceCallbacks();
 
 	return PVRSRV_OK;
@@ -4094,7 +4426,7 @@ PVRSRVCreateSyncInfoModObjBW(IMG_UINT32                                         
 			  (IMG_VOID **)&psModSyncOpInfo, 0,
 			  "ModSyncOpInfo (MODIFY_SYNC_OP_INFO)"));
 
-	psModSyncOpInfo->psKernelSyncInfo = IMG_NULL; 
+	psModSyncOpInfo->psKernelSyncInfo = IMG_NULL; /* mark it as empty */
 
 	psCreateSyncInfoModObjOUT->eError = PVRSRVAllocHandle(psPerProc->psHandleBase,
 																  &psCreateSyncInfoModObjOUT->hKernelSyncInfoModObj,
@@ -4141,10 +4473,12 @@ PVRSRVDestroySyncInfoModObjBW(IMG_UINT32                                        
 
 	if(psModSyncOpInfo->psKernelSyncInfo != IMG_NULL)
 	{
-		
+		/* Not empty */
 		psDestroySyncInfoModObjOUT->eError = PVRSRV_ERROR_INVALID_PARAMS;
 		return 0;
 	}
+
+	PVRSRVKernelSyncInfoDecRef(psModSyncOpInfo->psKernelSyncInfo, IMG_NULL);
 
 	psDestroySyncInfoModObjOUT->eError = PVRSRVReleaseHandle(psPerProc->psHandleBase,
 																	 psDestroySyncInfoModObjIN->hKernelSyncInfoModObj,
@@ -4200,20 +4534,29 @@ PVRSRVModifyPendingSyncOpsBW(IMG_UINT32									ui32BridgeID,
 
 	if(psModSyncOpInfo->psKernelSyncInfo)
 	{
-		
+		/* SyncInfoModification is not empty */
 		psModifySyncOpsOUT->eError = PVRSRV_ERROR_RETRY;
 		PVR_DPF((PVR_DBG_VERBOSE, "PVRSRVModifyPendingSyncOpsBW: SyncInfo Modification object is not empty"));
 		return 0;
 	}
 
-	
+	/* Should never happen, but check to be sure */
+	if (psKernelSyncInfo == IMG_NULL)
+	{
+		psModifySyncOpsOUT->eError = PVRSRV_ERROR_INVALID_PARAMS;
+		PVR_DPF((PVR_DBG_VERBOSE, "PVRSRVModifyPendingSyncOpsBW: SyncInfo bad handle"));
+		return 0;
+	}
+
+	PVRSRVKernelSyncInfoIncRef(psKernelSyncInfo, IMG_NULL);
+	/* setup info to store in resman */
 	psModSyncOpInfo->psKernelSyncInfo = psKernelSyncInfo;
 	psModSyncOpInfo->ui32ModifyFlags = psModifySyncOpsIN->ui32ModifyFlags;
 	psModSyncOpInfo->ui32ReadOpsPendingSnapShot = psKernelSyncInfo->psSyncData->ui32ReadOpsPending;
 	psModSyncOpInfo->ui32WriteOpsPendingSnapShot = psKernelSyncInfo->psSyncData->ui32WriteOpsPending;
 	psModSyncOpInfo->ui32ReadOps2PendingSnapShot = psKernelSyncInfo->psSyncData->ui32ReadOps2Pending;
 
-	
+	/* We return PRE-INCREMENTED versions of all sync Op Values */
 
 	psModifySyncOpsOUT->ui32ReadOpsPending = psKernelSyncInfo->psSyncData->ui32ReadOpsPending;
 	psModifySyncOpsOUT->ui32WriteOpsPending = psKernelSyncInfo->psSyncData->ui32WriteOpsPending;
@@ -4229,7 +4572,7 @@ PVRSRVModifyPendingSyncOpsBW(IMG_UINT32									ui32BridgeID,
 		psKernelSyncInfo->psSyncData->ui32ReadOpsPending++;
 	}
 
-	
+	/* pull the resman item to the front of the list */
 	psModifySyncOpsOUT->eError = ResManDissociateRes(psModSyncOpInfo->hResItem,
 													 psPerProc->hResManContext);
 
@@ -4265,7 +4608,7 @@ PVRSRVModifyCompleteSyncOpsBW(IMG_UINT32							ui32BridgeID,
 
 	if(psModSyncOpInfo->psKernelSyncInfo == IMG_NULL)
 	{
-		
+		/* Empty */
 		psModifySyncOpsOUT->eError = PVRSRV_ERROR_INVALID_PARAMS;
 		return 0;
 	}
@@ -4278,9 +4621,10 @@ PVRSRVModifyCompleteSyncOpsBW(IMG_UINT32							ui32BridgeID,
 		return 0;
 	}
 
+	PVRSRVKernelSyncInfoDecRef(psModSyncOpInfo->psKernelSyncInfo, IMG_NULL);
 	psModSyncOpInfo->psKernelSyncInfo = IMG_NULL;
 
-	
+	/* re-kick all services managed devices */
 	PVRSRVScheduleDeviceCallbacks();
 
 	return 0;
@@ -4307,7 +4651,7 @@ PVRSRVSyncOpsTakeTokenBW(IMG_UINT32									ui32BridgeID,
 		return 0;
 	}
 
-	
+	/* We return PRE-INCREMENTED versions of all sync Op Values */
 
 	psSyncOpsTakeTokenOUT->ui32ReadOpsPending = psKernelSyncInfo->psSyncData->ui32ReadOpsPending;
 	psSyncOpsTakeTokenOUT->ui32WriteOpsPending = psKernelSyncInfo->psSyncData->ui32WriteOpsPending;
@@ -4381,7 +4725,7 @@ PVRSRVSyncOpsFlushToModObjBW(IMG_UINT32                                         
 
 	if(psModSyncOpInfo->psKernelSyncInfo == IMG_NULL)
 	{
-		
+		/* Empty */
 		psSyncOpsFlushToModObjOUT->eError = PVRSRV_ERROR_INVALID_PARAMS;
 		return 0;
 	}
@@ -4423,14 +4767,16 @@ PVRSRVSyncOpsFlushToDeltaBW(IMG_UINT32                                         u
 		return 0;
 	}
 
-	
+	/* FIXME:  there's logic here in the bridge-wrapper - this needs to be moved to
+	   a better place */
+
 	ui32DeltaRead = psSyncInfo->psSyncData->ui32ReadOpsPending - psSyncInfo->psSyncData->ui32ReadOpsComplete;
 	ui32DeltaWrite = psSyncInfo->psSyncData->ui32WriteOpsPending - psSyncInfo->psSyncData->ui32WriteOpsComplete;
 
 	if (ui32DeltaRead <= psSyncOpsFlushToDeltaIN->ui32Delta && ui32DeltaWrite <= psSyncOpsFlushToDeltaIN->ui32Delta)
 	{
 #if defined(PDUMP) && !defined(SUPPORT_VGX)
-		
+		/* pdump the sync pol: reads */
 		PDumpComment("Poll for read ops complete to delta (%u)",
 					 psSyncOpsFlushToDeltaIN->ui32Delta);
 		psSyncOpsFlushToDeltaOUT->eError =
@@ -4442,7 +4788,7 @@ PVRSRVSyncOpsFlushToDeltaBW(IMG_UINT32                                         u
 						  0,
 						  MAKEUNIQUETAG(psSyncInfo->psSyncDataMemInfoKM));
 
-		
+		/* pdump the sync pol: writes */
 		PDumpComment("Poll for write ops complete to delta (%u)",
 					 psSyncOpsFlushToDeltaIN->ui32Delta);
 		psSyncOpsFlushToDeltaOUT->eError =
@@ -4472,18 +4818,13 @@ FreeSyncInfoCallback(IMG_PVOID	pvParam,
                      IMG_BOOL	bDummy)
 {
 	PVRSRV_KERNEL_SYNC_INFO *psSyncInfo;
-	PVRSRV_ERROR eError;
 
 	PVR_UNREFERENCED_PARAMETER(ui32Param);
     PVR_UNREFERENCED_PARAMETER(bDummy);
 
 	psSyncInfo = (PVRSRV_KERNEL_SYNC_INFO *)pvParam;
 
-	eError = PVRSRVFreeSyncInfoKM(psSyncInfo);
-	if (eError != PVRSRV_OK)
-	{
-		return eError;
-	}
+	PVRSRVKernelSyncInfoDecRef(psSyncInfo, IMG_NULL);
 
 	return PVRSRV_OK;
 }
@@ -4541,16 +4882,16 @@ PVRSRVAllocSyncInfoBW(IMG_UINT32                                         ui32Bri
 											   0,
 											   FreeSyncInfoCallback);
 
-	
+	/* Success */
 	goto allocsyncinfo_commit;
 
-	
+	/* Error handling */
  allocsyncinfo_errorexit_freesyncinfo:
-	PVRSRVFreeSyncInfoKM(psSyncInfo);
+	PVRSRVKernelSyncInfoDecRef(psSyncInfo, IMG_NULL);
 
  allocsyncinfo_errorexit:
 
-	
+	/* Common exit */
  allocsyncinfo_commit:
 	psAllocSyncInfoOUT->eError = eError;
 	COMMIT_HANDLE_BATCH_OR_ERROR(eError, psPerProc);
@@ -4640,31 +4981,35 @@ CommonBridgeInit(IMG_VOID)
     SetDispatchTableEntry(PVRSRV_BRIDGE_CHG_DEV_MEM_ATTRIBS, PVRSRVChangeDeviceMemoryAttributesBW);
     SetDispatchTableEntry(PVRSRV_BRIDGE_MAP_DEV_MEMORY_2, PVRSRVMapDeviceMemoryBW);
     SetDispatchTableEntry(PVRSRV_BRIDGE_EXPORT_DEVICEMEM_2, PVRSRVExportDeviceMemBW);
+#if defined(SUPPORT_ION)
+	SetDispatchTableEntry(PVRSRV_BRIDGE_MAP_ION_HANDLE, PVRSRVMapIonHandleBW);
+	SetDispatchTableEntry(PVRSRV_BRIDGE_UNMAP_ION_HANDLE, PVRSRVUnmapIonHandleBW);
+#endif
 
-	
+	/* SIM */
 	SetDispatchTableEntry(PVRSRV_BRIDGE_PROCESS_SIMISR_EVENT, DummyBW);
 	SetDispatchTableEntry(PVRSRV_BRIDGE_REGISTER_SIM_PROCESS, DummyBW);
 	SetDispatchTableEntry(PVRSRV_BRIDGE_UNREGISTER_SIM_PROCESS, DummyBW);
 
-	
+	/* User Mapping */
 	SetDispatchTableEntry(PVRSRV_BRIDGE_MAPPHYSTOUSERSPACE, DummyBW);
 	SetDispatchTableEntry(PVRSRV_BRIDGE_UNMAPPHYSTOUSERSPACE, DummyBW);
 	SetDispatchTableEntry(PVRSRV_BRIDGE_GETPHYSTOUSERSPACEMAP, DummyBW);
 
 	SetDispatchTableEntry(PVRSRV_BRIDGE_GET_FB_STATS, DummyBW);
 
-	
+	/* API to retrieve misc. info. from services */
 	SetDispatchTableEntry(PVRSRV_BRIDGE_GET_MISC_INFO, PVRSRVGetMiscInfoBW);
 	SetDispatchTableEntry(PVRSRV_BRIDGE_RELEASE_MISC_INFO, DummyBW);
 
-	
+	/* Overlay ioctls */
 #if defined (SUPPORT_OVERLAY_ROTATE_BLIT)
 	SetDispatchTableEntry(PVRSRV_BRIDGE_INIT_3D_OVL_BLT_RES, DummyBW);
 	SetDispatchTableEntry(PVRSRV_BRIDGE_DEINIT_3D_OVL_BLT_RES, DummyBW);
 #endif
 
 
-	
+	/* PDUMP */
 #if defined(PDUMP)
 	SetDispatchTableEntry(PVRSRV_BRIDGE_PDUMP_INIT, DummyBW);
 	SetDispatchTableEntry(PVRSRV_BRIDGE_PDUMP_MEMPOL, PDumpMemPolBW);
@@ -4684,15 +5029,15 @@ CommonBridgeInit(IMG_VOID)
 	SetDispatchTableEntry(PVRSRV_BRIDGE_PDUMP_CYCLE_COUNT_REG_READ, PDumpCycleCountRegReadBW);
 	SetDispatchTableEntry(PVRSRV_BRIDGE_PDUMP_STARTINITPHASE, PDumpStartInitPhaseBW);
 	SetDispatchTableEntry(PVRSRV_BRIDGE_PDUMP_STOPINITPHASE, PDumpStopInitPhaseBW);
-#endif 
+#endif /* defined(PDUMP) */
 
-	
+	/* DisplayClass APIs */
 	SetDispatchTableEntry(PVRSRV_BRIDGE_GET_OEMJTABLE, DummyBW);
 
-	
+	/* device class enum */
 	SetDispatchTableEntry(PVRSRV_BRIDGE_ENUM_CLASS, PVRSRVEnumerateDCBW);
 
-	
+	/* display class API */
 	SetDispatchTableEntry(PVRSRV_BRIDGE_OPEN_DISPCLASS_DEVICE, PVRSRVOpenDCDeviceBW);
 	SetDispatchTableEntry(PVRSRV_BRIDGE_CLOSE_DISPCLASS_DEVICE, PVRSRVCloseDCDeviceBW);
 	SetDispatchTableEntry(PVRSRV_BRIDGE_ENUM_DISPCLASS_FORMATS, PVRSRVEnumDCFormatsBW);
@@ -4714,29 +5059,26 @@ CommonBridgeInit(IMG_VOID)
 	SetDispatchTableEntry(PVRSRV_BRIDGE_SWAP_DISPCLASS_TO_BUFFER2, PVRSRVSwapToDCBuffer2BW);
 	SetDispatchTableEntry(PVRSRV_BRIDGE_SWAP_DISPCLASS_TO_SYSTEM, PVRSRVSwapToDCSystemBW);
 
-	
+	/* buffer class API */
 	SetDispatchTableEntry(PVRSRV_BRIDGE_OPEN_BUFFERCLASS_DEVICE, PVRSRVOpenBCDeviceBW);
 	SetDispatchTableEntry(PVRSRV_BRIDGE_CLOSE_BUFFERCLASS_DEVICE, PVRSRVCloseBCDeviceBW);
 	SetDispatchTableEntry(PVRSRV_BRIDGE_GET_BUFFERCLASS_INFO, PVRSRVGetBCInfoBW);
 	SetDispatchTableEntry(PVRSRV_BRIDGE_GET_BUFFERCLASS_BUFFER, PVRSRVGetBCBufferBW);
 
-	
+	/* Wrap/Unwrap external memory */
 	SetDispatchTableEntry(PVRSRV_BRIDGE_WRAP_EXT_MEMORY, PVRSRVWrapExtMemoryBW);
 	SetDispatchTableEntry(PVRSRV_BRIDGE_UNWRAP_EXT_MEMORY, PVRSRVUnwrapExtMemoryBW);
 
-	
+	/* Shared memory */
 	SetDispatchTableEntry(PVRSRV_BRIDGE_ALLOC_SHARED_SYS_MEM, PVRSRVAllocSharedSysMemoryBW);
 	SetDispatchTableEntry(PVRSRV_BRIDGE_FREE_SHARED_SYS_MEM, PVRSRVFreeSharedSysMemoryBW);
 	SetDispatchTableEntry(PVRSRV_BRIDGE_MAP_MEMINFO_MEM, PVRSRVMapMemInfoMemBW);
 
-    
-	SetDispatchTableEntry(PVRSRV_BRIDGE_GETMMU_PD_DEVPADDR, MMU_GetPDDevPAddrBW);
-
-	
+	/* Intialisation Service support */
 	SetDispatchTableEntry(PVRSRV_BRIDGE_INITSRV_CONNECT,	&PVRSRVInitSrvConnectBW);
 	SetDispatchTableEntry(PVRSRV_BRIDGE_INITSRV_DISCONNECT, &PVRSRVInitSrvDisconnectBW);
 
-	
+	/* Event Object */
 	SetDispatchTableEntry(PVRSRV_BRIDGE_EVENT_OBJECT_WAIT,	&PVRSRVEventObjectWaitBW);
 	SetDispatchTableEntry(PVRSRV_BRIDGE_EVENT_OBJECT_OPEN,	&PVRSRVEventObjectOpenBW);
 	SetDispatchTableEntry(PVRSRV_BRIDGE_EVENT_OBJECT_CLOSE, &PVRSRVEventObjectCloseBW);
@@ -4762,8 +5104,11 @@ CommonBridgeInit(IMG_VOID)
 	SetMSVDXDispatchTableEntry();
 #endif
 
-	
-	
+	/* A safety net to help ensure there won't be any un-initialised dispatch
+	 * table entries... */
+	/* Note: This is specifically done _after_ setting all the dispatch entries
+	 * so that SetDispatchTableEntry can detect mistakes where entries
+	 * overlap */
 	for(i=0;i<BRIDGE_DISPATCH_TABLE_ENTRY_COUNT;i++)
 	{
 		if(!g_BridgeDispatchTable[i].pfFunction)
@@ -4823,7 +5168,7 @@ IMG_INT BridgedDispatchKM(PVRSRV_PER_PROCESS_DATA * psPerProc,
 			}
 			else
 			{
-				
+				/* Only certain operations are allowed */
 				switch(ui32BridgeID)
 				{
 					case PVRSRV_GET_BRIDGE_ID(PVRSRV_BRIDGE_CONNECT_SERVICES):
@@ -4842,16 +5187,16 @@ IMG_INT BridgedDispatchKM(PVRSRV_PER_PROCESS_DATA * psPerProc,
 
 #if defined(__linux__)
 	{
-		
+		/* This should be moved into the linux specific code */
 		SYS_DATA *psSysData;
 
 		SysAcquireData(&psSysData);
 
-		
+		/* We have already set up some static buffers to store our ioctl data... */
 		psBridgeIn = ((ENV_DATA *)psSysData->pvEnvSpecificData)->pvBridgeData;
 		psBridgeOut = (IMG_PVOID)((IMG_PBYTE)psBridgeIn + PVRSRV_MAX_BRIDGE_IN_SIZE);
 
-		
+		/* check we are not using a bigger bridge than allocated */
 		if((psBridgePackageKM->ui32InBufferSize > PVRSRV_MAX_BRIDGE_IN_SIZE) || 
 			(psBridgePackageKM->ui32OutBufferSize > PVRSRV_MAX_BRIDGE_OUT_SIZE))
 		{
@@ -4902,7 +5247,7 @@ IMG_INT BridgedDispatchKM(PVRSRV_PER_PROCESS_DATA * psPerProc,
 	}
 
 #if defined(__linux__)
-	
+	/* This should be moved into the linux specific code */
 	if(CopyToUserWrapper(psPerProc,
 						 ui32BridgeID,
 						 psBridgePackageKM->pvParamOut,
@@ -4921,3 +5266,6 @@ return_fault:
 	return err;
 }
 
+/******************************************************************************
+ End of file (bridged_pvr_bridge.c)
+******************************************************************************/
