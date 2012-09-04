@@ -12,7 +12,9 @@ on init
 
     start pvr_reloader
 
-    #PVR Drivers
+    #Load qtouch driver
+    insmod /system/lib/modules/qtouch_unload.ko
+    insmod /system/lib/modules/qtouch_obp_ts2.ko
 
     # Load kernel modules
     insmod /system/lib/modules/netmux.ko

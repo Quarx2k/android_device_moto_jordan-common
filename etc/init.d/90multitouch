@@ -12,4 +12,4 @@ if [ -z "$MAX_TOUCH" ]; then
 fi
 
 # Load the module
-insmod $MODULE touch_num=$MAX_TOUCH
+#insmod $MODULE touch_num=$MAX_TOUCH
