@@ -29,9 +29,12 @@
 #include <linux/qtouch_obp_ts.h>
 #include <linux/qtouch_obp_ts_firmware.h>
 #include <linux/timer.h>
+#include "../symsearch/symsearch.h"
+#include <linux/proc_fs.h>
+#include <asm/uaccess.h>
 
-
-
+#define DEBUG 0
+#define MULTITOUCH_TAG "multitouch"
 #define IGNORE_CHECKSUM_MISMATCH
 #define ABS_MT_PRESSURE         0x3a
 
@@ -52,6 +55,7 @@ struct coordinate_map {
 	int y_data;
 	int z_data;
 	int w_data;
+	int vector;
 	int down;
 };
 
@@ -120,6 +124,74 @@ module_param_named(disable_touch,qtouch_disable_touch,uint,0664);
 static uint8_t calibrate_chip(struct qtouch_ts_data *ts);
 static uint8_t check_chip_calibration(struct qtouch_ts_data *ts);
 
+static struct qtouch_ts_data *ts_=NULL;
+static struct proc_dir_entry *proc_root;
+static char buf[32];
+static bool checksumNeedsCorrection = false;
+static uint16_t eeprom_checksum;
+
+static int wanted_touch;
+static int touch_num = 2;
+module_param(touch_num, int, 0);
+MODULE_PARM_DESC(touch_num,  "Number of contacts 2-10");
+static int enable_pressure = 0;
+
+#define DBG(format, ...) if (DEBUG) printk(KERN_DEBUG MULTITOUCH_TAG ": " format, ## __VA_ARGS__)
+
+// declare functions
+SYMSEARCH_DECLARE_FUNCTION_STATIC(int, ss_mapphone_touch_reset, void);
+static void qtouch_force_reset(struct qtouch_ts_data *ts, uint8_t sw_reset);
+
+static int set_numtouch(void) {
+
+	if (ts_ == NULL) return -1;
+
+	printk(KERN_INFO MULTITOUCH_TAG": set num_touch to %d\n", wanted_touch);
+	ts_->pdata->multi_touch_cfg.num_touch = wanted_touch;
+	DBG("forcing checksum error to run qtouch_hw_init()\n");
+	ts_->pdata->flags |= QTOUCH_EEPROM_CHECKSUM;
+	eeprom_checksum = ts_->eeprom_checksum;
+	ts_->eeprom_checksum = 0;
+	ts_->checksum_cnt = 0;
+	checksumNeedsCorrection = true;
+
+	qtouch_force_reset(ts_, 0);
+
+	return 0;
+}
+
+static int proc_numtouch_read(char *buffer, char **buffer_location, off_t offset, int count, int *eof, void *data) {
+	int ret;
+	if (offset > 0) return 0;
+	ret = scnprintf(buffer, count, "%u\n", touch_num);
+	return ret;
+}
+
+static int proc_numtouch_write(struct file *filp, const char __user *buffer, unsigned long len, void *data)
+{
+	if (!len || len >= sizeof(buf)) return -ENOSPC;
+	if (copy_from_user(buf, buffer, len)) return -EFAULT;
+
+	buf[len] = 0;
+	if (sscanf(buf, "%d", &wanted_touch) >= 1) {
+		if (wanted_touch > 10) wanted_touch = 10;
+		else if (wanted_touch < 2) wanted_touch = 2;
+		if (touch_num != wanted_touch && !checksumNeedsCorrection) {
+			DBG("wanted touch_num : %d...\n", wanted_touch);
+			if (ts_) {
+				set_numtouch();
+			} else {
+				DBG("ts address not set!\n");
+				DBG("was the screen off at the time of insmod?\n");
+
+				SYMSEARCH_BIND_FUNCTION_TO(qtouch_obp_ts2, mapphone_touch_reset, ss_mapphone_touch_reset);
+				ss_mapphone_touch_reset();
+			}
+		}
+	}
+	return len;
+}
+
 static irqreturn_t qtouch_ts_irq_handler(int irq, void *dev_id)
 {
 	struct qtouch_ts_data *ts = dev_id;
@@ -167,7 +239,20 @@ static int qtouch_set_addr(struct qtouch_ts_data *ts, uint16_t addr)
 	if (ret < 0)
 		pr_info("%s: Can't send obp addr 0x%4x\n", __func__, addr);
 
-	return ret >= 0 ? 0 : ret;
+	// original return
+	ret = ret >= 0 ? 0 : ret;
+	
+	// multiboot
+	if (ts != NULL && ts->pdata != NULL) {
+		touch_num = ts->pdata->multi_touch_cfg.num_touch;
+		if (touch_num != wanted_touch) {
+			ts_ = ts;
+			DBG("wanted/current multitouch points: %d/%d\n", wanted_touch, touch_num);
+			set_numtouch();
+		}
+	}
+	DBG("qtouch_set_addr 0x%x=%d\n", addr, ret);
+	return ret;
 }
 
 static int qtouch_read(struct qtouch_ts_data *ts, void *buf, int buf_sz)
@@ -367,6 +452,13 @@ static int qtouch_hw_init(struct qtouch_ts_data *ts)
 	uint16_t adj_addr;
 
 	pr_info("%s: Doing hw init\n", __func__);
+	
+	/* multitouch */
+	if (checksumNeedsCorrection) {
+		DBG("checksum need correction...\n");
+		checksumNeedsCorrection = false;
+		ts->eeprom_checksum = eeprom_checksum;
+	}
 
 	/* take the IC out of suspend */
 	qtouch_power_config(ts, 1);
@@ -794,7 +886,7 @@ static int do_cmd_proc_msg(struct qtouch_ts_data *ts, struct qtm_object *obj,
 	}
 	return ret;
 }
-
+#define QTM_TOUCH_MULTI_STATUS_SUPPRESS         (1 << 1)
 /* Handles a message from a multi-touch object. */
 static int do_touch_multi_msg(struct qtouch_ts_data *ts, struct qtm_object *obj,
 			      void *_msg)
@@ -807,20 +899,26 @@ static int do_touch_multi_msg(struct qtouch_ts_data *ts, struct qtm_object *obj,
 	int width;
 	uint32_t finger;
 	int down;
+	int num_fingers_down;
 
 	finger = msg->report_id - obj->report_id_min;
 	if (finger >= ts->pdata->multi_touch_cfg.num_touch)
 		return 0;
 
+	if (qtouch_tsdebug & 0x10)
+		printk("%s: msgxpos_msb 0x%X msgypos_msb 0x%X msgxypos 0x%X \n",
+			__func__, msg->xpos_msb, msg->ypos_msb, msg->xypos_lsb);
+
 	/* x/y are 10bit values, with bottom 2 bits inside the xypos_lsb */
 	x = (msg->xpos_msb << 2) | ((msg->xypos_lsb >> 6) & 0x3);
 	y = (msg->ypos_msb << 2) | ((msg->xypos_lsb >> 2) & 0x3);
+
 	width = msg->touch_area;
 	pressure = msg->touch_amp;
 
 	if (ts->pdata->flags & QTOUCH_SWAP_XY)
 		swap(x, y);
-
+	
 	if (qtouch_tsdebug & 2)
 		pr_info("%s: stat=%02x, f=%d x=%d y=%d p=%d w=%d\n", __func__,
 			msg->status, finger, x, y, pressure, width);
@@ -830,66 +928,51 @@ static int do_touch_multi_msg(struct qtouch_ts_data *ts, struct qtm_object *obj,
 		return 1;
 	}
 
-	down = !(msg->status & QTM_TOUCH_MULTI_STATUS_RELEASE);
+	down = !(msg->status & (QTM_TOUCH_MULTI_STATUS_RELEASE |
+		 QTM_TOUCH_MULTI_STATUS_SUPPRESS));
 
-	/* The chip may report erroneous points way
-	beyond what a user could possibly perform so we filter
-	these out */
-	if (ts->finger_data[finger].down &&
-			(abs(ts->finger_data[finger].x_data - x) > ts->x_delta ||
-			abs(ts->finger_data[finger].y_data - y) > ts->y_delta)) {
-				down = 0;
-				if (qtouch_tsdebug & 2)
-					pr_info("%s: x0 %i x1 %i y0 %i y1 %i\n",
-						__func__,
-						ts->finger_data[finger].x_data, x,
-						ts->finger_data[finger].y_data, y);
-	} else {
+	if (down) {
 		ts->finger_data[finger].x_data = x;
 		ts->finger_data[finger].y_data = y;
 		ts->finger_data[finger].w_data = width;
-	}
-
-	/* The touch IC will not give back a pressure of zero
-	   so send a 0 when a liftoff is produced */
-	if (!down) {
-		ts->finger_data[finger].z_data = 0;
-
-		if (ts->pdata->flags & QTOUCH_USE_KEYARRAY) {
-			if (ts->finger_data[finger].y_data > ((9 * ts->pdata->abs_max_y) / 10)) {
-				ignore_keyarray_touches = 1;
-				mod_timer(&keyarray_timer, jiffies + KEYARRAY_IGNORE_TIME);
-				if (qtouch_tsdebug)
-					pr_info("%s: Keyarray press suppressed\n",__func__);
-			}
-		}
-	} else {
 		ts->finger_data[finger].z_data = pressure;
-		ts->finger_data[finger].down = down;
-		input_report_key(ts->input_dev, BTN_TOUCH, 1);
+		ts->finger_data[finger].vector = msg->touch_vect;
+		ts->finger_data[finger].down = 1;
+	} else {
+		memset(&ts->finger_data[finger], 0,
+			sizeof(struct coordinate_map));
 	}
 
+	num_fingers_down = 0;
 	for (i = 0; i < ts->pdata->multi_touch_cfg.num_touch; i++) {
-		//if (ts->finger_data[i].down == 0)
-			//continue;
+		if (ts->finger_data[i].down == 0)
+			continue;
+		
 		input_report_abs(ts->input_dev, ABS_MT_TOUCH_MAJOR,
-				 ts->finger_data[i].z_data);
-		//input_report_abs(ts->input_dev, ABS_MT_WIDTH_MAJOR,
-		//		 ts->finger_data[i].w_data);
-		input_report_abs(ts->input_dev, ABS_MT_PRESSURE, 
-				 ts->finger_data[i].z_data); 
+				 ts->finger_data[i].w_data);
 		input_report_abs(ts->input_dev, ABS_MT_POSITION_X,
 				 ts->finger_data[i].x_data);
 		input_report_abs(ts->input_dev, ABS_MT_POSITION_Y,
 				 ts->finger_data[i].y_data);
+		input_report_abs(ts->input_dev, ABS_MT_ORIENTATION,
+				 ts->finger_data[i].vector);
+		input_report_abs(ts->input_dev, ABS_MT_TRACKING_ID,
+				 i);
+		if(enable_pressure) {
+			input_report_abs(ts->input_dev, ABS_MT_PRESSURE,
+				 ts->finger_data[i].z_data);
+		}
+		else {
+			input_set_abs_params(ts->input_dev, ABS_MT_WIDTH_MAJOR,
+					    ts->pdata->abs_min_w, ts->pdata->abs_max_w,
+					    ts->pdata->fuzz_w, 0);
+		}
 		input_mt_sync(ts->input_dev);
+		num_fingers_down++;
 	}
+	if (num_fingers_down == 0)
+		input_mt_sync(ts->input_dev);
 	input_sync(ts->input_dev);
-
-	if (!down) {
-		memset(&ts->finger_data[finger], 0,
-		sizeof(struct coordinate_map));
-	}
 
 	return 0;
 }
@@ -1021,44 +1104,30 @@ static int qtouch_ts_register_input(struct qtouch_ts_data *ts)
 	obj = find_obj(ts, QTM_OBJ_TOUCH_MULTI);
 	if (obj && obj->entry.num_inst > 0) {
 		set_bit(EV_ABS, ts->input_dev->evbit);
-		/* Legacy support for testing only */
-		input_set_capability(ts->input_dev, EV_KEY, BTN_TOUCH);
-		input_set_capability(ts->input_dev, EV_KEY, BTN_2);
-		input_set_abs_params(ts->input_dev, ABS_X,
-				     ts->pdata->abs_min_x, ts->pdata->abs_max_x,
-				     ts->pdata->fuzz_x, 0);
-		input_set_abs_params(ts->input_dev, ABS_HAT0X,
-				     ts->pdata->abs_min_x, ts->pdata->abs_max_x,
-				     ts->pdata->fuzz_x, 0);
-		input_set_abs_params(ts->input_dev, ABS_Y,
-				     ts->pdata->abs_min_y, ts->pdata->abs_max_y,
-				     ts->pdata->fuzz_y, 0);
-		input_set_abs_params(ts->input_dev, ABS_HAT0Y,
-				     ts->pdata->abs_min_x, ts->pdata->abs_max_x,
-				     ts->pdata->fuzz_x, 0);
-		input_set_abs_params(ts->input_dev, ABS_PRESSURE,
-				     ts->pdata->abs_min_p, ts->pdata->abs_max_p,
-				     ts->pdata->fuzz_p, 0);
-		input_set_abs_params(ts->input_dev, ABS_TOOL_WIDTH,
-				     ts->pdata->abs_min_w, ts->pdata->abs_max_w,
-				     ts->pdata->fuzz_w, 0);
 
-		/* multi touch */
 		input_set_abs_params(ts->input_dev, ABS_MT_POSITION_X,
 				     ts->pdata->abs_min_x, ts->pdata->abs_max_x,
 				     ts->pdata->fuzz_x, 0);
 		input_set_abs_params(ts->input_dev, ABS_MT_POSITION_Y,
 				     ts->pdata->abs_min_y, ts->pdata->abs_max_y,
 				     ts->pdata->fuzz_y, 0);
+		if(enable_pressure) {
+			input_set_abs_params(ts->input_dev, ABS_MT_PRESSURE,
+				     ts->pdata->abs_min_p, ts->pdata->abs_max_p,
+				     ts->pdata->fuzz_p, 0);
+		}
+		else {
+			input_report_abs(ts->input_dev, ABS_MT_WIDTH_MAJOR,
+				     ts->finger_data[i].w_data);
+		}
 		input_set_abs_params(ts->input_dev, ABS_MT_TOUCH_MAJOR,
-				     ts->pdata->abs_min_p, ts->pdata->abs_max_p,
-				     ts->pdata->fuzz_p, 0);
-		//input_set_abs_params(ts->input_dev, ABS_MT_WIDTH_MAJOR,
-		//		     ts->pdata->abs_min_w, ts->pdata->abs_max_w,
-		//		     ts->pdata->fuzz_w, 0);
-		input_set_abs_params(ts->input_dev, ABS_MT_PRESSURE,
-				     ts->pdata->abs_min_p, ts->pdata->abs_max_p,
-				     ts->pdata->fuzz_p, 0);
+				     ts->pdata->abs_min_w, ts->pdata->abs_max_w,
+				     ts->pdata->fuzz_w, 0);
+		input_set_abs_params(ts->input_dev, ABS_MT_ORIENTATION,
+				     0, 255, 0, 0);
+		input_set_abs_params(ts->input_dev, ABS_MT_TRACKING_ID,
+				     0, ts->pdata->multi_touch_cfg.num_touch, 1, 0);
+		
 	}
 
 	memset(&ts->finger_data[0], 0,
@@ -2181,6 +2250,22 @@ static struct i2c_driver qtouch_ts_driver = {
 
 static int __devinit qtouch_ts_init(void)
 {
+	struct proc_dir_entry *proc_entry;
+
+	memset(&buf, 0, sizeof(buf));
+
+	proc_root = proc_mkdir(MULTITOUCH_TAG, NULL);
+	proc_entry = create_proc_read_entry("num", 0666, proc_root, proc_numtouch_read, NULL);
+	proc_entry->write_proc = proc_numtouch_write;
+
+	wanted_touch = touch_num;
+
+	/* reset will provoke qtouch_set_addr call, so we can get the ts struct address immediately */
+	SYMSEARCH_BIND_FUNCTION_TO(qtouch_obp_ts2, mapphone_touch_reset, ss_mapphone_touch_reset);
+	ss_mapphone_touch_reset();
+
+	printk(KERN_INFO MULTITOUCH_TAG": wrong parameter for wanted_touch\n");
+	
 	qtouch_ts_wq = create_singlethread_workqueue("qtouch_obp_ts_wq");
 	if (qtouch_ts_wq == NULL) {
 		pr_err("%s: No memory for qtouch_ts_wq\n", __func__);
@@ -2194,6 +2279,11 @@ static void __exit qtouch_ts_exit(void)
 	i2c_del_driver(&qtouch_ts_driver);
 	if (qtouch_ts_wq)
 		destroy_workqueue(qtouch_ts_wq);
+	
+	if (proc_root) {
+		remove_proc_entry("num", proc_root);
+		remove_proc_entry(MULTITOUCH_TAG, NULL);
+	}
 }
 
 module_init(qtouch_ts_init);
