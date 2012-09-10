@@ -32,7 +32,7 @@
 
 #define LOG_TAG "CameraHAL"
 //#define LOG_NDEBUG 0
-#define LOG_FULL_PARAMS
+//#define LOG_FULL_PARAMS
 //#define LOG_EACH_FRAME
 
 #include <hardware/camera.h>
@@ -103,8 +103,8 @@ const unsigned int HARD_DROP_THRESHOLD = 15;
 /* The following values (in nsecs) are used to limit the preview framerate
    to reduce the CPU usage. */
 
-const int MIN_PREVIEW_FRAME_INTERVAL = 90000000;
-const int MIN_PREVIEW_FRAME_INTERVAL_THROTTLED = 90000000;
+const int MIN_PREVIEW_FRAME_INTERVAL = 0;
+const int MIN_PREVIEW_FRAME_INTERVAL_THROTTLED = 0;
 
 /** camera_hw_device implementation **/
 static inline struct legacy_camera_device * to_lcdev(struct camera_device *dev)
@@ -254,11 +254,11 @@ static void processPreviewData(char *frame, size_t size, legacy_camera_device *l
         ALOGE("%s: ERROR dequeueing the buffer\n", __FUNCTION__);
         return;
     }
-
+/*
     if (stride != lcdev->previewWidth) {
         ALOGE("%s: stride=%d doesn't equal width=%d", __FUNCTION__, stride, lcdev->previewWidth);
     }
-
+*/
     ret = lcdev->window->lock_buffer(lcdev->window, bufHandle);
     if (ret != NO_ERROR) {
         ALOGE("%s: ERROR locking the buffer\n", __FUNCTION__);
@@ -271,8 +271,7 @@ static void processPreviewData(char *frame, size_t size, legacy_camera_device *l
 
     do {
         ret = lcdev->gralloc->lock(lcdev->gralloc, *bufHandle, CAMHAL_GRALLOC_USAGE, 0, 0,lcdev->previewWidth, lcdev->previewHeight, &vaddr);
-                                  // GRALLOC_USAGE_SW_WRITE_OFTEN | GRALLOC_USAGE_HW_TEXTURE | GRALLOC_USAGE_HW_RENDER,
-                                  // 0, 0, lcdev->previewWidth, lcdev->previewHeight, &vaddr);
+
         tries--;
         if (ret) {
             ALOGW("%s: gralloc lock retry", __FUNCTION__);
@@ -501,7 +500,7 @@ static int camera_set_preview_window(struct camera_device * device, struct previ
     ALOGD("%s: preview format %s", __FUNCTION__, previewFormat);
     lcdev->previewFormat = Overlay::getFormatFromString(previewFormat);
 
-    if (window->set_usage(window, CAMHAL_GRALLOC_USAGE)) { //GRALLOC_USAGE_SW_WRITE_OFTEN | GRALLOC_USAGE_SW_READ_OFTEN)) {
+    if (window->set_usage(window, CAMHAL_GRALLOC_USAGE)) {
         ALOGE("%s: could not set usage on gralloc buffer", __FUNCTION__);
         return -1;
     }
