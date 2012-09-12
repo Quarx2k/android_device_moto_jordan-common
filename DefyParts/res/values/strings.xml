@@ -95,4 +95,13 @@
     <string name="lto_last_download_date_failure">Last download attempt: %1$s (Unsuccessful)</string>
     <string name="lto_downloading_data">Downloading data\u2026 (%1$s%%)</string>
     <string name="never">Never</string>
+
+    <string name="modem_error">Telephony problem</string>
+    <string name="touch_for_info">Touch for information</string>
+    <string name="reboot_timeout_msg">If no action is selected, the device will reboot in %1$d seconds.</string>
+    <string name="modem_error_msg">A problem was detected in the phone\'s telephony layer. A reboot of the phone is required to repair the phone state.\nWhat do you want to do?</string>
+    <string name="reboot_btn">Reboot now</string>
+    <string name="snooze_btn">Remind again later</string>
+    <string name="dismiss_btn">Don\'t remind again</string>
+    <string name="device_rebooted_modem_error">The device was rebooted due to a problem in the phone\'s telephony layer.</string>
 </resources>

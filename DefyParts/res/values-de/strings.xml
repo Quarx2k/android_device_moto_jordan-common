@@ -94,4 +94,13 @@
     <string name="lto_last_download_date_failure">Letzter Downloadversuch: %1$s (Nicht erfolgreich)</string>
     <string name="lto_downloading_data">Daten werden heruntergeladen\u2026 (%1$s%%)</string>
     <string name="never">Nie</string>
+
+    <string name="modem_error">Modem-Problem</string>
+    <string name="touch_for_info">Berühren für Informationen</string>
+    <string name="reboot_timeout_msg">Wenn keine Option gewählt wird, wird das Gerät in %1$d Sekunden neu gestartet.</string>
+    <string name="modem_error_msg">Im Modem des Telefons wurde ein Problem festgestellt. Um es zu beheben, muss das Gerät neu gestartet werden.\nWas möchten Sie tun?</string>
+    <string name="reboot_btn">Neu starten</string>
+    <string name="snooze_btn">Später erinnern</string>
+    <string name="dismiss_btn">Nicht mehr erinnern</string>
+    <string name="device_rebooted_modem_error">Das Gerät wurde auf Grund eines Problems im Modem des Telefons neu gestartet.</string>
 </resources>
