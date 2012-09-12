@@ -192,6 +192,19 @@ service hciattach /system/bin/hciattach -n -t 10 /dev/ttyS1 texasalt 3000000 flo
     group bluetooth net_bt_admin
     disabled
 
+service panic_daemon /system/bin/panic_daemon
+    class post-zygote_services
+    user radio
+    group radio system graphics
+    socket panic_daemon stream 660 radio radio
+    onrestart exec /system/bin/reboot
+
+service secclkd /system/bin/secclkd
+    class post-zygote_services
+    user system
+    group system radio
+    oneshot
+
 # Ecompass daemon
 service akmd2 /system/bin/akmd2
     user compass
