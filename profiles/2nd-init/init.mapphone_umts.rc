@@ -164,6 +164,13 @@ on post-fs-data
     # create dropbear directory
     mkdir /data/dropbear 0755 root shell
 
+    # create the necessary dirs for tpapi 
+    mkdir /pds/security 0770 system system
+    mkdir /data/tpapi 0770 system system
+    mkdir /data/tpapi/etc 0770 system system
+    mkdir /data/tpapi/etc/tpa 0770 system system
+    mkdir /data/tpapi/etc/tpa/persistent 0770 system system
+
     # hwui config folder for process names black list
     mkdir /data/local/hwui.deny
     chown system nobody /data/local/hwui.deny
@@ -348,3 +355,16 @@ service fmradio /system/bin/fmradioserver
     disabled
     user system
     group bluetooth net_bt_admin net_raw net_admin misc
+
+service secclkd /system/bin/secclkd
+    class main
+    user system
+    group system radio
+    oneshot
+
+service panic_daemon /system/bin/panic_daemon
+    class main
+    user radio
+    group log radio system graphics sdcard_rw
+    socket panic_daemon stream 660 radio radio
+    onrestart exec /system/bin/reboot
