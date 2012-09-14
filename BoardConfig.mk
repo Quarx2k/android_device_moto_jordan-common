@@ -26,12 +26,10 @@
 
 # Model variant (DEFY_FROYO, DEFY_GINGER, DEFY_PLUS)
 
-BOARD_USES_GENERIC_AUDIO := false
-USE_CAMERA_STUB := false
-
 TARGET_NO_RADIOIMAGE := true
 TARGET_NO_BOOTLOADER := true
 TARGET_NO_PREINSTALL := true
+
 TARGET_BOOTLOADER_BOARD_NAME := jordan
 
 # Board properties
@@ -39,8 +37,6 @@ TARGET_BOARD_PLATFORM := omap3
 TARGET_CPU_ABI := armeabi-v7a
 TARGET_CPU_ABI2 := armeabi
 TARGET_ARCH_VARIANT := armv7-a-neon
-TARGET_GLOBAL_CFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
-TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 TARGET_OMAP3 := true
 COMMON_GLOBAL_CFLAGS += -DTARGET_OMAP3 -DOMAP_COMPAT -DBINDER_COMPAT
 ARCH_ARM_HAVE_TLS_REGISTER := true
@@ -67,7 +63,6 @@ WIFI_AP_DRIVER_MODULE_PATH  := "/system/lib/modules/tiap_drv.ko"
 WIFI_AP_DRIVER_MODULE_NAME  := tiap_drv
 WIFI_AP_FIRMWARE_LOADER     := wlan_ap_loader
 WIFI_AP_DRIVER_MODULE_ARG   := ""
-BOARD_HOSTAPD_SERVICE_NAME  := hostap_netd
 BOARD_HOSTAPD_NO_ENTROPY    := true
 BOARD_HOSTAPD_DRIVER        := true
 BOARD_HOSTAPD_DRIVER_NAME   := wilink
@@ -81,18 +76,13 @@ BOARD_HAVE_BLUETOOTH := true
 TARGET_CUSTOM_BLUEDROID := ../../../device/moto/jordan-common/bluedroid.c
 
 # Usb Specific
-BOARD_CUSTOM_USB_CONTROLLER := ../../device/moto/jordan-common/UsbController.cpp
-BOARD_USE_USB_MASS_STORAGE_SWITCH := true
 BOARD_MASS_STORAGE_FILE_PATH := "/sys/devices/platform/usb_mass_storage/lun0/file"
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/usb_mass_storage/lun0/file"
 BOARD_MTP_DEVICE := "/dev/mtp"
 BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
 
 # Build options
-BOARD_BOOTIMAGE_MAX_SIZE := $(call image-size-from-data-size,0x00280000)
-BOARD_RECOVERYIMAGE_MAX_SIZE := $(call image-size-from-data-size,0x00500000)
-BOARD_SYSTEMIMAGE_MAX_SIZE := $(call image-size-from-data-size,0x07500000)
-BOARD_USERDATAIMAGE_MAX_SIZE := $(call image-size-from-data-size,0x04ac0000)
+BOARD_USERDATAIMAGE_PARTITION_SIZE := 1330343936
 BOARD_SYSTEMIMAGE_PARTITION_SIZE := 325000000
 BOARD_FLASH_BLOCK_SIZE := 131072
 
@@ -130,23 +120,18 @@ TARGET_RECOVERY_PRE_COMMAND_CLEAR_REASON := true
 # Egl Specific
 USE_OPENGL_RENDERER := true
 BOARD_EGL_CFG := device/moto/jordan-common/egl.cfg
-DEFAULT_FB_NUM := 0
 BOARD_USE_YUV422I_DEFAULT_COLORFORMAT := true
-BOARD_USES_OVERLAY := true
 ENABLE_WEBGL := true
 COMMON_GLOBAL_CFLAGS += -DSYSTEMUI_PBSIZE_HACK=1
 
 # Camera
+USE_CAMERA_STUB := false
 BOARD_OVERLAY_BASED_CAMERA_HAL := true
 
 # Other..
-ENABLE_SENSORS_COMPAT := true
-TARGET_PROXIMITY_SENSOR_LIMIT := 0x1F
 BOARD_USES_AUDIO_LEGACY := true
 TARGET_PROVIDES_LIBAUDIO := true
 BOARD_USE_KINETO_COMPATIBILITY := true
-TARGET_BOOTANIMATION_PRELOAD := true
-TARGET_BOOTANIMATION_TEXTURE_CACHE := true
 TARGET_BOOTANIMATION_USE_RGB565 := true
 
 # If kernel sources are present in repo, here is the location
