@@ -298,4 +298,7 @@ Some kernels use names like CAR and DESK. -->
         <item>"DESK"</item>
     </string-array>
 
+    <!-- If this is true, the screen will fade off. -->
+    <bool name="config_animateScreenLights">false</bool>
+
 </resources>
