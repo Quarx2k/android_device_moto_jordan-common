@@ -18,6 +18,7 @@
         <item>@string/touch_point_entry_4points</item>
         <item>@string/touch_point_entry_5points</item>
         <item>@string/touch_point_entry_8points</item>
+        <item>@string/touch_point_entry_10points</item>
     </string-array>
 
     <string-array name="touch_point_values" translatable="false">
@@ -26,6 +27,7 @@
         <item>4</item>
         <item>5</item>
         <item>8</item>
+        <item>10</item>
     </string-array>
 
     <string-array name="baseband_region_entries" translatable="false">

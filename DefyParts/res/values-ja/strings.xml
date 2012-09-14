@@ -20,6 +20,7 @@
     <string name="touch_point_entry_4points">4ポイント</string>
     <string name="touch_point_entry_5points">5ポイント</string>
     <string name="touch_point_entry_8points">8ポイント</string>
+    <string name="touch_point_entry_10points">10ポイント</string>
 
     <string name="touch_point_warning_title">警告</string>
     <string name="touch_point_warning_message">マルチタッチ ポイント数を増やすと反応が遅くなるかもしれません.\n本当に設定を変更しますか？</string>
