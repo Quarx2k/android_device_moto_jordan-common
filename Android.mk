@@ -13,6 +13,6 @@
 # limitations under the License.
 
 
-ifeq ($(TARGET_BOOTLOADER_BOARD_NAME),jordan)
+ifeq ($(TARGET_USE_JORDAN_COMMON),true)
 include $(all-subdir-makefiles)
 endif
