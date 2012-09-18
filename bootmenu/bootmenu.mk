@@ -52,9 +52,7 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/binary/logwrapper.bin:system/bin/logwrapper.bin \
 	${bm_device}/bootmenu/binary/lsof.static:system/bootmenu/binary/lsof \
 	${bm_device}/bootmenu/binary/2nd-boot:system/bootmenu/binary/2nd-boot \
-	${bm_device}/bootmenu/binary/adbd.root:system/bootmenu/binary/adbd.root \
-	out/target/product/jordan/root/sbin/adbd:system/bootmenu/binary/adbd \
-	out/target/product/jordan/utilities/busybox:system/bootmenu/binary/busybox \
+	${bm_device}/bootmenu/binary/adbd.root:system/bootmenu/binary/adbd.root
 
 # images
 PRODUCT_COPY_FILES += \
@@ -103,8 +101,3 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/recovery/sbin/mke2fs.bin:system/bootmenu/recovery/sbin/mke2fs.bin \
 	${bm_device}/bootmenu/recovery/sbin/tune2fs.bin:system/bootmenu/recovery/sbin/tune2fs \
 	${bm_device}/bootmenu/recovery/recovery.fstab:system/bootmenu/recovery/recovery.fstab \
-
-# recovery tools
-PRODUCT_COPY_FILES += \
-	out/target/product/jordan/recovery/root/sbin/tune2fs:system/bootmenu/recovery/sbin/tune2fs
-
