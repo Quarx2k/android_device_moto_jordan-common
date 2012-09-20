@@ -100,6 +100,8 @@ on post-fs
 
 on init
 
+    start pvr_reloader
+
     # Install kernel modules
     insmod /system/lib/modules/netmux.ko
     insmod /system/lib/modules/netmux_linkdriver.ko
@@ -155,6 +157,10 @@ on property:sys.chargeonly.mode=1
 
 on property:init.svc.wpa_supplicant=stopped
     stop dhcpcd
+
+service pvr_reloader /system/xbin/ash /system/bootmenu/script/pvr.sh
+    oneshot
+    disabled
 
 # triggered by holding down volume down, volume up and power
 service reboot_key /system/bin/reboot
