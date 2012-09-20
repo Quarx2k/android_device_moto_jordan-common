@@ -131,6 +131,10 @@ PRODUCT_COPY_FILES += $(shell test -d device/motorola/jordan-common/modules && \
 	find device/motorola/jordan-common/modules -name '*.ko' \
 	-printf '%p:system/lib/modules/%f ')
 
+PRODUCT_COPY_FILES += $(shell test -d vendor/motorola/jordan-common/lib/modules &&  \
+	find vendor/motorola/jordan-common/lib/modules -name '*.ko' \
+	-printf '%p:system/lib/modules/%f ')
+
 # Prebuilt boot.img
 LOCAL_KERNEL := device/motorola/jordan-common/kernel
 PRODUCT_COPY_FILES += \
@@ -139,7 +143,7 @@ PRODUCT_COPY_FILES += \
 # Blobs
 $(call inherit-product, device/motorola/jordan-common/jordan-common-blobs.mk)
 $(call inherit-product, device/motorola/jordan-common/bootmenu/bootmenu.mk)
-
+$(call inherit-product, vendor/motorola/jordan-common/jordan-vendor.mk)
 $(call inherit-product, build/target/product/full_base.mk)
 
 # Should be after the full_base include, which loads languages_full
