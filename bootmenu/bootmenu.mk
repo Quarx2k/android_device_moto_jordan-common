@@ -52,7 +52,6 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/binary/logwrapper.bin:system/bootmenu/binary/logwrapper.bin \
 	${bm_device}/bootmenu/binary/logwrapper.bin:system/bin/logwrapper.bin \
 	${bm_device}/bootmenu/binary/lsof.static:system/bootmenu/binary/lsof \
-	${bm_device}/bootmenu/binary/2nd-boot:system/bootmenu/binary/2nd-boot \
 	${bm_device}/bootmenu/binary/adbd.root:system/bootmenu/binary/adbd.root
 
 # images
