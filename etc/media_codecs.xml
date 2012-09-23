@@ -143,6 +143,15 @@ Only the three quirks included above are recognized at this point:
             <Quirk name="avoid-memcopy-input-recording-frames" />
         </MediaCodec>
 
+        <MediaCodec name="OMX.TI.720P.Encoder" >
+            <Type name="video/mp4v-es" />
+            <Type name="video/3gpp" />
+            <Type name="video/avc" />
+            <Quirk name="requires-allocate-on-input-ports" />
+            <Quirk name="requires-allocate-on-output-ports" />
+            <Quirk name="avoid-memcopy-input-recording-frames" />
+        </MediaCodec>
+
         <MediaCodec name="OMX.TI.AAC.encode" >
             <Type name="audio/mp4a-latm" />
             <Quirk name="requires-allocate-on-input-ports" />
