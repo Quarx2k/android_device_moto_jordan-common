@@ -140,7 +140,7 @@ Only the three quirks included above are recognized at this point:
             <Type name="video/avc" />
             <Quirk name="requires-allocate-on-input-ports" />
             <Quirk name="requires-allocate-on-output-ports" />
-            
+            <Quirk name="avoid-memcopy-input-recording-frames" />
         </MediaCodec>
 
         <MediaCodec name="OMX.TI.AAC.encode" >
