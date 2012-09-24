@@ -87,7 +87,7 @@ PRODUCT_PACKAGES += libOMX.TI.WMA.decode libOMX.TI.Video.Decoder libOMX.TI.Video
 PRODUCT_PACKAGES += libOMX.TI.JPEG.Encoder #libskiahw libOMX.TI.JPEG.decoder
 
 # Defy stuff
-PRODUCT_PACKAGES += libfnc DefyParts Usb MotoFM  
+PRODUCT_PACKAGES += libfnc DefyParts Usb MotoFM MotoFMService
 
 # Core stuff
 PRODUCT_PACKAGES += charge_only_mode mot_boot_mode
