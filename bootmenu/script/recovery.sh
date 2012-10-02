@@ -56,17 +56,17 @@ killall -6 adbd
 
 # mount image of pds, for backup purpose (4MB)
 [ ! -d /data/data ] && mount -t ext3 -o rw,noatime,nodiratime,errors=continue $PART_DATA /data
-if [ ! -f /data/pds.img ]; then
-    /system/etc/init.d/04pdsbackup
+if [ ! -f /data/pdsdata.img ]; then
+    /system/bootmenu/script/pdsbackup.sh
     umount /pds
     losetup -d /dev/block/loop7
 fi
-cp /data/pds.img /tmp/pds.img
-if [ -f /tmp/pds.img ] ; then
+cp /data/pdsdata.img /tmp/pdsdata.img
+if [ -f /tmp/pdsdata.img ] ; then
     mkdir -p /pds
     umount /pds 2>/dev/null
     losetup -d /dev/block/loop7 2>/dev/null
-    losetup /dev/block/loop7 /tmp/pds.img
+    losetup /dev/block/loop7 /tmp/pdsdata.img
     busybox mount -o rw,nosuid,nodev,noatime,nodiratime,barrier=1 /dev/block/loop7 /pds
 fi
 

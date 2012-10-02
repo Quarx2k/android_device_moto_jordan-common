@@ -8,18 +8,27 @@
 #
 
 PATH=/system/xbin:$PATH
+PDS_FILE=/data/pdsdata.img
 
-if [ ! -f /data/pds.img ] ; then
-
-    #make a copy of pds in /data
-    dd if=/dev/block/mmcblk1p7 of=/data/pds.img bs=4096
-
-
-    #mount the fake pds
+mount_pds_image() {
+    mkdir -p /pds
     umount /pds 2>/dev/null
     losetup -d /dev/block/loop7 2>/dev/null
-    losetup /dev/block/loop7 /data/pds.img
+    losetup /dev/block/loop7 $PDS_FILE
     busybox mount -o rw,nosuid,nodev,noatime,nodiratime,barrier=1 /dev/block/loop7 /pds
+}
+
+if [ -f /data/pds.img ]; then
+    #delete old pds image that may have broken permissions
+    rm -f /data/pds.img
+fi
+
+if [ ! -f $PDS_FILE ] ; then
+    #make a copy of pds in /data
+    dd if=/dev/block/mmcblk1p7 of=$PDS_FILE bs=4096
+
+    #mount the fake pds
+    mount_pds_image
 
     cd /pds
     #find and change moto users first
@@ -37,19 +46,16 @@ if [ ! -f /data/pds.img ] ; then
 
     echo "PDS Backed up, permissions fixed and mounted"
 
-else
-
-    #mount the existing pds backup
-    umount /pds 2>/dev/null
-    losetup -d /dev/block/loop7 2>/dev/null
-    losetup /dev/block/loop7 /data/pds.img
-    busybox mount -o rw,nosuid,nodev,noatime,nodiratime,barrier=1 /dev/block/loop7 /pds
-
     if [ -d /data/battd ] ; then
         cd /data/battd
         busybox find -user 9000 -exec chown 1000 {} \;
         busybox find -group 9000 -exec chgrp 1000 {} \;
     fi
+
+else
+
+    #mount the existing pds backup
+    mount_pds_image
 
     if [ -d /pds/public ] ; then
         echo "PDS partition mounted from data image."
