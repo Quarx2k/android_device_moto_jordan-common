@@ -295,7 +295,7 @@ int hboot_boot(int handle) {
 	}
     printk("about to do_branch... bootlist[0x%4X : 0x%4X], listsize[%d], new_ttbl[0x%4x : 0x%4X], boot_entry[0x%4X : 0x%4x]\n", (int)bootlist, (int)virt_to_phys(bootlist), (int)listsize, (int)l1_table, (int)virt_to_phys(l1_table), (int)boot_entry, (int)virt_to_phys(boot_entry));
 
-        disable_dss();
+      //  disable_dss();
 
 	preempt_disable();
 	local_irq_disable();
