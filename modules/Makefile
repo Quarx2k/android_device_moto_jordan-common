@@ -21,6 +21,7 @@ obj-m += proximity/
 obj-m += pvr/
 obj-m += klogger/
 obj-m += tls/
+obj-m += 2ndboot/
 
 # experimental
 #obj-m += ion/
