@@ -38,8 +38,8 @@ TARGET_CPU_ABI := armeabi-v7a
 TARGET_CPU_ABI2 := armeabi
 TARGET_ARCH_VARIANT := armv7-a-neon
 TARGET_OMAP3 := true
-COMMON_GLOBAL_CFLAGS += -DTARGET_OMAP3 -DOMAP_COMPAT -DBINDER_COMPAT
 ARCH_ARM_HAVE_TLS_REGISTER := true
+COMMON_GLOBAL_CFLAGS += -DTARGET_OMAP3 -DOMAP_COMPAT -DBINDER_COMPAT
 
 # Wifi related defines
 BOARD_WLAN_DEVICE           := wl1271
@@ -128,16 +128,17 @@ COMMON_GLOBAL_CFLAGS += -DSYSTEMUI_PBSIZE_HACK=1
 USE_CAMERA_STUB := false
 BOARD_OVERLAY_BASED_CAMERA_HAL := true
 
-# Other..
+# Other..u
 BOARD_USES_AUDIO_LEGACY := true
 TARGET_PROVIDES_LIBAUDIO := true
 BOARD_USE_KINETO_COMPATIBILITY := true
 TARGET_BOOTANIMATION_USE_RGB565 := true
 
 # If kernel sources are present in repo, here is the location
-#TARGET_KERNEL_SOURCE := $(ANDROID_BUILD_TOP)/kernel-omap
-#TARGET_KERNEL_CONFIG   := mapphone_mb525_defconfig
-TARGET_PREBUILT_KERNEL := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/kernel
+TARGET_KERNEL_CUSTOM_TOOLCHAIN := arm-eabi-4.4.3
+TARGET_KERNEL_SOURCE := $(ANDROID_BUILD_TOP)/jordan-kernel
+TARGET_KERNEL_CONFIG   := mapphone_defconfig
+#TARGET_PREBUILT_KERNEL := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/kernel
 # Extra : external modules sources
-#TARGET_KERNEL_MODULES_EXT := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/modules
+ARGET_KERNEL_MODULES_EXT := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/modules/prebuilt
 

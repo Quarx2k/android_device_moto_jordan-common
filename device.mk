@@ -104,21 +104,6 @@ PRODUCT_PACKAGES += FileManager Torch HwaSettings make_ext4fs RomUpdater
 # Experimental TI OpenLink
 PRODUCT_PACKAGES += libnl_2 iw
 
-# copy all vendor (motorola) kernel modules to system/lib/modules
-PRODUCT_COPY_FILES += $(shell test -d vendor/motorola/jordan-common/lib/modules &&  \
-	find vendor/motorola/jordan-common/lib/modules -name '*.ko' \
-	-printf '%p:system/lib/modules/%f ')
-
-# copy all others kernel modules under the "modules" directory to system/lib/modules
-PRODUCT_COPY_FILES += $(shell test -d device/moto/jordan-common/modules && \
-	find device/moto/jordan-common/modules -name '*.ko' \
-	-printf '%p:system/lib/modules/%f ')
-
-# Prebuilt boot.img
-LOCAL_KERNEL := device/moto/jordan-common/kernel
-PRODUCT_COPY_FILES += \
-	$(LOCAL_KERNEL):kernel
-
 # Blobs and bootmenu stuff
 $(call inherit-product, device/moto/jordan-common/jordan-blobs.mk)
 $(call inherit-product, device/moto/jordan-common/bootmenu/bootmenu.mk)

@@ -1,0 +1,1 @@
+console=ttyMTD10 rw mem=498M@0x80C00000 init=/init ip=off brdrev=P3A omapfb.vram=0:4M

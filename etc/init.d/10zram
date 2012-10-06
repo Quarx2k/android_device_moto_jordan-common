@@ -1,0 +1,6 @@
+#!/system/bin/sh
+#
+# Compcache handler
+# Decides whether or not Compcache is enabled
+#
+/system/bin/handle_compcache

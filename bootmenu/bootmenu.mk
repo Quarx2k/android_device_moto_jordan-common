@@ -19,21 +19,23 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/config/overclock.conf:system/bootmenu/config/overclock.conf \
 	${bm_device}/bootmenu/script/_config.sh:system/bootmenu/script/_config.sh \
 
-# init.rc profiles
+# 2nd-boot profiles
 PRODUCT_COPY_FILES += \
-	${bm_device}/profiles/2nd-init/init.rc:system/bootmenu/2nd-init/init.rc \
-	${bm_device}/profiles/2nd-init/init.usb.rc:system/bootmenu/2nd-init/init.usb.rc \
-	${bm_device}/profiles/2nd-init/init.mapphone_umts.rc:system/bootmenu/2nd-init/init.mapphone_umts.rc \
-	${bm_device}/profiles/2nd-init/ueventd.rc:system/bootmenu/2nd-init/ueventd.rc \
-	${bm_device}/profiles/backup/init.rc:system/bootmenu/2nd-boot/init.rc \
-	${bm_device}/profiles/backup/init.mapphone_umts.rc:system/bootmenu/2nd-boot/init.mapphone_umts.rc \
-	${bm_device}/profiles/backup/ueventd.rc:system/bootmenu/2nd-boot/ueventd.rc \
-	${bm_device}/profiles/backup/init:system/bootmenu/2nd-boot/init \
-	${bm_device}/profiles/backup/sbin/ueventd:system/bootmenu/2nd-boot/sbin/ueventd \
+	${bm_device}/profiles/2nd-boot/2ndboot.ko:system/bootmenu/2nd-boot/2ndboot.ko \
+	${bm_device}/profiles/2nd-boot/boot:system/bootmenu/2nd-boot/boot \
+	${bm_device}/profiles/2nd-boot/cmdline:system/bootmenu/2nd-boot/cmdline \
+	${bm_device}/profiles/2nd-boot/hbootuser:system/bootmenu/2nd-boot/hbootuser \
+	${bm_device}/profiles/2nd-boot/hboot.cfg:system/bootmenu/2nd-boot/hboot.cfg \
+	${bm_device}/profiles/2nd-boot/devtree:system/bootmenu/2nd-boot/devtree \
 
+# Ramdisk
+PRODUCT_COPY_FILES += \
+	${bm_device}/profiles/ramdisk/ueventd.rc:root/ueventd.rc \
+	${bm_device}/profiles/ramdisk/init.usb.rc:root/init.usb.rc \
+	${bm_device}/profiles/ramdisk/init.mapphone_umts.rc:root/init.mapphone_umts.rc \
+	${bm_device}/bootmenu/binary/adbd:root/sbin/adbd \
 # scripts
 PRODUCT_COPY_FILES += \
-	${bm_device}/bootmenu/script/2nd-init.sh:system/bootmenu/script/2nd-init.sh \
 	${bm_device}/bootmenu/script/2nd-boot.sh:system/bootmenu/script/2nd-boot.sh \
 	${bm_device}/bootmenu/script/adbd.sh:system/bootmenu/script/adbd.sh \
 	${bm_device}/bootmenu/script/bootmode_clean.sh:system/bootmenu/script/bootmode_clean.sh \
@@ -48,7 +50,6 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/script/sdcard.sh:system/bootmenu/script/sdcard.sh \
 	${bm_device}/bootmenu/script/system.sh:system/bootmenu/script/system.sh \
 	${bm_device}/bootmenu/script/pdsbackup.sh:system/bootmenu/script/pdsbackup.sh \
-	${bm_device}/bootmenu/script/pvr.sh:system/bootmenu/script/pvr.sh \
 
 # prebuilt binaries (to clean...)
 PRODUCT_COPY_FILES += \

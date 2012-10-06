@@ -38,15 +38,12 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
 	${device_path}/vold.fstab:system/etc/vold.fstab \
 	${device_path}/media_profiles.xml:system/etc/media_profiles.xml \
-	${device_path}/modules/modules.alias:system/lib/modules/modules.alias \
-	${device_path}/modules/modules.dep:system/lib/modules/modules.dep \
 	$(device_path)/etc/init.d/01sysctl:system/etc/init.d/01sysctl \
 	$(device_path)/etc/init.d/02baseband:system/etc/init.d/02baseband \
 	$(device_path)/etc/init.d/03firstboot:system/etc/init.d/03firstboot \
-	$(device_path)/etc/init.d/04filesystems:system/etc/init.d/04filesystems \
 	$(device_path)/etc/init.d/05mountsd:system/etc/init.d/05mountsd \
 	$(device_path)/etc/init.d/08backlight:system/etc/init.d/08backlight \
-	$(device_path)/etc/init.d/10gpiofix:system/etc/init.d/10gpiofix \
+	$(device_path)/etc/init.d/10zram:system/etc/init.d/10zram \
 	$(device_path)/etc/init.d/90multitouch:system/etc/init.d/90multitouch \
 	$(device_path)/etc/profile:system/etc/profile \
 	$(device_path)/etc/sysctl.conf:system/etc/sysctl.conf \
@@ -73,5 +70,11 @@ PRODUCT_COPY_FILES += \
 	${device_path}/releasetools/addon.d/70-bootmenu.sh:system/addon.d/70-bootmenu.sh \
 
 endif
+
+
+# copy all others kernel modules under the "modules" directory to system/lib/modules
+PRODUCT_COPY_FILES += $(shell test -d device/moto/jordan-common/modules/prebuilt && \
+	find device/moto/jordan-common/modules/prebuilt -name '*.ko' \
+	-printf '%p:system/lib/modules/%f ')
 
 #end of jordan-blobs.mk

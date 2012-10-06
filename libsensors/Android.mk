@@ -29,11 +29,11 @@ LOCAL_MODULE_TAGS:= eng debug
 
 LOCAL_CFLAGS := -DLOG_TAG=\"Sensors\"
 
-ifeq ($(TARGET_BOOTLOADER_BOARD_NAME),jordan)
-ifneq ($(BOARD_DEFY_MODEL),DEFY_FROYO)
+#ifeq ($(TARGET_BOOTLOADER_BOARD_NAME),jordan)
+#ifneq ($(BOARD_DEFY_MODEL),DEFY_FROYO)
 LOCAL_CFLAGS += -DDEFYPLUS
-endif
-endif
+#endif
+#endif
 
 LOCAL_SRC_FILES := \
 	sensors.c \
