@@ -95,6 +95,8 @@ BOARD_USES_BOOTMENU := true
 BOARD_WITH_CPCAP    := true
 BOARD_MMC_DEVICE    := /dev/block/mmcblk1
 BOARD_BOOTMODE_CONFIG_FILE := /cache/recovery/bootmode.conf
+TARGET_RECOVERY_PRE_COMMAND := "/system/bootmenu/script/reboot_command.sh"
+TARGET_RECOVERY_PRE_COMMAND_CLEAR_REASON := true
 
 # Recovery
 TARGET_RECOVERY_PIXEL_FORMAT := "BGRA_8888"
