@@ -26,6 +26,8 @@ on post-fs
     insmod /system/lib/modules/netmux.ko
     insmod /system/lib/modules/netmux_linkdriver.ko
     insmod /system/lib/modules/modem_pm_driver.ko
+    insmod /system/lib/modules/nls_utf8.ko
+    insmod /system/lib/modules/cifs.ko
 
     # Overclock after 2ndboot.
     exec /sbin/sh /system/bootmenu/script/overclock.sh
