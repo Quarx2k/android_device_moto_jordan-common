@@ -192,6 +192,9 @@ on boot
     chmod 0666 /sys/class/leds/torch-flash/flash_light
     chmod 0666 /sys/class/leds/spotlight/brightness
 
+    # DSS - disable tearing elimination
+    write /sys/devices/omapdss/display0/tear_elim 0  
+
     # Charge only mode services.
     exec /system/bin/mot_boot_mode
  
