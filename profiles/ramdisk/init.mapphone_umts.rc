@@ -46,6 +46,7 @@ on post-fs
 # Backward compatibility
     symlink /dev /dev/netmux
     symlink /dev/ttyGS0 /dev/acm0
+    symlink /dev/hp3a-omap /dev/hp3A-omap
 
     mount rootfs rootfs / rw remount
 
