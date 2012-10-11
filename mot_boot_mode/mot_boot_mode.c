@@ -22,6 +22,7 @@
 #include <cutils/properties.h>
 #include <cutils/log.h>
 
+#define LOG_TAG "mot_boot_mode"
 #define MOTO_PU_REASON_CHARGER   0x00000100
 #define MOTO_PU_REASON_USB_CABLE 0x00000010
 #define MOTO_CID_RECOVER_BOOT         "0x01"
@@ -40,7 +41,7 @@ int boot_reason_charge_only(void)
     char *x, *pwrup_rsn;
     unsigned long reason = 0;
 
-    fd = open("/proc/bootinfo", O_RDONLY);
+    fd = open("/data/bootinfo", O_RDONLY);
     if (fd < 0) return 0;
 
     n = read(fd, data, 1023);
@@ -88,7 +89,7 @@ int check_cid_recover_boot(void)
 
     memset(cid_recover_boot, 0, 32);
 
-    fd = open("/proc/bootinfo", O_RDONLY);
+    fd = open("/data/bootinfo", O_RDONLY);
     if (fd < 0) return 0;
 
     n = read(fd, data, 1023);
