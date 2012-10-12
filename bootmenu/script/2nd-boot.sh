@@ -1,4 +1,4 @@
-#!/sbin/busybox ash
+#!/sbin/sh
 
 ######## BootMenu Script
 ######## Execute [2nd-init] Menu
