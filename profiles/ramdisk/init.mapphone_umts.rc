@@ -155,13 +155,6 @@ on post-fs-data
 
     setprop vold.post_fs_data_done 1
 
-on charger
-    start console
-    start battd
-    write /data/simpin lock
-    start charge
-    stop zygote
-
 on boot
 
     # Enable panic on softlockup
@@ -199,11 +192,14 @@ on boot
 
     # Charge only mode services.
     exec /system/bin/mot_boot_mode
- 
+    class_start charger
+
+on charger
 on property:sys.chargeonly.mode=1
     class_reset main
     class_reset late_start
-    class_start charger
+    start charge
+    start battd
 
 on property:init.svc.wpa_supplicant=stopped
     stop dhcpcd
@@ -242,7 +238,7 @@ service gkisystem /system/bin/gkisystem
     group radio system
     oneshot
 service battd /system/bin/battd
-    class main
+    class charger
     socket battdsock stream 660 root system
     user root
     group system 9001
