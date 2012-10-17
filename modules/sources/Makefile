@@ -6,22 +6,23 @@
 obj-m += symsearch/
 obj-m += overclock/
 obj-m += backlight/
-obj-m += multitouch/
-obj-m += mmcfix/
-obj-m += gpiofix/
-obj-m += clockfix/
-obj-m += logcap/
-obj-m += usbled/
-obj-m += netfilter/
-obj-m += thumbee/
-obj-m += qtouch_obp_ts/
+
+#obj-m += multitouch/
+#obj-m += mmcfix/
+#obj-m += gpiofix/
+#obj-m += clockfix/
+#obj-m += logcap/
+#obj-m += usbled/
+#obj-m += netfilter/
+#obj-m += thumbee/
+#obj-m += qtouch_obp_ts/
 
 # mb525/mb526 specific
-obj-m += proximity/
-obj-m += pvr/
-obj-m += klogger/
-obj-m += tls/
-obj-m += 2ndboot/
+#obj-m += proximity/
+#obj-m += pvr/
+#obj-m += klogger/
+#obj-m += tls/
+#obj-m += 2ndboot/
 
 # experimental
 #obj-m += ion/
@@ -41,7 +42,7 @@ clean:
 	@cd $(PWD) && git checkout *.ko
 
 
-EXTRA_CFLAGS += -I$(KERNEL_DIR) -DUTS_RELEASE=\\\"2.6.32.9\\\"
+EXTRA_CFLAGS += -I$(KERNEL_DIR)
 
 .PHONY: all
 #######################################################################################
