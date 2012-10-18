@@ -6,7 +6,7 @@ PRODUCT_PACKAGES += \
 	utility_lsof \
 	static_busybox \
 	static_logwrapper \
-	2nd-init \
+	hbootuser \
 	utility_mke2fs \
 	utility_tune2fs \
 	e2fsck recovery_pigz \
@@ -22,7 +22,6 @@ PRODUCT_COPY_FILES += \
 # 2nd-boot profiles
 PRODUCT_COPY_FILES += \
 	${bm_device}/profiles/2nd-boot/2ndboot.ko:system/bootmenu/2nd-boot/2ndboot.ko \
-	${bm_device}/profiles/2nd-boot/hbootuser:system/bootmenu/2nd-boot/hbootuser \
 	${bm_device}/profiles/2nd-boot/hboot.cfg:system/bootmenu/2nd-boot/hboot.cfg \
 	${bm_device}/profiles/2nd-boot/devtree:system/bootmenu/2nd-boot/devtree \
 
