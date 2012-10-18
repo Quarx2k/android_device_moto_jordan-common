@@ -1,0 +1,47 @@
+/*-------------------------------------------------------------------------
+ * Filename:      ld-script
+ * Version:       $Id: start-ld-script,v 1.1 2001/10/07 15:51:01 erikm Exp $
+ * Copyright:     Copyright (C) 1999, Erik Mouw
+ * Author:        Erik Mouw <J.A.K.Mouw@its.tudelft.nl>
+ * Description:   ld (linker) script to make the blob bootlader.
+ *                Heavily inspired by the Linux kernel linker scripts.
+ * Created at:    Tue Aug 24 17:24:06 1999
+ * Modified by:   Erik Mouw <J.A.K.Mouw@its.tudelft.nl>
+ * Modified at:   Sun Aug 29 14:45:54 1999
+ *-----------------------------------------------------------------------*/
+/*OUTPUT_FORMAT("elf32-arm", "elf32-arm", "elf32-arm")*/
+OUTPUT_FORMAT("elf32-littlearm", "elf32-littlearm", "elf32-littlearm")
+OUTPUT_ARCH(arm)
+ENTRY(_start)
+SECTIONS
+{
+	. = 0x00000000;
+
+	. = ALIGN(4);
+	.text : { *(.text) }
+
+	. = ALIGN(4);
+	.rodata : { *(.rodata) }
+
+	. = ALIGN(4);
+	.data : { *(.data) }
+
+	. = ALIGN(4);
+	__got_start__ = .;
+	.got : {
+		*(.got)
+	}
+	__got_end__ = .;
+
+	. = ALIGN(4);
+	__bss_start__ = .;
+	.bss : {
+		*(.bss)
+	}
+	__bss_end__ = .;
+
+	. = ALIGN(4);
+	.stack : { *(.stack) }
+	__boot_size__ = .;
+}
+
