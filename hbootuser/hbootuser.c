@@ -203,10 +203,12 @@ int main(int argc, char **argv) {
 
 		ret = fscanf(fp, "%d", &tag);
 		if (ret == EOF) {
+/*
 			if (errno) {
 				perror("fscanf()");
 				goto out;
 			}
+*/
 			break;
 		} else if (ret != 1) {
 			fscanf(fp, "%*[^\n]");
