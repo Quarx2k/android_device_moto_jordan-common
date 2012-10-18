@@ -142,7 +142,7 @@ API_MAKE := \
 	PROCFAMILY=OMAP_3430 PROJROOT="" \
 	HOST_PLATFORM=zoom2 \
 	PROPRIETARY_SDIO=y \
-	KERNEL_DIR=$(ANDROID_BUILD_TOP)/$(TARGET_OUT_INTERMEDIATES)/kernel_intermediates/build
+	KERNEL_DIR=$(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ
 
 ext_modules:
 	$(API_MAKE) clean -C $(ANDROID_BUILD_TOP)/system/wlan/ti/wilink_6_1/platforms/os/linux
