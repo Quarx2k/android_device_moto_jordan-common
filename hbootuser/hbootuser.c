@@ -8,7 +8,7 @@
 #include <inttypes.h>
 #include <string.h>
 #include <linux/limits.h>
-#include "../hbootmod/hboot.h"
+#include "../modules/sources/2ndboot/hboot.h"
 #define MAX_SOURCE_LEN 32
 
 #define _STR(x) #x
