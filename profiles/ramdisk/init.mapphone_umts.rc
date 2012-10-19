@@ -217,6 +217,11 @@ service usbd /system/bin/usbd
     user root
     socket usbd stream 666 root system
 
+service bp-ptc /system/bin/bp_ptc
+    class main
+    user root
+    group root
+
 service charge /system/bin/charge_only_mode
     group root
     oneshot
