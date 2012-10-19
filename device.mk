@@ -70,7 +70,7 @@ PRODUCT_PACKAGES += \
 	libaudiohw_legacy \
 
 # TO FIX for ICS
-PRODUCT_PACKAGES += hwcomposer.default 
+PRODUCT_PACKAGES += hwcomposer.default power.omap3
 
 # Wifi packages
 PRODUCT_PACKAGES += iwmulticall hostap wlan_loader wlan_cu wpa_supplicant
