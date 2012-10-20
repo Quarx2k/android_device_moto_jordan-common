@@ -21,7 +21,7 @@ PRODUCT_COPY_FILES += \
 
 # 2nd-boot profiles
 PRODUCT_COPY_FILES += \
-	${bm_device}/profiles/2nd-boot/2ndboot.ko:system/bootmenu/2nd-boot/2ndboot.ko \
+	${bm_device}/profiles/2nd-boot/hbootmod.ko:system/bootmenu/2nd-boot/hbootmod.ko \
 	${bm_device}/profiles/2nd-boot/hboot.cfg:system/bootmenu/2nd-boot/hboot.cfg \
 	${bm_device}/profiles/2nd-boot/devtree:system/bootmenu/2nd-boot/devtree \
 
@@ -34,6 +34,7 @@ PRODUCT_COPY_FILES += \
 # scripts
 PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/script/2nd-boot.sh:system/bootmenu/script/2nd-boot.sh \
+	${bm_device}/bootmenu/script/2nd-boot-uart.sh:system/bootmenu/script/2nd-boot-uart.sh \
 	${bm_device}/bootmenu/script/adbd.sh:system/bootmenu/script/adbd.sh \
 	${bm_device}/bootmenu/script/bootmode_clean.sh:system/bootmenu/script/bootmode_clean.sh \
 	${bm_device}/bootmenu/script/cdrom.sh:system/bootmenu/script/cdrom.sh \
