@@ -8,12 +8,9 @@ source /system/bootmenu/script/_config.sh
 ######## Main Script
 
 toolbox mount -o remount,rw rootfs /
-mount /data
-
 mkdir /2ndboot
 cp -f /system/bootmenu/2nd-boot/* /2ndboot
 chmod 755 /2ndboot/*
-cp -f /proc/bootinfo /data/bootinfo
 
 ## unmount devices
 sync
