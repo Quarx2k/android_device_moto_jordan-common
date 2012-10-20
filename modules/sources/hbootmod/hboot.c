@@ -366,6 +366,20 @@ static int hbootctrl_write(struct file *file, const char __user *buf, size_t cou
 	return buffer_append_userdata(buf, count, ppos);
 }  
 
+static int find_my_dev(struct device *dev, void *data)                                                                                                                          
+{                                                                                                                                                                                
+    char *drv_name = "UNKNOWN";
+    if (dev->driver && dev->driver->name)
+        drv_name = dev->driver->name;
+
+    printk("dev[%s], driver[%s]\n", dev_name(dev), drv_name);
+    if (!strncmp((char*)data, dev_name(dev), strlen((char*)data))) {                                                                                                             
+        printk(KERN_INFO "Found it\n");                                                                                                                                          
+        return 1;                                                                                                                                                                
+    }                                                                                                                                                                            
+    return 0;                                                                                                                                                                    
+}    
+
 int __init hbootmod_init(void) 
 {
 	int ret;
