@@ -1,21 +1,17 @@
 #include "types.h"
 #include "stdio.h"
-#include "error.h"
 #include "atag.h"
 #include "common.h"
 #include "memory.h"
 #include "images.h"
 #include "mbm.h"
+#include "board.h"
 
 #define ARCH_NUMBER 2241
 
-/* OMAP Registers */
-
-#define WDTIMER2_BASE						0x48314000
-
-void critical_error(error_t err)
+void critical_error(const char* error)
 {
-	printf("Critical error %d\n", (int)err);
+	printf("Critical error %d\n", error);
 	while (1);
 }
 
@@ -32,9 +28,10 @@ void __attribute__((__naked__)) l2cache_enable(void)
 	);
 }
 
-void __attribute__((__naked__)) enter_kernel(int zero, int arch, void *atags, int kern_addr) 
+void __attribute__((__naked__)) enter_kernel(int zero, int arch, void *atags, unsigned long kernel_address) 
 {
-	__asm__ volatile (
+	__asm__ volatile 
+	(
 		"bx r3\n"
 	);
 }
@@ -51,24 +48,25 @@ int main()
 	
 	if (image_find(IMG_LINUX, &image) != NULL)
 	{
-		printf("KERNEL FOUND!\n");
 		atags = atag_build();
 		
+		/* Reinit board */
+		board_init();
+		printf("Board initialized.\n");
+		
 		/* Disable Watchdog (seqeunce taken from MBM) */
-		write32(0xAAAA, WDTIMER2_BASE + 0x48);
+		write32(0xAAAA, BOARD_WDTIMER2_BASE + 0x48);
 		delay(500);
 		
-		write32(0x5555, WDTIMER2_BASE + 0x48);
+		write32(0x5555, BOARD_WDTIMER2_BASE + 0x48);
 		delay(500);
 		
-		printf("Watchdog disabled.\n");
-		
-		printf("BOOTING KERNEL!\n");
+		printf("Booting kernel.\n");
 		l2cache_enable();
-		enter_kernel(0, ARCH_NUMBER, atags, KERNEL_DEST);
+		enter_kernel(0, ARCH_NUMBER, atags, (unsigned long) image.data);
 	}
 	else 
-		critical_error(IMG_NOT_PROVIDED);
+		critical_error("No kernel image.");
 
   return 0;
 }

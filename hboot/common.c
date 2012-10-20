@@ -1,27 +1,31 @@
 #include "types.h"
 #include "stdio.h"
 #include "string.h"
-#include "error.h"
+#include "board.h"
 #include "common.h"
 
-#define UART3_BASE 			0x49020000
+/* NOTE: These are initialized PRIOR bss cleanup */
+uint32_t __attribute__ ((section ("data"))) cfg_powerup_reason = 0x00000080;
+uint32_t __attribute__ ((section ("data"))) cfg_emu_uart = 0;
 
 int putchar(int c) 
 {
+	if (!cfg_emu_uart)
+		return;
+	
 	if (c == '\n')
 		putchar('\r');
 	
-	while ((read32(UART3_BASE + 0x44) & 1) != 0);
+	while ((read32(BOARD_DEBUG_UART_BASE + 0x44) & 1) != 0);
+	write32(c, BOARD_DEBUG_UART_BASE + 0x00);
 	
-	write32(c, UART3_BASE + 0x00);
-	
-  return (unsigned char)c;
+	return (unsigned char)c;
 }
 
 int puts(const char *s) 
 {
 	unsigned char c;
-
+	
 	while (c = (unsigned char)(*s++)) 
 	{
 		if (putchar((int)c) == EOF)
@@ -41,3 +45,4 @@ void u_to_hex(int x, int digits, char *s)
 		x >>= 4;
 	}
 }
+ 

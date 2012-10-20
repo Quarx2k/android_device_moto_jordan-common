@@ -1,6 +1,8 @@
 #include "buffers.h"
 
 .extern buffers_list
+.extern cfg_emu_uart
+.extern cfg_powerup_reason
 .align 4
 
 .macro barrier, reg
@@ -22,13 +24,26 @@
  * r0 - pointer to set of buffers.
  * r1 - count of buffers.
  * r2 - pointer to new trnaslation table.
- */
+ * r3 - entry point address
+ * r4 - emu_uart settings
+ * r5 - powerup reason
+ */ 
+	
 	cpsid   ifa
 	sub	r14, r15, #0xc         @ virt addr of entry point
 	sub	r14, r14, #0x3f400000
 	mov r10, r14
 	mov r8, r15
-    
+	
+	/* Store the parameters first */
+	ldr r12, =cfg_emu_uart-((6+2)*4) @ we're adding on 6th instruction
+	add r12, r15, r12
+	str r4, [r12]
+	
+	ldr r12, =cfg_powerup_reason-((9+2)*4) @ we're adding on 9th instruction
+	add r12, r15, r12
+	str r5, [r12]
+     
 	mov	r3, #0
 
 	mcr	p15, 0, r3, c2, c0, 2  @ load new translation table
@@ -108,7 +123,7 @@ __buffers_end:
 find_tag:
 	cmp	r0, #IMG_LAST_TAG
 	ldrls	r1, p_buffers_list
-	addls	r1, r1, r0, lsl #5     @ each entry is 8-words long
+	addls	r1, r1, r0, lsl #6     @ each entry is 64 bytes long
 	movhi	r1, #0
 	mov	r0, r1
 	bx	lr

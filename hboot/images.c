@@ -7,37 +7,34 @@
 
 uint8_t unpack_buffer(addr_t dest, void *handle);
 
-struct buffer_handle 
-{
-  struct abstract_buffer abstract;
-  void *rest;
-  addr_t dest;
-  uint32_t maxsize;
-  uint32_t attrs;
-  uint32_t reserved[1];
-};
-
-
 struct buffer_handle buffers_list[IMG_LAST_TAG+1] = 
 {
+	[IMG_HBOOT] = 
+	{
+		.name = "hboot",
+	},
 	[IMG_LINUX] = 
 	{
 		.dest = KERNEL_DEST,
+		.name = "zImage",
 		.maxsize = 4*1024*1024,
 	},
 	[IMG_INITRAMFS] = 
 	{
-		.dest = KERNEL_DEST + 4*1024*1024,
-		.maxsize = 2*1024*1024,
+		.dest = RAMDISK_DEST,
+		.name = "initrd",
+		.maxsize = 1*1024*1024,
 	},
 	[IMG_DEVTREE] = 
 	{
-		.dest = 0x85000000,
+		.dest = DEVTREE_DEST,
+		.name = "devtree",
 		.maxsize = 1*1024*1024,
 	},
 	[IMG_CMDLINE] =
 	{
-		.dest = 0x85100000,
+		.dest = CMDLINE_DEST,
+		.name = "cmdline",
 		.maxsize = 1024,
 	},
 };
@@ -77,28 +74,27 @@ void image_complete()
 {
 	int i;
 	struct abstract_buffer *ab;
-
-	for (i = 1; i <= IMG_LAST_TAG; ++i) 
+	
+	for (i = IMG_HBOOT + 1; i <= IMG_LAST_TAG; i++) 
 	{
 		ab = &buffers_list[i].abstract;
-
+		
 		if (ab->state == B_STAT_CREATED) 
-			printf("IMAGE [%d]: CREATED\n", i);
-
+			printf("IMAGE [%s]: CREATED\n", buffers_list[i].name);
+		
 		if ((ab->state == B_STAT_COMPLETED) && (ab->attrs & B_ATTR_VERIFY)) 
 		{
 #ifdef HBOOT_VERIFY_CRC32
 			if (ab->checksum != crc32(buffers_list[i].dest, (size_t)ab->size)) 
 			{ 
 				ab->state = B_STAT_CRCERROR;
-				printf("IMAGE [%d]: CRC ERROR\n", i);
+				printf("IMAGE [%s]: CRC ERROR\n", buffers_list[i].name);
 			}
 			else
-				printf("IMAGE [%d]: CRC OK\n", i);
+				printf("IMAGE [%s]: CRC OK\n", buffers_list[i].name);
 #else
-			printf("IMAGE [%d]: LOADED\n", i);
+				printf("IMAGE [%s]: LOADED\n", buffers_list[i].name);
 #endif
 		}
 	}
 }
-

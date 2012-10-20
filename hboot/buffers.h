@@ -33,6 +33,7 @@ struct abstract_buffer
 
 #define IMG_ATTR_LAZY    (1 << 0)
 
+#define IMG_HBOOT        (0)
 #define IMG_LINUX        (1)
 #define IMG_INITRAMFS    (2)
 #define IMG_DEVTREE      (3)

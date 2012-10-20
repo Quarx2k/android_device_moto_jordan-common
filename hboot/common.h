@@ -3,6 +3,9 @@
 #include "types.h"
 #include "stdio.h"
 
+extern uint32_t cfg_powerup_reason;
+extern uint32_t cfg_emu_uart;
+
 static inline uint8_t read8(addr_t addr) 
 {
   return *((volatile uint8_t*)addr);
@@ -44,5 +47,6 @@ static inline void modify_register32(addr_t addr, uint32_t mask, uint32_t val)
 }
 
 void u_to_hex(int x, int digits, char *s);
+int puts(const char *s);
 
 #endif // __HW_COMMON_H__
