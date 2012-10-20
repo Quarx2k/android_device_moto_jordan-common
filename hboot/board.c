@@ -171,7 +171,7 @@ void board_init()
 	while ((read32(GPTIMER1_BASE + 0x14) & 1) != 1);
 
 	/* 
-	 * MBM boots OMAP3630 with 800 MHz. 
+	 * MBM boots OMAP3430 with 500 MHz. 
 	 */
 
 	/* Unlock PLL */ 
@@ -181,7 +181,7 @@ void board_init()
 	/* Set the dividers */
 	modify_register32(CM_CLKSEL2_PLL_MPU, 0x1F, 0x1);
 	modify_register32(CM_CLKSEL1_PLL_MPU, 0x07 << 18, 0x01 << 18);
-	modify_register32(CM_CLKSEL1_PLL_MPU, 0x7FF << 8, 0x190 << 8);
+	modify_register32(CM_CLKSEL1_PLL_MPU, 0x7FF << 8, 0xFA << 8);
 	modify_register32(CM_CLKSEL1_PLL_MPU, 0x7F, 0x0C);
 
 	/* Set frequency */
