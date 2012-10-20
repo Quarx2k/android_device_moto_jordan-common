@@ -266,18 +266,15 @@ static int cpcap_config_for_write(struct spi_device *spi, unsigned short reg,
     return status;
 }
 
-static int find_ms2_dev(struct device *dev, void *data)
+static int find_device(struct device *dev, void *data)
 {
     if (!strncmp((char*)data, dev_name(dev), strlen((char*)data))) 
-    {
-        printk(KERN_INFO "Found it\n");
         return 1;
-    }
+
     return 0;
 } 
 
-
-void czecho_activate_emu_uart(void)
+void activate_emu_uart(void)
 {
     int i;
     u16 tmp = 0;
@@ -287,7 +284,7 @@ void czecho_activate_emu_uart(void)
 
     printk(KERN_INFO "Searching for cpcap_usb...\n");
 
-    cpcap = device_find_child(&platform_bus, "cpcap_usb", find_ms2_dev);
+		cpcap = device_find_child(&platform_bus, "cpcap_usb", find_device);
 
     if (cpcap == NULL)
         return;
@@ -330,11 +327,7 @@ void czecho_activate_emu_uart(void)
     write_omap_mux_register(0x1AA, 2, 0);
     write_omap_mux_register(0x1AC, 2, 1);
 
-    printk("Resetting UART\n");
-    printk("Waiting for reset finish\n");
-
     printk
-        (KERN_ALERT "WARNING: MiniUSB port works in UART3 mode,"
+        (KERN_ALERT "WARNING: MiniUSB port works in UART3 mode, "
          "the USB functionality UNAVAILABLE!\n");
-
 }
