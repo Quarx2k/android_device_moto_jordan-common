@@ -10,10 +10,10 @@ on init
     symlink /mnt/sdcard /sdcard
 
     #Adb at boot
-    write /dev/usb_device_mode charge_adb
-    write /tmp/usbd_current_state usb_mode_charge_adb
-    chmod 0666 /tmp/usbd_current_state
-    start adbd
+    #write /dev/usb_device_mode charge_adb
+    #write /tmp/usbd_current_state usb_mode_charge_adb
+    #chmod 0666 /tmp/usbd_current_state
+    #start adbd
 
 
 on post-fs
