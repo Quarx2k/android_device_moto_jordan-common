@@ -1,0 +1,102 @@
+config SGX540
+	tristate "PowerVR SGX"
+	depends on ARCH_OMAP4
+	---help---
+	  Support for the PowerVR SGX 3D core.
+
+config SGX530
+	tristate "PowerVR SGX"
+	depends on ARCH_OMAP3
+	---help---
+	  Support for the PowerVR SGX 3D core.
+
+config VIRTUAL_DISPLAY_SUPPORT
+	tristate "Virtual display support"
+	depends on SGX540
+	---help---
+	  Support for showing one framebuffer split in 2 displays at the same
+	  time. Each display will show a part of the framebuffer by updating
+	  the corresponding overlay on each display. This feature requires
+	  2 framebuffers so CONFIG_FB_OMAP2_NUM_FBS must be 2 and each
+	  framebuffer must be initialized correctly.
+	  The current implementation supports only panels of the same X and Y
+	  resolutions and both panels must have the same bits per pixel values.
+	  This feature is EXPERIMENTAL and might not be stable if power
+	  management is added at the moment.
+	  It is important to give enough memory to FB0 to allow at least
+	  one buffer with twice the height of a normal single display buffer,
+	  so if the panel needs 864x480x4 bytes for one single display buffer
+	  you must give twice the size which is 864x960x4 with the bootargs
+	  omapfb.vram='0:4M'. To enable double buffering you need to give
+	  864x960x4x2 bytes for two buffers, the bootargs should have
+	  omapfb.vram='0:8M'. Since FB1 must also be initialized properly be
+	  sure to left enough memory for one single buffer (864x480x4 bytes).
+	  The bootarg 'vram' must have the FB0 and FB1 memory requirements
+	  combined. Example:
+	  If you want FB0 with 4M (no double buffering) and FB1 with 2M, the
+	  bootargs must have the following:
+	  vram='6M' omapfb.vram='0:4M,1:2M'
+
+choice
+	prompt "SGX revision"
+	depends on SGX530
+	default SGX_REV125
+
+config SGX_REV121
+       bool "Revision 1.2.1 - Omap 3430"
+
+config SGX_REV125
+	bool "Revision 1.2.5 - Omap 3630"
+
+endchoice
+
+choice
+	prompt "SGX revision"
+	depends on SGX540
+	default SGX_REV120
+
+config SGX_REV110
+       bool "Revision 1.1.0 - Omap 4430 ES1"
+
+config SGX_REV120
+       bool "Revision 1.2.0 - Omap 4430 ES2"
+
+endchoice
+
+choice
+	prompt "PowerVR build type"
+	depends on SGX530
+	default SGX_530_BUILD_RELEASE
+
+config SGX_530_BUILD_RELEASE
+       bool "SGX530 RELEASE"
+
+config SGX_530_BUILD_DEBUG
+       bool "SGX530 DEBUG"
+
+endchoice
+
+choice
+	prompt "PowerVR build type"
+	depends on SGX540
+	default SGX_540_BUILD_RELEASE
+
+config SGX_540_BUILD_RELEASE
+       bool "SGX540 RELEASE"
+
+config SGX_540_BUILD_DEBUG
+       bool "SGX540 DEBUG"
+
+endchoice
+
+config SGX_DEBUG_DISPLAY_DRIVER
+       depends on SGX530 || SGX540
+       bool "Enable Debug Messages in the 3rd Party Display Driver"
+
+config SGX_PDUMP
+	depends on SGX530 || SGX540
+	bool "PowerVR SGX Parameter Dump"
+	---help---
+	  This option enables the PDump (Parameter Dump) build to debug
+	  the SGX driver. The user side of the driver must be built with
+	  this option enabled as well

@@ -16,6 +16,7 @@ obj-m += usbled/
 # mb525/mb526 specific
 obj-m += proximity/
 obj-m += tls/
+obj-m += pvr/
 
 PWD := $(shell pwd)
 
