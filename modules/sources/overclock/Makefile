@@ -8,6 +8,6 @@
 #obj-m += sio_iosched.o
 
 ccflags-y += -DSMARTREFLEX -DOMAP36XX
-overclock_defy-objs := overclock.o cpufreq_stats.o
+overclock_defy-objs := overclock.o
 obj-m += overclock_defy.o
 
