@@ -20,13 +20,6 @@ void *atag_build()
 	tag->u.core.pagesize = 0x00001000;
 	tag->u.core.rootdev = 0x0000;
 	tag = tag_next(tag);
-
-	/* Add powerup reason */
-	tag->hdr.tag = ATAG_POWERUP_REASON;
-	tag->hdr.size = tag_size (tag_powerup_reason);
-	tag->u.powerup_reason.powerup_reason = cfg_powerup_reason;
-	printf("Powerup Reason: 0x%08x\n", tag->u.powerup_reason.powerup_reason);
-	tag = tag_next(tag);
 	
 	atag_cmdline = tag->u.cmdline.cmdline;
 	
@@ -85,7 +78,28 @@ void *atag_build()
 		printf("INITRD is on 0x%08x!\n", tag->u.initrd.start);
 		tag = tag_next(tag);
 	}
-
+	
+	/* Powerup reason */
+	tag->hdr.tag = ATAG_POWERUP_REASON;
+	tag->hdr.size = tag_size (tag_powerup_reason);
+	tag->u.powerup_reason.powerup_reason = cfg_powerup_reason;
+	printf("Powerup Reason: 0x%08x\n", tag->u.powerup_reason.powerup_reason);
+	tag = tag_next(tag);
+	
+	/* Battery status at boot */
+	tag->hdr.tag = ATAG_BATTERY_STATUS_AT_BOOT;
+	tag->hdr.size = tag_size (tag_battery_status_at_boot);
+	tag->u.battery_status_at_boot.battery_status_at_boot = cfg_batt_status;
+	printf("Battery status: 0x%04x\n", tag->u.battery_status_at_boot.battery_status_at_boot);
+	tag = tag_next(tag);
+	
+	/* CID Recover boot */
+	tag->hdr.tag = ATAG_CID_RECOVER_BOOT;
+	tag->hdr.size = tag_size (tag_cid_recover_boot);
+	tag->u.cid_recover_boot.cid_recover_boot = cfg_cid_recovery;
+	printf("CID Recovery: 0x%02x\n", tag->u.cid_recover_boot.cid_recover_boot);
+	tag = tag_next(tag);
+	
 	tag->hdr.tag = ATAG_NONE;
 	tag->hdr.size = 0;
 	printf("ATAG created!\n");

@@ -25,8 +25,10 @@
  * r1 - count of buffers.
  * r2 - pointer to new trnaslation table.
  * r3 - entry point address
- * r4 - emu_uart settings
- * r5 - powerup reason
+ * [sp] - emu_uart settings
+ * [sp,#0x4] - powerup reason
+ * [sp,#0x8] - battery status at boot
+ * [sp,#0xC] - cid recover boot
  */ 
 	
 	cpsid   ifa
@@ -35,14 +37,26 @@
 	mov r10, r14
 	mov r8, r15
 	
-	/* Store the parameters first */
-	ldr r12, =cfg_emu_uart-((6+2)*4) @ we're adding on 6th instruction
+	/* Store the parameters first, instruction offset is zero based */
+	ldr r12, =cfg_emu_uart-((6+2)*4) @ we're adding on 7th instruction
 	add r12, r15, r12
+	ldr r4, [sp]
 	str r4, [r12]
 	
-	ldr r12, =cfg_powerup_reason-((9+2)*4) @ we're adding on 9th instruction
+	ldr r12, =cfg_powerup_reason-((10+2)*4) @ we're adding on 11th instruction
 	add r12, r15, r12
-	str r5, [r12]
+	ldr r4, [sp, #0x04]
+	str r4, [r12]
+	
+	ldr r12, =cfg_batt_status-((14+2)*4) @ we're adding on 15th instruction
+	add r12, r15, r12
+	ldrh r4, [sp, #0x08]
+	strh r4, [r12]
+	
+	ldr r12, =cfg_cid_recovery-((18+2)*4) @ we're adding on 19th instruction
+	add r12, r15, r12
+	ldrb r4, [sp, #0x0C]
+	strb r4, [r12]
      
 	mov	r3, #0
 

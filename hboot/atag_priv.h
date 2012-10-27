@@ -315,6 +315,13 @@ struct tag_cli_logo_version
 	u32  cli_logo_version_max_length;
 };
 
+/* CID recover boot */
+#define ATAG_CID_RECOVER_BOOT 0xf1000414
+struct tag_cid_recover_boot
+{
+	u8 cid_recover_boot;
+};
+
 struct tag {
 	struct tag_header hdr;
 	union {
@@ -365,6 +372,7 @@ struct tag {
 		struct tag_mbm_bootup_time mbm_bootup_time;
 		struct tag_bp_loader_version bp_loader_version;
 		struct tag_cli_logo_version cli_logo_version;
+		struct tag_cid_recover_boot cid_recover_boot;
 	} u;
 };
 

@@ -5,6 +5,8 @@
 
 extern uint32_t cfg_powerup_reason;
 extern uint32_t cfg_emu_uart;
+extern uint16_t cfg_batt_status;
+extern uint8_t cfg_cid_recovery;
 
 static inline uint8_t read8(addr_t addr) 
 {

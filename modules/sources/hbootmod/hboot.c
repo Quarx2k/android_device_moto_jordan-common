@@ -117,11 +117,12 @@ void reconfigure_emu_uart(uint32_t uart_speed)
 }
 
 int __attribute__((__naked__)) do_branch(void *bootlist, uint32_t bootsize, uint32_t new_ttbl, void *func, 
-																				 uint32_t p_emu_uart, uint32_t p_powerup_reason) 
+																				 uint32_t p_emu_uart, uint32_t p_powerup_reason, uint16_t p_battery_status_at_boot,
+																				 uint8_t p_cid_recover_boot) 
 {
 	__asm__ volatile 
 	(
-		"sub    sp, sp, #0x8\n"
+		"sub    sp, sp, #0x10\n"
 		"stmfd  sp!, {r0-r3}\n"
 	);
 		
@@ -169,13 +170,7 @@ int __attribute__((__naked__)) do_branch(void *bootlist, uint32_t bootsize, uint
 		"mcr    p15, 0, r0, c1, c0, 1\n"
 		
 		"ldmfd  sp!, {r0-r3}\n"
-		"add    sp, sp, #0x8\n"
-		
-		/* r4 - emu_uart parameter */
-		"ldr    r4, [sp]\n"
-		
-		/* r5 - powerup reason */
-		"ldr    r5, [sp, #0x04]\n"
+		"add    sp, sp, #0x10\n"
 		
 		/* OK - Ready to branch */
 		"bx     r3\n"
@@ -290,7 +285,8 @@ int hboot_boot(int handle)
 	local_irq_disable();
 	local_fiq_disable();
 
-	do_branch(bootlist, listsize, virt_to_phys(l1_table), boot_entry, emu_uart, bi_powerup_reason());
+	do_branch(bootlist, listsize, virt_to_phys(l1_table), boot_entry, emu_uart, bi_powerup_reason(),
+						bi_battery_status_at_boot(), bi_cid_recover_boot());
 	return -EBUSY;
 }
 

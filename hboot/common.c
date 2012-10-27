@@ -7,6 +7,8 @@
 /* NOTE: These are initialized PRIOR bss cleanup */
 uint32_t __attribute__ ((section ("data"))) cfg_powerup_reason = 0x00000080;
 uint32_t __attribute__ ((section ("data"))) cfg_emu_uart = 0;
+uint16_t __attribute__ ((section ("data"))) cfg_batt_status = -1;
+uint8_t __attribute__ ((section ("data"))) cfg_cid_recovery = 0;
 
 int putchar(int c) 
 {
