@@ -34,7 +34,6 @@
 #define MAX_FREQ_NUMBER 10
 #define NOM_FREQ_INDEX 3
 
-static int freq_num;
 static char *freq_list[MAX_FREQ_NUMBER];
 static char *max_freq, *nom_freq;
 
@@ -111,6 +110,7 @@ static void omap3_power_init(struct power_module *module)
     struct omap3_power_module *powmod =
                                    (struct omap3_power_module *) module;
     char freq_buf[MAX_FREQ_NUMBER*10];
+    int freq_num;
 
     tmp = sysfs_read(CPUFREQ_CPU0 "scaling_available_frequencies",
                                                    freq_buf, sizeof(freq_buf));
@@ -119,6 +119,12 @@ static void omap3_power_init(struct power_module *module)
     }
 
     freq_num = str_to_tokens(freq_buf, freq_list, MAX_FREQ_NUMBER);
+
+    /* Discard trailing empties */
+    while (!atoi(freq_list[freq_num - 1]) && freq_num) {
+        freq_num--;
+    }
+
     if (!freq_num) {
         return;
     }
