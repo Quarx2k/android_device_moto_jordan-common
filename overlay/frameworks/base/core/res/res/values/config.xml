@@ -267,7 +267,7 @@
     <!--    <bool name="config_wifi_ap_use_single_interface">true</bool> -->
 
     <!-- Dont reload the firmware via the framework, let wifi legacy and tiap_loader do that -->
-    <bool name="config_wifiApFirmwareReload">false</bool> 
+    <!-- <bool name="config_wifiApFirmwareReload">false</bool>  -->
 
      <!--   <bool name="config_usesLegacyUsbDeviceManager">true</bool>-->
     <string name="config_legacyUmsLunFile">/sys/devices/platform/usb_mass_storage/lun0/file</string>
