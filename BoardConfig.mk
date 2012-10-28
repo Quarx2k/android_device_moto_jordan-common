@@ -151,7 +151,7 @@ ext_modules:
 
 	#$(API_MAKE) clean -C $(ANDROID_BUILD_TOP)/system/wlan/ti/wilink_6_1/platforms/os/linux
 	$(API_MAKE) clean -C $(ANDROID_BUILD_TOP)/system/wlan/ti/WiLink_AP/platforms/os/linux
-	#$(API_MAKE) -C $(ANDROID_BUILD_TOP)/system/wlan/ti/WiLink_AP/platforms/os/linux
+	$(API_MAKE) -C $(ANDROID_BUILD_TOP)/system/wlan/ti/WiLink_AP/platforms/os/linux
 	#$(API_MAKE) -C $(ANDROID_BUILD_TOP)/system/wlan/ti/wilink_6_1/platforms/os/linux
 	#mv system/wlan/ti/wilink_6_1/stad/build/linux/tiwlan_drv.ko $(KERNEL_MODULES_OUT)
 	mv system/wlan/ti/WiLink_AP/platforms/os/linux/tiap_drv.ko $(KERNEL_MODULES_OUT)
