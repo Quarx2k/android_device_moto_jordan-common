@@ -10,6 +10,8 @@ const char *board_get_cmdline();
 
 #define BOARD_DEBUG_UART_BASE			0x49020000
 #define BOARD_WDTIMER2_BASE			0x48314000
+#define BOARD_MPU_INTC_BASE			0x48200000
+#define BOARD_MPU_INTC_BASE			0x48200000
 
 #else
 

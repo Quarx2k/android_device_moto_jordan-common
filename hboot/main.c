@@ -50,6 +50,10 @@ int main()
 	{
 		atags = atag_build();
 		
+		/* Reset MPU Interrupt controller */
+		write32(0x2, BOARD_MPU_INTC_BASE + 0x10);
+		while (!(read32(BOARD_MPU_INTC_BASE + 0x14) & 0x1));
+		
 		/* Reinit board */
 		board_init();
 		printf("Board initialized.\n");
