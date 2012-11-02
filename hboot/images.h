@@ -3,10 +3,10 @@
 #include "types.h"
 #include "buffers.h"
 
-#define KERNEL_DEST     0x81100800
-#define RAMDISK_DEST    0x8F210000
-#define DEVTREE_DEST    0x8F090000
-#define CMDLINE_DEST    0x8F190000
+#define KERNEL_DEST     0x83000000
+#define RAMDISK_DEST    0x84000000
+#define DEVTREE_DEST    0x85000000
+#define CMDLINE_DEST    0x85100000
 
 struct memory_image 
 {
