@@ -70,9 +70,9 @@ struct memory_image *image_unpack(uint8_t tag, struct memory_image *dest)
 	return NULL;
 }
 
-void image_complete() 
+int image_complete()
 {
-	int i;
+	int i, fail = NULL;
 	struct abstract_buffer *ab;
 	
 	for (i = IMG_HBOOT + 1; i <= IMG_LAST_TAG; i++) 
@@ -89,6 +89,7 @@ void image_complete()
 			{ 
 				ab->state = B_STAT_CRCERROR;
 				printf("IMAGE [%s]: CRC ERROR\n", buffers_list[i].name);
+				fail = 1;
 			}
 			else
 				printf("IMAGE [%s]: CRC OK\n", buffers_list[i].name);
@@ -97,4 +98,5 @@ void image_complete()
 #endif
 		}
 	}
+	return fail;
 }

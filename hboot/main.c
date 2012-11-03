@@ -12,6 +12,11 @@
 void critical_error(const char* error)
 {
 	printf("Critical error %d\n", error);
+
+	/* DPLL reset is the recommended way to restart the SoC
+	   - set RST_DPLL3 bit of PRM_RSTCTRL register */
+	write32(0x4, 0x48307250);
+
 	while (1);
 }
 
@@ -44,7 +49,8 @@ int main()
 	printf("=== HBOOT START ===\n");
 
 	/* Complete images */
-	image_complete();
+	if (image_complete() != NULL)
+		critical_error("CRC check failed.");
 	
 	if (image_find(IMG_LINUX, &image) != NULL)
 	{
