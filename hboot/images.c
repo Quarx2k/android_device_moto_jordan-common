@@ -72,7 +72,7 @@ struct memory_image *image_unpack(uint8_t tag, struct memory_image *dest)
 
 int image_complete()
 {
-	int i, fail = NULL;
+	int i, fail = 0;
 	struct abstract_buffer *ab;
 	
 	for (i = IMG_HBOOT + 1; i <= IMG_LAST_TAG; i++) 
@@ -94,7 +94,7 @@ int image_complete()
 			else
 				printf("IMAGE [%s]: CRC OK\n", buffers_list[i].name);
 #else
-				printf("IMAGE [%s]: LOADED\n", buffers_list[i].name);
+			printf("IMAGE [%s]: LOADED\n", buffers_list[i].name);
 #endif
 		}
 	}
