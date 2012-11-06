@@ -28,22 +28,14 @@
 
 #include "kernel/isl29030.h"
 
-#include "SensorISL29030.h"
+#include "SensorISL29030Separate.h"
 
 #define TAG "ISL29030"
-
-#ifdef DEFYPLUS
-# define PROX_DEVICE "light-prox"
-# define ISL_DEVICE  "light-prox"
-#else
-# define PROX_DEVICE "proximity"
-# define ISL_DEVICE  "als"
-#endif
 
 /*****************************************************************************/
 
 SensorISL29030P::SensorISL29030P()
-  : SensorBase(ISL29030_DEVICE_NAME, PROX_DEVICE),
+  : SensorBase(ISL29030_DEVICE_NAME, "proximity"),
     mEnabled(0),
     mInputReader(32)
 {
@@ -114,9 +106,6 @@ int SensorISL29030P::readEvents(sensors_event_t* data, int count)
             case EV_ABS:
                 processEvent(event->code, event->value);
                 break;
-            case EV_LED:
-                // Defy+ only (ignore light events, from same input device)
-                break;
             case EV_SYN:
                 mPendingEvent.timestamp = timevalToNano(event->time);
                 *data++ = mPendingEvent;
@@ -163,7 +152,7 @@ int SensorISL29030P::isEnabled()
 /*****************************************************************************/
 
 SensorISL29030L::SensorISL29030L()
-  : SensorBase(ISL29030_DEVICE_NAME, ISL_DEVICE),
+  : SensorBase(ISL29030_DEVICE_NAME, "als"),
     mEnabled(0),
     mInputReader(32)
 {
@@ -189,53 +178,15 @@ SensorISL29030L::~SensorISL29030L()
 
 int SensorISL29030L::enable(int32_t handle, int en)
 {
-    int err = 0;
-
-#ifdef DEFYPLUS
-    char newState = en ? 1 : 0;
-    if (newState == mEnabled) {
-        return err;
-    }
-
-    if (!mEnabled) {
-        openDevice();
-    }
-
-    err = ioctl(dev_fd, ISL29030_IOCTL_SET_LIGHT_ENABLE, &newState);
-    err = err < 0 ? -errno : 0;
-
-    LOGE_IF(err, TAG "L: ISL29030_IOCTL_SET_LIGHT_ENABLE failed (%s)", strerror(-err));
-
-    if (!err || !newState) {
-        mEnabled = newState;
-    }
-
-    if (!mEnabled) {
-        closeDevice();
-    }
-#endif
-
     mEnabled = en ? 1 : 0;
 
-    return err;
+    return 0;
 }
 
 
 int SensorISL29030L::isEnabled()
 {
-#ifdef DEFYPLUS
-    int err = 0;
-    char enabled = 0;
-
-    err = ioctl(dev_fd, ISL29030_IOCTL_GET_LIGHT_ENABLE, &enabled);
-    err = err < 0 ? -errno : 0;
-
-    LOGE_IF(err, TAG "L: ISL29030_IOCTL_GET_LIGHT_ENABLE failed (%s)", strerror(-err));
-
-    return enabled;
-#else
     return mEnabled;
-#endif
 }
 
 
@@ -255,9 +206,6 @@ int SensorISL29030L::readEvents(sensors_event_t* data, int count)
 
     while (count && mInputReader.readEvent(&event)) {
         switch (event->type) {
-            case EV_ABS:
-                /* ignored */
-                break;
             case EV_LED:
                 processEvent(event->code, event->value);
                 break;
