@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <string.h>
+#include <cutils/properties.h>
 #include <hardware/sensors.h>
 
 #include "nusensors.h"

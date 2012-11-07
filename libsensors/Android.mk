@@ -29,12 +29,6 @@ LOCAL_MODULE_TAGS:= eng debug
 
 LOCAL_CFLAGS := -DLOG_TAG=\"Sensors\"
 
-#ifeq ($(TARGET_BOOTLOADER_BOARD_NAME),jordan)
-#ifneq ($(BOARD_DEFY_MODEL),DEFY_FROYO)
-LOCAL_CFLAGS += -DDEFYPLUS
-#endif
-#endif
-
 LOCAL_SRC_FILES := \
 	sensors.c \
 	nusensors.cpp \
@@ -43,7 +37,13 @@ LOCAL_SRC_FILES := \
 
 LOCAL_SRC_FILES +=  SensorKXTF9.cpp
 LOCAL_SRC_FILES +=  SensorAK8973.cpp
-LOCAL_SRC_FILES +=  SensorISL29030.cpp
+
+ifneq ($(BOARD_DEFY_MODEL),DEFY_FROYO)
+LOCAL_CFLAGS += -DDEFYPLUS
+LOCAL_SRC_FILES += SensorISL29030Combined.cpp
+else
+LOCAL_SRC_FILES += SensorISL29030Separate.cpp
+endif
 
 LOCAL_SHARED_LIBRARIES := liblog libcutils
 LOCAL_PRELINK_MODULE := false
