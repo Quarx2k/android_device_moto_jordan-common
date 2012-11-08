@@ -4,8 +4,11 @@
 ######## Execute Pre BootMenu
 
 #We should insmod TLS Module before start bootmenu
-/system/bootmenu/binary/busybox insmod /system/lib/modules/symsearch.ko
-/system/bootmenu/binary/busybox insmod /system/lib/modules/tls-enable.ko
+/system/bootmenu/binary/busybox insmod /system/bootmenu/modules/symsearch.ko
+/system/bootmenu/binary/busybox insmod /system/bootmenu/modules/tls-enable.ko
+#Insmod ext4 modules 
+/system/bootmenu/binary/busybox insmod /system/bootmenu/modules/jbd2.ko
+/system/bootmenu/binary/busybox insmod /system/bootmenu/modules/ext4.ko
 
 source /system/bootmenu/script/_config.sh
 

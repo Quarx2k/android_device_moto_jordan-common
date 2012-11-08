@@ -48,6 +48,15 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/script/sdcard.sh:system/bootmenu/script/sdcard.sh \
 	${bm_device}/bootmenu/script/system.sh:system/bootmenu/script/system.sh \
 	${bm_device}/bootmenu/script/pdsbackup.sh:system/bootmenu/script/pdsbackup.sh \
+	${bm_device}/bootmenu/script/format_ext3.sh:system/bootmenu/script/format_ext3.sh \
+	${bm_device}/bootmenu/script/format_ext4.sh:system/bootmenu/script/format_ext4.sh \
+
+# prebuilt modules for stock kernel
+PRODUCT_COPY_FILES += \
+	${bm_device}/bootmenu/modules/tls-enable.ko:system/bootmenu/modules/tls-enable.ko \
+	${bm_device}/bootmenu/modules/symsearch.ko:system/bootmenu/modules/symsearch.ko \
+	${bm_device}/bootmenu/modules/jbd2.ko:system/bootmenu/modules/jbd2.ko \
+	${bm_device}/bootmenu/modules/ext4.ko:system/bootmenu/modules/ext4.ko \
 
 # prebuilt binaries (to clean...)
 PRODUCT_COPY_FILES += \
