@@ -135,38 +135,38 @@ BOARD_USE_KINETO_COMPATIBILITY := true
 TARGET_BOOTANIMATION_USE_RGB565 := true
 
 ##### Kernel stuff #####
+TARGET_MODULES_WIFI_SOURCE := "system/wlan/ti/wilink_6_1/platforms/os/linux/"
+TARGET_MODULES_AP_SOURCE := "system/wlan/ti/WiLink_AP/platforms/os/linux/"
+
 API_MAKE := \
 	make PREFIX=$(ANDROID_BUILD_TOP)/$(TARGET_OUT_INTERMEDIATES)/kernel_intermediates/build \
 	ARCH=arm \
 	CROSS_COMPILE=$(ANDROID_BUILD_TOP)/prebuilt/$(HOST_PREBUILT_TAG)/toolchain/arm-eabi-4.4.3/bin/arm-eabi- \
-	PROCFAMILY=OMAP_3430 PROJROOT="" \
 	HOST_PLATFORM=zoom2 \
-	PROPRIETARY_SDIO=y \
-	KERNEL_DIR=$(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ
+	KERNEL_DIR=$(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ \
 
 ext_modules:
 	$(API_MAKE) -C $(TARGET_KERNEL_MODULES_EXT) modules
 	find $(TARGET_KERNEL_MODULES_EXT)/ -name "*.ko" -exec mv {} \
 		$(KERNEL_MODULES_OUT) \; || true
-
-	#$(API_MAKE) clean -C $(ANDROID_BUILD_TOP)/system/wlan/ti/wilink_6_1/platforms/os/linux
+	$(API_MAKE) clean -C $(ANDROID_BUILD_TOP)/system/wlan/ti/wilink_6_1/platforms/os/linux
 	$(API_MAKE) clean -C $(ANDROID_BUILD_TOP)/system/wlan/ti/WiLink_AP/platforms/os/linux
-	$(API_MAKE) -C $(ANDROID_BUILD_TOP)/system/wlan/ti/WiLink_AP/platforms/os/linux
-	#$(API_MAKE) -C $(ANDROID_BUILD_TOP)/system/wlan/ti/wilink_6_1/platforms/os/linux
-	#mv system/wlan/ti/wilink_6_1/stad/build/linux/tiwlan_drv.ko $(KERNEL_MODULES_OUT)
+	$(API_MAKE) -C $(TARGET_MODULES_WIFI_SOURCE) HOST_PLATFORM=zoom2 KERNEL_DIR=$(KERNEL_OUT)
+	$(API_MAKE) -C $(TARGET_MODULES_AP_SOURCE) HOST_PLATFORM=zoom2 KERNEL_DIR=$(KERNEL_OUT)
+	mv system/wlan/ti/wilink_6_1/platforms/os/linux/tiwlan_drv.ko $(KERNEL_MODULES_OUT)
 	mv system/wlan/ti/WiLink_AP/platforms/os/linux/tiap_drv.ko $(KERNEL_MODULES_OUT)
-	arm-linux-androideabi-strip --strip-debug $(KERNEL_MODULES_OUT)/*
+	arm-eabi-strip --strip-unneeded $(KERNEL_MODULES_OUT)/*
 
 hboot:
 	mkdir -p $(PRODUCT_OUT)/system/bootmenu/2nd-boot   
 	echo "$(BOARD_KERNEL_CMDLINE)" > $(PRODUCT_OUT)/system/bootmenu/2nd-boot/cmdline  
 	$(API_MAKE) -C $(ANDROID_BUILD_TOP)/device/moto/jordan-common/hboot
 	mv $(ANDROID_BUILD_TOP)/device/moto/jordan-common/hboot/hboot.bin $(PRODUCT_OUT)/system/bootmenu/2nd-boot/
-	$(API_MAKE) clean -C $(ANDROID_BUILD_TOP)/device/moto/jordan-common/hboot
+	make clean -C $(ANDROID_BUILD_TOP)/device/moto/jordan-common/hboot
 
 # If kernel sources are present in repo, here is the location
-TARGET_KERNEL_CUSTOM_TOOLCHAIN := arm-eabi-4.4.3
 TARGET_KERNEL_SOURCE := $(ANDROID_BUILD_TOP)/jordan-kernel
+TARGET_KERNEL_CUSTOM_TOOLCHAIN := arm-eabi-4.4.3
 TARGET_KERNEL_CONFIG  := mapphone_defconfig
 BOARD_KERNEL_CMDLINE := console=/dev/null mem=498M init=/init ip=off brdrev=P3A omapfb.vram=0:4M
 #TARGET_PREBUILT_KERNEL := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/kernel
