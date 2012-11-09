@@ -41,6 +41,9 @@ on fs
     mount ext3 /dev/block/mmcblk1p24 /cache nosuid nodev noatime nodiratime barrier=0
     mount ext3 /dev/block/mmcblk1p25 /data nosuid nodev noatime nodiratime barrier=0
 
+    mount ext4 /dev/block/mmcblk1p24 /cache noatime noauto_da_alloc nosuid nodev nodiratime barrier=0 nobh
+    mount ext4 /dev/block/mmcblk1p25 /data noatime noauto_da_alloc nosuid nodev nodiratime barrier=0 nobh
+
 on post-fs
 
 # Backward compatibility
