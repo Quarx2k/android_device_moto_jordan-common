@@ -36,13 +36,15 @@ on fs
 
 # Mount mmc partitions
     mkdir /pds 0775 system system
+    exec /system/bin/e2fsck -y /dev/block/mmcblk1p21
+
     mount ext3 /dev/block/mmcblk1p21 /system
     mount ext3 /dev/block/mmcblk1p21 /system ro remount
     mount ext3 /dev/block/mmcblk1p24 /cache nosuid nodev noatime nodiratime barrier=0
     mount ext3 /dev/block/mmcblk1p25 /data nosuid nodev noatime nodiratime barrier=0
 
-    mount ext4 /dev/block/mmcblk1p24 /cache noatime noauto_da_alloc nosuid nodev nodiratime barrier=0 nobh
-    mount ext4 /dev/block/mmcblk1p25 /data noatime noauto_da_alloc nosuid nodev nodiratime barrier=0 nobh
+    mount ext4 /dev/block/mmcblk1p24 /cache wait noatime nodev barrier=0 nobh data=writeback noauto_da_alloc commit=30
+    mount ext4 /dev/block/mmcblk1p25 /data wait noatime nodev barrier=0 nobh data=writeback noauto_da_alloc commit=30
 
 on post-fs
 
