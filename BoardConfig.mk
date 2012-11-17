@@ -37,9 +37,19 @@ TARGET_BOARD_PLATFORM := omap3
 TARGET_CPU_ABI := armeabi-v7a
 TARGET_CPU_ABI2 := armeabi
 TARGET_ARCH_VARIANT := armv7-a-neon
+TARGET_ARCH_VARIANT_CPU := cortex-a8
+TARGET_ARCH_VARIANT_FPU := neon
 TARGET_OMAP3 := true
 ARCH_ARM_HAVE_TLS_REGISTER := true
 COMMON_GLOBAL_CFLAGS += -DTARGET_OMAP3 -DOMAP_COMPAT -DBINDER_COMPAT
+TARGET_GLOBAL_CFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
+TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
+TARGET_arm_CFLAGS := -O3 -fomit-frame-pointer -fstrict-aliasing -funswitch-loops \
+                       -fmodulo-sched -fmodulo-sched-allow-regmoves
+TARGET_thumb_CFLAGS := -mthumb \
+                        -Os \
+                        -fomit-frame-pointer \
+                        -fstrict-aliasing
 
 # Wifi related defines
 BOARD_WLAN_DEVICE           := wl1271
@@ -66,10 +76,7 @@ WIFI_AP_DRIVER_MODULE_ARG   := ""
 BOARD_HOSTAPD_NO_ENTROPY    := true
 BOARD_HOSTAPD_DRIVER        := true
 BOARD_HOSTAPD_DRIVER_NAME   := wilink
-#BOARD_HOSTAPD_TIAP_ROOT     := system/wlan/ti/WiLink_AP
-
-# Netfilter
-#BOARD_WITHOUT_IPV6_QUOTA := true
+BOARD_HOSTAPD_TIAP_ROOT     := system/wlan/ti/WiLink_AP
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
@@ -128,7 +135,7 @@ COMMON_GLOBAL_CFLAGS += -DSYSTEMUI_PBSIZE_HACK=1
 USE_CAMERA_STUB := false
 BOARD_OVERLAY_BASED_CAMERA_HAL := true
 
-# Other..u
+# Other..
 BOARD_USES_AUDIO_LEGACY := true
 TARGET_PROVIDES_LIBAUDIO := true
 BOARD_USE_KINETO_COMPATIBILITY := true
