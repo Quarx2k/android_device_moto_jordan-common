@@ -1,7 +1,6 @@
 mount("ext3", "EMMC", "/dev/block/mmcblk1p21", "/system");
 package_extract_file("system/bin/backuptool.sh", "/tmp/backuptool.sh");
 package_extract_file("system/bin/backuptool.functions", "/tmp/backuptool.functions");
-package_extract_file("system/etc/custom_backup_list.txt","/system/etc/custom_backup_list.txt");
 run_program("/sbin/mkdir","/tmp/backupdir");
 run_program("/sbin/touch","/tmp/backupdir/force_backuptool");
 set_perm(0, 0, 0777, "/tmp/backuptool.sh");
@@ -11,11 +10,9 @@ delete_recursive("/system/");
 show_progress(0.750000, 35);
 package_extract_dir("system", "/system");
 show_progress(0.050000, 2);
-run_program("/sbin/touch","/system/firstboot");
 symlink("Roboto-Bold.ttf", "/system/fonts/DroidSans-Bold.ttf");
 symlink("Roboto-Regular.ttf", "/system/fonts/DroidSans.ttf");
 symlink("mksh", "/system/bin/sh");
-symlink("hostap", "/system/bin/hostapd");
 symlink("busybox", "/system/xbin/[", "/system/xbin/[[",
         "/system/xbin/arp", "/system/xbin/ash", "/system/xbin/awk",
         "/system/xbin/base64", "/system/xbin/basename", "/system/xbin/bbconfig",
@@ -114,15 +111,12 @@ set_perm_recursive(0, 0, 0755, 0755, "/system/addon.d");
 set_perm_recursive(0, 0, 0755, 0755, "/system/bootmenu/binary/");
 set_perm_recursive(0, 0, 0755, 0755, "/system/bootmenu/script/");
 set_perm_recursive(0, 0, 0755, 0755, "/system/bootmenu/recovery/sbin/");
-set_perm_recursive(0, 0, 0755, 0755, "/system/bootmenu/2nd-boot/sbin/");
 symlink("indeterminate.png","/system/bootmenu/images/indeterminate1.png");
 symlink("indeterminate.png","/system/bootmenu/images/indeterminate2.png");
 symlink("indeterminate.png","/system/bootmenu/images/indeterminate3.png");
 symlink("indeterminate.png","/system/bootmenu/images/indeterminate4.png");
 symlink("indeterminate.png","/system/bootmenu/images/indeterminate5.png");
 symlink("indeterminate.png","/system/bootmenu/images/indeterminate6.png");
-set_perm(0, 0, 0755, "/system/bootmenu/2nd-init/init");
-set_perm(0, 0, 0755, "/system/bootmenu/2nd-boot/init");
 set_perm_recursive(0, 2000, 0775, 0664, "/system/bootmenu/config/");
 set_perm_recursive(0, 2000, 0755, 0755, "/system/bin");
 set_perm(0, 3003, 02750, "/system/bin/netcfg");
@@ -152,8 +146,5 @@ package_extract_file("system/bin/backuptool.functions", "/tmp/backuptool.functio
 set_perm(0, 0, 0777, "/tmp/backuptool.sh");
 delete("/tmp/.installscript");
 run_program("/tmp/backuptool.sh", "restore");
-package_extract_file("system/bin/modelid_cfg.sh", "/tmp/modelid_cfg.sh");
-set_perm(0, 0, 0777, "/tmp/modelid_cfg.sh");
-run_program("/tmp/modelid_cfg.sh");
 show_progress(0.100000, 5);
 

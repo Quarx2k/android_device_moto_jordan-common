@@ -73,20 +73,18 @@ PRODUCT_PACKAGES += \
 	libaudiohw_legacy \
 
 # TO FIX for ICS
-PRODUCT_PACKAGES += hwcomposer.default power.omap3
+PRODUCT_PACKAGES += power.omap3
 
 # Wifi packages
 PRODUCT_PACKAGES += iwmulticall hostap wlan_loader wlan_cu wpa_supplicant
 PRODUCT_PACKAGES += libhostapdcli libCustomWifi libwpa_client libtiOsLib
-PRODUCT_PACKAGES += tiwlan.ini dhcpcd.conf wpa_supplicant.conf hostapd.conf
-PRODUCT_PACKAGES += tiap_loader tiap_cu ndc
+PRODUCT_PACKAGES += tiap_loader tiap_cu ndc hostapd.conf
 
 # OMX stuff
 PRODUCT_PACKAGES += dspexec libbridge libLCML libOMX_Core
 PRODUCT_PACKAGES += libOMX.TI.AAC.encode libOMX.TI.AAC.decode libOMX.TI.AMR.decode libOMX.TI.AMR.encode
 PRODUCT_PACKAGES += libOMX.TI.WBAMR.encode libOMX.TI.MP3.decode libOMX.TI.WBAMR.decode
 PRODUCT_PACKAGES += libOMX.TI.WMA.decode libOMX.TI.Video.Decoder libOMX.TI.Video.encoder
-#PRODUCT_PACKAGES += libOMX.TI.VPP
 PRODUCT_PACKAGES += libOMX.TI.JPEG.Encoder #libskiahw libOMX.TI.JPEG.decoder
 
 # Defy stuff
@@ -98,11 +96,8 @@ PRODUCT_PACKAGES += charge_only_mode mot_boot_mode
 # Publish that we support the live wallpaper feature.
 PRODUCT_PACKAGES += librs_jni
 
-# Add DroidSSHd (dropbear) Management App - tpruvot/android_external_droidsshd @ github
-PRODUCT_PACKAGES += DroidSSHd dropbear dropbearkey sftp-server scp ssh rsync
-
 # CM9 apps
-PRODUCT_PACKAGES += FileManager Torch HwaSettings make_ext4fs RomUpdater
+PRODUCT_PACKAGES += Torch HwaSettings make_ext4fs
 
 # Experimental TI OpenLink
 PRODUCT_PACKAGES += libnl_2 iw
@@ -110,7 +105,6 @@ PRODUCT_PACKAGES += libnl_2 iw
 # Blobs and bootmenu stuff
 $(call inherit-product, device/moto/jordan-common/jordan-blobs.mk)
 $(call inherit-product, device/moto/jordan-common/bootmenu/bootmenu.mk)
-
 $(call inherit-product, build/target/product/full_base.mk)
 
 # Should be after the full_base include, which loads languages_full

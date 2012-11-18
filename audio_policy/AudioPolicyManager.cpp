@@ -15,15 +15,12 @@
  */
 
 #define LOG_TAG "AudioPolicyJordan"
-#define LOG_NDEBUG 0
+//#define LOG_NDEBUG 0
 #include <utils/Log.h>
-
 #include "AudioPolicyManager.h"
-#include <media/mediarecorder.h>
+
 
 namespace android_audio_legacy {
-
-
 
 // ----------------------------------------------------------------------------
 // AudioPolicyManager for jordan platform
@@ -31,7 +28,6 @@ namespace android_audio_legacy {
 // ----------------------------------------------------------------------------
 
 // ---  class factory
-
 
 extern "C" AudioPolicyInterface* createAudioPolicyManager(AudioPolicyClientInterface *clientInterface)
 {
@@ -42,50 +38,5 @@ extern "C" void destroyAudioPolicyManager(AudioPolicyInterface *interface)
 {
     delete interface;
 }
-
-AudioPolicyManagerBase::routing_strategy AudioPolicyManager::getStrategy(
-        AudioSystem::stream_type stream) {
-    // stream to strategy mapping
-    switch (stream) {
-    case AudioSystem::VOICE_CALL:
-    case AudioSystem::BLUETOOTH_SCO:
-        return STRATEGY_PHONE;
-    case AudioSystem::RING:
-    case AudioSystem::NOTIFICATION:
-    case AudioSystem::ALARM:
-        return STRATEGY_SONIFICATION;
-    case AudioSystem::DTMF:
-        return STRATEGY_DTMF;
-    case AudioSystem::SYSTEM:
-        // NOTE: SYSTEM stream uses MEDIA strategy because muting music and switching outputs
-        // while key clicks are played produces a poor result
-#ifdef HAVE_FM_RADIO
-    case AudioSystem::FM:
-#else
-    case 0x0A:
-#endif
-    case AudioSystem::TTS:
-    case AudioSystem::MUSIC:
-        return STRATEGY_MEDIA;
-    case AudioSystem::ENFORCED_AUDIBLE:
-        return STRATEGY_ENFORCED_AUDIBLE;
-
-    default:
-        ALOGE("unknown stream type 0x%x", (uint32_t) stream);
-        ALOGI("known ones :");
-        ALOGI(" %x VOICE_CALL", AudioSystem::VOICE_CALL);
-        ALOGI(" %x BLUETOOTH_SCO", AudioSystem::BLUETOOTH_SCO);
-        ALOGI(" %x RING", AudioSystem::RING);
-        ALOGI(" %x NOTIFICATION", AudioSystem::NOTIFICATION);
-        ALOGI(" %x ALARM", AudioSystem::ALARM);
-        ALOGI(" %x DTMF", AudioSystem::DTMF);
-        ALOGI(" %x SYSTEM", AudioSystem::SYSTEM);
-        ALOGI(" %x TTS", AudioSystem::TTS);
-        ALOGI(" %x MUSIC", AudioSystem::MUSIC);
-        ALOGI(" %x ENFORCED_AUDIBLE", AudioSystem::ENFORCED_AUDIBLE);
-        return STRATEGY_MEDIA;
-    }
-}
-
 
 }; // namespace android_audio_legacy

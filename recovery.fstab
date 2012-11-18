@@ -1,13 +1,12 @@
-# This file is used to build the different partitions
-# dont change this file, it is not related to recovery
-#
-# the recovery one  : bootmenu/recovery/recovery.fstab
-# the busybox fstab : etc/busybox.fstab
-#
-# mount point   fstype  device
+# mount point   fstype      device                  [device2]
 
-/system         emmc    /dev/block/platform/omap/omap_hsmmc.1/by-num/p21
-/cache          emmc    /dev/block/platform/omap/omap_hsmmc.1/by-num/p24
-/data           emmc    /dev/block/platform/omap/omap_hsmmc.1/by-num/p25
-/boot           mtd     boot
-/recovery       mtd     recovery
+/boot           emmc        /dev/block/mmcblk1p15
+/recovery       emmc        /dev/block/mmcblk1p16
+/devtree        emmc        /dev/block/mmcblk1p12
+/logo           emmc        /dev/block/mmcblk1p10
+/pds            ext3        /dev/block/loop7
+/cache          ext4        /dev/block/mmcblk1p24
+/data           ext4        /dev/block/mmcblk1p25
+/system         ext3        /dev/block/mmcblk1p21
+/sdcard         auto        /dev/block/mmcblk0p1    /dev/block/mmcblk0
+/sd-ext         auto        /dev/block/mmcblk0p2    /dev/block/mmcblk0

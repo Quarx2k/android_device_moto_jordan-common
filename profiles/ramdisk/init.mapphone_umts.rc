@@ -103,7 +103,7 @@ on post-fs
     chmod 0660 /sys/class/rfkill/rfkill0/state
 
 # Tweaks
-    write /sys/block/mmcblk0/bdi/read_ahead_kb 512
+    #write /sys/block/mmcblk0/bdi/read_ahead_kb 512
 
 on post-fs-data
 
@@ -158,6 +158,9 @@ on post-fs-data
     chown system nobody /data/local/hwui.deny
     chmod 0775 /data/local/hwui.deny
 
+# copy hostapd configuration
+    copy /system/etc/wifi/softap/hostapd.conf /data/misc/wifi/hostapd.conf
+
     setprop vold.post_fs_data_done 1
 
 on boot
@@ -208,14 +211,6 @@ on property:sys.chargeonly.mode=1
 
 on property:init.svc.wpa_supplicant=stopped
     stop dhcpcd
-
-#TODO: key shortcuts seems buggy in ics
-service reboot_key /system/bin/reboot
-    user system
-    group root
-    oneshot
-    keycodes 114 115 107
-    disabled
 
 service usbd /system/bin/usbd
     class main

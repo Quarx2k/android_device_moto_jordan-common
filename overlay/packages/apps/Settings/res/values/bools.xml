@@ -17,10 +17,4 @@
 <resources>
     <!-- Whether or not the dock settings are to be displayed for this device when docked -->
     <bool name="has_dock_settings">true</bool>
-
-    <!-- Whether User management screen is available -->
-    <bool name="enable_user_management">true</bool>
-
-    <!-- Display additional System Update menu if true -->
-    <bool name="config_additional_system_update_setting_enable">true</bool>
 </resources>

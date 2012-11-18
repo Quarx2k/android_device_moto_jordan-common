@@ -256,18 +256,8 @@
          sensor always enabled. -->
     <bool name="config_alwaysEnableLightSensor">true</bool>
 
-    <!-- Component name of the default wallpaper. This will be ImageWallpaper if not
-         specified -->
-    <string name="default_wallpaper_component">@null</string>
-
     <!-- The default iface on which to monitor data use -->
     <string name="config_datause_iface">rmnet0</string>
-
-    <!-- whether Softap rely on a different interface (beware these flags can be badly understood) -->
-    <!--    <bool name="config_wifi_ap_use_single_interface">true</bool> -->
-
-    <!-- Dont reload the firmware via the framework, let wifi legacy and tiap_loader do that -->
-    <!-- <bool name="config_wifiApFirmwareReload">false</bool>  -->
 
      <!--   <bool name="config_usesLegacyUsbDeviceManager">true</bool>-->
     <string name="config_legacyUmsLunFile">/sys/devices/platform/usb_mass_storage/lun0/file</string>
@@ -293,5 +283,15 @@ Some kernels use names like CAR and DESK. -->
          scan and wake the host when a configured SSID is detected by the dongle. This chipset
          capability can provide power savings when wifi needs to be always kept on. -->
     <bool translatable="false" name="config_wifi_background_scan_support">true</bool>
+
+    <!-- Enables or disables fading edges when marquee is enabled in TextView. -->
+    <bool name="config_ui_enableFadingMarquee">true</bool>
+
+    <!-- Minimum screen brightness allowed by the power manager. -->
+    <integer name="config_screenBrightnessDim">2</integer>
+
+    <!-- Boolean indicating if restoring network selection should be skipped -->
+    <!-- The restoring is handled by modem if it is true-->
+    <bool name="skip_restoring_network_selection">true</bool>
 
 </resources>

@@ -33,9 +33,6 @@ wifi.hotspot.ti=1
 # Wifi tether interface
 wifi.ap.interface=tiap0
 
-# Not used yet, but soon
-com.ti.omap_compat=1
-
 # The OpenGL ES API level that is natively supported by this device.
 # This is a 16.16 fixed point number
 ro.opengles.version = 131072
@@ -65,9 +62,6 @@ ro.product.use_charge_counter=1
 
 # DDMS debug SurfaceFlinger (EGL)
 # debug.sf.ddms=1
-
-# all/choice
-hwui.print_config=choice
 
 #Place files named by process names in /data/local/hwui.allow/ (or use HWA Selector app)
 hwui.use.blacklist=true

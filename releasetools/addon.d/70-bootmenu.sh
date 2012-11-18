@@ -10,6 +10,7 @@
 list_files() {
 cat <<EOF
 bootmenu/config/overclock.conf
+etc/hosts
 EOF
 }
 
