@@ -55,6 +55,9 @@ echo
 cd ../ex
 git fetch http://review.cyanogenmod.org/CyanogenMod/android_frameworks_ex refs/changes/57/26557/1 && git cherry-pick FETCH_HEAD
 echo
+cd ../wilhelm
+git fetch http://review.cyanogenmod.org/CyanogenMod/android_frameworks_wilhelm refs/changes/59/26559/1 && git cherry-pick FETCH_HEAD
+echo
 cd ../../libcore
 git fetch http://review.cyanogenmod.org/CyanogenMod/android_libcore refs/changes/62/26562/1 && git cherry-pick FETCH_HEAD
 echo
