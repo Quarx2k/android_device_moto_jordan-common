@@ -33,6 +33,7 @@ TARGET_NO_PREINSTALL := true
 TARGET_BOOTLOADER_BOARD_NAME := jordan
 
 # Board properties
+TARGET_ARCH := arm
 TARGET_BOARD_PLATFORM := omap3
 TARGET_CPU_ABI := armeabi-v7a
 TARGET_CPU_ABI2 := armeabi
@@ -156,7 +157,7 @@ ext_modules:
 	$(API_MAKE) -C $(TARGET_MODULES_AP_SOURCE) HOST_PLATFORM=zoom2 KERNEL_DIR=$(KERNEL_OUT)
 	mv system/wlan/ti/wilink_6_1/platforms/os/linux/tiwlan_drv.ko $(KERNEL_MODULES_OUT)
 	mv system/wlan/ti/WiLink_AP/platforms/os/linux/tiap_drv.ko $(KERNEL_MODULES_OUT)
-	arm-eabi-strip --strip-unneeded $(KERNEL_MODULES_OUT)/*
+	arm-linux-androideabi-strip --strip-unneeded $(KERNEL_MODULES_OUT)/*
 
 hboot:
 	mkdir -p $(PRODUCT_OUT)/system/bootmenu/2nd-boot   
