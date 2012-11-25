@@ -4,16 +4,16 @@ on init
     export LD_LIBRARY_PATH /system/lib
     export DSP_PATH /system/lib/dsp
 
-    # mount point of sdcard
-    export EXTERNAL_STORAGE /mnt/sdcard
-    mkdir /mnt/sdcard  0700 root root
-    symlink /mnt/sdcard /sdcard
+    export EXTERNAL_STORAGE /storage/sdcard1
+    mkdir /storage/sdcard1 0000 root root
+    symlink /storage/sdcard1 /sdcard
+    symlink /storage/sdcard1 /mnt/sdcard
 
     #Adb at boot
-    #write /dev/usb_device_mode charge_adb
+    write /dev/usb_device_mode charge_adb
     #write /tmp/usbd_current_state usb_mode_charge_adb
     #chmod 0666 /tmp/usbd_current_state
-    #start adbd
+    start adbd
 
 
 on post-fs
