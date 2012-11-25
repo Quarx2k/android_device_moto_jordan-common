@@ -135,6 +135,7 @@ BOARD_USES_AUDIO_LEGACY := true
 TARGET_PROVIDES_LIBAUDIO := true
 BOARD_USE_KINETO_COMPATIBILITY := true
 TARGET_BOOTANIMATION_USE_RGB565 := true
+BOARD_USES_LEGACY_RIL := true
 
 ##### Kernel stuff #####
 TARGET_MODULES_WIFI_SOURCE := "system/wlan/ti/wilink_6_1/platforms/os/linux/"
