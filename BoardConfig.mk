@@ -77,6 +77,7 @@ BOARD_HOSTAPD_TIAP_ROOT     := system/wlan/ti/WiLink_AP
 BOARD_HAVE_BLUETOOTH := true
 TARGET_CUSTOM_BLUEDROID := ../../../device/moto/jordan-common/bluedroid.c
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/moto/jordan-common/bluetooth
+BOARD_BLUETOOTH_LIBBT_VNDCFG := device/moto/jordan-common/bt_vendor.conf
 # Usb Specific
 BOARD_MASS_STORAGE_FILE_PATH := "/sys/devices/platform/usb_mass_storage/lun0/file"
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/usb_mass_storage/lun0/file"

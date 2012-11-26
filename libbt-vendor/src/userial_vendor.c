@@ -1,18 +1,20 @@
-/*
- * Copyright 2012 The Android Open Source Project
+/******************************************************************************
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Copyright (C) 2009-2012 Broadcom Corporation
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ ******************************************************************************/
 
 /******************************************************************************
  *
@@ -29,125 +31,331 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <stdio.h>
-#include "bt_vendor_qcom.h"
+#include "bt_vendor_brcm.h"
+#include "userial.h"
 #include "userial_vendor.h"
 
-bt_hci_transport_device_type bt_hci_set_transport()
+/******************************************************************************
+**  Constants & Macros
+******************************************************************************/
+
+#ifndef VNDUSERIAL_DBG
+#define VNDUSERIAL_DBG FALSE
+#endif
+
+#if (VNDUSERIAL_DBG == TRUE)
+#define VNDUSERIALDBG(param, ...) {ALOGD(param, ## __VA_ARGS__);}
+#else
+#define VNDUSERIALDBG(param, ...) {}
+#endif
+
+#define VND_PORT_NAME_MAXLEN    256
+
+/******************************************************************************
+**  Local type definitions
+******************************************************************************/
+
+/* vendor serial control block */
+typedef struct
 {
-    int ret;
-    char transport_type[10] = {0,};
-    bt_hci_transport_device_type bt_hci_transport_device;
+    int fd;                     /* fd to Bluetooth device */
+    struct termios termios;     /* serial terminal of BT port */
+    char port_name[VND_PORT_NAME_MAXLEN];
+} vnd_userial_cb_t;
 
-    ret = property_get("ro.qualcomm.bt.hci_transport", transport_type, NULL);
-    if(ret == 0)
-        printf("ro.qualcomm.bt.hci_transport not set\n");
+/******************************************************************************
+**  Static variables
+******************************************************************************/
+
+static vnd_userial_cb_t vnd_userial;
+
+/*****************************************************************************
+**   Helper Functions
+*****************************************************************************/
+
+/*******************************************************************************
+**
+** Function        userial_to_tcio_baud
+**
+** Description     helper function converts USERIAL baud rates into TCIO
+**                  conforming baud rates
+**
+** Returns         TRUE/FALSE
+**
+*******************************************************************************/
+uint8_t userial_to_tcio_baud(uint8_t cfg_baud, uint32_t *baud)
+{
+    if (cfg_baud == USERIAL_BAUD_115200)
+        *baud = B115200;
+    else if (cfg_baud == USERIAL_BAUD_4M)
+        *baud = B4000000;
+    else if (cfg_baud == USERIAL_BAUD_3M)
+        *baud = B3000000;
+    else if (cfg_baud == USERIAL_BAUD_2M)
+        *baud = B2000000;
+    else if (cfg_baud == USERIAL_BAUD_1M)
+        *baud = B1000000;
+    else if (cfg_baud == USERIAL_BAUD_921600)
+        *baud = B921600;
+    else if (cfg_baud == USERIAL_BAUD_460800)
+        *baud = B460800;
+    else if (cfg_baud == USERIAL_BAUD_230400)
+        *baud = B230400;
+    else if (cfg_baud == USERIAL_BAUD_57600)
+        *baud = B57600;
+    else if (cfg_baud == USERIAL_BAUD_19200)
+        *baud = B19200;
+    else if (cfg_baud == USERIAL_BAUD_9600)
+        *baud = B9600;
+    else if (cfg_baud == USERIAL_BAUD_1200)
+        *baud = B1200;
+    else if (cfg_baud == USERIAL_BAUD_600)
+        *baud = B600;
     else
-        printf("ro.qualcomm.bt.hci_transport: %s \n", transport_type);
-
-    if (!strcasecmp(transport_type, "smd"))
     {
-        bt_hci_transport_device.type = BT_HCI_SMD;
-        bt_hci_transport_device.name = APPS_RIVA_BT_CMD_CH;
-        bt_hci_transport_device.pkt_ind = 1;
-    }
-    else{
-        bt_hci_transport_device.type = BT_HCI_UART;
-        bt_hci_transport_device.name = BT_HS_UART_DEVICE;
-        bt_hci_transport_device.pkt_ind = 0;
+        ALOGE( "userial vendor open: unsupported baud idx %i", cfg_baud);
+        *baud = B115200;
+        return FALSE;
     }
 
-    return bt_hci_transport_device;
+    return TRUE;
 }
 
-#define NUM_OF_DEVS 2
-static char *s_pszDevSmd[] = {
-    "/dev/smd3",
-    "/dev/smd2"
-};
-
-int bt_hci_init_transport(int *pFd)
+#if (BT_WAKE_VIA_USERIAL_IOCTL==TRUE)
+/*******************************************************************************
+**
+** Function        userial_ioctl_init_bt_wake
+**
+** Description     helper function to set the open state of the bt_wake if ioctl
+**                  is used. it should not hurt in the rfkill case but it might
+**                  be better to compile it out.
+**
+** Returns         none
+**
+*******************************************************************************/
+void userial_ioctl_init_bt_wake(int fd)
 {
-    int i = 0;
-    int fd;
-    for(i=0; i < NUM_OF_DEVS; i++){
-       fd = bt_hci_init_transport_id(i);
-       if(fd < 0 ){
-          return -1;
-       }
-       pFd[i] = fd;
+    uint32_t bt_wake_state;
+
+    /* assert BT_WAKE through ioctl */
+    ioctl(fd, USERIAL_IOCTL_BT_WAKE_ASSERT, NULL);
+    ioctl(fd, USERIAL_IOCTL_BT_WAKE_GET_ST, &bt_wake_state);
+    VNDUSERIALDBG("userial_ioctl_init_bt_wake read back BT_WAKE state=%i", \
+               bt_wake_state);
+}
+#endif // (BT_WAKE_VIA_USERIAL_IOCTL==TRUE)
+
+
+/*****************************************************************************
+**   Userial Vendor API Functions
+*****************************************************************************/
+
+/*******************************************************************************
+**
+** Function        userial_vendor_init
+**
+** Description     Initialize userial vendor-specific control block
+**
+** Returns         None
+**
+*******************************************************************************/
+void userial_vendor_init(void)
+{
+    vnd_userial.fd = -1;
+    snprintf(vnd_userial.port_name, VND_PORT_NAME_MAXLEN, "%s", \
+            BLUETOOTH_UART_DEVICE_PORT);
+}
+
+/*******************************************************************************
+**
+** Function        userial_vendor_open
+**
+** Description     Open the serial port with the given configuration
+**
+** Returns         device fd
+**
+*******************************************************************************/
+int userial_vendor_open(tUSERIAL_CFG *p_cfg)
+{
+    uint32_t baud;
+    uint8_t data_bits;
+    uint16_t parity;
+    uint8_t stop_bits;
+
+    vnd_userial.fd = -1;
+
+    if (!userial_to_tcio_baud(p_cfg->baud, &baud))
+    {
+        return -1;
     }
+
+    if(p_cfg->fmt & USERIAL_DATABITS_8)
+        data_bits = CS8;
+    else if(p_cfg->fmt & USERIAL_DATABITS_7)
+        data_bits = CS7;
+    else if(p_cfg->fmt & USERIAL_DATABITS_6)
+        data_bits = CS6;
+    else if(p_cfg->fmt & USERIAL_DATABITS_5)
+        data_bits = CS5;
+    else
+    {
+        ALOGE("userial vendor open: unsupported data bits");
+        return -1;
+    }
+
+    if(p_cfg->fmt & USERIAL_PARITY_NONE)
+        parity = 0;
+    else if(p_cfg->fmt & USERIAL_PARITY_EVEN)
+        parity = PARENB;
+    else if(p_cfg->fmt & USERIAL_PARITY_ODD)
+        parity = (PARENB | PARODD);
+    else
+    {
+        ALOGE("userial vendor open: unsupported parity bit mode");
+        return -1;
+    }
+
+    if(p_cfg->fmt & USERIAL_STOPBITS_1)
+        stop_bits = 0;
+    else if(p_cfg->fmt & USERIAL_STOPBITS_2)
+        stop_bits = CSTOPB;
+    else
+    {
+        ALOGE("userial vendor open: unsupported stop bits");
+        return -1;
+    }
+
+    ALOGI("userial vendor open: opening %s", vnd_userial.port_name);
+
+    if ((vnd_userial.fd = open(vnd_userial.port_name, O_RDWR)) == -1)
+    {
+        ALOGE("userial vendor open: unable to open %s", vnd_userial.port_name);
+        return -1;
+    }
+
+    tcflush(vnd_userial.fd, TCIOFLUSH);
+
+    tcgetattr(vnd_userial.fd, &vnd_userial.termios);
+    cfmakeraw(&vnd_userial.termios);
+    vnd_userial.termios.c_cflag |= (CRTSCTS | stop_bits);
+    tcsetattr(vnd_userial.fd, TCSANOW, &vnd_userial.termios);
+    tcflush(vnd_userial.fd, TCIOFLUSH);
+
+    tcsetattr(vnd_userial.fd, TCSANOW, &vnd_userial.termios);
+    tcflush(vnd_userial.fd, TCIOFLUSH);
+    tcflush(vnd_userial.fd, TCIOFLUSH);
+
+    /* set input/output baudrate */
+    cfsetospeed(&vnd_userial.termios, baud);
+    cfsetispeed(&vnd_userial.termios, baud);
+    tcsetattr(vnd_userial.fd, TCSANOW, &vnd_userial.termios);
+
+#if (BT_WAKE_VIA_USERIAL_IOCTL==TRUE)
+    userial_ioctl_init_bt_wake(vnd_userial.fd);
+#endif
+
+    ALOGI("device fd = %d open", vnd_userial.fd);
+
+    return vnd_userial.fd;
+}
+
+/*******************************************************************************
+**
+** Function        userial_vendor_close
+**
+** Description     Conduct vendor-specific close work
+**
+** Returns         None
+**
+*******************************************************************************/
+void userial_vendor_close(void)
+{
+    int result;
+
+    if (vnd_userial.fd == -1)
+        return;
+
+#if (BT_WAKE_VIA_USERIAL_IOCTL==TRUE)
+    /* de-assert bt_wake BEFORE closing port */
+    ioctl(vnd_userial.fd, USERIAL_IOCTL_BT_WAKE_DEASSERT, NULL);
+#endif
+
+    ALOGI("device fd = %d close", vnd_userial.fd);
+
+    if ((result = close(vnd_userial.fd)) < 0)
+        ALOGE( "close(fd:%d) FAILED result:%d", vnd_userial.fd, result);
+
+    vnd_userial.fd = -1;
+}
+
+/*******************************************************************************
+**
+** Function        userial_vendor_set_baud
+**
+** Description     Set new baud rate
+**
+** Returns         None
+**
+*******************************************************************************/
+void userial_vendor_set_baud(uint8_t userial_baud)
+{
+    uint32_t tcio_baud;
+
+    userial_to_tcio_baud(userial_baud, &tcio_baud);
+
+    cfsetospeed(&vnd_userial.termios, tcio_baud);
+    cfsetispeed(&vnd_userial.termios, tcio_baud);
+    tcsetattr(vnd_userial.fd, TCSANOW, &vnd_userial.termios);
+}
+
+/*******************************************************************************
+**
+** Function        userial_vendor_ioctl
+**
+** Description     ioctl inteface
+**
+** Returns         None
+**
+*******************************************************************************/
+void userial_vendor_ioctl(userial_vendor_ioctl_op_t op, void *p_data)
+{
+    switch(op)
+    {
+#if (BT_WAKE_VIA_USERIAL_IOCTL==TRUE)
+        case USERIAL_OP_ASSERT_BT_WAKE:
+            VNDUSERIALDBG("## userial_vendor_ioctl: Asserting BT_Wake ##");
+            ioctl(vnd_userial.fd, USERIAL_IOCTL_BT_WAKE_ASSERT, NULL);
+            break;
+
+        case USERIAL_OP_DEASSERT_BT_WAKE:
+            VNDUSERIALDBG("## userial_vendor_ioctl: De-asserting BT_Wake ##");
+            ioctl(vnd_userial.fd, USERIAL_IOCTL_BT_WAKE_DEASSERT, NULL);
+            break;
+
+        case USERIAL_OP_GET_BT_WAKE_STATE:
+            ioctl(vnd_userial.fd, USERIAL_IOCTL_BT_WAKE_GET_ST, p_data);
+            break;
+#endif  //  (BT_WAKE_VIA_USERIAL_IOCTL==TRUE)
+
+        default:
+            break;
+    }
+}
+
+/*******************************************************************************
+**
+** Function        userial_set_port
+**
+** Description     Configure UART port name
+**
+** Returns         0 : Success
+**                 Otherwise : Fail
+**
+*******************************************************************************/
+int userial_set_port(char *p_conf_name, char *p_conf_value, int param)
+{
+    strcpy(vnd_userial.port_name, p_conf_value);
+
     return 0;
 }
 
-int bt_hci_init_transport_id (int chId )
-{
-  struct termios   term;
-  int fd = -1;
-  int retry = 0;
-
-  if(chId > 2 || chId <0)
-     return -1;
-
-  fd = open(s_pszDevSmd[chId], (O_RDWR | O_NOCTTY));
-
-  while ((-1 == fd) && (retry < 7)) {
-    ALOGE("init_transport: Cannot open %s: %s\n. Retry after 2 seconds",
-        bt_hci_transport_device.name, strerror(errno));
-    usleep(2000000);
-    fd = open(bt_hci_transport_device.name, (O_RDWR | O_NOCTTY));
-    retry++;
-  }
-
-  if (-1 == fd)
-  {
-    ALOGE("init_transport: Cannot open %s: %s\n",
-        bt_hci_transport_device.name, strerror(errno));
-    return -1;
-  }
-
-  /* Sleep (0.5sec) added giving time for the smd port to be successfully
-     opened internally. Currently successful return from open doesn't
-     ensure the smd port is successfully opened.
-     TODO: Following sleep to be removed once SMD port is successfully
-     opened immediately on return from the aforementioned open call */
-  if(BT_HCI_SMD == bt_hci_transport_device.type)
-     usleep(500000);
-
-  if (tcflush(fd, TCIOFLUSH) < 0)
-  {
-    ALOGE("init_uart: Cannot flush %s\n", bt_hci_transport_device.name);
-    close(fd);
-    return -1;
-  }
-
-  if (tcgetattr(fd, &term) < 0)
-  {
-    ALOGE("init_uart: Error while getting attributes\n");
-    close(fd);
-    return -1;
-  }
-
-  cfmakeraw(&term);
-
-  /* JN: Do I need to make flow control configurable, since 4020 cannot
-   * disable it?
-   */
-  term.c_cflag |= (CRTSCTS | CLOCAL);
-
-  if (tcsetattr(fd, TCSANOW, &term) < 0)
-  {
-    ALOGE("init_uart: Error while getting attributes\n");
-    close(fd);
-    return -1;
-  }
-
-  ALOGI("Done intiailizing UART\n");
-  return fd;
-}
-
-int bt_hci_deinit_transport(int *pFd)
-{
-    close(pFd[0]);
-    close(pFd[1]);
-    return TRUE;
-}
