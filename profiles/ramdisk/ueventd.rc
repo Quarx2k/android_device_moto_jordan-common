@@ -86,7 +86,7 @@
 /dev/isl29030             0660   compass    compass
 /dev/ttyS0                0640   radio      radio
 # bluetooth uart
-/dev/ttyS1                0660   bluetooth  bluetooth
+/dev/ttyS1                0660   bluetooth  net_bt_stack
 /dev/tcmd_driver          0660   root       system
 # bluetooth dun
 /dev/rfcomm0              0600   system     system

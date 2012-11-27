@@ -98,8 +98,8 @@ on post-fs
     chmod 0660 /sys/class/timed_output/vibrator/enable
     chmod 0660 /sys/class/timed_output/vibrator/sweep
 # bluetooth power up/down interface (wl127x Bluetooth and hci0)
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
+    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/type
+    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/state
     chmod 0660 /sys/class/rfkill/rfkill0/state
 
 # Tweaks
