@@ -153,6 +153,11 @@ on post-fs-data
     mkdir /data/tpapi/etc/tpa 0770 system system
     mkdir /data/tpapi/etc/tpa/persistent 0770 system system
 
+# create special battd dir and set permissions
+    mkdir /data/tmp/battd 0770 root 9001
+    chmod 0770 /data/tmp/battd
+    chown root 9001 /data/tmp/battd
+
     # hwui config folder for process names black list
     mkdir /data/local/hwui.deny
     chown system nobody /data/local/hwui.deny
