@@ -80,7 +80,7 @@ fi
 
 # mount cache for boot mode and recovery logs
 if [ ! -d /cache/recovery ]; then
-    mount -t $FS_CACHE -o nosuid,nodev,noatime,nodiratime,barrier=1 $PART_CACHE /cache
+    mount -t auto -o nosuid,nodev,noatime,nodiratime,barrier=1 $PART_CACHE /cache
 fi
 
 mkdir -p /cache/bootmenu
