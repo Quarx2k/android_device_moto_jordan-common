@@ -20,11 +20,9 @@
 /dev/graphics/*           0660   root       graphics
 /dev/input/*              0660   root       input
 /dev/snd/*                0664   system     audio
-/dev/mt9t013              0660   system     system
 /dev/bus/usb/*            0660   root       system
 
 # CDMA radio interface MUX
-/dev/ts0710mux*           0660   radio      radio
 /dev/ppp                  0660   radio      vpn
 /dev/tun                  0640   vpn        vpn
 
@@ -56,6 +54,7 @@
 /dev/video3               0664   media      camera
 /dev/smodule              0664   root       root
 /dev/syspanic             0660   radio      radio
+/dev/socket               0755   root       system
 /dev/tda19989             0660   root       system
 /dev/dispsw               0660   root       system
 /dev/omap-panel           0660   media      system
@@ -98,6 +97,3 @@
 /sys/devices/virtual/input/input*   poll_delay  0660  root   input
 
 /sys/devices/platform/i2c_omap.3/i2c-3/3-0053/leds/torch-flash brightness    0660 media camera
-
-# Motorola CedarPoint Baseband Logger
-/dev/bus/usb/002/123      0660   root       radio

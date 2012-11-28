@@ -15,23 +15,6 @@ on init
     #chmod 0666 /tmp/usbd_current_state
     #start adbd
 
-
-on post-fs
-
-    symlink mmcblk1p21 /dev/block/system
-    symlink mmcblk1p24 /dev/block/cache
-    symlink mmcblk1p25 /dev/block/userdata
-
-    # Load kernel modules
-    insmod /system/lib/modules/netmux.ko
-    insmod /system/lib/modules/netmux_linkdriver.ko
-    insmod /system/lib/modules/modem_pm_driver.ko
-    insmod /system/lib/modules/nls_utf8.ko
-    insmod /system/lib/modules/cifs.ko
-
-    # Overclock after 2ndboot.
-    exec /sbin/sh /system/bootmenu/script/overclock.sh
-
 on fs
 
 # Mount mmc partitions
@@ -42,11 +25,21 @@ on fs
     mount ext3 /dev/block/mmcblk1p21 /system ro remount
     mount ext3 /dev/block/mmcblk1p24 /cache nosuid nodev noatime nodiratime barrier=0
     mount ext3 /dev/block/mmcblk1p25 /data nosuid nodev noatime nodiratime barrier=0
-
     mount ext4 /dev/block/mmcblk1p24 /cache wait noatime nodev barrier=0 nobh data=writeback noauto_da_alloc commit=30
     mount ext4 /dev/block/mmcblk1p25 /data wait noatime nodev barrier=0 nobh data=writeback noauto_da_alloc commit=30
 
+    symlink mmcblk1p21 /dev/block/system
+    symlink mmcblk1p24 /dev/block/cache
+    symlink mmcblk1p25 /dev/block/userdata
+
 on post-fs
+
+    # Load kernel modules
+    insmod /system/lib/modules/netmux.ko
+    insmod /system/lib/modules/netmux_linkdriver.ko
+    insmod /system/lib/modules/modem_pm_driver.ko
+    insmod /system/lib/modules/nls_utf8.ko
+    insmod /system/lib/modules/cifs.ko
 
 # Backward compatibility
     symlink /dev /dev/netmux
@@ -54,6 +47,9 @@ on post-fs
     symlink /dev/hp3a-omap /dev/hp3A-omap
 
     mount rootfs rootfs / rw remount
+
+# Overclock after 2ndboot.
+    exec /sbin/sh /system/bootmenu/script/overclock.sh
 
 # PDS Mount
     exec /system/bootmenu/script/pdsbackup.sh
@@ -70,12 +66,6 @@ on post-fs
     chmod 0777 /tmp
     chown system shell /tmp
 
-# Restore good uid, mount as ramfs reset to root root 755
-    chown root system /mnt/asec
-    chmod 0755 /mnt/asec
-    chown root system /mnt/obb
-    chmod 0755 /mnt/obb
-
 # Configure kernel options
     # Enable automatic power control for EHCI USB IPC
     write /sys/devices/platform/ehci-omap.0/usb1/power/level auto
@@ -86,7 +76,7 @@ on post-fs
     write /proc/sys/vm/oom_dump_tasks 0
     write /proc/sys/fs/suid_dumpable 2
     # Power Management
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ondemand
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor interactive
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 300000
     write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/up_threshold 86
     write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/sampling_rate 46875
@@ -103,7 +93,8 @@ on post-fs
     chmod 0660 /sys/class/rfkill/rfkill0/state
 
 # Tweaks
-    #write /sys/block/mmcblk0/bdi/read_ahead_kb 512
+    # DSS - disable tearing elimination
+    write /sys/devices/omapdss/display0/tear_elim 0  
 
 on post-fs-data
 
@@ -114,37 +105,21 @@ on post-fs-data
 
     # Create basic filesystem structure
     # we chown/chmod /pds again so because mount is run as root + defaults
-    mkdir /pds/lost+found
     chown system shell /pds/public
     chmod 0775 /pds/public
-    chown root root /pds/lost+found
-    chmod 0770 /pds/lost+found
     chown radio radio /pds/bp_nvm
     chmod 0770 /pds/bp_nvm
     chmod 0770 /pds/security
-
-    chown root system /dev/socket
-    chmod 0775 /dev/socket
-
-    # wifi dirs
-    mkdir /data/misc/wifi/hostapd 0770 system wifi
-    mkdir /data/misc/wifi/sockets 0770 system wifi
-    mkdir /data/misc/dhcp 0770 dhcp dhcp
-    mkdir /data/comm_drv 0770 radio radio
-    chown dhcp dhcp /data/misc/dhcp
 
     # following two dirs are for storing BP Flex and PDS files. NVM Daemon is using these folders
     mkdir /data/bp_nvm
     mkdir /data/gki 0770 radio radio
     mkdir /tmp/commdrv 0770 radio radio
+    mkdir /data/location 0771 radio radio
+    mkdir /data/opprof 0770 radio shell
+    mkdir /data/dropbear 0755 root shell
     chown radio radio /data/bp_nvm
     chmod 0770 /data/bp_nvm
-    # create location directory
-    mkdir /data/location 0771 radio radio
-    # create opprof directory
-    mkdir /data/opprof 0770 radio shell
-    # create dropbear directory
-    mkdir /data/dropbear 0755 root shell
 
     # create the necessary dirs for tpapi 
     mkdir /pds/security 0770 system system
@@ -163,21 +138,19 @@ on post-fs-data
     chown system nobody /data/local/hwui.deny
     chmod 0775 /data/local/hwui.deny
 
-# copy hostapd configuration
+    # wi-fi
+    mkdir /data/misc/wifi/sockets 0770 wifi wifi
+    mkdir /data/misc/dhcp 0770 dhcp dhcp
     copy /system/etc/wifi/softap/hostapd.conf /data/misc/wifi/hostapd.conf
 
     setprop vold.post_fs_data_done 1
 
 on boot
 
-    # Enable panic on softlockup
-    write /proc/sys/kernel/softlockup_panic 1
-
     # Change the ownership of led files.
     chown system system /sys/class/leds/lcd-backlight/als
     chown system system /sys/class/leds/lcd-backlight/pwm_mode
     chown system system /sys/class/leds/lcd-backlight/brightness
-    chown system system /sys/class/leds/keyboard-backlight/brightness
     chown system system /sys/class/leds/button-backlight/brightness
     chown system system /sys/class/leds/red/blink
     chown system system /sys/class/leds/red/brightness
@@ -189,7 +162,6 @@ on boot
     chown media system /sys/class/leds/spotlight/brightness
     chown media system /sys/class/leds/af-led/brightness
     chmod 0660 /sys/class/leds/lcd-backlight/brightness
-    chmod 0660 /sys/class/leds/keyboard-backlight/brightness
     chmod 0660 /sys/class/leds/button-backlight/brightness
     chmod 0660 /sys/class/leds/red/blink
     chmod 0660 /sys/class/leds/red/brightness
@@ -199,9 +171,6 @@ on boot
     chmod 0666 /sys/class/leds/torch-flash/camera_strobe
     chmod 0666 /sys/class/leds/torch-flash/flash_light
     chmod 0666 /sys/class/leds/spotlight/brightness
-
-    # DSS - disable tearing elimination
-    write /sys/devices/omapdss/display0/tear_elim 0  
 
     # Charge only mode services.
     exec /system/bin/mot_boot_mode
@@ -213,9 +182,6 @@ on property:sys.chargeonly.mode=1
     class_reset late_start
     start charge
     start battd
-
-on property:init.svc.wpa_supplicant=stopped
-    stop dhcpcd
 
 service usbd /system/bin/usbd
     class main
@@ -231,15 +197,18 @@ service charge /system/bin/charge_only_mode
     group root
     oneshot
     disabled
+
 service nvm-daemon /system/bin/nvm_daemon
     class main
     user root
     group radio
+
 service start_commdrv /system/bin/sh /system/etc/motorola/comm_drv/commdrv_fs.sh
     class main
     oneshot
     user radio
     group radio system cache
+
 service gkisystem /system/bin/gkisystem
     class main
     socket location_shim stream 660 radio system
@@ -247,12 +216,14 @@ service gkisystem /system/bin/gkisystem
     socket opprofdaemon stream 660 radio system
     group radio system
     oneshot
+
 service battd /system/bin/battd
     class charger
     socket battdsock stream 660 root system
     user root
     group system 9001
     oneshot
+
 service ssmgrd /system/bin/ssmgrd
     class main
     group radio input system
@@ -276,6 +247,7 @@ service wlan_loader /system/bin/wlan_loader -f /system/etc/wifi/fw_wlan1271.bin 
     class main
     disabled
     oneshot
+
 service wlan_ap_loader /system/bin/tiap_loader -f /system/etc/wifi/fw_tiwlan_ap.bin -i /system/etc/wifi/tiwlan_ap.ini -e /pds/wifi/nvs_map.bin
     class main
     disabled
@@ -298,6 +270,7 @@ service dhcpcd_tiwlan0 /system/bin/dhcpcd -ABKL
     class main
     disabled
     oneshot
+
 service iprenew_tiwlan0 /system/bin/dhcpcd -n
     class main
     disabled
