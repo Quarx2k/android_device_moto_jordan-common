@@ -84,7 +84,7 @@ PRODUCT_PACKAGES += tiap_loader tiap_cu ndc hostapd.conf
 PRODUCT_PACKAGES += dspexec libbridge libLCML libOMX_Core
 PRODUCT_PACKAGES += libOMX.TI.AAC.encode libOMX.TI.AAC.decode libOMX.TI.AMR.decode libOMX.TI.AMR.encode
 PRODUCT_PACKAGES += libOMX.TI.WBAMR.encode libOMX.TI.MP3.decode libOMX.TI.WBAMR.decode
-PRODUCT_PACKAGES += libOMX.TI.WMA.decode libOMX.TI.Video.Decoder libOMX.TI.Video.encoder
+PRODUCT_PACKAGES += libOMX.TI.Video.Decoder libOMX.TI.Video.encoder
 PRODUCT_PACKAGES += libOMX.TI.JPEG.Encoder #libskiahw libOMX.TI.JPEG.decoder
 
 # Defy stuff
