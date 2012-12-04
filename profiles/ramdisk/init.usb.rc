@@ -28,12 +28,8 @@ on property:sys.usb.config=accessory,adb
     start adbd
     setprop sys.usb.state ${sys.usb.config}
 
-on property:sys.usb.config=*
 # Used to set USB configuration at boot and to switch the configuration
 # when changing the default configuration
 on property:persist.sys.usb.config=*
     setprop sys.usb.config ${persist.sys.usb.config}
-
-on property:service.adb.root=1
-    restart adbd
 
