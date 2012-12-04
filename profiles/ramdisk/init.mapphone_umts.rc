@@ -46,7 +46,7 @@ on post-fs
     mount rootfs rootfs / rw remount
 
 # Overclock after 2ndboot.
-    exec /sbin/sh /system/bootmenu/script/overclock.sh
+    exec /system/bootmenu/script/overclock.sh
 
 # Busybox
     mkdir /data/local/tmp 0777 system shell
