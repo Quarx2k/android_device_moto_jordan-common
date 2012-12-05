@@ -93,7 +93,7 @@ Only the three quirks included above are recognized at this point:
             <Quirk name="requires-allocate-on-input-ports" />
             <Quirk name="requires-allocate-on-output-ports" />
         </MediaCodec>
-
+<!--
         <MediaCodec name="OMX.TI.MP3.decode" >
             <Type name="audio/mpeg" />
             <Quirk name="needs-flush-before-disable" />
@@ -101,7 +101,7 @@ Only the three quirks included above are recognized at this point:
             <Quirk name="requires-allocate-on-input-ports" />
             <Quirk name="requires-allocate-on-output-ports" />
         </MediaCodec>
-
+-->
         <MediaCodec name="OMX.TI.AAC.decode" >
             <Type name="audio/mp4a-latm" />
             <Quirk name="needs-flush-before-disable" />
@@ -123,6 +123,10 @@ Only the three quirks included above are recognized at this point:
             <Quirk name="requires-allocate-on-output-ports" />
         </MediaCodec>
 
+        <MediaCodec name="OMX.google.mp3.decoder" type="audio/mpeg" />
+        <MediaCodec name="OMX.google.amrnb.decoder" type="audio/3gpp" />
+        <MediaCodec name="OMX.google.amrwb.decoder" type="audio/amr-wb" />
+        <MediaCodec name="OMX.google.aac.decoder" type="audio/mp4a-latm" />
         <MediaCodec name="OMX.google.g711.alaw.decoder" type="audio/g711-alaw" />
         <MediaCodec name="OMX.google.g711.mlaw.decoder" type="audio/g711-mlaw" />
         <MediaCodec name="OMX.google.vorbis.decoder" type="audio/vorbis" />
@@ -131,6 +135,7 @@ Only the three quirks included above are recognized at this point:
         <MediaCodec name="OMX.google.h263.decoder" type="video/3gpp" />
         <MediaCodec name="OMX.google.h264.decoder" type="video/avc" />
         <MediaCodec name="OMX.google.vpx.decoder" type="video/x-vnd.on2.vp8" />
+  
     </Decoders>
 
     <Encoders>
@@ -170,7 +175,10 @@ Only the three quirks included above are recognized at this point:
             <Quirk name="requires-allocate-on-output-ports" />
         </MediaCodec>
 
+        <MediaCodec name="OMX.google.amrnb.encoder" type="audio/3gpp" />
+        <MediaCodec name="OMX.google.amrwb.encoder" type="audio/amr-wb" />
         <MediaCodec name="OMX.google.aac.encoder" type="audio/mp4a-latm" />
         <MediaCodec name="OMX.google.flac.encoder" type="audio/flac" />
+
     </Encoders>
 </MediaCodecs>
