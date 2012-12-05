@@ -19,18 +19,14 @@ on fs
 
 # Mount mmc partitions
     mkdir /pds 0775 system system
-    exec /system/bin/e2fsck -y /dev/block/mmcblk1p21
+    mount ext3 /dev/block/mmcblk1p21 /system ro nodiratime nodev noatime nodiratime barrier=0
+    mount ext4 /dev/block/mmcblk1p24 /cache wait noatime nodiratime nodev nobh data=writeback noauto_da_alloc barrier=0
+    mount ext4 /dev/block/mmcblk1p25 /data wait noatime nodiratime nodev nobh data=writeback noauto_da_alloc barrier=0
+    exec /system/bootmenu/script/pdsbackup.sh
 
-    mount ext3 /dev/block/mmcblk1p21 /system
-    mount ext3 /dev/block/mmcblk1p21 /system ro remount
-    mount ext3 /dev/block/mmcblk1p24 /cache nosuid nodev noatime nodiratime barrier=0
-    mount ext3 /dev/block/mmcblk1p25 /data nosuid nodev noatime nodiratime barrier=0
-    mount ext4 /dev/block/mmcblk1p24 /cache wait noatime nodev barrier=0 nobh data=writeback noauto_da_alloc commit=30
-    mount ext4 /dev/block/mmcblk1p25 /data wait noatime nodev barrier=0 nobh data=writeback noauto_da_alloc commit=30
-
-    symlink mmcblk1p21 /dev/block/system
-    symlink mmcblk1p24 /dev/block/cache
-    symlink mmcblk1p25 /dev/block/userdata
+    symlink /dev/block/mmcblk1p21 /dev/block/system
+    symlink /dev/block/mmcblk1p24 /dev/block/cache
+    symlink /dev/block/mmcblk1p25 /dev/block/userdata
 
 on post-fs
 
@@ -49,10 +45,7 @@ on post-fs
     mount rootfs rootfs / rw remount
 
 # Overclock after 2ndboot.
-    exec /sbin/sh /system/bootmenu/script/overclock.sh
-
-# PDS Mount
-    exec /system/bootmenu/script/pdsbackup.sh
+    exec /system/bootmenu/script/overclock.sh
 
 # Busybox
     mkdir /data/local/tmp 0777 system shell
@@ -74,9 +67,10 @@ on post-fs
     write /sys/devices/platform/ehci-omap.0/usb1/1-3/power/autosuspend 0
     # Disable a system-wide task dump on OOM in default
     write /proc/sys/vm/oom_dump_tasks 0
-    write /proc/sys/fs/suid_dumpable 2
+    write /proc/sys/fs/suid_dumpable 0
+    # Enable panic on softlockup
+    write /proc/sys/kernel/softlockup_panic 1
     # Power Management
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor interactive
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 300000
     write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/up_threshold 86
     write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/sampling_rate 46875
@@ -98,50 +92,36 @@ on post-fs
 
 on post-fs-data
 
-    # event in bootmenu (cpu settings & postbootmenu)
-    exec /system/bin/logwrapper postbootmenu
-
     mount rootfs rootfs / ro remount
 
-    # Create basic filesystem structure
-    # we chown/chmod /pds again so because mount is run as root + defaults
-    chown system shell /pds/public
-    chmod 0775 /pds/public
-    chown radio radio /pds/bp_nvm
-    chmod 0770 /pds/bp_nvm
-    chmod 0770 /pds/security
-
-    # following two dirs are for storing BP Flex and PDS files. NVM Daemon is using these folders
+# Create basic filesystem structure
     mkdir /data/bp_nvm
     mkdir /data/gki 0770 radio radio
-    mkdir /tmp/commdrv 0770 radio radio
     mkdir /data/location 0771 radio radio
     mkdir /data/opprof 0770 radio shell
-    mkdir /data/dropbear 0755 root shell
-    chown radio radio /data/bp_nvm
-    chmod 0770 /data/bp_nvm
-
-    # create the necessary dirs for tpapi 
-    mkdir /pds/security 0770 system system
     mkdir /data/tpapi 0770 system system
     mkdir /data/tpapi/etc 0770 system system
     mkdir /data/tpapi/etc/tpa 0770 system system
     mkdir /data/tpapi/etc/tpa/persistent 0770 system system
-
-# create special battd dir and set permissions
-    mkdir /data/tmp/battd 0770 root 9001
-    chmod 0770 /data/tmp/battd
-    chown root 9001 /data/tmp/battd
-
-    # hwui config folder for process names black list
-    mkdir /data/local/hwui.deny
-    chown system nobody /data/local/hwui.deny
-    chmod 0775 /data/local/hwui.deny
-
-    # wi-fi
+    mkdir /data/tmp 0770 root system
+    mkdir /data/tmp/battd 0770 root system
     mkdir /data/misc/wifi/sockets 0770 wifi wifi
     mkdir /data/misc/dhcp 0770 dhcp dhcp
-    copy /system/etc/wifi/softap/hostapd.conf /data/misc/wifi/hostapd.conf
+    mkdir /tmp/commdrv 0770 radio radio
+    mkdir /data/local/hwui.deny
+
+    chown radio radio /data/bp_nvm
+    chown radio radio /pds/bp_nvm
+    chown system shell /pds/public
+    chown root system /data/tmp/battd
+    chown system nobody /data/local/hwui.deny
+
+    chmod 0775 /pds/public
+    chmod 0770 /data/bp_nvm
+    chmod 0770 /pds/bp_nvm
+    chmod 0770 /pds/security
+    chmod 0770 /data/tmp/battd
+    chmod 0775 /data/local/hwui.deny
 
     setprop vold.post_fs_data_done 1
 
@@ -273,12 +253,12 @@ service dhcpcd_bnep0 /system/bin/dhcpcd -ABKL
     class main
     disabled
     oneshot
+
 service iprenew_bnep0 /system/bin/dhcpcd -n
     class main
     disabled
     oneshot
 
-# 3D init
 service pvrsrvctl /system/bin/pvrsrvctl --start --no-module
     class core
     user root

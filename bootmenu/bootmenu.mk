@@ -30,7 +30,7 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/profiles/ramdisk/ueventd.rc:root/ueventd.rc \
 	${bm_device}/profiles/ramdisk/init.usb.rc:root/init.usb.rc \
 	${bm_device}/profiles/ramdisk/init.mapphone_umts.rc:root/init.mapphone_umts.rc \
-	${bm_device}/bootmenu/binary/adbd:root/sbin/adbd \
+
 # scripts
 PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/script/2nd-boot.sh:system/bootmenu/script/2nd-boot.sh \
