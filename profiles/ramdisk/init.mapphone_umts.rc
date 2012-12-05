@@ -20,7 +20,7 @@ on fs
 # Mount mmc partitions
     mkdir /pds 0775 system system
 
-    mount ext3 /dev/block/mmcblk1p21 /system ro nosuid nodiratime nodev noatime nodiratime barrier=0
+    mount ext3 /dev/block/mmcblk1p21 /system ro nodiratime nodev noatime nodiratime barrier=0
     mount ext4 /dev/block/mmcblk1p24 /cache wait noatime nodiratime nodev nobh data=writeback noauto_da_alloc barrier=0
     mount ext4 /dev/block/mmcblk1p25 /data wait noatime nodiratime nodev nobh data=writeback noauto_da_alloc barrier=0
     exec /system/bootmenu/script/pdsbackup.sh
