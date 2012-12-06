@@ -1,0 +1,2 @@
+BLUETOOTH_UART_DEVICE_PORT = "/dev/ttyS1"
+FW_PATCHFILE_LOCATION = "/system/etc/firmware/"
