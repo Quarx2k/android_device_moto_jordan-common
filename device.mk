@@ -41,7 +41,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	dalvik.vm.heapmaxfree=2m
 	ro.vold.umsdirtyratio=20 \
 	net.dns1=8.8.8.8 \
-	net.dns2=8.8.4.4
+	net.dns2=8.8.4.4 \
+	ro.phone_storage=0
 
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
