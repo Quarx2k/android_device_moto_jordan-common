@@ -222,7 +222,7 @@ service gkisystem /system/bin/gkisystem
     socket gpshal_socket stream 660 radio system
     socket opprofdaemon stream 660 radio system
     group radio system
-    oneshot
+    onrestart exec /system/bin/gki_pd_notifier
 
 service battd /system/bin/battd
     class charger
@@ -242,6 +242,18 @@ service hciattach /system/bin/hciattach -n -t 10 /dev/ttyS1 texasalt 3000000 flo
     user bluetooth
     group bluetooth net_bt_admin
     disabled
+
+# Phone modem error handling
+service panic_daemon /system/bin/panic_daemon
+    user radio
+    group radio system graphics sdcard_rw
+    socket panic_daemon stream 660 radio radio
+    onrestart exec /system/bin/handle_bp_panic.sh
+
+service secclkd /system/bin/secclkd
+    user system
+    group system radio
+    oneshot
 
 # Ecompass daemon
 service akmd2 /system/bin/akmd2

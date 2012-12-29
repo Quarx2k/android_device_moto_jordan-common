@@ -35,6 +35,10 @@ PRODUCT_COPY_FILES += \
 	$(device_path)/prebuilt/usr/cpcap-key.kl:system/usr/keylayout/cpcap-key.kl \
 	$(device_path)/prebuilt/usr/keychars/cpcap-key.kcm:system/usr/keychars/cpcap-key.kcm \
 
+# scripts
+PRODUCT_COPY_FILES += \
+	${DEVICE_PREBUILT}/bin/handle_bp_panic.sh:system/bin/handle_bp_panic.sh \
+
 PRODUCT_COPY_FILES += \
 	${device_path}/prebuilt/etc/vold.fstab:system/etc/vold.fstab \
 	${device_path}/prebuilt/etc/media_profiles.xml:system/etc/media_profiles.xml \
