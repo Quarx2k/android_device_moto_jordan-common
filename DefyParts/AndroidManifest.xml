@@ -5,6 +5,12 @@
 
     <uses-sdk android:minSdkVersion="10" />
 
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.REBOOT" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <application
         android:icon="@drawable/icon"
         android:label="@string/app_name" >
@@ -26,6 +32,21 @@
             </intent-filter>
 
         </activity>
+
+        <activity android:name=".BpPanicNotifyActivity"
+                  android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <activity android:name=".BpPanicRebootNoticeActivity"
+                  android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <receiver android:name=".BpPanicReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".BpPanicHandlerService" />
+
     </application>
 
 </manifest>
