@@ -55,7 +55,7 @@ touch /tmp/recovery.log
 killall -6 adbd
 
 # mount image of pds, for backup purpose (4MB)
-[ ! -d /data/data ] && mount -t ext3 -o rw,noatime,nodiratime,errors=continue $PART_DATA /data
+[ ! -d /data/data ] && mount -t auto -o rw,noatime,nodiratime,errors=continue $PART_DATA /data
 if [ ! -f /data/pdsdata.img ]; then
     /system/bootmenu/script/pdsbackup.sh
     umount /pds
@@ -115,7 +115,7 @@ cd /sbin && ln -s adbd adbd.root
 # echo 0 > /sys/class/leds/button-backlight/brightness
 
 # remount system & data if unmounted
-[ ! -d /data/data ] &&         mount -t ext3 -o rw,noatime,nodiratime,errors=continue $PART_DATA /data
+[ ! -d /data/data ] &&         mount -t auto -o rw,noatime,nodiratime,errors=continue $PART_DATA /data
 [ ! -f /system/build.prop ] && mount -t ext3 -o rw,noatime,nodiratime,errors=continue $PART_SYSTEM /system
 
 if [ -f /system/build.prop ] ; then
