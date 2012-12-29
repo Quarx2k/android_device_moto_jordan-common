@@ -151,6 +151,12 @@ on boot
     chmod 0666 /sys/class/leds/torch-flash/flash_light
     chmod 0666 /sys/class/leds/spotlight/brightness
 
+on property:persist.service.adb.enable=0
+    stop adbd
+
+on property:persist.service.adb.enable=1
+    start adbd
+
     # Charge only mode services.
     exec /system/bin/mot_boot_mode
     class_start charger
