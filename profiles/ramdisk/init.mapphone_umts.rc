@@ -122,6 +122,12 @@ on post-fs-data
     chmod 0770 /data/tmp/battd
     chmod 0775 /data/local/hwui.deny
 
+on property:persist.service.adb.enable=0
+    stop adbd
+
+on property:persist.service.adb.enable=1
+    start adbd
+
     setprop vold.post_fs_data_done 1
 
 on boot
@@ -150,12 +156,6 @@ on boot
     chmod 0666 /sys/class/leds/torch-flash/camera_strobe
     chmod 0666 /sys/class/leds/torch-flash/flash_light
     chmod 0666 /sys/class/leds/spotlight/brightness
-
-on property:persist.service.adb.enable=0
-    stop adbd
-
-on property:persist.service.adb.enable=1
-    start adbd
 
     # Charge only mode services.
     exec /system/bin/mot_boot_mode
