@@ -21,17 +21,15 @@ ro.telephony.ril_class=MotoWrigley3GRIL
 #mobiledata.interfaces=rmnet0,rmnet1,rmnet2,rmnet3,rmnet4,gannet0
 mobiledata.interfaces=rmnet0,gannet0
 
-wifi.interface=tiwlan0
+# wlan interface
+wifi.interface = wlan0
+softap.interface = wlan0
+wifi.ap.interface = wlan0
+
 # Time between scans in seconds. Keep it high to minimize battery drain.
 # This only affects the case in which there are remembered access points,
 # but none are in range.
-wifi.supplicant_scan_interval=60
-
-# Use TI hotspot code
-wifi.hotspot.ti=1
-
-# Wifi tether interface
-wifi.ap.interface=tiap0
+wifi.supplicant_scan_interval = 90
 
 # The OpenGL ES API level that is natively supported by this device.
 # This is a 16.16 fixed point number
