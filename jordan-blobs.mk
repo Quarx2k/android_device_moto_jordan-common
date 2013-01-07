@@ -46,15 +46,18 @@ PRODUCT_COPY_FILES += \
 	$(device_path)/prebuilt/etc/profile:system/etc/profile \
 	$(device_path)/prebuilt/etc/sysctl.conf:system/etc/sysctl.conf \
 	$(device_path)/prebuilt/etc/busybox.fstab:system/etc/fstab \
-	$(device_path)/prebuilt/etc/wifi/dnsmasq.conf:system/etc/wifi/dnsmasq.conf \
-	$(device_path)/prebuilt/etc/wifi/tiwlan.ini:system/etc/wifi/tiwlan.ini \
-	$(device_path)/prebuilt/etc/wifi/tiwlan_ap.ini:system/etc/wifi/tiwlan_ap.ini \
 	$(device_path)/prebuilt/etc/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
-	$(device_path)/prebuilt/etc/wifi/hostap_wrapper.sh:system/etc/wifi/hostap_wrapper.sh \
 	$(device_path)/prebuilt/etc/gpsconfig.xml:system/etc/gpsconfig.xml \
 	$(device_path)/prebuilt/etc/location.cfg:system/etc/location.cfg \
 	$(device_path)/prebuilt/etc/media_codecs.xml:system/etc/media_codecs.xml \
 	$(device_path)/prebuilt/etc/audio_policy.conf:system/etc/audio_policy.conf \
+
+# WLAN firmware
+PRODUCT_COPY_FILES += \
+    $(device_path)/prebuilt/etc/firmware/wl128x-fw-4-mr.bin:system/etc/firmware/ti-connectivity/wl128x-fw-4-mr.bin \
+    $(device_path)/prebuilt/etc/firmware/wl128x-fw-4-plt.bin:system/etc/firmware/ti-connectivity/wl128x-fw-4-plt.bin \
+    $(device_path)/prebuilt/etc/firmware/wl128x-fw-4-sr.bin:system/etc/firmware/ti-connectivity/wl128x-fw-4-sr.bin \
+    $(device_path)/prebuilt/etc/firmware/wl1271-nvs.bin:system/etc/firmware/ti-connectivity/wl1271-nvs.bin
 
 # New CM9 backup list system (addon.d)
 PRODUCT_COPY_FILES += \

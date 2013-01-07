@@ -102,6 +102,25 @@ PRODUCT_PACKAGES += Torch HwaSettings make_ext4fs
 # Experimental TI OpenLink
 PRODUCT_PACKAGES += libnl_2 iw
 
+# Wifi
+PRODUCT_PACKAGES += \
+    lib_driver_cmd_wl12xx \
+    dhcpcd.conf \
+    hostapd.conf \
+    wifical.sh \
+    wpa_supplicant.conf \
+    TQS_D_1.7.ini \
+    TQS_D_1.7_127x.ini \
+    crda \
+    regulatory.bin \
+    calibrator 
+
+# Wifi Direct and WPAN
+PRODUCT_PACKAGES += \
+    ti_wfd_libs \
+    ti-wpan-fw
+
+
 # Blobs and bootmenu stuff
 $(call inherit-product, device/moto/jordan-common/jordan-blobs.mk)
 $(call inherit-product, device/moto/jordan-common/bootmenu/bootmenu.mk)
