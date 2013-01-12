@@ -28,7 +28,7 @@ echo 18 > /sys/class/leds/lcd-backlight/brightness
 cd /2ndboot
 
 echo inserting hbootmod.ko
-insmod ./hbootmod.ko
+insmod ./hbootmod.ko kill_dss=1
 
 echo making node 
 mknod /dev/hbootctrl c `cat /proc/devices | grep hboot | awk '{print $1}' ` 0

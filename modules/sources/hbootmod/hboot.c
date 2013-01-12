@@ -201,7 +201,9 @@ void build_l1_table(uint32_t *table)
 }
 
 static int emu_uart = 0;
+static int kill_dss = 0;
 module_param(emu_uart, int, 0);
+module_param(kill_dss, int, 0);
 
 static int find_my_dev(struct device *dev, void *data);
 #define to_platform_driver(x) container_of((x), struct platform_driver, driver)
@@ -277,8 +279,10 @@ int hboot_boot(int handle)
 		activate_emu_uart();
 		reconfigure_emu_uart(emu_uart);
 	}
+
 	/* Disable dss, some defy want it. */
-	disable_dss();
+	if (kill_dss)
+		disable_dss();
 
 	/* Disable preempting */
 	preempt_disable();
