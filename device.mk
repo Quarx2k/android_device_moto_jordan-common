@@ -67,11 +67,11 @@ PRODUCT_COPY_FILES += \
 # FIXME in repo 
 PRODUCT_PACKAGES += rild
 
-# ICS sound
+# ound
 PRODUCT_PACKAGES += \
-	hcitool hciattach hcidump \
-	libaudioutils audio.a2dp.default  \
-	libaudiohw_legacy \
+	audio.a2dp.default  \
+	audio_policy.jordan \
+	libasound.so 
 
 # TO FIX for ICS
 PRODUCT_PACKAGES += power.omap3
@@ -86,7 +86,7 @@ PRODUCT_PACKAGES += dspexec libbridge libLCML libOMX_Core
 PRODUCT_PACKAGES += libOMX.TI.AAC.encode libOMX.TI.AAC.decode libOMX.TI.AMR.decode libOMX.TI.AMR.encode
 PRODUCT_PACKAGES += libOMX.TI.WBAMR.encode libOMX.TI.MP3.decode libOMX.TI.WBAMR.decode
 PRODUCT_PACKAGES += libOMX.TI.Video.Decoder libOMX.TI.Video.encoder
-PRODUCT_PACKAGES += libOMX.TI.JPEG.Encoder #libskiahw libOMX.TI.JPEG.decoder
+PRODUCT_PACKAGES += libOMX.TI.JPEG.Encoder libskiahw libOMX.TI.JPEG.decoder
 
 # Defy stuff
 PRODUCT_PACKAGES += libfnc DefyParts Usb MotoFM MotoFMService libbt-vendor
