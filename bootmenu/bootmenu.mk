@@ -27,8 +27,8 @@ PRODUCT_COPY_FILES += \
 
 # Ramdisk
 PRODUCT_COPY_FILES += \
-	${bm_device}/profiles/ramdisk/ueventd.mapphone_umts.rc:root/ueventd.mapphone_umts.rc \
-	${bm_device}/profiles/ramdisk/init.mapphone_umts.rc:root/init.mapphone_umts.rc \
+	${bm_device}/profiles/ramdisk/ueventd.mapphone_umts.rc:root/ueventd.mapphone_.rc \
+	${bm_device}/profiles/ramdisk/init.mapphone_umts.rc:root/init.mapphone_.rc \
 	${bm_device}/profiles/ramdisk/init.usb.rc:root/init.usb.rc \
 # scripts
 PRODUCT_COPY_FILES += \
