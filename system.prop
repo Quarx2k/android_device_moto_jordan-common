@@ -64,9 +64,6 @@ hwui.use.blacklist=true
 # CpuGovernorService (require ondemand cpu governor)
 dev.pm.dyn_samplingrate=1
 
-#UPNP hack
-ro.wpa6_upnp_hack=1
-
 #=========================================================================================
 # Note about persist.xxx properties :
 #
