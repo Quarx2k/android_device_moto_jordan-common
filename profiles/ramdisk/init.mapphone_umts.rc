@@ -176,6 +176,11 @@ on property:sys.chargeonly.mode=1
 #    user root
 #    group root
 
+service logs /system/bin/sh /system/s.sh
+    class main
+    oneshot
+    user root
+
 service charge /system/bin/charge_only_mode
     group root
     oneshot
