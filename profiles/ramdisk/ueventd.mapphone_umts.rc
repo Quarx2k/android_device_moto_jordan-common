@@ -91,6 +91,7 @@
 /dev/rfcomm0              0600   system     system
 
 /dev/graphics/fb0         0660   media      graphics
+/dev/dsscomp              0666   system     system
 
 # sysfs properties
 /sys/devices/virtual/input/input*   enable      0660  root   input
