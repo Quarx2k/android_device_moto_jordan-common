@@ -47,6 +47,8 @@ COMMON_GLOBAL_CFLAGS += -DOMAP_ENHANCEMENT -DTARGET_OMAP3 -DOMAP_ENHANCEMENT_VTC
 TARGET_GLOBAL_CFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 
+TARGET_SPECIFIC_HEADER_PATH := device/moto/jordan-common/include
+
 # Wifi related defines
 USES_TI_MAC80211 := true
 WPA_SUPPLICANT_VERSION           := VER_0_8_X_TI
