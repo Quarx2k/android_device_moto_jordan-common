@@ -3,10 +3,10 @@
 
 export PATH=/sbin:/system/xbin:/system/bin
 
-PART_SYSTEM=/dev/block/mmcblk0p21
-PART_CACHE=/dev/block/mmcblk0p24
-PART_DATA=/dev/block/mmcblk0p25
-PART_PDS=/dev/block/mmcblk0p7
+PART_SYSTEM=/dev/block/mmcblk1p21
+PART_CACHE=/dev/block/mmcblk1p24
+PART_DATA=/dev/block/mmcblk1p25
+PART_PDS=/dev/block/mmcblk1p7
 
 FS_SYSTEM=ext3
 FS_CACHE=ext3
