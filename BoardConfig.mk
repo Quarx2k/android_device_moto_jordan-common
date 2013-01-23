@@ -41,8 +41,9 @@ TARGET_ARCH_VARIANT := armv7-a-neon
 TARGET_ARCH_VARIANT_CPU := cortex-a8
 TARGET_ARCH_VARIANT_FPU := neon
 TARGET_OMAP3 := true
+OMAP_ENHANCEMENT := true
 ARCH_ARM_HAVE_TLS_REGISTER := true
-COMMON_GLOBAL_CFLAGS += -DTARGET_OMAP3 -DOMAP_COMPAT -DBINDER_COMPAT
+COMMON_GLOBAL_CFLAGS += -DOMAP_ENHANCEMENT -DTARGET_OMAP3 -DOMAP_ENHANCEMENT_VTC -DUSE_FENCE_SYNC
 TARGET_GLOBAL_CFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 
@@ -60,19 +61,13 @@ WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/wl12xx_sdio.ko"
 WIFI_DRIVER_MODULE_NAME          := "wl12xx_sdio"
 WIFI_FIRMWARE_LOADER             := ""
 COMMON_GLOBAL_CFLAGS += -DUSES_TI_MAC80211
-BOARD_HOSTAPD_TIAP_ROOT     := system/wlan/ti/WiLink_AP
+BOARD_HOSTAPD_TIAP_ROOT          := system/wlan/ti/WiLink_AP
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
-BOARD_HAVE_BLUETOOTH_BCM := true
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/moto/jordan-common/bluetooth
-BOARD_BLUETOOTH_LIBBT_VNDCFG := device/moto/jordan-common/bluetooth/bt_vendor.conf
-BOARD_BLUEDROID_VENDOR_CONF := device/moto/jordan-common/bluetooth/vnd_moto-omap3.txt
-TARGET_CUSTOM_BLUEDROID := ../../../device/moto/jordan-common/bluedroid.c
 
 # Usb Specific
-BOARD_MASS_STORAGE_FILE_PATH := "/sys/devices/platform/usb_mass_storage/lun0/file"
-TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/usb_mass_storage/lun0/file"
 BOARD_MTP_DEVICE := "/dev/mtp"
 BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
 
@@ -82,11 +77,17 @@ BOARD_SYSTEMIMAGE_PARTITION_SIZE := 325000000
 BOARD_FLASH_BLOCK_SIZE := 131072
 
 # OMX Stuff
+# BOARD_USES_TI_CAMERA_HAL := true
 HARDWARE_OMX := true
-TARGET_USE_OMX_RECOVERY := true
-TARGET_USE_OMAP_COMPAT  := true
-BUILD_WITH_TI_AUDIO := 1
-BUILD_PV_VIDEO_ENCODERS := 1
+OMX_JPEG := true
+OMX_VENDOR := ti
+OMX_VENDOR_INCLUDES := \
+   hardware/ti/omx/system/src/openmax_il/omx_core/inc \
+   hardware/ti/omx/image/src/openmax_il/jpeg_enc/inc
+OMX_VENDOR_WRAPPER := TI_OMX_Wrapper
+BOARD_OPENCORE_LIBRARIES := libOMX_Core
+BOARD_OPENCORE_FLAGS := -DHARDWARE_OMX=1
+#BOARD_CAMERA_LIBRARIES := libcamera
 
 # Bootmenu
 BOARD_USES_BOOTMENU := true
@@ -107,15 +108,12 @@ BOARD_HAS_SMALL_RECOVERY := true
 BOARD_HAS_LARGE_FILESYSTEM := true
 BOARD_NEVER_UMOUNT_SYSTEM := true
 BOARD_CUSTOM_RECOVERY_KEYMAPPING:= ../../device/moto/jordan-common/recovery_keys.c
-#TARGET_RECOVERY_UI_LIB := librecovery_ui_generic
-#TARGET_RECOVERY_UPDATER_LIBS += librecovery_updater_generic
 TARGET_RECOVERY_PRE_COMMAND := "/system/bootmenu/script/reboot_command.sh"
 TARGET_RECOVERY_PRE_COMMAND_CLEAR_REASON := true
 
 # Egl Specific
 USE_OPENGL_RENDERER := true
 BOARD_EGL_CFG := device/moto/jordan-common/egl.cfg
-BOARD_USE_YUV422I_DEFAULT_COLORFORMAT := true
 ENABLE_WEBGL := true
 COMMON_GLOBAL_CFLAGS += -DSYSTEMUI_PBSIZE_HACK=1
 
@@ -123,16 +121,19 @@ COMMON_GLOBAL_CFLAGS += -DSYSTEMUI_PBSIZE_HACK=1
 USE_CAMERA_STUB := false
 BOARD_OVERLAY_BASED_CAMERA_HAL := true
 
-# Other..
-BOARD_USES_AUDIO_LEGACY := true
+# Audio
+BOARD_USES_GENERIC_AUDIO := false
+BOARD_USES_ALSA_AUDIO := true
+BUILD_WITH_ALSA_UTILS := true
+HAVE_2_3_DSP := 1
 TARGET_PROVIDES_LIBAUDIO := true
-BOARD_USE_KINETO_COMPATIBILITY := true
+BOARD_USE_MOTO_DOCK_HACK := true
+COMMON_GLOBAL_CFLAGS += -DICS_AUDIO_BLOB 
+
+# Other..
 TARGET_BOOTANIMATION_USE_RGB565 := true
 BOARD_USES_LEGACY_RIL := true
-
-##### Kernel stuff #####
-TARGET_MODULES_WIFI_SOURCE := "system/wlan/ti/wilink_6_1/platforms/os/linux/"
-TARGET_MODULES_AP_SOURCE := "system/wlan/ti/WiLink_AP/platforms/os/linux/"
+BOARD_NEEDS_CUTILS_LOG := true
 
 API_MAKE := \
 	make PREFIX=$(ANDROID_BUILD_TOP)/$(TARGET_OUT_INTERMEDIATES)/kernel_intermediates/build \
@@ -158,10 +159,9 @@ WLAN_MODULES:
 	mv hardware/ti/wlan/mac80211/compat_wl12xx/drivers/net/wireless/wl12xx/wl12xx_spi.ko $(KERNEL_MODULES_OUT)
 	mv hardware/ti/wlan/mac80211/compat_wl12xx/drivers/net/wireless/wl12xx/wl12xx_sdio.ko $(KERNEL_MODULES_OUT)
 
-
 hboot:
-	mkdir -p $(PRODUCT_OUT)/system/bootmenu/2nd-boot   
-	echo "$(BOARD_KERNEL_CMDLINE)" > $(PRODUCT_OUT)/system/bootmenu/2nd-boot/cmdline  
+	mkdir -p $(PRODUCT_OUT)/system/bootmenu/2nd-boot
+	echo "$(BOARD_KERNEL_CMDLINE)" > $(PRODUCT_OUT)/system/bootmenu/2nd-boot/cmdline
 	$(API_MAKE) -C $(ANDROID_BUILD_TOP)/device/moto/jordan-common/hboot
 	mv $(ANDROID_BUILD_TOP)/device/moto/jordan-common/hboot/hboot.bin $(PRODUCT_OUT)/system/bootmenu/2nd-boot/
 	make clean -C $(ANDROID_BUILD_TOP)/device/moto/jordan-common/hboot
@@ -170,9 +170,10 @@ hboot:
 TARGET_KERNEL_SOURCE := $(ANDROID_BUILD_TOP)/jordan-kernel
 TARGET_KERNEL_CUSTOM_TOOLCHAIN := arm-eabi-4.5.4-linaro
 TARGET_KERNEL_CONFIG  := mapphone_defconfig
-BOARD_KERNEL_CMDLINE := console=/dev/null mem=498M init=/init ip=off brdrev=P3A vram=6M omapfb.vram=0:6M
+BOARD_KERNEL_CMDLINE := console=/dev/null mem=498M omapfb.vram=0:4M
 #TARGET_PREBUILT_KERNEL := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/kernel
 # Extra : external modules sources
 TARGET_KERNEL_MODULES_EXT := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/modules/sources/
-TARGET_KERNEL_MODULES := ext_modules hboot WLAN_MODULES
+TARGET_KERNEL_MODULES := hboot WLAN_MODULES 
+#ext_modules 
 
