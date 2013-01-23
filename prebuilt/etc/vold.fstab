@@ -1,4 +1,4 @@
-## Vold 2.0 fstab for Motorola Sholes
+## Vold 2.0 fstab for Motorola Defy
 #
 ## - San Mehat (san@android.com)
 ## 
@@ -14,5 +14,4 @@
 ######################
 
 # Mounts the first usable partition of the specified device
-dev_mount sdcard /storage/sdcard1 auto /devices/platform/mmci-omap-hs.0/mmc_host/mmc0
-
+dev_mount sdcard /storage/sdcard1 1 /devices/platform/omap/omap_hsmmc.0/mmc_host/mmc0
