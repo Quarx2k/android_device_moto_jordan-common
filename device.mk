@@ -89,7 +89,7 @@ PRODUCT_PACKAGES += libOMX.TI.Video.Decoder libOMX.TI.Video.encoder
 PRODUCT_PACKAGES += libOMX.TI.JPEG.Encoder libskiahw libOMX.TI.JPEG.decoder
 
 # Defy stuff
-PRODUCT_PACKAGES += libfnc DefyParts Usb MotoFM MotoFMService libbt-vendor
+PRODUCT_PACKAGES += libfnc DefyParts Usb MotoFM MotoFMService libbt-vendor uim-sysfs
 
 # Core stuff
 PRODUCT_PACKAGES += charge_only_mode mot_boot_mode
@@ -101,7 +101,7 @@ PRODUCT_PACKAGES += librs_jni
 PRODUCT_PACKAGES += Torch HwaSettings make_ext4fs
 
 # Experimental TI OpenLink
-PRODUCT_PACKAGES += libnl_2 iw
+PRODUCT_PACKAGES += libnl_2 iw 
 
 # Wifi
 PRODUCT_PACKAGES += \
