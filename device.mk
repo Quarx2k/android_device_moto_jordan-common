@@ -74,7 +74,7 @@ PRODUCT_PACKAGES += \
 	libasound.so 
 
 # TO FIX for ICS
-PRODUCT_PACKAGES += power.omap3
+PRODUCT_PACKAGES += power.omap3 hwcomposer.jordan
 
 # Wifi packages
 PRODUCT_PACKAGES += iwmulticall hostap wlan_loader wlan_cu wpa_supplicant
