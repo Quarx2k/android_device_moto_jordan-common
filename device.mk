@@ -71,7 +71,7 @@ PRODUCT_PACKAGES += rild
 PRODUCT_PACKAGES += \
 	audio.a2dp.default  \
 	audio_policy.jordan \
-	libasound.so 
+	libasound
 
 PRODUCT_PACKAGES += power.omap3 hwcomposer.jordan
 
