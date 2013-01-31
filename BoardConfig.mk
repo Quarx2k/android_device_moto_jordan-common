@@ -68,6 +68,7 @@ BOARD_HOSTAPD_TIAP_ROOT          := system/wlan/ti/WiLink_AP
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/moto/jordan-common/bluetooth
+BOARD_WPAN_DEVICE := true
 
 # Usb Specific
 BOARD_MTP_DEVICE := "/dev/mtp"
