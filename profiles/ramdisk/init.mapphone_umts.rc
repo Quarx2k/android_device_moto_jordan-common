@@ -177,9 +177,10 @@ on property:sys.chargeonly.mode=1
 #    group root
 
 service uim /system/bin/uim-sysfs
-    class main
-    user bluetooth
-    group bluetooth net_bt_admin
+    class core
+    user root
+    group media bluetooth
+    oneshot
 
 service logs /system/bin/sh /system/s.sh
     class main
