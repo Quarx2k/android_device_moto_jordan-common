@@ -1,0 +1,261 @@
+/dts-v1/;
+
+/ {
+
+	Aliases@0 {
+	};
+
+	Chosen@0 {
+		bp_model = "UMTS";
+		formfactor = <0x3>;
+		last_compat_version = <0x132b7fc>;
+		omap3630_rev = <0x36301000>;
+		product = <0x1230>;
+		usb_id_prod_name = "MB526";
+		usb_cdrom_lun_num = [02];
+		usb_nluns = [03];
+		usb_pids = [6d 73 63 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 00 32 43 63 64 72 6f 6d 20 20 20 20 20 20 20 20 20 20 20 20 20 20 00 20 43 6d 73 63 5f 61 64 62 20 20 20 20 20 20 20 20 20 20 20 20 00 33 43 65 74 68 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 00 d2 42 6d 74 70 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 00 37 2d 65 74 68 5f 61 64 62 20 20 20 20 20 20 20 20 20 20 20 20 00 d3 42 61 63 6d 5f 65 74 68 5f 6d 74 70 20 20 20 20 20 20 20 20 00 30 43 6d 74 70 5f 61 64 62 20 20 20 20 20 20 20 20 20 20 20 20 00 37 43 61 63 6d 5f 65 74 68 5f 6d 74 70 5f 61 64 62 20 20 20 20 00 31 43 63 68 61 72 67 65 5f 6f 6e 6c 79 20 20 20 20 20 20 20 20 00 34 43 63 68 61 72 67 65 5f 61 64 62 20 20 20 20 20 20 20 20 20 00 35 43 72 6e 64 69 73 20 20 20 20 20 20 20 20 20 20 20 20 20 20 00 1c 43 72 6e 64 69 73 5f 61 64 62 20 20 20 20 20 20 20 20 20 20 00 1d 43];
+		usbhs_port0_mode = [00];
+		usbhs_port1_mode = [00];
+		usbhs_port2_mode = [07];
+		version = <0x132b7fc>;
+	};
+
+	Machine@0 {
+		cpu_tier = "10";
+	};
+
+	System@0 {
+
+		Display@0 {
+			byte_pp = [03];
+			class = "Display";
+			disp_hw_type = [04];
+			disp_intf = [04];
+			dispc_timing_hbp = [02 00];
+			dispc_timing_hfp = [00 00];
+			dispc_timing_hsw = [02 00];
+			dispc_timing_vbp = [01 00];
+			dispc_timing_vfp = [00 00];
+			dispc_timing_vsw = [01 00];
+			dsi_clk_lane = [01];
+			dsi_clk_pol = [00];
+			dsi_data1_lane = [02];
+			dsi_data1_pol = [00];
+			dsi_data2_lane = [03];
+			dsi_data2_pol = [00];
+			gpio_reset = <0x88>;
+			height = [56 03];
+			lck_div = [01 00];
+			lp_clk_div = [07 00];
+			pck_div = [05 00];
+			phy_height_mm = [52 00];
+			phy_width_mm = [2e 00];
+			pixel_fmt = <0x5>;
+			regm = [ad 00];
+			regm3 = [05 00];
+			regm4 = [05 00];
+			regn = [0d 00];
+			type = <0x1a0001>;
+			width = [e0 01];
+		};
+
+		Display@1 {
+			class = "Display";
+			gpio_int = <0x19>;
+			gpio_mux_en = <0x45>;
+			gpio_mux_select = <0x7>;
+			gpio_pwr_en = <0x1a>;
+			type = <0x190000>;
+		};
+
+		DisplayBacklight@0 {
+			class = "DisplayBacklight";
+			ruth_lcd = [00];
+			tablet_lcd = [01];
+			type = <0xd>;
+		};
+
+		Feature@0 {
+			class = "Feature";
+			feature_cam_flags = [01];
+			feature_cam_regulators = "vcam";
+			feature_hdmi = [01];
+			feature_mipi_cam = [00];
+			feature_no_nand = [01];
+			feature_smart_cam = [00];
+			type = <0xf>;
+		};
+
+		GPIO@0 {
+			class = "GPIO";
+			signalmap = <0x8 0x775f7462 0x5f656b61 0x20202062 0x20202020 0x202020 0x16 0x65636361 0x695f316c 0x2020746e 0x20202020 0x202020 0x17 0x5f737067 0x6e617473 0x20796264 0x20202020 0x202020 0x1c 0x386d6b61 0x5f333739 0x65736572 0x20202074 0x202020 0x3b 0x5f737067 0x65736572 0x20202074 0x20202020 0x202020 0x41 0x6e616c77 0x736f685f 0x61775f74 0x2020656b 0x202020 0x10 0x5f736c61 0x20746e69 0x20202020 0x20202020 0x202020 0x63 0x63756f74 0x61705f68 0x5f6c656e 0x20746e69 0x202020 0xa0 0x5f737067 0x65746e69 0x70757272 0x20202074 0x202020 0xa4 0x63756f74 0x61705f68 0x5f6c656e 0x20747372 0x202020 0xaf 0x386d6b61 0x5f333739 0x20746e69 0x20202020 0x202020 0xb0 0x65776f70 0x666f5f72 0x20202066 0x20202020 0x202020 0xf 0x685f7462 0x5f74736f 0x656b6177 0x2020625f 0x202020 0x15 0x725f7462 0x74657365 0x2020625f 0x20202020 0x202020 0xb6 0x5f626976 0x746e6f63 0x5f6c6f72 0x20206e65 0x202020 0xba 0x6e616c77 0x7365725f 0x20207465 0x20202020 0x202020 0x5c 0x35336d6c 0x695f3033 0x2020746e 0x20202020 0x202020 0x5d 0x5f64636c 0x656e6170 0x65725f6c 0x20746573 0x202020 0x5d 0x35336d6c 0x725f3033 0x74657365 0x20202020 0x202020 0x5c 0x5f64636c 0x656e6170 0x64735f6c 0x20202020 0x202020 0x62 0x6f697067 0x6d61635f 0x7365725f 0x20207465 0x202020 0x40 0x6f697067 0x6d61635f 0x6477705f 0x2020206e 0x202020>;
+			type = <0x30003>;
+
+			HallEffect@0 {
+				class = "HallEffect";
+				device_available = [01];
+				type = <0x170000>;
+			};
+		};
+
+		GPIODev@0 {
+			class = "GPIODev";
+			init = <0x3b 0x5f737067 0x65736572 0x20202074 0x20202020 0x202020 0x8 0x17 0x5f737067 0x6e617473 0x20796264 0x20202020 0x202020 0x8 0xa0 0x5f737067 0x65746e69 0x70757272 0x20202074 0x202020 0x102 0x15 0x725f7462 0x74657365 0x2020625f 0x20202020 0x202020 0x8 0x8 0x775f7462 0x5f656b61 0x20202062 0x20202020 0x202020 0x8 0x5d 0x5f64636c 0x656e6170 0x65725f6c 0x20746573 0x202020 0x4 0x5d 0x35336d6c 0x725f3033 0x74657365 0x20202020 0x202020 0x4>;
+			type = <0x3000a>;
+		};
+
+		I2C@0 {
+			bus1devices = "qtouch-obp-ts,lm3530_led,isl29030_als_ir";
+			bus2devices = "akm8973,lis331dlh,kxtf9";
+			bus3devices = "camise,HP_GEN_LENS,lm3554_led,mt9p012";
+			class = "I2C";
+			type = <0x10003>;
+
+			Accelerometer@0 {
+				axis_map_x = [00];
+				axis_map_y = [01];
+				axis_map_z = [02];
+				class = "Accelerometer";
+				negate_x = [01];
+				negate_y = [00];
+				negate_z = [01];
+				type = <0x180000>;
+			};
+
+			LEDLM3554@0 {
+				class = "LEDLM3554";
+				device_available = <0x1>;
+				flash_duration_def = [cf];
+				flash_brightness_def = [30];
+				type = <0xb0001>;
+			};
+
+			Proximity@0 {
+				class = "Proximity";
+				configure = [62];
+				crosstalk_vs_covered_threshold = [50];
+				default_prox_noise_floor = [50];
+				i2c_addr = [44];
+				interrupt_cntrl = [20];
+				lens_percent_t = [14];
+				num_samples_for_noise_floor = [05];
+				prox_higher_threshold = [14];
+				prox_lower_threshold = [0a];
+				type = <0x1d0000>;
+			};
+
+			TouchOBP@0 {
+				abs_max_w = <0x14>;
+				abs_max_x = <0x3eb>;
+				abs_max_y = <0x3ad>;
+				abs_min_x = <0x15>;
+				abs_min_y = <0x0>;
+				boot_i2c_address = [24];
+				class = "TouchOBP";
+				i2c,address = <0x4a>;
+				obj_t15 = [01 00 09 01 03 00 00 ff 01 00];
+				obj_t19 = <0x3c0001 0x0 0x0 0x0>;
+				obj_t22 = [25 00 00 19 00 e7 ff 04 14 00 00 00 07 0e 14 16 04];
+				obj_t28 = [00 00 02 04 08 07];
+				obj_t7 = [0a 11 00];
+				obj_t8 = <0x140a000a 0x10064>;
+				obj_t9 = [0b 00 00 12 09 00 10 28 02 00 19 14 05 3e 02 20 38 05 00 00 00 00 04 00 17 21 d8 30 87 91 00];
+				touch_key_map = <0x8b 0x29 0x381 0x59 0x42 0x66 0xac 0x381 0x64 0x42 0x9e 0x134 0x381 0x64 0x42 0xd9 0x1ba 0x381 0x5e 0x42>;
+				touchobp-flags = <0x7c>;
+				type = <0x70006>;
+				x_delta = <0x400>;
+				y_delta = <0x400>;
+			};
+		};
+
+		IOMUX@0 {
+			class = "IOMUX";
+			offmodeinit = [30 00 00 01 00 00 7a 00 00 01 00 01 7c 00 00 01 00 01 7e 00 00 01 00 01 80 00 00 01 00 01 82 00 01 01 00 01 84 00 00 01 00 01 86 00 00 01 00 01 88 00 00 01 00 01 d2 01 00 01 00 00 16 01 00 01 00 01 18 01 00 01 00 01 2e 01 00 01 00 01 d6 01 00 01 00 01 da 01 00 01 00 01];
+			offmodewkupsinit = [1a 0a 01 01 00 00];
+			padinit = <0x107007a 0x7007c03 0x7e0301 0x80030107 0x3010400 0x1070082 0x4008403 0x860301 0x88030107 0x3010700 0x107008a 0x4008c03 0xb20301 0xb4030107 0x3010700 0x10700b6 0x700b803 0xba0301 0xbc030107 0x3010700 0x400be 0x700ce00 0xd00301 0xd2010004 0x3010400 0x10700d4 0x700d603 0xd80301 0xda030107 0x3010700 0x10700e8 0x700ea03 0xec0301 0xee030107 0x3010700 0x10700f0 0x700f203 0xf40301 0xf6030107 0x3010700 0x10700f8 0x700fa03 0xfc0301 0xfe030107 0x3010700 0x1070100 0x7010203 0x1040301 0x6030107 0x3010701 0x1040108 0x4010a00 0x10c0000 0xe000100 0x10001 0x1000110 0x11200 0x1140001 0x16000004 0x10401 0x1070118 0x11a03 0x11c0001 0x1e000100 0x10001 0x1000120 0x12200 0x1240001 0x26000100 0x10001 0x1000128 0x12a00 0x12c0001 0x2e000100 0x10401 0x1070130 0x7013203 0x1480301 0x4a030100 0x3010001 0x100014c 0x14e03 0x1500301 0x52030102 0x10201 0x20154 0x2015600 0x1580301 0x5a000100 0x3010001 0x100015c 0x15e03 0x1600301 0x62030100 0x3010001 0x40164 0x5016600 0x1680001 0x6a010105 0x1010501 0x101018e 0x4019400 0x19c0301 0xc8030004 0x3010101 0x10101ca 0x101cc03 0x1ce0301 0xd0030101 0x1010401 0x401d2 0x701d403 0x1d60301 0xd8030100 0x1 0x264 0x1da00 0x1dc0101 0xde000000 0x3010401 0x401e2 0x205d800 0x5da0001 0xdc030102 0x3010705 0x10405de 0x405e000 0x5e20001 0xe4030102 0x3010205 0x10205e6 0x205e803 0x5ea0301 0xec000004 0x10405 0x405ee 0x5f000 0x5f20001 0xf4000100 0x10005 0x10005f6 0x405f800 0x1720000 0x80010105 0x1010501>;
+			padwkupsinit = [18 0a 04 00 00 1a 0a 04 01 00 14 0a 04 00 00 16 0a 00 01 03 24 0a 07 00 00 26 0a 01 00 00];
+			type = <0x30004>;
+		};
+
+		Keypad@0 {
+			class = "Keypad";
+			columnregister = <0x2b>;
+			columns = <0x1>;
+			mapnum = <0x2>;
+			maps = <0x730072>;
+			dev_name = "umts_jordan-keypad";
+			rowregister = <0x25 0x27>;
+			rows = <0x2>;
+			type = <0x1>;
+		};
+
+		LEDController@0 {
+			class = "LEDController";
+			dev_name = "button-backlight";
+			type = <0x210001>;
+		};
+
+		LEDController@1 {
+			class = "LEDController";
+			dev_name_blue = "blue";
+			dev_name_green = "green";
+			dev_name_red = "red";
+			type = <0x210005>;
+		};
+
+		SDHC@0 {
+			class = "SDHC";
+			type = <0x30008>;
+
+			SDHCSLOT@0 {
+				card_connect = <0x1>;
+				card_detection = <0x1>;
+				host_capability = <0x11>;
+				pwr_supply = <0x1>;
+			};
+
+			SDHCSLOT@1 {
+				card_connect = <0x2>;
+				card_detection = <0x0>;
+				host_capability = <0x111>;
+			};
+
+			SDHCSLOT@2 {
+				card_connect = <0x3>;
+				card_detection = <0x1>;
+				host_capability = <0x11>;
+				sdcnum = [03];
+			};
+		};
+
+		SPI@0 {
+			class = "SPI";
+			type = <0x30007>;
+
+			PowerIC@0 {
+				bus_num = [02 00];
+				class = "PowerIC";
+				regulator_init = <0x6 0x1b7740 0x1b7740 0x8 0x8010001 0x38000000 0x38001c9c 0x1001c9c 0x1000000 0xd0100 0x57d80000 0x57d8002a 0x9002a 0x10000 0xe01 0x2a57d800 0x2a57d800 0x900 0x1000100 0xf 0x2a57d8 0x2a57d8 0x9 0x12010001 0x40000000 0x20001b77 0x9002c40 0x0 0x130000 0x77400000 0x4020001b 0x9002c 0x0 0x500 0x2c402000 0x2c402000 0x800 0x1000100>;
+				regulator_mode = <0x6 0x80043 0x820000 0xd 0xe0024 0x10000 0xf 0x160023 0x140000 0xa 0x50013 0x820000>;
+				spiinit = <0x2e 0xdb04 0x36 0x4034 0x37 0x3434 0x9c 0x0>;
+				type = <0x30006>;
+			};
+		};
+
+		UART@0 {
+			class = "UART";
+			gps_port = <0x1>;
+			hw_flow_control = [40 c0 00];
+			type = <0x3000b>;
+		};
+
+		VideoOut@0 {
+			class = "VideoOut";
+			max_buffer_size = <0x1c3000>;
+			max_height = [d0 02];
+			max_width = [00 05];
+			type = <0xe>;
+		};
+	};
+};
