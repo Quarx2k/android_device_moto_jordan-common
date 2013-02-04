@@ -64,6 +64,8 @@ hwui.use.blacklist=true
 # CpuGovernorService (require ondemand cpu governor)
 dev.pm.dyn_samplingrate=1
 
+# Default usb config 
+persist.sys.usb.config=mass_storage,adb
 #=========================================================================================
 # Note about persist.xxx properties :
 #
