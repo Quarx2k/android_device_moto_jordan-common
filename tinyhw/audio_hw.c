@@ -2201,9 +2201,7 @@ static int adev_config_parse(struct m0_audio_device *adev)
     bool eof = false;
     int len;
 
-    property_get("ro.product.device", property, "tiny_hw");
-    snprintf(file, sizeof(file), "/system/etc/sound/%s", property);
-
+    snprintf(file, sizeof(file), "/system/etc/tiny_hw.xml");
     ALOGV("Reading configuration from %s\n", file);
     f = fopen(file, "r");
     if (!f) {
@@ -2346,7 +2344,7 @@ struct audio_module HAL_MODULE_INFO_SYM = {
         .module_api_version = AUDIO_MODULE_API_VERSION_0_1,
         .hal_api_version = HARDWARE_HAL_API_VERSION,
         .id = AUDIO_HARDWARE_MODULE_ID,
-        .name = "M0 audio HW HAL",
+        .name = "Mapphone audio HAL",
         .author = "The Android Open Source Project",
         .methods = &hal_module_methods,
     },
