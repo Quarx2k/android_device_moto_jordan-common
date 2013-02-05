@@ -499,15 +499,31 @@ static void select_output_device(struct m0_audio_device *adev)
 
     switch(adev->devices & AUDIO_DEVICE_OUT_ALL) {
         case AUDIO_DEVICE_OUT_SPEAKER:
+            headphone_on = 0-;
+            headset_on = 0;
+            speaker_on = 1;
+            earpiece_on = 0;
             ALOGD("%s: AUDIO_DEVICE_OUT_SPEAKER", __func__);
             break;
         case AUDIO_DEVICE_OUT_WIRED_HEADSET:
+            headphone_on = 0;
+            headset_on = 1;
+            speaker_on = 0;
+            earpiece_on = 0;
             ALOGD("%s: AUDIO_DEVICE_OUT_WIRED_HEADSET", __func__);
             break;
         case AUDIO_DEVICE_OUT_WIRED_HEADPHONE:
+            headphone_on = 1;
+            headset_on = 0;
+            speaker_on = 0;
+            earpiece_on = 0;
             ALOGD("%s: AUDIO_DEVICE_OUT_WIRED_HEADPHONE", __func__);
             break;
         case AUDIO_DEVICE_OUT_EARPIECE:
+            headphone_on = 0-;
+            headset_on = 0;
+            speaker_on = 0;
+            earpiece_on = 1;
             ALOGD("%s: AUDIO_DEVICE_OUT_EARPIECE", __func__);
             break;
         case AUDIO_DEVICE_OUT_ANLG_DOCK_HEADSET:
