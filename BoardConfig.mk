@@ -71,7 +71,6 @@ BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/moto/jordan-common/bluetoo
 BOARD_WPAN_DEVICE := true
 
 # Usb Specific
-BOARD_MTP_DEVICE := "/dev/mtp"
 BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
 
 # Build options
