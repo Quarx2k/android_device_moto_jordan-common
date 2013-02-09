@@ -38,7 +38,6 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/script/bootmode_clean.sh:system/bootmenu/script/bootmode_clean.sh \
 	${bm_device}/bootmenu/script/cdrom.sh:system/bootmenu/script/cdrom.sh \
 	${bm_device}/bootmenu/script/data.sh:system/bootmenu/script/data.sh \
-	${bm_device}/bootmenu/script/overclock.sh:system/bootmenu/script/overclock.sh \
 	${bm_device}/bootmenu/script/post_bootmenu.sh:system/bootmenu/script/post_bootmenu.sh \
 	${bm_device}/bootmenu/script/pre_bootmenu.sh:system/bootmenu/script/pre_bootmenu.sh \
 	${bm_device}/bootmenu/script/reboot_command.sh:system/bootmenu/script/reboot_command.sh \
@@ -48,6 +47,8 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/script/pdsbackup.sh:system/bootmenu/script/pdsbackup.sh \
 	${bm_device}/bootmenu/script/format_ext3.sh:system/bootmenu/script/format_ext3.sh \
 	${bm_device}/bootmenu/script/format_ext4.sh:system/bootmenu/script/format_ext4.sh \
+
+#	${bm_device}/bootmenu/script/overclock.sh:system/bootmenu/script/overclock.sh
 
 # prebuilt modules for stock kernel
 PRODUCT_COPY_FILES += \
