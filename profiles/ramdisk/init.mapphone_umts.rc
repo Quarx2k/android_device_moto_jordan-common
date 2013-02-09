@@ -9,10 +9,6 @@ on early-init
     symlink /storage/sdcard1 /sdcard
     symlink /storage/sdcard1 /mnt/sdcard
 
-    #Adb at boot
-    #write /dev/usb_device_mode charge_adb
-    #start adbd
-
 on fs
 
 # Mount mmc partitions
@@ -65,33 +61,16 @@ on post-fs
     chown system shell /tmp
 
 # Configure kernel options
-    # Enable automatic power control for EHCI USB IPC
-    #write /sys/devices/platform/ehci-omap.0/usb1/power/level auto
-    #write /sys/devices/platform/ehci-omap.0/usb1/power/autosuspend 0
-    #write /sys/devices/platform/ehci-omap.0/usb1/1-3/power/level auto
-    #write /sys/devices/platform/ehci-omap.0/usb1/1-3/power/autosuspend 0
     # Disable a system-wide task dump on OOM in default
-    #write /proc/sys/vm/oom_dump_tasks 0
-    #write /proc/sys/fs/suid_dumpable 2
+    write /proc/sys/fs/suid_dumpable 2
     # Power Management
-    #write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 300000
-    #write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/up_threshold 86
-    #write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/sampling_rate 46875
-    #write /sys/power/sr_vdd1_autocomp 1
-    #write /sys/power/sr_vdd2_autocomp 1
 # Change ownership for vibrators
     chown system system /sys/class/timed_output/vibrator/enable
-    chown system system /sys/class/timed_output/vibrator/sweep
     chmod 0660 /sys/class/timed_output/vibrator/enable
-    chmod 0660 /sys/class/timed_output/vibrator/sweep
 # bluetooth power up/down interface (wl127x Bluetooth and hci0)
     chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/type
     chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/state
     chmod 0660 /sys/class/rfkill/rfkill0/state
-
-# Tweaks
-    # DSS - disable tearing elimination
-    #write /sys/devices/omapdss/display0/tear_elim 0  
 
 on post-fs-data
 
@@ -166,11 +145,6 @@ on property:sys.chargeonly.mode=1
     start charge
     start battd
 
-#service usbd /system/bin/usbd
-#    class main
-#    user root
-#    socket usbd stream 666 root system
-
 #service bp-ptc /system/bin/bp_ptc
 #    class main
 #    user root
@@ -182,7 +156,7 @@ service uim /system/bin/uim-sysfs
     group media bluetooth
     oneshot
 
-service logs /system/bin/sh /system/s.sh
+service rgnd /system/bin/rngd -r /dev/hw_random
     class main
     oneshot
     user root
@@ -192,16 +166,16 @@ service charge /system/bin/charge_only_mode
     oneshot
     disabled
 
-#service nvm-daemon /system/bin/nvm_daemon
-#    class main
-#    user root
-#    group radio
+service nvm-daemon /system/bin/nvm_daemon
+    class main
+    user root
+    group radio
 
-#service start_commdrv /system/bin/sh /system/etc/motorola/comm_drv/commdrv_fs.sh
-#    class main
-#    oneshot
-#    user radio
-#    group radio system cache
+service start_commdrv /system/bin/sh /system/etc/motorola/comm_drv/commdrv_fs.sh
+    class main
+    oneshot
+    user radio
+    group radio system cache
 
 #service gkisystem /system/bin/gkisystem
 #    class main
