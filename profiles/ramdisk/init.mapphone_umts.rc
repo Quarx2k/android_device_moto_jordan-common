@@ -145,10 +145,10 @@ on property:sys.chargeonly.mode=1
     start charge
     start battd
 
-#service bp-ptc /system/bin/bp_ptc
-#    class main
-#    user root
-#    group root
+service bp-ptc /system/bin/bp_ptc
+    class main
+    user root
+    group root
 
 service uim /system/bin/uim-sysfs
     class core
@@ -177,13 +177,13 @@ service start_commdrv /system/bin/sh /system/etc/motorola/comm_drv/commdrv_fs.sh
     user radio
     group radio system cache
 
-#service gkisystem /system/bin/gkisystem
-#    class main
-#    socket location_shim stream 660 radio system
-#    socket gpshal_socket stream 660 radio system
-#    socket opprofdaemon stream 660 radio system
-#    group radio system
-#    oneshot
+service gkisystem /system/bin/gkisystem
+    class main
+    socket location_shim stream 660 radio system
+    socket gpshal_socket stream 660 radio system
+    socket opprofdaemon stream 660 radio system
+    group radio system
+    oneshot
 
 service battd /system/bin/battd
     class charger
@@ -192,10 +192,10 @@ service battd /system/bin/battd
     group system 9001
     oneshot
 
-#service ssmgrd /system/bin/ssmgrd
-#    class main
-#    group radio input system
-#    oneshot
+service ssmgrd /system/bin/ssmgrd
+    class main
+    group radio input system
+    oneshot
 
 # Ecompass daemon
 service akmd2 /system/bin/akmd2
@@ -260,10 +260,10 @@ service baseimage /system/bin/cexec.out /system/lib/dsp/baseimage.dof
     group media graphics
     oneshot
 
-#service locDrv /system/bin/brcm_guci_drv -config /system/etc/gpsconfig.xml
-#    class main
-#    user radio
-#    group radio inet sdcard_rw
+service locDrv /system/bin/brcm_guci_drv -config /system/etc/gpsconfig.xml
+    class main
+    user radio
+    group radio inet sdcard_rw
 
 service fmradio /system/bin/fmradioserver
     class main
