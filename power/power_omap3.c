@@ -18,6 +18,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <stdlib.h>
 
 #define LOG_TAG "OMAP3 PowerHAL"
 #include <utils/Log.h>
@@ -129,7 +130,7 @@ static void omap3_power_init(struct power_module *module)
         return;
     }
 
-    max_freq = freq_list[0];
+    max_freq = freq_list[freq_num - 1];
     tmp = (NOM_FREQ_INDEX > freq_num) ? freq_num : NOM_FREQ_INDEX;
     nom_freq = freq_list[tmp - 1];
 
