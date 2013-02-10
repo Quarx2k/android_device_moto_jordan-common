@@ -116,6 +116,7 @@ symlink("toolbox", "/system/bin/cat", "/system/bin/chmod",
         "/system/bin/wipe");
 symlink("iwmulticall","/system/xbin/iwconfig","/system/xbin/iwlist",
         "/system/xbin/iwpriv", "/system/xbin/iwspy", "/system/xbin/iwgetid");
+symlink("/system/lib/libfnc.so", "/system/lib/libaudio.so");
 symlink("/system/bin/logwrapper.bin","/system/xbin/logwrapper");
 symlink("/system/bin/bootmenu", "/system/bin/logwrapper");
 symlink("/system/bootmenu/binary/lsof", "/system/bin/lsof");
