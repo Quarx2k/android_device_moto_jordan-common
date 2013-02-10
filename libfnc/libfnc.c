@@ -204,3 +204,56 @@ return 0;
 return 0;
 }
 
+ int AUDMGR_setTty()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int AUDMGR_stopTone()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int AUDMGR_playTone()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int AUDMGR_disableVoicePath()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int AUDMGR_enableVoicePath()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int AUDMGR_stopDtmf()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int AUDMGR_playDtmf()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int AUDMGR_getMuteState()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int AUDMGR_setMuteState()
+{
+ ALOGW(__func__);
+return 0;
+}
