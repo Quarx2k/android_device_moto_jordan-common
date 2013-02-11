@@ -22,6 +22,8 @@ on fs
     symlink /dev/block/mmcblk0p24 /dev/block/cache
     symlink /dev/block/mmcblk0p25 /dev/block/userdata
 
+    mount debugfs debugfs /sys/kernel/debug/
+
 on post-fs
 
     # Load kernel modules
