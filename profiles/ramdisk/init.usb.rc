@@ -97,3 +97,6 @@ on property:sys.usb.config=rndis,adb
 # when changing the default configuration
 on property:persist.sys.usb.config=*
     setprop sys.usb.config ${persist.sys.usb.config}
+
+on property:service.adb.root=*
+    setprop sys.usb.config ${persist.sys.usb.config}
