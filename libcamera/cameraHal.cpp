@@ -41,6 +41,7 @@
 #include <hardware/gralloc.h>
 #include <utils/Errors.h>
 #include <vector>
+#include <fcntl.h>
 
 using namespace std;
 
