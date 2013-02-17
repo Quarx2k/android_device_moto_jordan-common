@@ -55,6 +55,7 @@ PRODUCT_COPY_FILES += \
 	$(device_path)/prebuilt/etc/location.cfg:system/etc/location.cfg \
 	$(device_path)/prebuilt/etc/media_codecs.xml:system/etc/media_codecs.xml \
 	$(device_path)/prebuilt/etc/audio_policy.conf:system/etc/audio_policy.conf \
+	$(device_path)/prebuilt/bin/rngd:system/bin/rngd \
 
 # New CM9 backup list system (addon.d)
 PRODUCT_COPY_FILES += \
