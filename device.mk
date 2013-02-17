@@ -72,7 +72,8 @@ PRODUCT_PACKAGES += \
 	libaudioutils audio.a2dp.default  \
 	libaudiohw_legacy \
 
-#PRODUCT_PACKAGES += power.omap3
+# TO FIX for ICS
+PRODUCT_PACKAGES += power.omap3
 
 # Wifi packages
 PRODUCT_PACKAGES += iwmulticall hostap wlan_loader wlan_cu wpa_supplicant
