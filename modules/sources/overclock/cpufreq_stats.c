@@ -22,6 +22,7 @@
 #include <asm/cputime.h>
 
 static spinlock_t cpufreq_stats_lock;
+static int cpufreq_stats_freq_update(unsigned int cpu, int index, unsigned int freq);
 
 #define CPUFREQ_STATDEVICE_ATTR(_name, _mode, _show) \
 static struct freq_attr _attr_##_name = {\

@@ -85,8 +85,9 @@ param_safe()
 
 get_address()
 {
+  insmod $MODULE_DIR/cpufreq_stats.ko
   cpufreq_table=`grep -e omap2_clk_init_cpufreq_table /proc/kallsyms | sed -e "s/\([0-9A-Fa-f]\{8\}\).*/\1/"`
-  stats_update=`grep -e cpufreq_stats_update$ /proc/kallsyms | sed -e "s/\([0-9A-Fa-f]\{8\}\).*/\1/"`
+  stats_update=`grep -e cpufreq_stats_freq_update /proc/kallsyms | sed -e "s/\([0-9A-Fa-f]\{8\}\).*/\1/"`
 }
 
 #############################################################
