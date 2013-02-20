@@ -80,9 +80,9 @@ fi
 mkdir -p /cache/bootmenu
 
 # load ondemand safe settings to reduce heat and battery use
-if [ -x /system/bootmenu/script/overclock.sh ]; then
-    /system/bootmenu/script/overclock.sh safe
-fi
+#if [ -x /system/bootmenu/script/overclock.sh ]; then
+#    /system/bootmenu/script/overclock.sh safe
+#fi
 
 # must be restored in stock.sh
 if [ -L /tmp ]; then
