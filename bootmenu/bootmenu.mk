@@ -47,8 +47,7 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/script/pdsbackup.sh:system/bootmenu/script/pdsbackup.sh \
 	${bm_device}/bootmenu/script/format_ext3.sh:system/bootmenu/script/format_ext3.sh \
 	${bm_device}/bootmenu/script/format_ext4.sh:system/bootmenu/script/format_ext4.sh \
-
-#	${bm_device}/bootmenu/script/overclock.sh:system/bootmenu/script/overclock.sh
+	${bm_device}/bootmenu/script/overclock.sh:system/bootmenu/script/overclock.sh
 
 # prebuilt modules for stock kernel
 PRODUCT_COPY_FILES += \
