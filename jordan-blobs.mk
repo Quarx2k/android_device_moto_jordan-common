@@ -60,7 +60,10 @@ PRODUCT_COPY_FILES += \
     $(device_path)/prebuilt/etc/firmware/wl128x-fw-4-plt.bin:system/etc/firmware/ti-connectivity/wl128x-fw-4-plt.bin \
     $(device_path)/prebuilt/etc/firmware/wl128x-fw-4-sr.bin:system/etc/firmware/ti-connectivity/wl128x-fw-4-sr.bin \
     $(device_path)/prebuilt/etc/firmware/wl1271-nvs.bin:system/etc/firmware/ti-connectivity/wl1271-nvs.bin \
-    $(device_path)/prebuilt/etc/firmware/TIInit_7.2.31.bts:system/etc/firmware/TIInit_7.2.31.bts
+    $(device_path)/prebuilt/etc/firmware/TIInit_7.2.31.bts:system/etc/firmware/TIInit_7.2.31.bts \
+    $(device_path)/prebuilt/etc/firmware/TIInit_7.2.31.bts:system/etc/firmware/fm_tx_ch8_1273.2.bts \
+    $(device_path)/prebuilt/etc/firmware/TIInit_7.2.31.bts:system/etc/firmware/fm_rx_ch8_1273.2.bts \
+    $(device_path)/prebuilt/etc/firmware/TIInit_7.2.31.bts:system/etc/firmware/fmc_ch8_1273.2.bts
 
 # New CM9 backup list system (addon.d)
 PRODUCT_COPY_FILES += \
