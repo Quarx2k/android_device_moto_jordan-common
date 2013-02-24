@@ -168,7 +168,7 @@ hboot:
 # If kernel sources are present in repo, here is the location
 TARGET_KERNEL_SOURCE := $(ANDROID_BUILD_TOP)/jordan-kernel
 TARGET_KERNEL_CONFIG  := mapphone_defconfig
-BOARD_KERNEL_CMDLINE := console=/dev/null mem=498M omapfb.vram=0:6M
+BOARD_KERNEL_CMDLINE := console=/dev/null mem=500M omapfb.vram=0:6M
 #TARGET_PREBUILT_KERNEL := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/kernel
 # Extra : external modules sources
 TARGET_KERNEL_MODULES_EXT := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/modules/sources/
