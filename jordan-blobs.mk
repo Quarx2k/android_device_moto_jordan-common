@@ -37,7 +37,7 @@ PRODUCT_COPY_FILES += \
 
 # scripts
 PRODUCT_COPY_FILES += \
-	${DEVICE_PREBUILT}/bin/handle_bp_panic.sh:system/bin/handle_bp_panic.sh \
+	${device_path}/prebuilt/bin/handle_bp_panic.sh:system/bin/handle_bp_panic.sh \
 
 PRODUCT_COPY_FILES += \
 	${device_path}/prebuilt/etc/vold.fstab:system/etc/vold.fstab \
