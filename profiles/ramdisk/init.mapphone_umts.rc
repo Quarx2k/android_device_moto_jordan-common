@@ -199,11 +199,6 @@ service charge /system/bin/charge_only_mode
     oneshot
     disabled
 
-service rgnd /system/bin/rngd -r /dev/hw_random
-    class main
-    oneshot
-    user root
-
 service nvm-daemon /system/bin/nvm_daemon
     class main
     user root
