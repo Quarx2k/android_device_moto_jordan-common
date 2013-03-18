@@ -239,12 +239,14 @@ service hciattach /system/bin/hciattach -n -t 10 /dev/ttyS1 texasalt 3000000 flo
 
 # Phone modem error handling
 service panic_daemon /system/bin/panic_daemon
+    class main
     user radio
     group radio system graphics sdcard_rw
     socket panic_daemon stream 660 radio radio
     onrestart exec /system/bin/handle_bp_panic.sh
 
 service secclkd /system/bin/secclkd
+    class main
     user system
     group system radio
     oneshot
