@@ -40,7 +40,6 @@ on post-fs
 
 # Load wifi drivers (all except wl12xx_sdio)
     insmod /system/lib/modules/compat.ko
-    insmod /system/lib/modules/compat_firmware_class.ko
     insmod /system/lib/modules/cfg80211.ko
     insmod /system/lib/modules/mac80211.ko
     insmod /system/lib/modules/wl12xx.ko
