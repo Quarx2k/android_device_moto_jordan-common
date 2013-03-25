@@ -75,11 +75,6 @@ PRODUCT_PACKAGES += \
 # TO FIX for ICS
 PRODUCT_PACKAGES += power.omap3
 
-# Wifi packages
-PRODUCT_PACKAGES += iwmulticall hostap wlan_loader wlan_cu wpa_supplicant
-PRODUCT_PACKAGES += libhostapdcli libCustomWifi libwpa_client libtiOsLib
-PRODUCT_PACKAGES += tiap_loader tiap_cu ndc hostapd.conf
-
 # OMX stuff
 PRODUCT_PACKAGES += dspexec libbridge libLCML libOMX_Core
 PRODUCT_PACKAGES += libOMX.TI.AAC.encode libOMX.TI.AAC.decode libOMX.TI.AMR.decode libOMX.TI.AMR.encode
