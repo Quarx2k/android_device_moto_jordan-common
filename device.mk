@@ -109,8 +109,7 @@ PRODUCT_PACKAGES += \
     TQS_D_1.7_127x.ini \
     crda \
     regulatory.bin \
-    calibrator \
-    mknvs
+    calibrator 
 
 # Wifi Direct and WPAN
 PRODUCT_PACKAGES += \
