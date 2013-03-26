@@ -90,6 +90,7 @@
 /dev/tcmd_driver          0660   root       system
 # bluetooth dun
 /dev/rfcomm0              0600   system     system
+/dev/hci_tty              0666   bluetooth  bluetooth
 
 /dev/graphics/fb0         0660   media      graphics
 

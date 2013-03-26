@@ -42,7 +42,7 @@ TARGET_ARCH_VARIANT_CPU := cortex-a8
 TARGET_ARCH_VARIANT_FPU := neon
 TARGET_OMAP3 := true
 ARCH_ARM_HAVE_TLS_REGISTER := true
-COMMON_GLOBAL_CFLAGS += -DTARGET_OMAP3 -DOMAP_COMPAT -DBINDER_COMPAT
+COMMON_GLOBAL_CFLAGS += -DTARGET_OMAP3 -DOMAP_COMPAT -DBINDER_COMPAT -DUSES_AUDIO_LEGACY
 TARGET_GLOBAL_CFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 
@@ -66,6 +66,7 @@ BOARD_HOSTAPD_TIAP_ROOT     := system/wlan/ti/WiLink_AP
 BOARD_HAVE_BLUETOOTH := true
 TARGET_CUSTOM_BLUEDROID := ../../../device/moto/jordan-common/bluedroid.c
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/moto/jordan-common/bluetooth
+BOARD_WPAN_DEVICE := true
 # Usb Specific
 BOARD_MASS_STORAGE_FILE_PATH := "/sys/devices/platform/usb_mass_storage/lun0/file"
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/usb_mass_storage/lun0/file"
@@ -126,7 +127,6 @@ BOARD_USE_KINETO_COMPATIBILITY := true
 TARGET_BOOTANIMATION_USE_RGB565 := true
 BOARD_USE_HARDCODED_FAST_TRACK_LATENCY_WHEN_DENIED := 160
 BOARD_USES_LEGACY_RIL :=true
-
 # adb root
 ADDITIONAL_DEFAULT_PROPERTIES += ro.adb.secure=0
 ADDITIONAL_DEFAULT_PROPERTIES += ro.secure=0

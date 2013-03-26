@@ -98,8 +98,8 @@ on post-fs
     chmod 0660 /sys/class/timed_output/vibrator/enable
     chmod 0660 /sys/class/timed_output/vibrator/sweep
 # bluetooth power up/down interface (wl127x Bluetooth and hci0)
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
+    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/type
+    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/state
     chmod 0660 /sys/class/rfkill/rfkill0/state
 
 # Tweaks
@@ -210,6 +210,12 @@ service bp-ptc /system/bin/bp_ptc
     class main
     user root
     group root
+
+service uim /system/bin/uim-sysfs
+    class core
+    user root
+    group media bluetooth
+    oneshot
 
 service charge /system/bin/charge_only_mode
     group root
