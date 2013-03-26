@@ -20,7 +20,7 @@ on fs
 # Mount mmc partitions
     mkdir /pds 0775 system system
 
-    mount ext3 /dev/block/mmcblk1p21 /system ro nodiratime nodev noatime nodiratime barrier=0
+    mount ext3 /dev/block/mmcblk1p21 /system
     mount ext4 /dev/block/mmcblk1p24 /cache wait noatime nodiratime nodev nobh data=writeback noauto_da_alloc barrier=0
     mount ext4 /dev/block/mmcblk1p25 /data wait noatime nodiratime nodev nobh data=writeback noauto_da_alloc barrier=0
     exec /system/bootmenu/script/pdsbackup.sh
@@ -28,6 +28,9 @@ on fs
     symlink /dev/block/mmcblk1p21 /dev/block/system
     symlink /dev/block/mmcblk1p24 /dev/block/cache
     symlink /dev/block/mmcblk1p25 /dev/block/userdata
+
+
+    mount ext3 /dev/block/mmcblk1p21 /system ro remount
 
 on post-fs
 
@@ -263,12 +266,19 @@ service akmd2 /system/bin/akmd2
     user compass
     group compass misc input
 
+# Wifi calibrate
+service wifi_calibrator /system/bin/sh /system/bin/wifical.sh
+    class main
+    group wifi
+    oneshot
+
 # Wifi services
 service dnsmasq /system/bin/dnsmasq -C/data/misc/wifi/dns.conf -k
     class main
     group wifi
     disabled
     oneshot
+
 service p2p_supplicant /system/bin/wpa_supplicant \
     -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf -N \
     -ip2p0 -Dnl80211 -c/data/misc/wifi/p2p_supplicant.conf -puse_p2p_group_interface=1

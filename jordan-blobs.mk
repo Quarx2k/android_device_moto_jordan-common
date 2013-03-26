@@ -38,6 +38,7 @@ PRODUCT_COPY_FILES += \
 # scripts
 PRODUCT_COPY_FILES += \
 	${device_path}/prebuilt/bin/handle_bp_panic.sh:system/bin/handle_bp_panic.sh \
+	${device_path}/prebuilt/bin/wifical.sh:system/bin/wifical.sh \
 
 PRODUCT_COPY_FILES += \
 	${device_path}/prebuilt/etc/vold.fstab:system/etc/vold.fstab \
