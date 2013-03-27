@@ -46,30 +46,19 @@ TARGET_GLOBAL_CFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 
 # Wifi related defines
-BOARD_WLAN_DEVICE           := wl1271
-WPA_SUPPLICANT_VERSION      := VER_0_6_X
-BOARD_WPA_SUPPLICANT_DRIVER := CUSTOM
-WIFI_DRIVER_MODULE_PATH     := "/system/lib/modules/tiwlan_drv.ko"
-WIFI_DRIVER_MODULE_NAME     := tiwlan_drv
-WIFI_DRIVER_FW_STA_PATH     := "/system/etc/wifi/fw_wlan1271.bin"
-WIFI_FIRMWARE_LOADER        := wlan_loader
-PRODUCT_WIRELESS_TOOLS      := true
-BOARD_SOFTAP_DEVICE         := wl1271
-AP_CONFIG_DRIVER_WILINK     := true
-AP_CONFIG_IEEE80211N        := true
-WIFI_DRIVER_FW_AP_PATH      := "/system/etc/wifi/fw_tiwlan_ap.bin"
-WPA_SUPPL_APPROX_USE_RSSI   := true
-WPA_SUPPL_WITH_SIGNAL_POLL  := false
-USES_TI_MAC80211            := true
-# CM9
-WIFI_DRIVER_LOADER_DELAY    := 200000
-WIFI_AP_DRIVER_MODULE_PATH  := "/system/lib/modules/tiap_drv.ko"
-WIFI_AP_DRIVER_MODULE_NAME  := tiap_drv
-WIFI_AP_FIRMWARE_LOADER     := wlan_ap_loader
-WIFI_AP_DRIVER_MODULE_ARG   := ""
-BOARD_HOSTAPD_NO_ENTROPY    := true
-BOARD_HOSTAPD_DRIVER        := true
-BOARD_HOSTAPD_DRIVER_NAME   := wilink
+USES_TI_MAC80211 := true
+WPA_SUPPLICANT_VERSION           := VER_0_8_X_TI
+BOARD_WPA_SUPPLICANT_DRIVER      := NL80211
+BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_wl12xx
+BOARD_HOSTAPD_DRIVER             := NL80211
+BOARD_HOSTAPD_PRIVATE_LIB        := lib_driver_cmd_wl12xx
+PRODUCT_WIRELESS_TOOLS           := true
+BOARD_WLAN_DEVICE                := wl12xx_mac80211
+BOARD_SOFTAP_DEVICE              := wl12xx_mac80211
+WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/wl12xx_sdio.ko"
+WIFI_DRIVER_MODULE_NAME          := "wl12xx_sdio"
+WIFI_FIRMWARE_LOADER             := ""
+COMMON_GLOBAL_CFLAGS += -DUSES_TI_MAC80211
 BOARD_HOSTAPD_TIAP_ROOT     := system/wlan/ti/WiLink_AP
 
 # Bluetooth
@@ -134,10 +123,7 @@ BOARD_USES_AUDIO_LEGACY := true
 TARGET_PROVIDES_LIBAUDIO := true
 BOARD_USE_KINETO_COMPATIBILITY := true
 TARGET_BOOTANIMATION_USE_RGB565 := true
-
-##### Kernel stuff #####
-TARGET_MODULES_WIFI_SOURCE := "system/wlan/ti/wilink_6_1/platforms/os/linux/"
-TARGET_MODULES_AP_SOURCE := "system/wlan/ti/WiLink_AP/platforms/os/linux/"
+BOARD_USE_HARDCODED_FAST_TRACK_LATENCY_WHEN_DENIED := 160
 
 API_MAKE := \
 	make PREFIX=$(ANDROID_BUILD_TOP)/$(TARGET_OUT_INTERMEDIATES)/kernel_intermediates/build \
@@ -150,13 +136,16 @@ ext_modules:
 	$(API_MAKE) -C $(TARGET_KERNEL_MODULES_EXT) modules
 	find $(TARGET_KERNEL_MODULES_EXT)/ -name "*.ko" -exec mv {} \
 		$(KERNEL_MODULES_OUT) \; || true
-	$(API_MAKE) clean -C $(TARGET_MODULES_WIFI_SOURCE)
-	$(API_MAKE) clean -C $(TARGET_MODULES_AP_SOURCE)
-	$(API_MAKE) -C $(TARGET_MODULES_WIFI_SOURCE) HOST_PLATFORM=zoom2 KERNEL_DIR=$(KERNEL_OUT)
-	$(API_MAKE) -C $(TARGET_MODULES_AP_SOURCE) HOST_PLATFORM=zoom2 KERNEL_DIR=$(KERNEL_OUT)
-	mv $(TARGET_MODULES_WIFI_SOURCE)/tiwlan_drv.ko $(KERNEL_MODULES_OUT)
-	mv $(TARGET_MODULES_AP_SOURCE)/tiap_drv.ko $(KERNEL_MODULES_OUT)
 	arm-linux-androideabi-strip --strip-unneeded $(KERNEL_MODULES_OUT)/*
+
+WLAN_MODULES:
+	make clean -C hardware/ti/wlan/mac80211/compat_wl12xx
+	make -C hardware/ti/wlan/mac80211/compat_wl12xx KERNEL_DIR=$(KERNEL_OUT) KLIB=$(KERNEL_OUT) KLIB_BUILD=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE="arm-eabi-"
+	mv hardware/ti/wlan/mac80211/compat_wl12xx/compat/compat.ko $(KERNEL_MODULES_OUT)
+	mv hardware/ti/wlan/mac80211/compat_wl12xx/net/mac80211/mac80211.ko $(KERNEL_MODULES_OUT)
+	mv hardware/ti/wlan/mac80211/compat_wl12xx/net/wireless/cfg80211.ko $(KERNEL_MODULES_OUT)
+	mv hardware/ti/wlan/mac80211/compat_wl12xx/drivers/net/wireless/wl12xx/wl12xx.ko $(KERNEL_MODULES_OUT)
+	mv hardware/ti/wlan/mac80211/compat_wl12xx/drivers/net/wireless/wl12xx/wl12xx_sdio.ko $(KERNEL_MODULES_OUT)
 
 hboot:
 	mkdir -p $(PRODUCT_OUT)/system/bootmenu/2nd-boot   
@@ -173,5 +162,5 @@ BOARD_KERNEL_CMDLINE := console=/dev/null mem=498M init=/init ip=off brdrev=P3A 
 #TARGET_PREBUILT_KERNEL := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/kernel
 # Extra : external modules sources
 TARGET_KERNEL_MODULES_EXT := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/modules/sources/
-TARGET_KERNEL_MODULES := ext_modules hboot
+TARGET_KERNEL_MODULES := ext_modules hboot WLAN_MODULES
 

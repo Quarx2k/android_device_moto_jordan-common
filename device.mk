@@ -55,6 +55,7 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
 	frameworks/native/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
 	frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
+	frameworks/native/data/etc/android.hardware.wifi.direct.xml:system/etc/permissions/android.hardware.wifi.direct.xml \
 	frameworks/native/data/etc/android.hardware.sensor.accelerometer.xml:system/etc/permissions/android.hardware.sensor.accelerometer.xml \
 	frameworks/native/data/etc/android.hardware.sensor.compass.xml:system/etc/permissions/android.hardware.sensor.compass.xml \
 	frameworks/native/data/etc/android.hardware.sensor.light.xml:system/etc/permissions/android.hardware.sensor.light.xml \
@@ -74,11 +75,6 @@ PRODUCT_PACKAGES += \
 
 # TO FIX for ICS
 PRODUCT_PACKAGES += power.omap3
-
-# Wifi packages
-PRODUCT_PACKAGES += iwmulticall hostap wlan_loader wlan_cu wpa_supplicant
-PRODUCT_PACKAGES += libhostapdcli libCustomWifi libwpa_client libtiOsLib
-PRODUCT_PACKAGES += tiap_loader tiap_cu ndc hostapd.conf
 
 # OMX stuff
 PRODUCT_PACKAGES += dspexec libbridge libLCML libOMX_Core
@@ -101,6 +97,25 @@ PRODUCT_PACKAGES += Torch HwaSettings make_ext4fs
 
 # Experimental TI OpenLink
 PRODUCT_PACKAGES += libnl_2 iw
+
+# Wifi
+PRODUCT_PACKAGES += \
+    lib_driver_cmd_wl12xx \
+    dhcpcd.conf \
+    hostapd.conf \
+    wifical.sh \
+    wpa_supplicant.conf \
+    TQS_D_1.7.ini \
+    TQS_D_1.7_127x.ini \
+    crda \
+    regulatory.bin \
+    calibrator 
+
+# Wifi Direct and WPAN
+PRODUCT_PACKAGES += \
+    ti_wfd_libs \
+    ti-wpan-fw
+
 
 # Blobs and bootmenu stuff
 $(call inherit-product, device/moto/jordan-common/jordan-blobs.mk)
