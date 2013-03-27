@@ -124,6 +124,11 @@ on post-fs-data
     chown root system /data/tmp/battd
     chown system nobody /data/local/hwui.deny
 
+    # Allow system to have access to /dev/tun directory
+    mkdir /dev/tun 0770 system vpn
+    chown system vpn /dev/tun
+    chmod 0770 /dev/tun
+
     chmod 0775 /pds/public
     chmod 0770 /data/bp_nvm
     chmod 0770 /pds/bp_nvm
