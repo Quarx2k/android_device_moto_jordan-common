@@ -17,5 +17,5 @@
 <!-- Phone app resources that may need to be customized
      for different hardware or product builds. -->
 <resources>
- <!--   <string name="voice_quality_param">motoVoiceQualityConfig</string> -->
+   <string name="voice_quality_param">motoVoiceQualityConfig</string>
 </resources>
