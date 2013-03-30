@@ -433,11 +433,11 @@ def WriteFullOTAPackage(input_zip, output_zip):
 
 # Bootmenu
   script.SetPermissionsRecursive("/system/etc/init.d", 0, 0, 0755, 0555)
-  script.SetPermissionsRecursive("/system/addon.d", 0, 2000, 0755, 0664)
-  script.SetPermissionsRecursive("/system/bootmenu/config/", 0, 2000, 0755, 0664)
-  script.SetPermissionsRecursive("/system/bootmenu/binary/", 0, 2000, 0755, 0755)
-  script.SetPermissionsRecursive("/system/bootmenu/script/", 0, 2000, 0755, 0755)
-  script.SetPermissionsRecursive("/system/bootmenu/recovery/sbin/", 0, 2000, 0755, 0755)
+  script.SetPermissionsRecursive("/system/addon.d", 0, 0, 0755, 0755)
+  script.SetPermissionsRecursive("/system/bootmenu/config", 0, 0, 0755, 0664)
+  script.SetPermissionsRecursive("/system/bootmenu/binary", 0, 0, 0755, 0755)
+  script.SetPermissionsRecursive("/system/bootmenu/script", 0, 0, 0755, 0755)
+  script.SetPermissionsRecursive("/system/bootmenu/recovery/sbin", 0, 0, 0755, 0755)
   script.SetPermissions("/system/etc/motorola/comm_drv/commdrv_fs.sh", 0, 0, 0755)
   script.UnpackPackageDir("system/bin/bootmenu", "/system/bootmenu/binary/bootmenu")
   script.MakeSymlink("/system/bin/bootmenu", "/system/bin/logwrapper")
@@ -447,7 +447,8 @@ def WriteFullOTAPackage(input_zip, output_zip):
   script.MakeSymlink("indeterminate.png", "/system/bootmenu/images/indeterminate4.png")
   script.MakeSymlink("indeterminate.png", "/system/bootmenu/images/indeterminate5.png")
   script.MakeSymlink("indeterminate.png", "/system/bootmenu/images/indeterminate6.png")
- 
+# libaudio link fix
+  script.MakeSymlink("/system/lib/hw/audio.a2dp.default.so", "/system/lib/liba2dp.so")
   script.ShowProgress(0.2, 0)
 
   if OPTIONS.backuptool:
