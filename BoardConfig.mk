@@ -135,12 +135,9 @@ BOARD_USES_LEGACY_RIL := true
 BOARD_NEEDS_CUTILS_LOG := true
 TARGET_USE_CUSTOM_SECOND_LUN_NUM := 1
 
-API_MAKE := \
-	make PREFIX=$(ANDROID_BUILD_TOP)/$(TARGET_OUT_INTERMEDIATES)/kernel_intermediates/build \
-	ARCH=arm \
-	CROSS_COMPILE=$(ANDROID_BUILD_TOP)/prebuilt/$(HOST_PREBUILT_TAG)/toolchain/arm-eabi-4.5.4-linaro/bin/arm-eabi- \
-	HOST_PLATFORM=zoom2 \
-	KERNEL_DIR=$(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ \
+# Release tool
+TARGET_PROVIDES_RELEASETOOLS := true
+TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := device/moto/jordan-common/releasetools/common_ota_from_target_files
 
 ext_modules:
 	$(API_MAKE) -C $(TARGET_KERNEL_MODULES_EXT) modules

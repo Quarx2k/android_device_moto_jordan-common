@@ -151,6 +151,9 @@ PRODUCT_PACKAGES += \
     ti_wfd_libs \
     ti-wpan-fw
 
+PRODUCT_COPY_FILES += \
+    $(OUT)/ramdisk.img:system/bootmenu/2nd-boot/ramdisk \
+    $(OUT)/kernel:system/bootmenu/2nd-boot/zImage \
 
 # Blobs and bootmenu stuff
 $(call inherit-product, device/moto/jordan-common/jordan-blobs.mk)
