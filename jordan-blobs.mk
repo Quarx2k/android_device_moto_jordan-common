@@ -42,7 +42,6 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_COPY_FILES += \
 	${device_path}/prebuilt/etc/vold.fstab:system/etc/vold.fstab \
-	${device_path}/prebuilt/etc/media_profiles.xml:system/etc/media_profiles.xml \
 	$(device_path)/prebuilt/etc/init.d/01sysctl:system/etc/init.d/01sysctl \
 	$(device_path)/prebuilt/etc/init.d/02baseband:system/etc/init.d/02baseband \
 	$(device_path)/prebuilt/etc/init.d/05mountsd:system/etc/init.d/05mountsd \
