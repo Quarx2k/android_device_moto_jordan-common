@@ -1,21 +1,15 @@
-on early-init
-# create mountpoints
-    mkdir /storage 0775 root system
-    mkdir /mnt/shell/sdcard 0700 shell shell
-    mkdir /storage/sdcard 0555 root root
 
-    export EXTERNAL_STORAGE /storage/sdcard/
-
-    # Support legacy paths
-    symlink /storage/sdcard/ /sdcard
-    symlink /storage/sdcard/ /mnt/sdcard
-    symlink /storage/sdcard/ /storage/sdcard0
 
 on init 
 
     # change order or library location search
     export LD_LIBRARY_PATH /system/lib
     export DSP_PATH /system/lib/dsp
+    export EXTERNAL_STORAGE /storage/sdcard0
+
+    mkdir /storage/sdcard0 0000 system system
+    symlink /storage/sdcard0 /sdcard
+    symlink /storage/sdcard0 /mnt/sdcard
 
     #Adb at boot
     #write /dev/usb_device_mode charge_adb
@@ -36,7 +30,6 @@ on fs
     symlink /dev/block/mmcblk1p21 /dev/block/system
     symlink /dev/block/mmcblk1p24 /dev/block/cache
     symlink /dev/block/mmcblk1p25 /dev/block/userdata
-
 
     mount ext3 /dev/block/mmcblk1p21 /system ro remount
 
