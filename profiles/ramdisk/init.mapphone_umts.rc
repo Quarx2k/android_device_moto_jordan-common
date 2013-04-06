@@ -3,11 +3,11 @@ on early-init
     # change order or library location search
     export LD_LIBRARY_PATH /system/lib
     export DSP_PATH /system/lib/dsp
-    export EXTERNAL_STORAGE /storage/sdcard1
-    mkdir /storage 0777 root sdcard_rw
-    mkdir /storage/sdcard1 0777 system system
-    symlink /storage/sdcard1 /sdcard
-    symlink /storage/sdcard1 /mnt/sdcard
+    export EXTERNAL_STORAGE /storage/sdcard0
+
+    mkdir /storage/sdcard0 0000 system system
+    symlink /storage/sdcard0 /sdcard
+    symlink /storage/sdcard0 /mnt/sdcard
 
 on fs
 
