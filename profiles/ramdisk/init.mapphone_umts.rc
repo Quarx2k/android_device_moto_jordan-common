@@ -162,11 +162,6 @@ service uim /system/bin/uim-sysfs
     group media bluetooth
     oneshot
 
-service rgnd /system/bin/rngd -r /dev/hw_random
-    class main
-    oneshot
-    user root
-
 service charge /system/bin/charge_only_mode
     group root
     oneshot
