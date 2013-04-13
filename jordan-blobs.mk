@@ -55,11 +55,12 @@ PRODUCT_COPY_FILES += \
 	$(device_path)/prebuilt/etc/media_codecs.xml:system/etc/media_codecs.xml \
 	$(device_path)/prebuilt/etc/audio_policy.conf:system/etc/audio_policy.conf \
 
-# WLAN firmware
+# WLAN/WPAN firmware
 PRODUCT_COPY_FILES += \
     $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-4-mr.bin:system/etc/firmware/ti-connectivity/wl127x-fw-4-mr.bin \
     $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-4-plt.bin:system/etc/firmware/ti-connectivity/wl127x-fw-4-plt.bin \
     $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-4-sr.bin:system/etc/firmware/ti-connectivity/wl127x-fw-4-sr.bin \
+    $(device_path)/prebuilt/etc/firmware/TIInit_7.2.31.bts:system/etc/firmware/TIInit_7.2.31.bts \
 
 
 # New CM9 backup list system (addon.d)
