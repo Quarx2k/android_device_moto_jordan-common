@@ -23,7 +23,7 @@ struct buffer_handle buffers_list[IMG_LAST_TAG+1] =
 	{
 		.dest = RAMDISK_DEST,
 		.name = "initrd",
-		.maxsize = 1*1024*1024,
+		.maxsize = 3*1024*1024,
 	},
 	[IMG_DEVTREE] = 
 	{
