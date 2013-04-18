@@ -261,9 +261,9 @@
 
     <!-- Boolean indicating if current platform supports quick switch-on/off of
          Bluetooth Module 
-    <bool name="config_bluetooth_adapter_quick_switch">false</bool> 
+    <bool name="config_bluetooth_adapter_quick_switch">false</bool> --> 
 
-    <bool name="config_fmSeparateVolumeControl">true</bool> --> 
+    <bool name="config_fmSeparateVolumeControl">false</bool> 
 
     <string-array name="config_locationProviderPackageNames" translatable="false">
         <!-- The standard AOSP fused location provider -->
