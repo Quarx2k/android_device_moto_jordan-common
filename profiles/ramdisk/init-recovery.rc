@@ -27,6 +27,9 @@ on init
     chown root system /data/tmp/battd
     chmod 0770 /data/tmp/battd
 
+    write /sys/power/sr_vdd1_autocomp 1
+    write /sys/power/sr_vdd2_autocomp 1
+
 on boot
 
     ifup lo
