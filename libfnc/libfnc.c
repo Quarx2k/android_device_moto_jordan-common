@@ -257,3 +257,33 @@ return 0;
  ALOGW(__func__);
 return 0;
 }
+
+ int a2dp_sink_address()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int a2dp_write()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int a2dp_init()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int a2dp_stop()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int a2dp_cleanup()
+{
+ ALOGW(__func__);
+return 0;
+}
