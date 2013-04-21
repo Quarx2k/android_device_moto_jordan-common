@@ -264,6 +264,12 @@ return 0;
 return 0;
 }
 
+ int a2dp_set_sink()
+{
+ ALOGW(__func__);
+return 0;
+}
+
  int a2dp_write()
 {
  ALOGW(__func__);
