@@ -122,6 +122,10 @@ TW_ALWAYS_RMRF := true
 TARGET_RECOVERY_PRE_COMMAND := "/system/bootmenu/script/reboot_command.sh"
 TARGET_RECOVERY_PRE_COMMAND_CLEAR_REASON := true
 
+# Release tool
+TARGET_PROVIDES_RELEASETOOLS := true
+TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := device/moto/jordan-common/releasetools/common_ota_from_target_files
+
 # Egl Specific
 USE_OPENGL_RENDERER := true
 BOARD_EGL_CFG := device/moto/jordan-common/egl.cfg
