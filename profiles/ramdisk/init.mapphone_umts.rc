@@ -198,11 +198,6 @@ on property:sys.chargeonly.mode=1
     start charge
     start battd
 
-service usbd /system/bin/usbd
-    class main
-    user root
-    socket usbd stream 666 root system
-
 service bp-ptc /system/bin/bp_ptc
     class main
     user root
