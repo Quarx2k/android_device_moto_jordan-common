@@ -91,7 +91,7 @@
          USB interfaces.  If the device doesn't want to support tething over USB this should
          be empty.  An example would be "usb.*" -->
     <string-array translatable="false" name="config_tether_usb_regexs">
-      <item>usb1</item>
+      <item>rndis0</item>
     </string-array>
 
     <!-- List of regexpressions describing the interface (if any) that represent tetherable
@@ -258,9 +258,6 @@
 
     <!-- The default iface on which to monitor data use -->
     <string name="config_datause_iface">rmnet0</string>
-
-     <!--   <bool name="config_usesLegacyUsbDeviceManager">true</bool>-->
-    <string name="config_legacyUmsLunFile">/sys/devices/platform/usb_mass_storage/lun0/file</string>
 
     <!-- Boolean indicating if current platform supports quick switch-on/off of
          Bluetooth Module -->
