@@ -42,15 +42,8 @@ jpeg.libskiahw.decoder.thresh=300000
 # Disable Jpeg HW encoder
 jpeg.libskiahw.encoder.enable=0
 
-# Forbid format of these partitions in mount menu :
-ro.cwm.forbid_format=/misc,/devtree,/config,/boot,/recovery,/pds,/system
-
-# FROM MB526
-ro.mot.hw.uaprof=http://uaprof.motorola.com/phoneconfig/motomb526/Profile/motomb526.rdf
-ro.mot.hidden_keyboards=evfwd
-
 # Tell UsbService that we're using Usb.apk
-ro.usb.use_custom_service=1
+ro.usb.use_custom_service=0
 
 # use 1% battery steps
 ro.product.use_charge_counter=1
