@@ -41,6 +41,9 @@ rm /system/etc/firmware/ti-connectivity/wl1271-nvs.bin
 # Leaving mac address field empty for random mac
 calibrator plt autocalibrate wlan0 $WL12xx_MODULE $TARGET_INI_FILE $TARGET_NVS_FILE $HW_MAC
 
+# Remount system partition as rw
+mount -o remount ro /system
+
 echo " ******************************"
 echo " * Finished Wi-Fi calibration *"
 echo " ******************************"

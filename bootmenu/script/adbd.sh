@@ -17,7 +17,6 @@ echo acm > /dev/usb_device_mode
 sleep 1
 
 echo charge_adb > /dev/usb_device_mode
-echo usb_mode_charge_adb > /tmp/usbd_current_state
 
 # busybox ash history
 mkdir -p /cache/bootmenu
