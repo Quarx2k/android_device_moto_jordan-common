@@ -9,12 +9,6 @@ on init
     mkdir /mnt/sdcard  0700 root root
     symlink /mnt/sdcard /sdcard
 
-    #Adb at boot
-    #write /dev/usb_device_mode charge_adb
-    #write /tmp/usbd_current_state usb_mode_charge_adb
-    #chmod 0666 /tmp/usbd_current_state
-    #start adbd
-
 on fs
 
 # Mount mmc partitions
@@ -135,12 +129,6 @@ on post-fs-data
     chmod 0770 /pds/security
     chmod 0770 /data/tmp/battd
     chmod 0775 /data/local/hwui.deny
-
-on property:persist.service.adb.enable=0
-    stop adbd
-
-on property:persist.service.adb.enable=1
-    start adbd
 
     setprop vold.post_fs_data_done 1
 
