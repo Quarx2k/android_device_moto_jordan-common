@@ -30,16 +30,17 @@ on init
     write /sys/power/sr_vdd1_autocomp 1
     write /sys/power/sr_vdd2_autocomp 1
 
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 22b8
+    write /sys/class/android_usb/android0/idProduct 4366
+    write /sys/class/android_usb/android0/functions mass_storage,adb
+
+
 on boot
 
     ifup lo
     hostname localhost
     domainname localdomain
-
-
-    write /dev/usb_device_mode charge_adb
-    start adbd
-    start battd
 
     class_start default
 
@@ -51,18 +52,17 @@ service recovery /sbin/recovery
 service adbd /sbin/adbd recovery
     disabled
 
-service battd /sbin/battd
-    socket battdsock stream 660 root system
-    user root
-    group system 9001
-    oneshot
-
 # Always start adbd on userdebug and eng builds
 on property:ro.debuggable=1
+    write /sys/class/android_usb/android0/enable 1
     start adbd
     setprop service.adb.root 1
 
 # Restart adbd so it can run as root
 on property:service.adb.root=1
+    write /sys/class/android_usb/android0/enable 0
     restart adbd
+    write /sys/class/android_usb/android0/enable 1
+
+
 
