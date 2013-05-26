@@ -74,9 +74,6 @@ on post-fs
     write /proc/sys/vm/oom_dump_tasks 0
     write /proc/sys/fs/suid_dumpable 2
     # Power Management
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 300000
-    write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/up_threshold 86
-    write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/sampling_rate 46875
     write /sys/power/sr_vdd1_autocomp 1
     write /sys/power/sr_vdd2_autocomp 1
 # Change ownership for vibrators
