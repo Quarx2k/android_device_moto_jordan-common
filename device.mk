@@ -29,22 +29,29 @@ endif
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.media.capture.flip=horizontalandvertical \
 	ro.com.google.locationfeatures=1 \
+	ro.media.dec.jpeg.memcap=20000000 \
+	net.dns1=8.8.8.8 \
+	net.dns2=8.8.4.4 \
+	ro.opengles.version = 131072 \
+	persist.sys.usb.config=mass_storage,adb \
+	ro.product.use_charge_counter=1 \
+	hwui.use.blacklist=true \
+	ro.sf.lcd_density=240 \
+
+# wifi props
+PRODUCT_PROPERTY_OVERRIDES += \
+	wifi.interface=wlan0 \
+	softap.interface=wlan0 \
+	wifi.supplicant_scan_interval=60 \
+
+# telephony props
+PRODUCT_PROPERTY_OVERRIDES += \
+	ro.telephony.ril.v3=skipbrokendatacall,signalstrength \
+	ro.telephony.ril_class=MotoWrigley3GRIL \
 	ro.telephony.call_ring.multiple=false \
 	ro.telephony.call_ring.delay=3000 \
-	ro.media.dec.jpeg.memcap=20000000 \
-	dalvik.vm.lockprof.threshold=500 \
-	ro.kernel.android.checkjni=0 \
-	dalvik.vm.checkjni=false \
-	dalvik.vm.dexopt-data-only=1 \
-	dalvik.vm.heaptargetutilization=0.75 \
-	dalvik.vm.heapminfree=512k \
-	dalvik.vm.heapmaxfree=2m
-	ro.vold.umsdirtyratio=20 \
-	net.dns1=8.8.8.8 \
-	net.dns2=8.8.4.4
-
-# we have enough storage space to hold precise GC data
-PRODUCT_TAGS += dalvik.gc.type-precise
+	ro.telephony.default_network=3 \
+	mobiledata.interfaces=rmnet0 \
 
 DEVICE_PACKAGE_OVERLAYS += device/moto/jordan-common/overlay
 
@@ -126,6 +133,7 @@ PRODUCT_COPY_FILES += \
 $(call inherit-product, device/moto/jordan-common/jordan-blobs.mk)
 $(call inherit-product, device/moto/jordan-common/bootmenu/bootmenu.mk)
 $(call inherit-product, build/target/product/full_base.mk)
+$(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
 
 # Should be after the full_base include, which loads languages_full
 PRODUCT_LOCALES += hdpi
