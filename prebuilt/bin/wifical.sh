@@ -29,7 +29,7 @@ else
 fi
 
 # Remount system partition as rw
-mount -o remount rw /system
+mount -o remount,rw /system
 
 ln -s /system/xbin/busybox /system/bin/rmmod
 
@@ -42,7 +42,7 @@ rm /system/etc/firmware/ti-connectivity/wl1271-nvs.bin
 calibrator plt autocalibrate wlan0 $WL12xx_MODULE $TARGET_INI_FILE $TARGET_NVS_FILE $HW_MAC
 
 # Remount system partition as rw
-mount -o remount ro /system
+mount -o remount,ro /system
 
 echo " ******************************"
 echo " * Finished Wi-Fi calibration *"
