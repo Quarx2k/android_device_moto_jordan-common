@@ -88,10 +88,10 @@ PRODUCT_PACKAGES += dspexec libbridge libLCML libOMX_Core libstagefrighthw
 PRODUCT_PACKAGES += libOMX.TI.AAC.encode libOMX.TI.AAC.decode libOMX.TI.AMR.decode libOMX.TI.AMR.encode
 PRODUCT_PACKAGES += libOMX.TI.WBAMR.encode libOMX.TI.MP3.decode libOMX.TI.WBAMR.decode
 PRODUCT_PACKAGES += libOMX.TI.Video.Decoder libOMX.TI.Video.encoder
-PRODUCT_PACKAGES += libOMX.TI.JPEG.Encoder #libskiahw libOMX.TI.JPEG.decoder
+PRODUCT_PACKAGES += libOMX.TI.JPEG.Encoder
 
 # Defy stuff
-PRODUCT_PACKAGES += libfnc DefyParts Usb MotoFM MotoFMService
+PRODUCT_PACKAGES += libfnc DefyParts MotoFM MotoFMService
 
 # Core stuff
 PRODUCT_PACKAGES += charge_only_mode mot_boot_mode
@@ -110,7 +110,6 @@ PRODUCT_PACKAGES += \
     lib_driver_cmd_wl12xx \
     dhcpcd.conf \
     hostapd.conf \
-    wifical.sh \
     wpa_supplicant.conf \
     TQS_D_1.7.ini \
     TQS_D_1.7_127x.ini \

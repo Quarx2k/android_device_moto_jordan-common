@@ -9,7 +9,7 @@ PRODUCT_PACKAGES += \
 	hbootuser \
 	utility_mke2fs \
 	utility_tune2fs \
-	e2fsck recovery_pigz \
+	e2fsck \
 
 # config
 PRODUCT_COPY_FILES += \
