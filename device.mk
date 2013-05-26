@@ -134,6 +134,7 @@ PRODUCT_COPY_FILES += \
 $(call inherit-product, device/moto/jordan-common/jordan-blobs.mk)
 $(call inherit-product, device/moto/jordan-common/bootmenu/bootmenu.mk)
 $(call inherit-product, build/target/product/full_base.mk)
+$(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
 
 # Should be after the full_base include, which loads languages_full
 PRODUCT_LOCALES += hdpi
