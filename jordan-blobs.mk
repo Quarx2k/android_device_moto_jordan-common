@@ -14,10 +14,6 @@
 
 device_path = device/moto/jordan-common
 
-PRODUCT_COPY_FILES += \
-	$(device_path)/prebuilt/etc/terminfo/l/linux:system/etc/terminfo/l/linux \
-	$(device_path)/prebuilt/etc/terminfo/x/xterm:system/etc/terminfo/x/xterm \
-
 # Key layouts, names must fit the ones in /proc/bus/input/devices, qwerty.kl is the fallback one.
 PRODUCT_COPY_FILES += \
 	$(device_path)/prebuilt/usr/idc/internal.idc:system/usr/idc/lm3530_led.idc \
@@ -42,13 +38,10 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_COPY_FILES += \
 	${device_path}/prebuilt/etc/vold.fstab:system/etc/vold.fstab \
-	${device_path}/prebuilt/etc/media_profiles.xml:system/etc/media_profiles.xml \
-	$(device_path)/prebuilt/etc/init.d/01sysctl:system/etc/init.d/01sysctl \
 	$(device_path)/prebuilt/etc/init.d/02baseband:system/etc/init.d/02baseband \
 	$(device_path)/prebuilt/etc/init.d/05mountsd:system/etc/init.d/05mountsd \
 	$(device_path)/prebuilt/etc/init.d/08backlight:system/etc/init.d/08backlight \
 	$(device_path)/prebuilt/etc/init.d/90multitouch:system/etc/init.d/90multitouch \
-	$(device_path)/prebuilt/etc/profile:system/etc/profile \
 	$(device_path)/prebuilt/etc/sysctl.conf:system/etc/sysctl.conf \
 	$(device_path)/prebuilt/etc/busybox.fstab:system/etc/fstab \
 	$(device_path)/prebuilt/etc/gpsconfig.xml:system/etc/gpsconfig.xml \
