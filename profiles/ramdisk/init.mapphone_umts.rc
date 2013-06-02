@@ -14,18 +14,15 @@ on init
 on fs
 
 # Mount mmc partitions
-    mkdir /pds 0775 system system
 
-    mount ext3 /dev/block/mmcblk1p21 /system
-    mount ext4 /dev/block/mmcblk1p24 /cache wait noatime nodiratime nodev nobh data=writeback noauto_da_alloc barrier=0
-    mount ext4 /dev/block/mmcblk1p25 /data wait noatime nodiratime nodev nobh data=writeback noauto_da_alloc barrier=0
+    mount_all ./fstab.mapphone_umts
+
+    mkdir /pds 0775 system system
     exec /system/bootmenu/script/pdsbackup.sh
 
     symlink /dev/block/mmcblk1p21 /dev/block/system
     symlink /dev/block/mmcblk1p24 /dev/block/cache
     symlink /dev/block/mmcblk1p25 /dev/block/userdata
-
-    mount ext3 /dev/block/mmcblk1p21 /system ro remount
 
 on post-fs
 
