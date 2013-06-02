@@ -14,19 +14,11 @@ on fs
 # Mount mmc partitions
     mkdir /pds 0775 system system
 
-    mount ext3 /dev/block/mmcblk0p21 /system ro nodiratime nodev noatime nodiratime barrier=0
-    mount ext4 /dev/block/mmcblk0p24 /cache wait noatime nodiratime nodev nobh data=writeback noauto_da_alloc barrier=0
-    mount ext4 /dev/block/mmcblk0p25 /data wait noatime nodiratime nodev nobh data=writeback noauto_da_alloc barrier=0
-
     exec /system/bootmenu/script/pdsbackup.sh
-
-    symlink /dev/block/mmcblk0p21 /dev/block/system
-    symlink /dev/block/mmcblk0p24 /dev/block/cache
-    symlink /dev/block/mmcblk0p25 /dev/block/userdata
 
     mount debugfs debugfs /sys/kernel/debug/
 
-    mount ext3 /dev/block/mmcblk1p21 /system ro remount
+    mount ext3 /dev/block/mmcblk0p21 /system ro remount
 
 on post-fs
 
