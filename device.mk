@@ -125,7 +125,7 @@ PRODUCT_PACKAGES += \
     libomap_mm_library_jni 
 
 # Defy stuff
-PRODUCT_PACKAGES += libfnc DefyParts Usb MotoFM MotoFMService libbt-vendor uim-sysfs
+PRODUCT_PACKAGES += libfnc DefyParts libbt-vendor uim-sysfs
 
 # Core stuff
 PRODUCT_PACKAGES += charge_only_mode mot_boot_mode
@@ -144,7 +144,6 @@ PRODUCT_PACKAGES += \
     lib_driver_cmd_wl12xx \
     dhcpcd.conf \
     hostapd.conf \
-    wifical.sh \
     wpa_supplicant.conf \
     TQS_D_1.7.ini \
     TQS_D_1.7_127x.ini \
