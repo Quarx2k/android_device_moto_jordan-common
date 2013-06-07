@@ -14,6 +14,8 @@ on fs
 # Mount mmc partitions
     mkdir /pds 0775 system system
 
+    mount_all ./fstab.mapphone_umts
+
     exec /system/bootmenu/script/pdsbackup.sh
 
     mount debugfs debugfs /sys/kernel/debug/
