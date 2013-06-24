@@ -27,4 +27,7 @@
 <!-- Without that only Samsung allow the focus mode selection -->
 <bool name="wantsFocusModes">true</bool>
 
+<!-- Disable software HDR on non-hw HDR devices -->
+<bool name="disableSoftwareHDR">true</bool>
+
 </resources>
