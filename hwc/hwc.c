@@ -29,6 +29,7 @@
 #include <cutils/log.h>
 #include <cutils/native_handle.h>
 #include <hardware/hardware.h>
+#define HWC_REMOVE_DEPRECATED_VERSIONS 1 
 #include <hardware/hwcomposer.h>
 #include <EGL/egl.h>
 #include <hardware_legacy/uevent.h>
@@ -110,7 +111,7 @@ struct omap3_hwc_module {
 typedef struct omap3_hwc_module omap3_hwc_module_t;
 
 struct omap3_hwc_device {
-    hwc_composer_device_t base;
+    hwc_composer_device_1_t base;
     hwc_procs_t *procs;
     pthread_t hdmi_thread;
     pthread_t vsync_thread;
@@ -148,7 +149,7 @@ static int debug = 0;
 static int hdmi_enabled = 0;
 static int tv_enabled = 0;
 
-static void dump_layer(hwc_layer_t const* l)
+static void dump_layer(hwc_layer_1_t const* l)
 {
     ALOGD("\ttype=%d, flags=%08x, handle=%p, tr=%02x, blend=%04x, {%d,%d,%d,%d}, {%d,%d,%d,%d}",
             l->compositionType, l->flags, l->handle, l->transform, l->blending,
@@ -219,7 +220,7 @@ static int omap3_hwc_is_valid_format(int format)
     }
 }
 
-static int scaled(hwc_layer_t *layer)
+static int scaled(hwc_layer_1_t *layer)
 {
     int w = WIDTH(layer->sourceCrop);
     int h = HEIGHT(layer->sourceCrop);
@@ -230,7 +231,7 @@ static int scaled(hwc_layer_t *layer)
     return WIDTH(layer->displayFrame) != w || HEIGHT(layer->displayFrame) != h;
 }
 
-static int is_protected(hwc_layer_t *layer)
+static int is_protected(hwc_layer_1_t *layer)
 {
     IMG_native_handle_t *handle = (IMG_native_handle_t *)layer->handle;
 
@@ -245,7 +246,7 @@ static int sync_id = 0;
 #define is_BGR(format) ((format) == HAL_PIXEL_FORMAT_RGBX_8888 || (format) == HAL_PIXEL_FORMAT_RGBA_8888)
 #define is_NV12(format) ((format) == HAL_PIXEL_FORMAT_TI_NV12 || (format) == HAL_PIXEL_FORMAT_TI_NV12_PADDED || (format) == HAL_PIXEL_FORMAT_YUV_422 || (format) == HAL_PIXEL_FORMAT_YUV_420)
 
-static int dockable(hwc_layer_t *layer)
+static int dockable(hwc_layer_1_t *layer)
 {
     IMG_native_handle_t *handle = (IMG_native_handle_t *)layer->handle;
 
@@ -333,7 +334,7 @@ omap3_hwc_setup_layer_base(struct dss2_ovl_cfg *oc, int index, int format, int b
 
 static void
 omap3_hwc_setup_layer(omap3_hwc_device_t *hwc_dev, struct dss2_ovl_info *ovl,
-                      hwc_layer_t *layer, int index,
+                      hwc_layer_1_t *layer, int index,
                       int format, int width, int height)
 {
     struct dss2_ovl_cfg *oc = &ovl->cfg;
@@ -653,7 +654,7 @@ static int omap3_hwc_can_scale(int src_w, int src_h, int dst_w, int dst_h, int i
     return 1;
 }
 
-static int omap3_hwc_can_scale_layer(omap3_hwc_device_t *hwc_dev, hwc_layer_t *layer, IMG_native_handle_t *handle)
+static int omap3_hwc_can_scale_layer(omap3_hwc_device_t *hwc_dev, hwc_layer_1_t *layer, IMG_native_handle_t *handle)
 {
     int src_w = WIDTH(layer->sourceCrop);
     int src_h = HEIGHT(layer->sourceCrop);
@@ -671,7 +672,7 @@ static int omap3_hwc_can_scale_layer(omap3_hwc_device_t *hwc_dev, hwc_layer_t *l
 }
 
 static int omap3_hwc_is_valid_layer(omap3_hwc_device_t *hwc_dev,
-                                    hwc_layer_t *layer,
+                                    hwc_layer_1_t *layer,
                                     IMG_native_handle_t *handle)
 {
     /* Skip layers are handled by SF */
@@ -901,7 +902,7 @@ static inline int can_dss_render_all(omap3_hwc_device_t *hwc_dev, struct counts 
 }
 
 static inline int can_dss_render_layer(omap3_hwc_device_t *hwc_dev,
-            hwc_layer_t *layer)
+            hwc_layer_1_t *layer)
 {
     IMG_native_handle_t *handle = (IMG_native_handle_t *)layer->handle;
 
@@ -927,8 +928,14 @@ static inline int display_area(struct dss2_ovl_info *o)
     return o->cfg.win.w * o->cfg.win.h;
 }
 
-static int omap3_hwc_prepare(struct hwc_composer_device *dev, hwc_layer_list_t* list)
+static int omap3_hwc_prepare(struct hwc_composer_device_1 *dev, size_t numDisplays,
+        hwc_display_contents_1_t** displays)
 {
+    if (!numDisplays || displays == NULL) {
+        return 0;
+    }
+
+    hwc_display_contents_1_t* list = displays[0];  // ignore displays beyond the first
     omap3_hwc_device_t *hwc_dev = (omap3_hwc_device_t *)dev;
     struct dsscomp_setup_dispc_data *dsscomp = &hwc_dev->dsscomp_data;
     struct counts num = { .composited_layers = list ? list->numHwLayers : 0 };
@@ -942,7 +949,7 @@ static int omap3_hwc_prepare(struct hwc_composer_device *dev, hwc_layer_list_t* 
 
     /* Figure out how many layers we can support via DSS */
     for (i = 0; list && i < list->numHwLayers; i++) {
-        hwc_layer_t *layer = &list->hwLayers[i];
+        hwc_layer_1_t *layer = &list->hwLayers[i];
         IMG_native_handle_t *handle = (IMG_native_handle_t *)layer->handle;
 
         layer->compositionType = HWC_FRAMEBUFFER;
@@ -1029,7 +1036,7 @@ static int omap3_hwc_prepare(struct hwc_composer_device *dev, hwc_layer_list_t* 
     unsigned int mem_used = 0;
     hwc_dev->ovls_blending = 0;
     for (i = 0; list && i < list->numHwLayers; i++) {
-        hwc_layer_t *layer = &list->hwLayers[i];
+        hwc_layer_1_t *layer = &list->hwLayers[i];
         IMG_native_handle_t *handle = (IMG_native_handle_t *)layer->handle;
 
         if (dsscomp->num_ovls < num.max_hw_overlays &&
@@ -1266,9 +1273,20 @@ static void omap3_hwc_reset_screen(omap3_hwc_device_t *hwc_dev)
     }
 }
 
-static int omap3_hwc_set(struct hwc_composer_device *dev, hwc_display_t dpy,
-               hwc_surface_t sur, hwc_layer_list_t* list)
+static int omap3_hwc_set(struct hwc_composer_device_1 *dev,
+        size_t numDisplays, hwc_display_contents_1_t** displays)
 {
+    if (!numDisplays || displays == NULL) {
+        ALOGD("set: empty display list");
+        return 0;
+    }
+    hwc_display_t dpy = NULL;
+    hwc_surface_t sur = NULL;
+    hwc_display_contents_1_t* list = displays[0];  // ignore displays beyond the first
+    if (list != NULL) {
+        dpy = list->dpy;
+        sur = list->sur;
+    }
     omap3_hwc_device_t *hwc_dev = (omap3_hwc_device_t *)dev;
     struct dsscomp_setup_dispc_data *dsscomp = &hwc_dev->dsscomp_data;
     int err = 0;
@@ -1288,7 +1306,7 @@ static int omap3_hwc_set(struct hwc_composer_device *dev, hwc_display_t dpy,
     for (i = 0; list && i < list->numHwLayers; i++) {
         if (i)
             e -= snprintf(end - e, e, " ");
-        hwc_layer_t *layer = &list->hwLayers[i];
+        hwc_layer_1_t *layer = &list->hwLayers[i];
         IMG_native_handle_t *handle = (IMG_native_handle_t *)layer->handle;
         e -= snprintf(end - e, e, "%p:%s,", handle, layer->compositionType == HWC_OVERLAY ? "DSS" : "SGX");
         if ((layer->flags & HWC_SKIP_LAYER) || !handle) {
@@ -1404,7 +1422,7 @@ static int dump_printf(char *buff, int buff_len, int len, const char *fmt, ...)
     return len + print_len;
 }
 
-static void omap3_hwc_dump(struct hwc_composer_device *dev, char *buff, int buff_len)
+static void omap3_hwc_dump(struct hwc_composer_device_1 *dev, char *buff, int buff_len)
 {
     omap3_hwc_device_t *hwc_dev = (omap3_hwc_device_t *)dev;
     struct dsscomp_setup_dispc_data *dsscomp = &hwc_dev->dsscomp_data;
@@ -1672,7 +1690,7 @@ static void *omap3_hwc_hdmi_thread(void *data)
     return NULL;
 }
 
-static void omap3_hwc_registerProcs(struct hwc_composer_device* dev,
+static void omap3_hwc_registerProcs(struct hwc_composer_device_1* dev,
                                     hwc_procs_t const* procs)
 {
         omap3_hwc_device_t *hwc_dev = (omap3_hwc_device_t *) dev;
@@ -1680,7 +1698,7 @@ static void omap3_hwc_registerProcs(struct hwc_composer_device* dev,
         hwc_dev->procs = (typeof(hwc_dev->procs)) procs;
 }
 
-static int omap3_hwc_query(struct hwc_composer_device* dev,
+static int omap3_hwc_query(struct hwc_composer_device_1* dev,
         int what, int* value)
 {
     omap3_hwc_device_t *hwc_dev = (omap3_hwc_device_t *) dev;
@@ -1701,8 +1719,8 @@ static int omap3_hwc_query(struct hwc_composer_device* dev,
     return 0;
 }
 
-static int omap3_hwc_event_control(struct hwc_composer_device* dev,
-        int event, int enabled)
+static int omap3_hwc_event_control(struct hwc_composer_device_1* dev,
+        int dpy, int event, int enabled)
 {
     omap3_hwc_device_t *hwc_dev = (omap3_hwc_device_t *) dev;
 
@@ -1723,9 +1741,12 @@ static int omap3_hwc_event_control(struct hwc_composer_device* dev,
     }
 }
 
-struct hwc_methods omap3_hwc_methods = {
-    .eventControl = &omap3_hwc_event_control,
-};
+static int omap3_hwc_blank(struct hwc_composer_device_1 *dev, int dpy, int blank)
+{
+    // We're using an older method of screen blanking based on
+    // early_suspend in the kernel.  No need to do anything here.
+    return 0;
+}
 
 static int omap3_hwc_device_open(const hw_module_t* module, const char* name,
                 hw_device_t** device)
@@ -1757,15 +1778,16 @@ static int omap3_hwc_device_open(const hw_module_t* module, const char* name,
     memset(hwc_dev, 0, sizeof(*hwc_dev));
 
     hwc_dev->base.common.tag = HARDWARE_DEVICE_TAG;
-    hwc_dev->base.common.version = HWC_API_VERSION;//use the emulation for now... HWC_DEVICE_API_VERSION_0_3;
+    hwc_dev->base.common.version = HWC_DEVICE_API_VERSION_1_0;
     hwc_dev->base.common.module = (hw_module_t *)module;
     hwc_dev->base.common.close = omap3_hwc_device_close;
     hwc_dev->base.prepare = omap3_hwc_prepare;
     hwc_dev->base.set = omap3_hwc_set;
+    hwc_dev->base.eventControl = omap3_hwc_event_control;
+    hwc_dev->base.blank = omap3_hwc_blank;
     hwc_dev->base.dump = omap3_hwc_dump;
     hwc_dev->base.registerProcs = omap3_hwc_registerProcs;
     hwc_dev->base.query = omap3_hwc_query;
-    hwc_dev->base.methods = &omap3_hwc_methods;
     hwc_dev->fb_dev = hwc_mod->fb_dev;
     *device = &hwc_dev->base.common;
 
