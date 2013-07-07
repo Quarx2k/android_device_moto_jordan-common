@@ -247,18 +247,29 @@ set_ioscheduler()
 
 set_overclock_table()
 {
-# echo "$vsel4" > /proc/overclock/max_vsel
-  echo "$vsel3" > /proc/overclock/max_vsel
-# echo "${clk4}000" > /proc/overclock/max_rate
-  echo "${clk3}000" > /proc/overclock/max_rate
-# echo "4 ${clk4}000000 $vsel4" > /proc/overclock/mpu_opps
-  echo "3 ${clk3}000000 $vsel3" > /proc/overclock/mpu_opps
-  echo "2 ${clk2}000000 $vsel2" > /proc/overclock/mpu_opps
-  echo "1 ${clk1}000000 $vsel1" > /proc/overclock/mpu_opps
-# echo "0 ${clk4}000" > /proc/overclock/freq_table
-  echo "0 ${clk3}000" > /proc/overclock/freq_table
-  echo "1 ${clk2}000" > /proc/overclock/freq_table
-  echo "2 ${clk1}000" > /proc/overclock/freq_table
+  saf_count=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies | wc -w`
+
+  if [ $saf_count = 4 ]; then
+    echo "$vsel4" > /proc/overclock/max_vsel
+    echo "${clk4}000" > /proc/overclock/max_rate
+    echo "4 ${clk4}000000 $vsel4" > /proc/overclock/mpu_opps
+    echo "3 ${clk3}000000 $vsel3" > /proc/overclock/mpu_opps
+    echo "2 ${clk2}000000 $vsel2" > /proc/overclock/mpu_opps
+    echo "1 ${clk1}000000 $vsel1" > /proc/overclock/mpu_opps
+    echo "0 ${clk4}000" > /proc/overclock/freq_table
+    echo "1 ${clk3}000" > /proc/overclock/freq_table
+    echo "2 ${clk2}000" > /proc/overclock/freq_table
+    echo "3 ${clk1}000" > /proc/overclock/freq_table
+  else
+    echo "$vsel3" > /proc/overclock/max_vsel
+    echo "${clk3}000" > /proc/overclock/max_rate
+    echo "3 ${clk3}000000 $vsel3" > /proc/overclock/mpu_opps
+    echo "2 ${clk2}000000 $vsel2" > /proc/overclock/mpu_opps
+    echo "1 ${clk1}000000 $vsel1" > /proc/overclock/mpu_opps
+    echo "0 ${clk3}000" > /proc/overclock/freq_table
+    echo "1 ${clk2}000" > /proc/overclock/freq_table
+    echo "2 ${clk1}000" > /proc/overclock/freq_table
+  fi
 }
 
 #############################################################

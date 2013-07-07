@@ -16,6 +16,7 @@
 /dev/android_adb          0660   adb        adb
 /dev/android_adb_enable   0660   adb        adb
 /dev/ttyGS0               0660   root       system
+/dev/ttyACM0              0660   root       radio
 /dev/uinput               0660   system     bluetooth
 /dev/alarm                0664   system     radio
 /dev/graphics/*           0660   root       graphics

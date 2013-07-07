@@ -50,6 +50,14 @@ int init_nusensors(hw_module_t const* module, hw_device_t** device);
  */
 #define USE_KXTF9_ACCELEROMETER
 
+/*
+ * Defy+ has a combined input queue for the proximity and ALS parts of
+ * ISL29030, Defy has separate queues
+ */
+#ifdef DEFYPLUS
+#define USE_COMBINED_ISL29030
+#endif
+
 /*****************************************************************************/
 
 #define KXTF9_DEVICE_NAME                  "/dev/kxtf9"

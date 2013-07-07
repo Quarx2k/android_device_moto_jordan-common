@@ -167,7 +167,7 @@ public class SettingsActivity extends PreferenceActivity
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         if (preference == chargeLedModePref) {
-            SystemProperties.set(PROP_CHARGE_LED_MODE, (String) newValue, true);
+            SystemProperties.set(PROP_CHARGE_LED_MODE, (String) newValue);
             /* make NotificationManagerService update the LED, so the new setting takes effect */
             sendBroadcast(new Intent("com.android.server.NotificationManagerService.UPDATE_LED"));
         } else if (preference == touchPointsPref) {

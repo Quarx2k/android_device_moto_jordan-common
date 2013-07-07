@@ -32,7 +32,11 @@
 
 #include "SensorKXTF9.h"
 #include "SensorAK8973.h"
-#include "SensorISL29030.h"
+#ifdef USE_COMBINED_ISL29030
+#include "SensorISL29030Combined.h"
+#else
+#include "SensorISL29030Separate.h"
+#endif
 
 /*****************************************************************************/
 
@@ -51,8 +55,12 @@ private:
     enum {
         KXTF9     = 0,
         AK8973    = 1,
+#ifdef USE_COMBINED_ISL29030
+        ISL29030  = 2,
+#else
         ISL29030P = 2,
         ISL29030L = 3,
+#endif
         numSensorDrivers,
         numFds,
     };
@@ -76,10 +84,16 @@ private:
             case SENSOR_TYPE_MAGNETIC_FIELD:
             case SENSOR_TYPE_AMBIENT_TEMPERATURE:
                 return AK8973;
+#ifdef USE_COMBINED_ISL29030
+            case SENSOR_TYPE_PROXIMITY:
+            case SENSOR_TYPE_LIGHT:
+                return ISL29030;
+#else
             case SENSOR_TYPE_PROXIMITY:
                 return ISL29030P;
             case SENSOR_TYPE_LIGHT:
                 return ISL29030L;
+#endif
         }
         return -EINVAL;
     }
@@ -99,6 +113,12 @@ sensors_poll_context_t::sensors_poll_context_t()
     mPollFds[AK8973].events = POLLIN;
     mPollFds[AK8973].revents = 0;
 
+#ifdef USE_COMBINED_ISL29030
+    mSensors[ISL29030] = new SensorISL29030();
+    mPollFds[ISL29030].fd = mSensors[ISL29030]->getFd();
+    mPollFds[ISL29030].events = POLLIN;
+    mPollFds[ISL29030].revents = 0;
+#else
     mSensors[ISL29030P] = new SensorISL29030P();
     mPollFds[ISL29030P].fd = mSensors[ISL29030P]->getFd();
     mPollFds[ISL29030P].events = POLLIN;
@@ -108,6 +128,7 @@ sensors_poll_context_t::sensors_poll_context_t()
     mPollFds[ISL29030L].fd = mSensors[ISL29030L]->getFd();
     mPollFds[ISL29030L].events = POLLIN;
     mPollFds[ISL29030L].revents = 0;
+#endif
 
     int wakeFds[2];
     int result = pipe(wakeFds);

@@ -23,6 +23,10 @@ PRODUCT_COPY_FILES += \
 	${DEVICE_PREBUILT}/usr/keypad.kl:system/usr/keylayout/umts_jordan-keypad.kl \
 	${DEVICE_PREBUILT}/usr/cpcap.kl:system/usr/keylayout/cpcap-key.kl \
 
+#bin
+PRODUCT_COPY_FILES += \
+	${DEVICE_PREBUILT}/bin/handle_bp_panic.sh:system/bin/handle_bp_panic.sh \
+
 #etc
 PRODUCT_COPY_FILES += \
 	${DEVICE_PATH}/vold.fstab:system/etc/vold.fstab \
