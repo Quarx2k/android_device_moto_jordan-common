@@ -73,6 +73,6 @@ PRODUCT_COPY_FILES += \
 # recovery
 PRODUCT_COPY_FILES += \
 	${bm_device}/profiles/2nd-boot/hboot_recovery.cfg:system/bootmenu/2nd-boot/hboot_recovery.cfg \
-	$(OUT)/ramdisk-recovery.img:system/bootmenu/2nd-boot/ramdisk-recovery \
+	${bm_device}/ramdisk-recovery:system/bootmenu/2nd-boot/ramdisk-recovery \
 
 
