@@ -14,7 +14,7 @@ LOCAL_SRC_FILES:= \
 
 LOCAL_STATIC_LIBRARIES := libunz libcutils libc
 
-LOCAL_SHARED_LIBRARIES := libhardware
+LOCAL_SHARED_LIBRARIES := libhardware liblog
 
 LOCAL_C_INCLUDES := external/zlib
 LOCAL_MODULE_TAGS := eng debug

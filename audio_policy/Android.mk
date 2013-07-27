@@ -3,7 +3,7 @@ LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES:= AudioPolicyManager.cpp
-LOCAL_SHARED_LIBRARIES:= libc libcutils libutils libmedia
+LOCAL_SHARED_LIBRARIES:= libc libcutils libutils libmedia liblog
 LOCAL_STATIC_LIBRARIES := libmedia_helper
 LOCAL_WHOLE_STATIC_LIBRARIES:= libaudiopolicy_legacy
 LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/hw
@@ -29,7 +29,7 @@ LOCAL_SHARED_LIBRARIES := \
     libutils \
     libmedia \
     libhardware
-LOCAL_SHARED_LIBRARIES += libdl
+LOCAL_SHARED_LIBRARIES += libdl liblog
 LOCAL_SHARED_LIBRARIES += libaudio
 LOCAL_STATIC_LIBRARIES := \
     libmedia_helper

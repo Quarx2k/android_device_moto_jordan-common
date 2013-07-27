@@ -6,7 +6,7 @@ LOCAL_SRC_FILES := libfnc.c
 
 LOCAL_PRELINK_MODULE := false
 
-LOCAL_SHARED_LIBRARIES:= libcutils
+LOCAL_SHARED_LIBRARIES:= libcutils liblog
 
 LOCAL_MODULE := libfnc
 LOCAL_MODULE_TAGS := optional
