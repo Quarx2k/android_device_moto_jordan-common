@@ -129,7 +129,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(OUT)/ramdisk.img:system/bootmenu/2nd-boot/ramdisk \
     $(OUT)/kernel:system/bootmenu/2nd-boot/zImage \
-    $(OUT)/utilities/busybox:system/bootmenu/binary/busybox \
     $(OUT)/utilities/lsof:system/bootmenu/binary/lsof \
 
 # Blobs and bootmenu stuff
