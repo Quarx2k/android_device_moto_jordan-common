@@ -1565,7 +1565,7 @@ static void *vsync_loop(void *param)
     omap3_hwc_device_t *hwc_dev = param;
 
     fb0_vsync_fd = open("/sys/devices/platform/omapfb/graphics/fb0/vsync_time", O_RDONLY);
-    if (!fb0_vsync_fd)
+    if (fb0_vsync_fd < 0)
         return NULL;
 
     setpriority(PRIO_PROCESS, 0, HAL_PRIORITY_URGENT_DISPLAY);
