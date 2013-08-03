@@ -1062,7 +1062,7 @@ static int omap3_hwc_prepare(struct hwc_composer_device_1 *dev, size_t numDispla
             else if (is_BLENDED(layer->blending) && i > 0)
                 hwc_dev->ovls_blending = 1;
 
-            hwc_dev->buffers[dsscomp->num_ovls] = handle;
+            hwc_dev->buffers[dsscomp->num_ovls] = layer->handle;
 
             omap3_hwc_setup_layer(hwc_dev,
                                   &dsscomp->ovls[dsscomp->num_ovls],
