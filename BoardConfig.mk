@@ -45,6 +45,10 @@ COMMON_GLOBAL_CFLAGS += -DTARGET_OMAP3 -DOMAP_COMPAT -DBINDER_COMPAT -DUSES_AUDI
 TARGET_GLOBAL_CFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 
+# Conserve memory in the Dalvik heap
+# Details: https://github.com/CyanogenMod/android_dalvik/commit/15726c81059b74bf2352db29a3decfc4ea9c1428
+TARGET_ARCH_LOWMEM := true
+
 # Wifi related defines
 USES_TI_MAC80211 := true
 WPA_SUPPLICANT_VERSION           := VER_0_8_X_TI
