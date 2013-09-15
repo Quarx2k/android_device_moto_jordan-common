@@ -41,6 +41,10 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	dalvik.vm.debug.alloc=0 \
 	ro.hwui.disable_scissor_opt=true \
 
+# SGX540 is slower with the scissor optimization enabled
+PRODUCT_PROPERTY_OVERRIDES += \
+       ro.hwui.disable_scissor_opt=true
+
 # wifi props
 PRODUCT_PROPERTY_OVERRIDES += \
 	wifi.interface=wlan0 \
