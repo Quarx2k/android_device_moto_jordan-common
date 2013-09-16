@@ -300,4 +300,10 @@ Some kernels use names like CAR and DESK.
         <item>com.google.android.location</item>
     </string-array>
 
+    <!--
+    Minimum screen brightness setting allowed by the power manager.
+    The user is forbidden from setting the brightness below this level. 
+    -->
+    <integer name="config_screenBrightnessSettingMinimum">2</integer>
+
 </resources>
