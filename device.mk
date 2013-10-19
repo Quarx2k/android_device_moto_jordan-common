@@ -87,6 +87,11 @@ PRODUCT_PACKAGES += \
 	libaudioutils audio.a2dp.default  \
 	libaudiohw_legacy \
 
+# legacy version of skia
+# fixes the app switcher previews
+PRODUCT_PACKAGES += \
+    libskia_legacy
+
 # TO FIX for ICS
 PRODUCT_PACKAGES += power.omap3
 
