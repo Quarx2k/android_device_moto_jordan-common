@@ -49,7 +49,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # telephony props
 PRODUCT_PROPERTY_OVERRIDES += \
-	ro.telephony.ril.v3=skipbrokendatacall,signalstrength \
+	ro.telephony.ril.v3=signalstrength \
 	ro.telephony.ril_class=MotoWrigley3GRIL \
 	ro.telephony.call_ring.multiple=false \
 	ro.telephony.call_ring.delay=3000 \
