@@ -20,9 +20,9 @@ umount /cache
 
 #Disable journal
 /system/bin/tune2fs -o journal_data_writeback $PART_DATA 
-/system/bin/tune2fs -O ^has_journal $PART_DATA 
+/system/bin/tune2fs -O has_journal $PART_DATA 
 /system/bin/tune2fs -o journal_data_writeback $PART_CACHE
-/system/bin/tune2fs -O ^has_journal $PART_CACHE
+/system/bin/tune2fs -O has_journal $PART_CACHE
 
 #Mount cache
 mount -t ext4 -o nosuid,nodev,noatime,nodiratime,barrier=1 $PART_CACHE /cache
