@@ -270,6 +270,9 @@ class EdifyGenerator(object):
       self.script.append('unmount("%s");' % (p,))
     self.mounts = set()
 
+  def RunProgramm(self, programm, command):
+    self.script.append('run_program("%s", "%s");' % (programm, command))
+
   def AddToZip(self, input_zip, output_zip, input_path=None):
     """Write the accumulated script to the output_zip file.  input_zip
     is used as the source for the 'updater' binary needed to run
