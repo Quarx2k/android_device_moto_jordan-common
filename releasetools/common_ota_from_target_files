@@ -401,6 +401,9 @@ def WriteFullOTAPackage(input_zip, output_zip):
   device_specific.FullOTA_Assertions()
   device_specific.FullOTA_InstallBegin()
 
+  script.RunProgramm("/sbin/tune2fs", "-O has_journal /dev/block/mmcblk1p24")
+  script.RunProgramm("/sbin/tune2fs", "-O has_journal /dev/block/mmcblk1p25")
+
   if OPTIONS.backuptool:
     script.Mount("/system")
     script.RunBackup("backup")
@@ -411,12 +414,12 @@ def WriteFullOTAPackage(input_zip, output_zip):
   if OPTIONS.wipe_user_data:
     script.FormatPartition("/data")
 
- # script.Print("Wiping cache...");
- # script.Mount("/cache");
- # script.DeleteRecursive("/cache");
- # script.Print("Wiping dalvik-cache...")
- # script.Mount("/data")  
- # script.DeleteRecursive("/data/dalvik-cache")
+  script.Print("Wiping cache...")
+  script.Mount("/cache")
+  script.DeleteRecursive("/cache")
+  script.Print("Wiping dalvik-cache...")
+  script.Mount("/data")
+  script.DeleteRecursive("/data/dalvik-cache")
 
   script.Print("Mounting your system...")
   script.Mount("/system")
