@@ -1,4 +1,4 @@
-<!-- TinyHAL configuration file for Samsung Galaxy S III -->
+<!-- TinyHAL configuration file for Motorola Defy-->
 <tinyhal>
 <!--
 We are able to have most of our routing static so do that
@@ -6,68 +6,137 @@ We are able to have most of our routing static so do that
 <path>
     <!-- stdac on -->
     <ctl name="CPCAP Mixer Stereo DAC" val="1"/>
+    <ctl name="CPCAP Mixer Voice Codec" val="0"/>
+    <ctl name="CPCAP Mixer External PGA" val="0"/>
 
     <ctl name="Ext Volume" val="12"/>
     <ctl name="Codec Volume" val="12"/>
     <ctl name="STDac Volume" val="12"/>
 
+<!-- Disable mic by default -->
     <ctl name="MIC1 Gain" val="0"/>
     <ctl name="MIC2 Gain" val="0"/>
-
-    <ctl name="Analog External Left Capture Route" val="0"/>
-    <ctl name="Analog External Right Capture Route" val="0"/>
-    <ctl name="Analog Left" val="Mic2"/>
-    <ctl name="Analog Right" val="Mic1"/>
+    <ctl name="Analog External Left Capture Route" val="Off"/>
+    <ctl name="Analog External Right Capture Route" val="Off"/>
+    <ctl name="Analog Left Capture Route" val="Off"/>
+    <ctl name="Analog Right Capture Route" val="Off"/>
 
 </path>
+
 <device name="speaker">
     <path name="on">
-        <ctl name="LDSPLEXT Switch" val="1"/>
+	<ctl name="LDSPLEXT Switch" val="1"/>
 	<ctl name="LDSPREXT Switch" val="1"/>
-        <ctl name="LDSPLDAC Switch" val="1"/>
+	<ctl name="LDSPLDAC Switch" val="1"/>
 	<ctl name="LDSPRDAC Switch" val="1"/>
-        <ctl name="LDSPLCDC Switch" val="1"/>
+	<ctl name="LDSPLCDC Switch" val="1"/>
 	<ctl name="LDSPRCDC Switch" val="1"/>
     </path>
     <path name="off">
-        <ctl name="LDSPLEXT Switch" val="0"/>
+	<ctl name="LDSPLEXT Switch" val="0"/>
 	<ctl name="LDSPREXT Switch" val="0"/>
-        <ctl name="LDSPLDAC Switch" val="0"/>
+	<ctl name="LDSPLDAC Switch" val="0"/>
 	<ctl name="LDSPRDAC Switch" val="0"/>
-        <ctl name="LDSPLCDC Switch" val="0"/>
+	<ctl name="LDSPLCDC Switch" val="0"/>
 	<ctl name="LDSPRCDC Switch" val="0"/>
     </path>
 </device>
-<device name="earpiece">
-    <path name="on">
-        <ctl name="EPEXT" val="1"/>
-	<ctl name="EPCDC" val="1"/>
-	<ctl name="EPDAC" val="1"/>
+
+<device name="builtin-mic">
+   <path name="on">
+	<ctl name="Analog Left Capture Route" val="Mic2"/>
+	<ctl name="Analog Right Capture Route" val="Mic1"/>
+	<ctl name="MIC1 Gain" val="31"/>
+	<ctl name="MIC2 Gain" val="31"/>
     </path>
     <path name="off">
-	<ctl name="EPEXT" val="0"/>
-	<ctl name="EPCDC" val="0"/>
-	<ctl name="EPDAC" val="0"/>
+	<ctl name="MIC1 Gain" val="0"/>
+	<ctl name="MIC2 Gain" val="0"/>
+	<ctl name="Analog Left Capture Route" val="Off"/>
+	<ctl name="Analog Right Capture Route" val="Off"/>
     </path>
 </device>
+
+<!-- Uncomment to get work Headset Mic, but buitlin will die  -->
+<!--  
+<device name="headset-in">
+    <path name="on">
+		<ctl name="Analog Right Capture Route" val="HS Mic"/>
+		<ctl name="MIC1 Gain" val="31"/>
+		<ctl name="MIC2 Gain" val="31"/>
+    </path>
+    <path name="off">
+		<ctl name="Analog Right Capture Route" val="Off"/>
+		<ctl name="MIC1 Gain" val="0"/>
+		<ctl name="MIC2 Gain" val="0"/>
+    </path>
+</device>
+-->
+
+
+
+<!--
 <device name="headphone">
     <path name="on">
-        <ctl name="HSLEXT" val="1"/>
-	<ctl name="HSLCDC" val="1"/>
-	<ctl name="HSLDAC" val="1"/>
-        <ctl name="HSREXT" val="1"/>
-	<ctl name="HSRCDC" val="1"/>
-	<ctl name="HSRDAC" val="1"/>
+		<ctl name="HSLEXT Switch" val="1"/>
+		<ctl name="HSLCDC Switch" val="1"/>
+		<ctl name="HSLDAC Switch" val="1"/>
+        <ctl name="HSREXT Switch" val="1"/>
+		<ctl name="HSRCDC Switch" val="1"/>
+		<ctl name="HSRDAC Switch" val="1"/>
     </path>
     <path name="off">
-        <ctl name="HSLEXT" val="0"/>
-	<ctl name="HSLCDC" val="0"/>
-	<ctl name="HSLDAC" val="0"/>
-        <ctl name="HSREXT" val="0"/>
-	<ctl name="HSRCDC" val="0"/>
-	<ctl name="HSRDAC" val="0"/>
-	 </path>
+		<ctl name="HSLEXT Switch" val="0"/>
+		<ctl name="HSLCDC Switch" val="0"/>
+		<ctl name="HSLDAC Switch" val="0"/>
+        <ctl name="HSREXT Switch" val="0"/>
+		<ctl name="HSRCDC Switch" val="0"/>
+		<ctl name="HSRDAC Switch" val="0"/>
+    </path>
 </device>
+-->
+<!--
+<device name="earpiece">
+    <path name="on">
+        <ctl name="EPEXT Switch" val="1"/>
+		<ctl name="EPCDC Switch" val="1"/>
+		<ctl name="EPDAC Switch" val="1"/>
+    </path>
+    <path name="off">
+        <ctl name="EPEXT Switch" val="0"/>
+		<ctl name="EPCDC Switch" val="0"/>
+		<ctl name="EPDAC Switch" val="0"/>
+    </path>
+</device>
+
+<device name="headset-in">
+    <path name="on">
+	    <ctl name="HSLEXT Switch" val="1"/>
+		<ctl name="HSLCDC Switch" val="1"/>
+		<ctl name="HSLDAC Switch" val="1"/>
+        <ctl name="HSREXT Switch" val="1"/>
+		<ctl name="HSRCDC Switch" val="1"/>
+		<ctl name="HSRDAC Switch" val="1"/>
+		<ctl name="MIC1 Gain" val="1"/>
+		<ctl name="MIC2 Gain" val="1"/>
+		<ctl name="Analog External Left Capture Route" val="EXT MicL"/>
+		<ctl name="Analog External Right Capture Route" val="EXT MicR"/>
+    </path>
+    <path name="off">
+	    <ctl name="HSLEXT Switch" val="0"/>
+		<ctl name="HSLCDC Switch" val="0"/>
+		<ctl name="HSLDAC Switch" val="0"/>
+        <ctl name="HSREXT Switch" val="0"/>
+		<ctl name="HSRCDC Switch" val="0"/>
+		<ctl name="HSRDAC Switch" val="0"/>
+		<ctl name="MIC1 Gain" val="0"/>
+		<ctl name="MIC2 Gain" val="0"/>
+		<ctl name="Analog External Left Capture Route" val="Off"/>
+		<ctl name="Analog External Right Capture Route" val="Off"/>
+    </path>
+</device>
+-->
+<!--
 <device name="sco-out">
     <path name="on">
     </path>
@@ -140,5 +209,7 @@ We are able to have most of our routing static so do that
     <path name="off">
     </path>
 </device>
+-->
 </tinyhal>
+
 
