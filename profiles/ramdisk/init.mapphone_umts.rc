@@ -24,9 +24,9 @@ on fs
     mkdir /pds 0775 system system
     exec /system/bootmenu/script/pdsbackup.sh
 
-    symlink /dev/block/mmcblk0p21 /dev/block/system
-    symlink /dev/block/mmcblk0p24 /dev/block/cache
-    symlink /dev/block/mmcblk0p25 /dev/block/userdata
+    symlink /dev/block/mmcblk1p21 /dev/block/system
+    symlink /dev/block/mmcblk1p24 /dev/block/cache
+    symlink /dev/block/mmcblk1p25 /dev/block/userdata
 
 on post-fs
 
