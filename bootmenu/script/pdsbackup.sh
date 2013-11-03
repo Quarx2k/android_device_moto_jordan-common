@@ -25,7 +25,7 @@ fi
 
 if [ ! -f $PDS_FILE ] ; then
     #make a copy of pds in /data
-    dd if=/dev/block/mmcblk0p7 of=$PDS_FILE bs=4096
+    dd if=/dev/block/mmcblk1p7 of=$PDS_FILE bs=4096
 
     #mount the fake pds
     mount_pds_image
