@@ -266,7 +266,7 @@
          Bluetooth Module 
     <bool name="config_bluetooth_adapter_quick_switch">false</bool>  --> 
 
-    <bool name="config_fmSeparateVolumeControl">true</bool>
+    <!--  <bool name="config_fmSeparateVolumeControl">true</bool> --> 
 
     <!-- Possible names from /devices/virtual/switch/dock for a dock device.
 Some kernels use names like CAR and DESK. 
