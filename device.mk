@@ -112,7 +112,7 @@ PRODUCT_PACKAGES += charge_only_mode mot_boot_mode
 PRODUCT_PACKAGES += librs_jni
 
 # CM9 apps
-PRODUCT_PACKAGES += Torch HwaSettings make_ext4fs Launcher3 CMFileManager Mms
+PRODUCT_PACKAGES += Torch HwaSettings make_ext4fs Launcher3 CMFileManager Mms Superuser su
 
 # Experimental TI OpenLink
 PRODUCT_PACKAGES += libnl_2 iw libbt-vendor uim-sysfs
