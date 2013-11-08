@@ -128,8 +128,10 @@ USE_OPENGL_RENDERER := true
 BOARD_EGL_CFG := device/moto/jordan-common/egl.cfg
 ENABLE_WEBGL := true
 COMMON_GLOBAL_CFLAGS += -DSYSTEMUI_PBSIZE_HACK=1
+COMMON_GLOBAL_CFLAGS += -DWORKAROUND_BUG_10194508=1
 COMMON_GLOBAL_CFLAGS += -DHAS_CONTEXT_PRIORITY -DDONT_USE_FENCE_SYNC
 TARGET_DISABLE_TRIPLE_BUFFERING := true
+TARGET_RUNNING_WITHOUT_SYNC_FRAMEWORK := true
 
 # Camera
 USE_CAMERA_STUB := false
@@ -152,6 +154,17 @@ BOARD_HARDWARE_CLASS := device/moto/jordan-common/cmhw/
 # Release tool
 TARGET_PROVIDES_RELEASETOOLS := true
 TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := device/moto/jordan-common/releasetools/common_ota_from_target_files
+
+# adb root
+ADDITIONAL_DEFAULT_PROPERTIES += ro.adb.secure=0
+ADDITIONAL_DEFAULT_PROPERTIES += ro.secure=0
+ADDITIONAL_DEFAULT_PROPERTIES += ro.allow.mock.location=1
+
+ext_modules:
+	make -C $(TARGET_KERNEL_MODULES_EXT) modules KERNEL_DIR=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE="arm-eabi-"
+	find $(TARGET_KERNEL_MODULES_EXT)/ -name "*.ko" -exec mv {} \
+		$(KERNEL_MODULES_OUT) \; || true
+
 
 WLAN_MODULES:
 	make clean -C hardware/ti/wlan/mac80211/compat_wl12xx

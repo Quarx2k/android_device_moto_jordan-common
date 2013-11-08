@@ -7,9 +7,9 @@ on early-init
 on init 
 
     # change order or library location search
-    export LD_LIBRARY_PATH /system/lib
     export DSP_PATH /system/lib/dsp
     export EXTERNAL_STORAGE /storage/sdcard0
+    export ANDROID_CACHE /cache
 
     mkdir /storage/sdcard0 0000 system system
     symlink /storage/sdcard0 /sdcard
@@ -93,6 +93,14 @@ on post-fs
     chmod 0660 /sys/class/rfkill/rfkill0/state
 
 on post-fs-data
+
+    mkdir /cache/dalvik-cache 0771 system system
+    chown system system /cache/dalvik-cache
+    chmod 0771 /cache/dalvik-cache
+    mkdir /data/.ssh 0750 root shell
+
+    # Run sysinit
+    start sysinit
 
     mount rootfs rootfs / ro remount
 
@@ -311,4 +319,15 @@ service fmradio /system/bin/fmradioserver
     disabled
     user system
     group bluetooth net_bt_admin net_raw net_admin misc
+
+# FUSE sdcard daemon for rich permissions (runs as media_rw)
+#service fuse_sdcard0 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/sdcard0 /storage/sdcard0
+#    class late_start
+#    disabled
+
+# sysinit (/system/etc/init.d)
+service sysinit /system/bin/sysinit
+    user root
+    oneshot
+    disabled
 

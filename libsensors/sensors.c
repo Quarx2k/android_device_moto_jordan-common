@@ -54,38 +54,38 @@ static const struct sensor_t sSensorList[] = {
     { "KXTF9 3-axis Accelerometer",
         "Kionix",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_ACCELEROMETER, SENSOR_TYPE_ACCELEROMETER,
-        8.0f*9.81f, KXTF9_CONVERT_A, 0.6f, 0, { } }, // 8G
+        8.0f*9.81f, KXTF9_CONVERT_A, 0.6f, 0, 0, 0, { } }, // 8G
 #else
     { "AK8973 Accelerometer sensor",
         "Asahi Kasei",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_ACCELEROMETER, SENSOR_TYPE_ACCELEROMETER,
-        5.76f*9.81f, AK8973_CONVERT_A, 0.2f, 0, { } },
+        5.76f*9.81f, AK8973_CONVERT_A, 0.2f, 0, 0, 0, { } },
 #endif
 
     { "AK8973 3-axis Orientation Sensor",
         "Asahi Kasei",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_ORIENTATION, SENSOR_TYPE_ORIENTATION,
-        360.0f, AK8973_CONVERT_O, 7.0f, 0, { } },
+        360.0f, AK8973_CONVERT_O, 7.0f, 0, 0, 0, { }  },
 
     { "AK8973 3-axis Magnetic Field Sensor",
         "Asahi Kasei",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_MAGNETIC_FIELD, SENSOR_TYPE_MAGNETIC_FIELD,
-        360.0f, AK8973_CONVERT_M, 4.0f, MS_50, { } }, // can use more power because values are unstables (cpu)
+        360.0f, AK8973_CONVERT_M, 4.0f, MS_50, 0, 0, { } }, // can use more power because values are unstables (cpu)
 
     { "AK8973 Temperature Sensor",
         "Asahi Kasei",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_AMBIENT_TEMPERATURE, SENSOR_TYPE_AMBIENT_TEMPERATURE,
-        85.0f, 1.0f, 0.2f, 0, { } },
+        85.0f, 1.0f, 0.2f, 0, 0, 0, { } },
 
     { "ISL29030 Proximity Sensor",
         "Intersil Corporation",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_PROXIMITY, SENSOR_TYPE_PROXIMITY,
-        100.0f, 1.0f, 25.0f, 0, { } }, // (IR LED can use a lot of battery)
+        100.0f, 1.0f, 25.0f, 0, 0, 0, { } }, // (IR LED can use a lot of battery)
 
     { "ISL29030 Light Sensor",
         "Intersil Corporation",
         1, SENSORS_HANDLE_BASE + SENSOR_TYPE_LIGHT, SENSOR_TYPE_LIGHT,
-        8192.0f, 1.0f, 0.5f, 0, { } },
+        8192.0f, 1.0f, 0.5f, 0, 0, 0, { } },
 };
 
 /*****************************************************************************/

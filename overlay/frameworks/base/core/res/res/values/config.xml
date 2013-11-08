@@ -260,13 +260,13 @@
     <string name="config_datause_iface">rmnet0</string>
 
      <!--   <bool name="config_usesLegacyUsbDeviceManager">true</bool>-->
-    <string name="config_legacyUmsLunFile">/sys/devices/platform/usb_mass_storage/lun0/file</string>
+     <!--  <string name="config_legacyUmsLunFile">/sys/devices/platform/usb_mass_storage/lun0/file</string> -->
 
     <!-- Boolean indicating if current platform supports quick switch-on/off of
          Bluetooth Module 
     <bool name="config_bluetooth_adapter_quick_switch">false</bool>  --> 
 
-    <bool name="config_fmSeparateVolumeControl">false</bool> 
+    <!--  <bool name="config_fmSeparateVolumeControl">true</bool> --> 
 
     <!-- Possible names from /devices/virtual/switch/dock for a dock device.
 Some kernels use names like CAR and DESK. 
@@ -285,7 +285,7 @@ Some kernels use names like CAR and DESK.
     <integer name="config_screenBrightnessDim">2</integer>
 
     <!-- We dont have different firmware for wifi modes, prevent reloading it -->
-    <bool name="config_wifiApFirmwareReload">false</bool>
+    <!--    <bool name="config_wifiApFirmwareReload">false</bool> -->
 
     <!-- Boolean indicating whether the wifi chipset has dual frequency band support -->
     <bool translatable="false" name="config_wifi_dual_band_support">true</bool>
@@ -306,4 +306,6 @@ Some kernels use names like CAR and DESK.
     -->
     <integer name="config_screenBrightnessSettingMinimum">2</integer>
 
+    <!-- Disable lockscreen translucent decor by default -->
+    <bool name="config_enableLockScreenTranslucentDecor">true</bool>
 </resources>

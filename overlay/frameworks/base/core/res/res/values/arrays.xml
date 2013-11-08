@@ -19,19 +19,19 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <!-- Defines the shutdown options shown in the reboot dialog. -->
-    <array name="shutdown_reboot_options" translatable="false">
+<!--     <array name="shutdown_reboot_options" translatable="false">
         <item>@string/reboot_reboot</item>
         <item>@string/reboot_recovery</item>
         <item>@string/reboot_bootmenu</item>
-    </array>  
+    </array>   -->
 
     <!-- Do not translate. Defines the shutdown actions passed to the kernel.
          The first item should be empty for regular reboot. -->
-    <string-array name="shutdown_reboot_actions" translatable="false">
+    <!--     <string-array name="shutdown_reboot_actions" translatable="false">
         <item></item>
         <item>recovery</item>
         <item>bootmenu</item>
-    </string-array>
+    </string-array>-->
 
     <string-array name="config_vendorServices">
         <item>/system/framework/com.motorola.android.location.jar:com.android.server.LocationProxyService</item>

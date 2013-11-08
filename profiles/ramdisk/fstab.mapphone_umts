@@ -6,4 +6,7 @@
 /dev/block/mmcblk1p21    /system         ext3    ro,barrier=1                                                                              wait
 /dev/block/mmcblk1p24    /cache          ext4    noatime,nosuid,nodev,barrier=1,data=ordered                             wait,check
 /dev/block/mmcblk1p25    /data            ext4    noatime,nosuid,nodev,barrier=1,data=ordered,noauto_da_alloc     wait,check
-/devices/platform/omap/omap_hsmmc.0/mmc_host/mmc1   /storage/sdcard0    auto defaults voldmanaged=sdcard0:auto
+/devices/platform/omap/omap_hsmmc.0/mmc_host/mmc1  auto    vfat defaults voldmanaged=sdcard0:auto
+
+
+

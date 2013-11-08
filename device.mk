@@ -89,6 +89,10 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_PACKAGES += power.omap3 hwcomposer.jordan
 
+# legacy version of skia
+# fixes the app switcher previews
+PRODUCT_PACKAGES += \
+    libskia_legacy
 
 # OMX stuff
 PRODUCT_PACKAGES += \
@@ -137,7 +141,7 @@ PRODUCT_PACKAGES += charge_only_mode mot_boot_mode
 PRODUCT_PACKAGES += librs_jni
 
 # CM9 apps
-PRODUCT_PACKAGES += Torch HwaSettings make_ext4fs
+PRODUCT_PACKAGES += Torch HwaSettings make_ext4fs Launcher3
 
 # Experimental TI OpenLink
 PRODUCT_PACKAGES += libnl_2 iw libbt-vendor uim-sysfs

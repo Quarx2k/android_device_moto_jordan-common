@@ -1,32 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_shortname" translatable="false">Defy Parts</string>
 
-    <string name="app_name">Ustawienia urządzenia</string>
+    <string name="app_name">Ustawienia Defy</string>
 
-    <string name="general_settings_title">Ustawienia generalne	</string>
+    <string name="general_settings_title">Ustawienia ogólne</string>
 
-    <string name="charge_led_mode_title">Dostosowanie diody LED</string>
-    <string name="charge_led_mode_summary">Ustawienia diody LED podczas ładowania</string>
+    <string name="charge_led_mode_title">Ustawienia diody LED</string>
+    <string name="charge_led_mode_summary">Dostosuj zachowanie diody powiadomień podczas ładowania</string>
     <string name="charge_led_mode_white">Biała LED</string>
-    <string name="charge_led_mode_rgb">Mix LED (czerwony/zielony)</string>
-    <string name="charge_led_mode_off">Brak</string>
+    <string name="charge_led_mode_rgb">Mieszana (czerwona/zielona)</string>
+    <string name="charge_led_mode_off">Wyłączona</string>
+
+    <string name="button_brightness_scale_title">Jasność przycisków</string>
+    <string name="button_brightness_scale_summary">Pozwala zmniejszać jasność przycisków, użyteczne zwłaszcza w przypadku używania ręcznej jasności</string>
 
     <string name="touch_points_title">Multidotyk</string>
-    <string name="touch_points_summary">Ustawienia punktów multidotyku na ekranie</string>
-    <string name="touch_point_entry_2points">2 punkty (domyślnie)</string>
+    <string name="touch_points_summary">Dostosuj ilość punktów dotyku rejestrowanych przez ekran</string>
+    <string name="touch_point_entry_2points">2 punkty (domyślne)</string>
     <string name="touch_point_entry_3points">3 punkty</string>
     <string name="touch_point_entry_4points">4 punkty</string>
     <string name="touch_point_entry_5points">5 punktów</string>
     <string name="touch_point_entry_8points">8 punktów</string>
     <string name="touch_point_entry_10points">10 punktów</string>
 
-    <string name="touch_point_warning_title">UWAGA</string>
-    <string name="touch_point_warning_message">Zwiększenie liczby punktów może pogorszyć reakcje ekranu. Czy na pewno chcesz zmienić ustawienia ?</string>
+    <string name="touch_point_warning_title">Uwaga</string>
+    <string name="touch_point_warning_message">Zwiększenie ilości punktów dotyku może zmniejszyć reaktywność ekranu.\nCzy na pewno chcesz zmienić te ustawienia?</string>
 
-    <string name="audio_settings_title">Ustawienia audio</string>
+    <string name="audio_settings_title">Ustawienia Audio</string>
     <string name="audio_effects">Efekty audio i DSP</string>
 
     <string name="other_settings_title">Inne ustawienia</string>
     <string name="compass_calibrate">Kalibracja kompasu</string>
 
+    <string name="baseband_selection">Wybieranie pasma</string>
+
+    <string name="reboot_prompt_title">Wymagane ponowne uruchomienie</string>
+    <string name="reboot_prompt_message">Aby zmiany zostały zastosowane wymagane jest ponowne uruchomienie. Czy chcesz uruchomic ponownie teraz?</string>
+    <string name="yes">Tak</string>
+    <string name="no">Nie</string>
+
+    <string name="region_europe">Europa</string>
+    <string name="region_america">Ameryka</string>
+    <string name="region_asia">Azja</string>
+    <string name="region_africa">Afryka</string>
+    <string name="region_australia">Australia</string>
+
+    <string name="country_central_europe">Europa środkowa</string>
+    <string name="country_france">Francja</string>
+    <string name="country_great_britain">Wielka Brytania</string>
+    <string name="country_italy">Włochy</string>
+    <string name="country_poland">Polska</string>
+    <string name="country_usa">USA</string>
+    <string name="country_brasil">Brazylia</string>
+    <string name="country_argentina">Argentyna</string>
+    <string name="country_colombia">Columbia</string>
+    <string name="country_china">Chiny</string>
+    <string name="country_south_korea">Korea południowa</string>
+    <string name="country_hongkong_taiwan">Hongkong, Tajwan</string>
+    <string name="country_south_east_asia">Południowo-Wschodnia Azja</string>
+    <string name="country_arabia">Arabia</string>
+    <string name="country_south_africa">Południowa Afryka</string>
+
+    <string name="baseband_selection_summary">Wybierz pasmo podstawowe odpowiednie dla twojego kraju\nObecnie wybrane: %1$s %2$s</string>
+    <string name="baseband_region">Region</string>
+    <string name="baseband_country">Kraj</string>
+    <string name="baseband_version">Wersja</string>
+    <string name="baseband_frequencies">Częstotliwości: %1$s MHz</string>
+    <string name="unknown">Nieznane</string>
+
+    <string name="modem_error">Problem telefonii</string>
+    <string name="touch_for_info">Dotknij aby uzyskać informacje</string>
+    <string name="reboot_timeout_msg">Jeśli żadna akcja nie zostanie podjęta, telefon zostanie uruchomiony ponownie za %1$d sekund.</string>
+    <string name="modem_error_msg">Został wykryty problem w warstwie telefonicznej urządzenia. Aby naprawić stan telefonu wymagane jest ponowne uruchomienie.\nCo chcesz zrobić?</string>
+    <string name="reboot_btn">Uruchom ponownie teraz</string>
+    <string name="snooze_btn">Przypomnij później</string>
+    <string name="dismiss_btn">Nie przypominaj ponownie</string>
+    <string name="device_rebooted_modem_error">Urządzenie zostało uruchomione ponownie z powodu problemu w warstwie telefonicznej telefonu.</string>
 </resources>

@@ -148,6 +148,15 @@ set_overclock_table()
 }
 
 #############################################################
+# Set GPU Freq
+#############################################################
+
+set_gpu_freq()
+{
+    echo 266666666 > /proc/gpu/max_rate  #${gpu_clk1} 266mhz
+}
+
+#############################################################
 # Main Scrpit
 #############################################################
 
@@ -170,10 +179,11 @@ if [ $enable -eq 1 ]; then
   set_scaling
   echo "set overclock table..."
   set_overclock_table
+  echo "set gpu freq..."
+  set_gpu_freq
   echo "set ioscheduler..."
   set_ioscheduler
 
   busybox chown -R system /sys/devices/system/cpu
 
 fi
-
