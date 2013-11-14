@@ -386,12 +386,12 @@ void select_devices(struct m0_audio_device *adev)
 
 static int start_call(struct m0_audio_device *adev)
 {
-    ALOGE("Opening modem PCMs");
     int bt_on;
 
     bt_on = adev->out_device & AUDIO_DEVICE_OUT_ALL_SCO;
     pcm_config_vx.rate = adev->wb_amr ? VX_WB_SAMPLING_RATE : VX_NB_SAMPLING_RATE;
 
+    ALOGE("Opening OUTPUT modem PCMs");
     /* Open modem PCM channels */
     if (adev->pcm_modem_dl == NULL) {
         if (bt_on)
@@ -403,7 +403,7 @@ static int start_call(struct m0_audio_device *adev)
             goto err_open_dl;
         }
     }
-
+    ALOGE("Opening INPUT modem PCMs");
     if (adev->pcm_modem_ul == NULL) {
         adev->pcm_modem_ul = pcm_open(CARD_DEFAULT, PORT_MODEM, PCM_IN, &pcm_config_vx);
         if (!pcm_is_ready(adev->pcm_modem_ul)) {
@@ -411,10 +411,11 @@ static int start_call(struct m0_audio_device *adev)
             goto err_open_ul;
         }
     }
-
+    ALOGE("Starting OUTPUT modem PCMs");
     pcm_start(adev->pcm_modem_dl);
-    pcm_start(adev->pcm_modem_ul);
-
+    ALOGE("Starting INPUT modem PCMs");
+   // pcm_start(adev->pcm_modem_ul);   // Reboot device.
+ 
     return 0;
 
 err_open_ul:
@@ -430,6 +431,7 @@ err_open_dl:
 static void end_call(struct m0_audio_device *adev)
 {
     ALOGE("Closing modem PCMs");
+
     pcm_stop(adev->pcm_modem_dl);
     pcm_stop(adev->pcm_modem_ul);
     pcm_close(adev->pcm_modem_dl);
