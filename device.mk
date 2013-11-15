@@ -91,7 +91,7 @@ PRODUCT_PACKAGES += \
 	audio_policy.jordan \
 	audio.primary.omap3
 
-PRODUCT_PACKAGES += power.omap3 hwcomposer.jordan
+PRODUCT_PACKAGES += hwcomposer.jordan
 
 # legacy version of skia
 # fixes the app switcher previews
