@@ -14,22 +14,11 @@
      limitations under the License.
 -->
 
-
+<!-- Phone app resources that may need to be customized
+     for different hardware or product builds. -->
 <resources>
-
-    <string-array translatable="false" name="voice_quality_entries">
-        <item>@string/voice_quality_entry_normal</item>
-        <item>@string/voice_quality_entry_clear</item>
-        <item>@string/voice_quality_entry_crisp</item>
-        <item>@string/voice_quality_entry_bright</item>
-    </string-array>
-
-    <string-array translatable="false" name="voice_quality_values">
-        <item>Normal</item>
-        <item>Clear</item>
-        <item>Crisp</item>
-        <item>Bright</item>
-    </string-array>
-
-
+    <!--  <string name="voice_quality_param">motoVoiceQualityConfig</string>  -->
+    <!-- Determine whether we want to play local DTMF tones in a call, or
+         just let the radio/BP handle playing of the tones. -->
+    <bool name="allow_local_dtmf_tones">true</bool>
 </resources>
