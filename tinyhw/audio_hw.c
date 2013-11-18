@@ -414,7 +414,7 @@ static int start_call(struct m0_audio_device *adev)
     ALOGE("Starting OUTPUT modem PCMs");
     pcm_start(adev->pcm_modem_dl);
     ALOGE("Starting INPUT modem PCMs");
-   // pcm_start(adev->pcm_modem_ul);   // Reboot device.
+    pcm_start(adev->pcm_modem_ul);
  
     return 0;
 
