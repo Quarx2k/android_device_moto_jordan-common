@@ -123,30 +123,58 @@ struct route_setting
 /* DAC - CPCAP Mixer Stereo DAC - STDac Volume*/
 /* CDC - CPCAP Mixer Voice Code - Codec Volume*/
 
-struct route_setting voicecall_default[] = {
+struct route_setting voicecall_earpice[] = {
     { .ctl_name = "Codec Volume", .intval = 15, },
-    { .ctl_name = "STDac Volume", .intval = 15, },
     { .ctl_name = "CPCAP Mixer Voice Codec", .intval = 1, },
-    { .ctl_name = "CPCAP Mixer Stereo DAC", .intval = 1, },
-    { .ctl_name = "EPDAC Switch", .intval = 1, },  //Enable dac earpice
-    { .ctl_name = "EPCDC Switch", .intval = 1, },  //Enable codec earpice
-    { .ctl_name = "LDSPLDAC Switch", .intval = 1, }, // Enable dac speaker
-    { .ctl_name = "LDSPLCDC Switch", .intval = 1, }, // Enable codec speaker
-    { .ctl_name = "DAI Mode", .strval = "Voice Call Handset", },  //Used only for HeadSet !?
-  //  { .ctl_name = "DAI Mode", .strval = "CPCAP Mixer Stereo DAC", },
-    { .ctl_name = NULL, },
-};
-
-struct route_setting voicecall_default_disable[] = {
+    { .ctl_name = "LDSPLCDC Switch", .intval = 0, },
+    { .ctl_name = "EPCDC Switch", .intval = 1, },
     { .ctl_name = "DAI Mode", .strval = "Audio", },
     { .ctl_name = NULL, },
 };
 
-struct route_setting default_input[] = {
+struct route_setting voicecall_speaker[] = {
+    { .ctl_name = "Codec Volume", .intval = 15, },
+    { .ctl_name = "CPCAP Mixer Voice Codec", .intval = 1, },
+    { .ctl_name = "EPCDC Switch", .intval = 0, },
+    { .ctl_name = "HSRCDC Switch", .intval = 0, },
+    { .ctl_name = "HSLCDC Switch", .intval = 0, },
+    { .ctl_name = "LDSPLCDC Switch", .intval = 1, },
+    { .ctl_name = "DAI Mode", .strval = "Audio", },  
+    { .ctl_name = NULL, },
+};
+struct route_setting voicecall_headset[] = {
+    { .ctl_name = "Codec Volume", .intval = 15, },
+    { .ctl_name = "CPCAP Mixer Voice Codec", .intval = 1, },
+    { .ctl_name = "LDSPLCDC Switch", .intval = 0, },
+    { .ctl_name = "EPCDC Switch", .intval = 0, },
+    { .ctl_name = "HSRCDC Switch", .intval = 1, },
+    { .ctl_name = "HSLCDC Switch", .intval = 1, },
+    { .ctl_name = "DAI Mode", .strval = "Audio", },  
+    { .ctl_name = NULL, },
+};
+struct route_setting voicecall_default_disable[] = {
+    { .ctl_name = "DAI Mode", .strval = "Audio", },
+    { .ctl_name = "CPCAP Mixer Voice Codec", .intval = 0, },
+    { .ctl_name = "LDSPLCDC Switch", .intval = 0, },
+    { .ctl_name = "EPCDC Switch", .intval = 0, },
+    { .ctl_name = "HSRCDC Switch", .intval = 0, },
+    { .ctl_name = "HSLCDC Switch", .intval = 0, },
+    { .ctl_name = NULL, },
+};
+
+struct route_setting earpice_input[] = {
     { .ctl_name = "Analog Left Capture Route", .strval = "Mic2", },
     { .ctl_name = "Analog Right Capture Route", .strval = "Mic1", },
     { .ctl_name = "MIC1 Gain", .intval = 31, },
     { .ctl_name = "MIC2 Gain", .intval = 31, },
+    { .ctl_name = NULL, },
+};
+
+struct route_setting speaker_input[] = {    //Need check fix mic used in speaker mode. Disabled to prevent whistle. 
+    { .ctl_name = "Analog Left Capture Route", .strval = "Off", },
+    { .ctl_name = "Analog Right Capture Route", .strval = "Off", },
+    { .ctl_name = "MIC1 Gain", .intval = 0, },
+    { .ctl_name = "MIC2 Gain", .intval = 0, },
     { .ctl_name = NULL, },
 };
 
@@ -168,12 +196,18 @@ struct route_setting noise_suppression_disable[] = {
 };
 
 struct route_setting headset_input[] = {
-
+    { .ctl_name = "Analog Left Capture Route", .strval = "Off", },
+    { .ctl_name = "Analog Right Capture Route", .strval = "HS Mic", },
+    { .ctl_name = "MIC1 Gain", .intval = 31, },
+    { .ctl_name = "MIC2 Gain", .intval = 0, },
     { .ctl_name = NULL, },
 };
 
 struct route_setting headset_input_disable[] = {
-
+    { .ctl_name = "Analog Left Capture Route", .strval = "Off", },
+    { .ctl_name = "Analog Right Capture Route", .strval = "Off", },
+    { .ctl_name = "MIC1 Gain", .intval = 0, },
+    { .ctl_name = "MIC2 Gain", .intval = 0, },
     { .ctl_name = NULL, },
 };
 

@@ -461,7 +461,7 @@ static int start_call(struct m0_audio_device *adev)
     pcm_start(adev->pcm_modem_dl);
     ALOGE("Starting INPUT modem PCMs");
     pcm_start(adev->pcm_modem_ul);
- 
+
     return 0;
 
 err_open_ul:
@@ -505,9 +505,9 @@ void audio_set_wb_amr_callback(void *data, int enable)
         /* reopen the modem PCMs at the new rate */
         if (adev->in_call) {
             end_call(adev);
-            select_output_device(adev);
             netmux_config();
             start_call(adev);
+            select_output_device(adev);
         }
     }
     pthread_mutex_unlock(&adev->lock);
@@ -605,10 +605,9 @@ static void select_mode(struct m0_audio_device *adev)
                 adev->in_device = AUDIO_DEVICE_IN_BUILTIN_MIC & ~AUDIO_DEVICE_BIT_IN;
             } else
                 adev->out_device &= ~AUDIO_DEVICE_OUT_SPEAKER;
-            select_output_device(adev);
             netmux_config();
             start_call(adev);
-           // ril_set_call_clock_sync(&adev->ril, SOUND_CLOCK_START);
+            select_output_device(adev);
             adev_set_voice_volume(&adev->hw_device, adev->voice_volume);
             adev->in_call = 1;
         }
@@ -714,7 +713,23 @@ static void select_output_device(struct m0_audio_device *adev)
                     break;
             }
         }
+        if (earpiece_on) {
+            set_voicecall_route_by_array(adev->mixer, voicecall_earpice, 1);
+            set_voicecall_route_by_array(adev->mixer, earpice_input, 1);
+            ALOGE("In-Call Earpiece Enabled!!!");
+	}
+        if (speaker_on) {
+            ALOGE("In-Call Speaker Enabled!!!");
+            set_voicecall_route_by_array(adev->mixer, voicecall_speaker, 1);
+            set_voicecall_route_by_array(adev->mixer, speaker_input, 1);
+	}
+        if (headset_on || headphone_on) {
+            ALOGE("In-Call Headset Enabled!!!");
+            set_voicecall_route_by_array(adev->mixer, voicecall_headset, 1);
+            set_voicecall_route_by_array(adev->mixer, headset_input, 1);
+	}
 
+/*
         if (headset_on || headphone_on || speaker_on || earpiece_on) {
             ALOGD("%s: set voicecall route: voicecall_default", __func__);
             set_voicecall_route_by_array(adev->mixer, voicecall_default, 1);
@@ -752,7 +767,7 @@ static void select_output_device(struct m0_audio_device *adev)
             ALOGD("%s: set voicecall route: bt_disable", __func__);
             set_voicecall_route_by_array(adev->mixer, bt_disable, 1);
         }
-
+*/
         set_incall_device(adev);
     }
 
@@ -2662,14 +2677,14 @@ static int adev_set_voice_volume(struct audio_hw_device *dev, float volume)
     int ret;
 
     adev->voice_volume = volume;
+    ALOGE("Volume value: %lf", volume);
     unsigned char set_volume_req[] = "\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x12\x02\x00\x02\x00\x04\x00\x00\x00\x03\x02\x00\x02\x01\x04\x00\x00\x00\x02";
-    ret = write(netmux_fd, &set_volume_req, sizeof(set_volume_req)-1);
-    if (ret < 0) {
-        ALOGE("Write Volume Error %d", ret);
+    if (netmux_fd > 0 && adev->mode == AUDIO_MODE_IN_CALL) {
+        ret = write(netmux_fd, &set_volume_req, sizeof(set_volume_req)-1);
+        if (ret < 0) {
+            ALOGE("Write Volume Error %d", ret);
+        }
     }
-    //if (adev->mode == AUDIO_MODE_IN_CALL)
-     //   ril_set_call_volume(&adev->ril, SOUND_TYPE_VOICE, volume);
-
     return 0;
 }
 
