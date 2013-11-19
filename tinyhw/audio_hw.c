@@ -27,6 +27,8 @@
 #include <sys/time.h>
 #include <stdlib.h>
 #include <expat.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
 
 #include <cutils/log.h>
 #include <cutils/str_parms.h>
@@ -193,6 +195,8 @@ struct m0_dev_cfg {
     unsigned int off_len;
 };
 
+static int netmux_fd = -1;
+
 /**
  * NOTE: when multiple mutexes have to be acquired, always respect the following order:
  *        hw device > in stream > out stream
@@ -314,7 +318,7 @@ void update_devices(struct m0_audio_device *adev)
     for (i = 0; i < adev->num_dev_cfgs; i++)
     {
    	 if ((adev->out_device & adev->dev_cfgs[i].mask) && (adev->active_out_device != 6) &&
-       		 (adev->active_out_device & adev->dev_cfgs[i].mask)) 
+            (adev->active_out_device & adev->dev_cfgs[i].mask)) 
 	{
         	set_route_by_array(adev->mixer, adev->dev_cfgs[i].on,
         	           adev->dev_cfgs[i].on_len);
@@ -338,9 +342,9 @@ void select_devices(struct m0_audio_device *adev)
     for (i = 0; i < adev->num_dev_cfgs; i++)
     {
    	 if ((adev->out_device & adev->dev_cfgs[i].mask) &&
-       		 !(adev->active_out_device & adev->dev_cfgs[i].mask)) 
+            !(adev->active_out_device & adev->dev_cfgs[i].mask)) 
   	{
-   		ALOGE("Enable Output: %d", i);
+       ALOGE("Enable Output: %d", i);
         	set_route_by_array(adev->mixer, adev->dev_cfgs[i].on,
         	           adev->dev_cfgs[i].on_len);
     	}
@@ -349,9 +353,9 @@ void select_devices(struct m0_audio_device *adev)
     for (i = 0; i < adev->num_dev_cfgs; i++)
     {
    	 if ((adev->in_device & adev->dev_cfgs[i].mask) &&
-       		 !(adev->active_in_device & adev->dev_cfgs[i].mask))
+            !(adev->active_in_device & adev->dev_cfgs[i].mask))
   	{
-   		ALOGE("Enable Input: %d", i);
+       ALOGE("Enable Input: %d", i);
         	set_route_by_array(adev->mixer, adev->dev_cfgs[i].on,
         	           adev->dev_cfgs[i].on_len);
     	}
@@ -361,7 +365,7 @@ void select_devices(struct m0_audio_device *adev)
     for (i = 0; i < adev->num_dev_cfgs; i++)
     {
    	 if (!(adev->out_device & adev->dev_cfgs[i].mask) &&
-       		 (adev->active_out_device & adev->dev_cfgs[i].mask))
+            (adev->active_out_device & adev->dev_cfgs[i].mask))
   	{
         	ALOGE("Dsiable Output: %d", i);;
         	set_route_by_array(adev->mixer, adev->dev_cfgs[i].off,
@@ -372,7 +376,7 @@ void select_devices(struct m0_audio_device *adev)
     for (i = 0; i < adev->num_dev_cfgs; i++)
     {
    	 if (!(adev->in_device & adev->dev_cfgs[i].mask) &&
-       		 (adev->active_in_device & adev->dev_cfgs[i].mask))
+            (adev->active_in_device & adev->dev_cfgs[i].mask))
   	{
         	ALOGE("Dsiable Input: %d", i);
         	set_route_by_array(adev->mixer, adev->dev_cfgs[i].off,
@@ -384,10 +388,51 @@ void select_devices(struct m0_audio_device *adev)
     adev->active_in_device = adev->in_device;
 }
 
+static void netmux_config() {
+    ALOGE("Open Audio Netmux");
+
+    int ret;
+	
+    netmux_fd = open("/dev/netmux/audio", O_RDWR | O_NONBLOCK);
+
+    if (netmux_fd <= 0) {
+     	ALOGE("%s: failed, errno=%d\n", __func__, errno);
+    } else {
+    	ALOGE("Netmux Opened!");
+    }
+
+    unsigned char set_volume_req[] = "\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x12\x02\x00\x02\x00\x04\x00\x00\x00\x03\x02\x00\x02\x01\x04\x00\x00\x00\x02";
+    unsigned char codec_req[] = "\x00\x00\x00\x11\x00\x00\x00\x00\x00\x00\x00\x09\x02\x00\x0F\x00\x04\x00\x00\x00\x01";
+    unsigned char request_msg_ack[] ="\x00\x00\x00\x0F\x00\x00\x00\x00\x00\x00\x00\x1B\x02\x00\x0D\x00\x04\x00\x00\x80\x09\x02\x00\x0D\x01\x04\x00\x00\x00\x01\x02\x00\x0D\x02\x04\x00\x00\x00\x00";
+    unsigned char playback_mix_req[] = "\x00\x00\x00\x0A\x00\x00\x00\x00\x00\x00\x00\x12\x02\x00\x09\x00\x04\x00\x00\x00\x00\x02\x00\x09\x01\x04\x00\x00\x00\x01";
+
+    ret = write(netmux_fd, &set_volume_req, sizeof(set_volume_req)-1);
+    if (ret < 0) {
+    	ALOGE("set_volume_req error: %d", ret);
+    }
+
+    ret = write(netmux_fd, &codec_req, sizeof(codec_req)-1);
+    if (ret < 0) {
+    	ALOGE("codec_req: %d", ret);
+    }
+
+    ret = write(netmux_fd, &request_msg_ack, sizeof(request_msg_ack)-1);
+    if (ret < 0) {
+    	ALOGE("request_msg_ack: %d", ret);
+    }
+
+    ret = write(netmux_fd, &playback_mix_req, sizeof(playback_mix_req)-1);
+    if (ret < 0) {
+    	ALOGE("playback_mix_req: %d", ret);
+    }
+
+    ALOGE("Exit from netmux config");
+}
+
 static int start_call(struct m0_audio_device *adev)
 {
     int bt_on;
-
+    ALOGE("Start Call");
     bt_on = adev->out_device & AUDIO_DEVICE_OUT_ALL_SCO;
     pcm_config_vx.rate = adev->wb_amr ? VX_WB_SAMPLING_RATE : VX_NB_SAMPLING_RATE;
 
@@ -411,6 +456,7 @@ static int start_call(struct m0_audio_device *adev)
             goto err_open_ul;
         }
     }
+
     ALOGE("Starting OUTPUT modem PCMs");
     pcm_start(adev->pcm_modem_dl);
     ALOGE("Starting INPUT modem PCMs");
@@ -431,13 +477,17 @@ err_open_dl:
 static void end_call(struct m0_audio_device *adev)
 {
     ALOGE("Closing modem PCMs");
-
+    if (netmux_fd > 0) {
+    	ALOGE("Netmux closed");
+	close(netmux_fd);
+    }
     pcm_stop(adev->pcm_modem_dl);
     pcm_stop(adev->pcm_modem_ul);
     pcm_close(adev->pcm_modem_dl);
     pcm_close(adev->pcm_modem_ul);
     adev->pcm_modem_dl = NULL;
     adev->pcm_modem_ul = NULL;
+    
 }
 
 static void set_eq_filter(struct m0_audio_device *adev)
@@ -456,6 +506,7 @@ void audio_set_wb_amr_callback(void *data, int enable)
         if (adev->in_call) {
             end_call(adev);
             select_output_device(adev);
+            netmux_config();
             start_call(adev);
         }
     }
@@ -555,6 +606,7 @@ static void select_mode(struct m0_audio_device *adev)
             } else
                 adev->out_device &= ~AUDIO_DEVICE_OUT_SPEAKER;
             select_output_device(adev);
+            netmux_config();
             start_call(adev);
            // ril_set_call_clock_sync(&adev->ril, SOUND_CLOCK_START);
             adev_set_voice_volume(&adev->hw_device, adev->voice_volume);
@@ -690,6 +742,7 @@ static void select_output_device(struct m0_audio_device *adev)
         if (bt_on) {
             // bt uses a different port (PORT_BT) for playback, reopen the pcms
             end_call(adev);
+            netmux_config();
             start_call(adev);
             ALOGD("%s: set voicecall route: bt_input", __func__);
             set_voicecall_route_by_array(adev->mixer, bt_input, 1);
@@ -1129,7 +1182,7 @@ static int out_set_parameters(struct audio_stream *stream, const char *kvpairs)
             }
             if (out != adev->outputs[OUTPUT_HDMI]) {
                 adev->out_device = val;
-		ALOGE("VAL %d", val);
+    ALOGE("VAL %d", val);
                 select_output_device(adev);
             }
         }
@@ -2606,9 +2659,14 @@ static int adev_init_check(const struct audio_hw_device *dev)
 static int adev_set_voice_volume(struct audio_hw_device *dev, float volume)
 {
     struct m0_audio_device *adev = (struct m0_audio_device *)dev;
+    int ret;
 
     adev->voice_volume = volume;
-
+    unsigned char set_volume_req[] = "\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x12\x02\x00\x02\x00\x04\x00\x00\x00\x03\x02\x00\x02\x01\x04\x00\x00\x00\x02";
+    ret = write(netmux_fd, &set_volume_req, sizeof(set_volume_req)-1);
+    if (ret < 0) {
+        ALOGE("Write Volume Error %d", ret);
+    }
     //if (adev->mode == AUDIO_MODE_IN_CALL)
      //   ril_set_call_volume(&adev->ril, SOUND_TYPE_VOICE, volume);
 
