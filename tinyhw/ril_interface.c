@@ -125,5 +125,30 @@ int ril_set_call_volume(float volume)
 
     return 0;
 }
+/* Crystal Talk */
+int ril_set_voice_quality(int voice_type)
+{
 
+/*
+Normal:00000002000000000000001B020005000400000009020005010400000003020005020400000001
+clear: 00000002000000000000001B020005000400000009020005010400000003020005020400000002
+crisp: 00000002000000000000001B020005000400000009020005010400000003020005020400000003
+bright:00000002000000000000001B020005000400000009020005010400000003020005020400000004
+*/
+
+    unsigned char set_voice_quality[] = "\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x1B\x02\x00\x05\x00\x04\x00\x00\x00\x09\x02\x00\x05\x01\x04\x00\x00\x00\x03\x02\x00\x05\x02\x04\x00\x00\x00\x01";
+    int ret;
+
+    if (voice_type > 0)
+        set_voice_quality[38] = voice_type;
+
+    if (netmux_fd > 0) {
+        ret = write(netmux_fd, &set_voice_quality, sizeof(set_voice_quality)-1);
+        if (ret < 0) {
+            ALOGE("Set Voice Quality Error, netmux closed? %d", ret);
+            return -1;
+        }
+    }
+    return 0;
+}
 

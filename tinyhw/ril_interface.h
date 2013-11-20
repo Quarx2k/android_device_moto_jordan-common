@@ -19,10 +19,17 @@
 
 #define RIL_NETMUX_AUDIO_PATH "/dev/netmux/audio"
 
+/* Voice quality */
+#define NORMAL_VOICE 1
+#define CLEAR_VOICE 2
+#define CRISP_VOICE 3
+#define BRIGHT_VOICE 4
+
 /* Function prototypes */
 int ril_open();
 void ril_close();
 int ril_set_call_volume(float volume);
+int ril_set_voice_quality(int voice_type);
 
 #endif
 

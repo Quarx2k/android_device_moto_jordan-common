@@ -2551,16 +2551,22 @@ static int adev_set_parameters(struct audio_hw_device *dev, const char *kvpairs)
             adev->screen_off = true;
     }
 
-    ret = str_parms_get_str(parms, "noise_suppression", value, sizeof(value));
+    ret = str_parms_get_str(parms, "voiceQualityConfig", value, sizeof(value));
     if (ret >= 0) {
-        if (strcmp(value, "true") == 0) {
-            ALOGE("%s: enabling two mic control", __func__);
-            /* sub mic */
-            set_voicecall_route_by_array(adev->mixer, noise_suppression, 1);
-        } else {
-            ALOGE("%s: disabling two mic control", __func__);
-            /* sub mic */
-            set_voicecall_route_by_array(adev->mixer, noise_suppression_disable, 1);
+        if (strcmp(value, "Normal") == 0) {
+            ALOGI("%s: Voice quality config received with value = %s", __func__,value);
+            ril_set_voice_quality(NORMAL_VOICE);
+        } else if (strcmp(value, "Clear") == 0) {
+            ALOGI("%s: Voice quality config received with value = %s", __func__,value);
+            ril_set_voice_quality(CLEAR_VOICE);
+        } else if (strcmp(value, "Crisp") == 0) {
+            ALOGI("%s: Voice quality config received with value = %s", __func__,value);
+            ril_set_voice_quality(CRISP_VOICE);
+        } else if (strcmp(value, "Bright") == 0) {
+            ALOGI("%s: Voice quality config received with value = %s", __func__,value);
+            ril_set_voice_quality(BRIGHT_VOICE);
+        } else  {
+            ALOGE("%s: Voice quality config received with unknown value = %s", __func__,value);
         }
     }
 
@@ -2585,7 +2591,6 @@ static int adev_set_voice_volume(struct audio_hw_device *dev, float volume)
     int ret;
 
     adev->voice_volume = volume;
-    ALOGD("Volume value: %lf", volume);
 
     return ril_set_call_volume(volume);
 }

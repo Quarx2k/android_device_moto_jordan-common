@@ -47,7 +47,6 @@
 #define DEEP_BUFFER_LONG_PERIOD_SIZE 880
 #define PLAYBACK_DEEP_BUFFER_LONG_PERIOD_COUNT 8
 
-
 /* minimum sleep time in out_write() when write threshold is not reached */
 #define MIN_WRITE_SLEEP_US 5000
 
