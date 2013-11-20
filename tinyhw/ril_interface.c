@@ -14,180 +14,99 @@
  * limitations under the License.
  */
 
-#define ALOG_TAG "audio_hw_primary"
-/*#define ALOG_NDEBUG 0*/
+#define LOG_TAG "audio_hw_primary"
+//#define LOG_NDEBUG 0
 
-#include <dlfcn.h>
 #include <stdlib.h>
-
+#include <fcntl.h>
+#include <sys/ioctl.h>
 #include <utils/Log.h>
-#include <cutils/properties.h>
+#include <string.h>
+#include <system/audio.h>
+#include <hardware/audio.h>
 
 #include "ril_interface.h"
+ 
+void ril_config();
 
-#define VOLUME_STEPS_DEFAULT  "5"
-#define VOLUME_STEPS_PROPERTY "ro.config.vc_call_vol_steps"
+static int netmux_fd = -1;
 
 /* Function pointers */
-void *(*_ril_open_client)(void);
-int (*_ril_close_client)(void *);
-int (*_ril_connect)(void *);
-int (*_ril_is_connected)(void *);
-int (*_ril_disconnect)(void *);
-int (*_ril_set_call_volume)(void *, enum ril_sound_type, int);
-int (*_ril_set_call_audio_path)(void *, enum ril_audio_path);
-int (*_ril_set_call_clock_sync)(void *, enum ril_clock_state);
-int (*_ril_set_two_mic_control)(void *, enum ril_two_mic_device, enum ril_two_mic_state);
-int (*_ril_register_unsolicited_handler)(void *, int, void *);
-int (*_ril_get_wb_amr)(void *, void *);
 
-/* Audio WB AMR callback */
-void (*_audio_set_wb_amr_callback)(void *, int);
-void *callback_data = NULL;
+int ril_open()
+{    
+    ALOGD("Open Audio Netmux");
 
-void ril_register_set_wb_amr_callback(void *function, void *data)
-{
-    _audio_set_wb_amr_callback = function;
-    callback_data = data;
+    netmux_fd = open(RIL_NETMUX_AUDIO_PATH, O_RDWR | O_NONBLOCK);
+
+    if (netmux_fd <= 0) {
+     	ALOGE("%s: failed, errno=%d\n", __func__, errno);
+	return errno;
+    }
+
+    ALOGI("Netmux Opened!");
+
+    ril_config();
+
+    return 0;
+    
 }
 
-/* This is the callback function that the RIL uses to
-set the wideband AMR state */
-static int ril_set_wb_amr_callback(void *ril_client,
-                                   const void *data,
-                                   size_t datalen)
+void ril_config()
+{    
+    int ret;
+
+    unsigned char codec_req[] = "\x00\x00\x00\x11\x00\x00\x00\x00\x00\x00\x00\x09\x02\x00\x0F\x00\x04\x00\x00\x00\x01";
+    unsigned char request_msg_ack[] ="\x00\x00\x00\x0F\x00\x00\x00\x00\x00\x00\x00\x1B\x02\x00\x0D\x00\x04\x00\x00\x80\x09\x02\x00\x0D\x01\x04\x00\x00\x00\x01\x02\x00\x0D\x02\x04\x00\x00\x00\x00";
+    unsigned char playback_mix_req[] = "\x00\x00\x00\x0A\x00\x00\x00\x00\x00\x00\x00\x12\x02\x00\x09\x00\x04\x00\x00\x00\x00\x02\x00\x09\x01\x04\x00\x00\x00\x01";
+  
+    ALOGI("codec_req msg, ID=11");
+    ret = write(netmux_fd, &codec_req, sizeof(codec_req)-1);
+    if (ret < 0) {
+    	ALOGE("codec_req error: %d", ret);
+    }
+
+    ALOGI("request_msg_ack, ID=15");
+    ret = write(netmux_fd, &request_msg_ack, sizeof(request_msg_ack)-1);
+    if (ret < 0) {
+    	ALOGE("request_msg_ack error: %d", ret);
+    }
+
+    ALOGI("playback_mix_req, ID=10");
+    ret = write(netmux_fd, &playback_mix_req, sizeof(playback_mix_req)-1);
+    if (ret < 0) {
+    	ALOGE("playback_mix_req error: %d", ret);
+    }
+
+}
+
+void ril_close()
 {
-    int enable = ((int *)data)[0];
+    if (netmux_fd < 0) {
+        ALOGE("Netmux already closed!");
+        return;
+    }
+    	ALOGI("Netmux closed");
 
-    if (!callback_data || !_audio_set_wb_amr_callback)
-        return -1;
+	close(netmux_fd);
+}
 
-    _audio_set_wb_amr_callback(callback_data, enable);
+int ril_set_call_volume(float volume)
+{
+    
+    int ret;
+    char vol[] = "\x00";
+    unsigned char set_volume_req[] = "\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x12\x02\x00\x02\x00\x04\x00\x00\x00\x07\x02\x00\x02\x01\x04\x00\x00\x00\x02";
+
+    if (netmux_fd > 0) {
+        ret = write(netmux_fd, &set_volume_req, sizeof(set_volume_req)-1);
+        if (ret < 0) {
+            ALOGE("Write Volume Error, netmux closed? %d", ret);
+            return -1;
+        }
+    }
 
     return 0;
 }
 
-static int ril_connect_if_required(struct ril_handle *ril)
-{
-    if (_ril_is_connected(ril->client))
-        return 0;
 
-    if (_ril_connect(ril->client) != RIL_CLIENT_ERR_SUCCESS) {
-        ALOGE("ril_connect() failed");
-        return -1;
-    }
-
-    /* get wb amr status to set pcm samplerate depending on
-       wb amr status when ril is connected. */
-    if(_ril_get_wb_amr)
-        _ril_get_wb_amr(ril->client, ril_set_wb_amr_callback);
-
-    return 0;
-}
-
-int ril_open(struct ril_handle *ril)
-{
-    char property[PROPERTY_VALUE_MAX];
-
-    if (!ril)
-        return -1;
-
-    ril->handle = dlopen(RIL_CLIENT_LIBPATH, RTLD_NOW);
-
-    if (!ril->handle) {
-        ALOGE("Cannot open '%s'", RIL_CLIENT_LIBPATH);
-        return -1;
-    }
-
-    _ril_open_client = dlsym(ril->handle, "OpenClient_RILD");
-    _ril_close_client = dlsym(ril->handle, "CloseClient_RILD");
-    _ril_connect = dlsym(ril->handle, "Connect_RILD");
-    _ril_is_connected = dlsym(ril->handle, "isConnected_RILD");
-    _ril_disconnect = dlsym(ril->handle, "Disconnect_RILD");
-    _ril_set_call_volume = dlsym(ril->handle, "SetCallVolume");
-    _ril_set_call_audio_path = dlsym(ril->handle, "SetCallAudioPath");
-    _ril_set_call_clock_sync = dlsym(ril->handle, "SetCallClockSync");
-    _ril_set_two_mic_control = dlsym(ril->handle, "SetTwoMicControl");
-    _ril_register_unsolicited_handler = dlsym(ril->handle,
-                                              "RegisterUnsolicitedHandler");
-    /* since this function is not supported in all RILs, don't require it */
-    _ril_get_wb_amr = dlsym(ril->handle, "GetWB_AMR");
-
-    if (!_ril_open_client || !_ril_close_client || !_ril_connect ||
-        !_ril_is_connected || !_ril_disconnect || !_ril_set_call_volume ||
-        !_ril_set_call_audio_path || !_ril_set_two_mic_control || !_ril_set_call_clock_sync ||
-        !_ril_register_unsolicited_handler) {
-        ALOGE("Cannot get symbols from '%s'", RIL_CLIENT_LIBPATH);
-        dlclose(ril->handle);
-        return -1;
-    }
-
-    ril->client = _ril_open_client();
-    if (!ril->client) {
-        ALOGE("ril_open_client() failed");
-        dlclose(ril->handle);
-        return -1;
-    }
-
-    /* register the wideband AMR callback */
-    _ril_register_unsolicited_handler(ril->client, RIL_UNSOL_WB_AMR_STATE,
-                                      ril_set_wb_amr_callback);
-
-    property_get(VOLUME_STEPS_PROPERTY, property, VOLUME_STEPS_DEFAULT);
-    ril->volume_steps_max = atoi(property);
-    /* this catches the case where VOLUME_STEPS_PROPERTY does not contain
-    an integer */
-    if (ril->volume_steps_max == 0)
-        ril->volume_steps_max = atoi(VOLUME_STEPS_DEFAULT);
-
-    return 0;
-}
-
-int ril_close(struct ril_handle *ril)
-{
-    if (!ril || !ril->handle || !ril->client)
-        return -1;
-
-    if ((_ril_disconnect(ril->client) != RIL_CLIENT_ERR_SUCCESS) ||
-        (_ril_close_client(ril->client) != RIL_CLIENT_ERR_SUCCESS)) {
-        ALOGE("ril_disconnect() or ril_close_client() failed");
-        return -1;
-    }
-
-    dlclose(ril->handle);
-    return 0;
-}
-
-int ril_set_call_volume(struct ril_handle *ril, enum ril_sound_type sound_type,
-                        float volume)
-{
-    if (ril_connect_if_required(ril))
-        return 0;
-
-    return _ril_set_call_volume(ril->client, sound_type,
-                                (int)(volume * ril->volume_steps_max));
-}
-
-int ril_set_call_audio_path(struct ril_handle *ril, enum ril_audio_path path)
-{
-    if (ril_connect_if_required(ril))
-        return 0;
-
-    return _ril_set_call_audio_path(ril->client, path);
-}
-
-int ril_set_call_clock_sync(struct ril_handle *ril, enum ril_clock_state state)
-{
-    if (ril_connect_if_required(ril))
-        return 0;
-
-    return _ril_set_call_clock_sync(ril->client, state);
-}
-
-int ril_set_two_mic_control(struct ril_handle *ril, enum ril_two_mic_device device, enum ril_two_mic_state state)
-{
-    if (ril_connect_if_required(ril))
-        return 0;
-
-    return _ril_set_two_mic_control(ril->client, device, state);
-}

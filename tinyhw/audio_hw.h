@@ -26,8 +26,6 @@
 #define PORT_BT       3
 #define PORT_MODEM    2 // Voice stream   
 
-
-
 #define PCM_WRITE pcm_write
 
 #define PLAYBACK_PERIOD_SIZE  880
@@ -170,11 +168,11 @@ struct route_setting earpice_input[] = {
     { .ctl_name = NULL, },
 };
 
-struct route_setting speaker_input[] = {    //Need check fix mic used in speaker mode. Disabled to prevent whistle. 
-    { .ctl_name = "Analog Left Capture Route", .strval = "Off", },
-    { .ctl_name = "Analog Right Capture Route", .strval = "Off", },
+struct route_setting speaker_input[] = {
+    { .ctl_name = "Analog Left Capture Route", .strval = "Off", }, //Mic2 cays whistle.
+    { .ctl_name = "Analog Right Capture Route", .strval = "Mic1", },
     { .ctl_name = "MIC1 Gain", .intval = 0, },
-    { .ctl_name = "MIC2 Gain", .intval = 0, },
+    { .ctl_name = "MIC2 Gain", .intval = 31, },
     { .ctl_name = NULL, },
 };
 
@@ -186,19 +184,10 @@ struct route_setting default_input_disable[] = {
     { .ctl_name = NULL, },
 };
 
-struct route_setting noise_suppression[] = {
-    { .ctl_name = NULL, },
-};
-
-struct route_setting noise_suppression_disable[] = {
-
-    { .ctl_name = NULL, },
-};
-
 struct route_setting headset_input[] = {
     { .ctl_name = "Analog Left Capture Route", .strval = "Off", },
     { .ctl_name = "Analog Right Capture Route", .strval = "HS Mic", },
-    { .ctl_name = "MIC1 Gain", .intval = 31, },
+    { .ctl_name = "MIC1 Gain", .intval = 20, },
     { .ctl_name = "MIC2 Gain", .intval = 0, },
     { .ctl_name = NULL, },
 };
@@ -211,16 +200,30 @@ struct route_setting headset_input_disable[] = {
     { .ctl_name = NULL, },
 };
 
-struct route_setting bt_output[] = {
-
+struct route_setting voicecall_bluetooth[] = {
+    { .ctl_name = "DAI Mode", .strval = "Voice Call BT", },
+    { .ctl_name = "CPCAP Mixer Voice Codec", .intval = 1, },
+    { .ctl_name = "LDSPLCDC Switch", .intval = 0, },
+    { .ctl_name = "EPCDC Switch", .intval = 0, },
+    { .ctl_name = "HSRCDC Switch", .intval = 0, },
+    { .ctl_name = "HSLCDC Switch", .intval = 0, },
     { .ctl_name = NULL, },
 };
 
 struct route_setting bt_input[] = {
-
     { .ctl_name = NULL, },
 };
 
 struct route_setting bt_disable[] = {
     { .ctl_name = NULL, },
 };
+
+struct route_setting noise_suppression[] = {
+    { .ctl_name = NULL, },
+};
+
+struct route_setting noise_suppression_disable[] = {
+
+    { .ctl_name = NULL, },
+};
+
