@@ -95,8 +95,25 @@ int ril_set_call_volume(float volume)
 {
     
     int ret;
-    char vol[] = "\x00";
     unsigned char set_volume_req[] = "\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x12\x02\x00\x02\x00\x04\x00\x00\x00\x07\x02\x00\x02\x01\x04\x00\x00\x00\x02";
+
+    int vol = 0;
+
+    if (volume == (float) 0.0) {
+        vol = 0;
+    } else if (volume == (float) 0.2) {
+        vol = 3;
+    } else if (volume == (float) 0.4) {
+        vol = 4;
+    } else if (volume == (float) 0.6) {
+        vol = 5;
+    } else if (volume == (float) 0.8) {
+        vol = 6;
+    } else if (volume == (float) 1.0) {
+        vol = 7;
+    }
+
+    set_volume_req[20] = vol;
 
     if (netmux_fd > 0) {
         ret = write(netmux_fd, &set_volume_req, sizeof(set_volume_req)-1);
