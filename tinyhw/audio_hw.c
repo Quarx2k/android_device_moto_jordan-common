@@ -401,7 +401,7 @@ static int start_call(struct m0_audio_device *adev)
         }
     }
     if (adev->pcm_modem_ul == NULL) {
-        adev->pcm_modem_ul = pcm_open(CARD_DEFAULT, PORT_MODEM, PCM_IN, &pcm_config_vx);
+            adev->pcm_modem_ul = pcm_open(CARD_DEFAULT, PORT_MODEM, PCM_IN, &pcm_config_vx);
         if (!pcm_is_ready(adev->pcm_modem_ul)) {
             ALOGE("cannot open PCM modem UL stream: %s", pcm_get_error(adev->pcm_modem_ul));
             goto err_open_ul;
@@ -494,7 +494,7 @@ static void force_all_standby(struct m0_audio_device *adev)
 static void select_mode(struct m0_audio_device *adev)
 {
     if (adev->mode == AUDIO_MODE_IN_CALL) {
-        ALOGE("Entering IN_CALL state, in_call=%d", adev->in_call);
+        ALOGI("Entering IN_CALL state, in_call=%d", adev->in_call);
         if (!adev->in_call) {
             force_all_standby(adev);
             /* force earpiece route for in call state if speaker is the
@@ -510,8 +510,9 @@ static void select_mode(struct m0_audio_device *adev)
             if (adev->out_device == AUDIO_DEVICE_OUT_SPEAKER) {
                 adev->out_device = AUDIO_DEVICE_OUT_EARPIECE;
                 adev->in_device = AUDIO_DEVICE_IN_BUILTIN_MIC & ~AUDIO_DEVICE_BIT_IN;
-            } else
+            } else {
                 adev->out_device &= ~AUDIO_DEVICE_OUT_SPEAKER;
+            }
             start_call(adev);
             select_output_device(adev);
             adev_set_voice_volume(&adev->hw_device, adev->voice_volume);
@@ -596,29 +597,6 @@ static void select_output_device(struct m0_audio_device *adev)
     set_eq_filter(adev);
 
     if (adev->mode == AUDIO_MODE_IN_CALL) {
-        if (!bt_on) {
-            /* force tx path according to TTY mode when in call */
-            switch(adev->tty_mode) {
-                case TTY_MODE_FULL:
-                case TTY_MODE_HCO:
-                    /* tx path from headset mic */
-                    headphone_on = 0;
-                    headset_on = 1;
-                    speaker_on = 0;
-                    earpiece_on = 0;
-                    break;
-                case TTY_MODE_VCO:
-                    /* tx path from device sub mic */
-                    headphone_on = 0;
-                    headset_on = 0;
-                    speaker_on = 1;
-                    earpiece_on = 0;
-                    break;
-                case TTY_MODE_OFF:
-                default:
-                    break;
-            }
-        }
         if (earpiece_on) {
             set_voicecall_route_by_array(adev->mixer, voicecall_earpice, 1);
             set_voicecall_route_by_array(adev->mixer, earpice_input, 1);
@@ -640,48 +618,7 @@ static void select_output_device(struct m0_audio_device *adev)
             start_call(adev);
             set_voicecall_route_by_array(adev->mixer, voicecall_bluetooth, 1);
 	}
-/*
-        if (headset_on || headphone_on || speaker_on || earpiece_on) {
-            ALOGD("%s: set voicecall route: voicecall_default", __func__);
-            set_voicecall_route_by_array(adev->mixer, voicecall_default, 1);
-        } else {
-            ALOGD("%s: set voicecall route: voicecall_default_disable", __func__);
-            set_voicecall_route_by_array(adev->mixer, voicecall_default_disable, 1);
-        }
-
-        if (speaker_on || earpiece_on || headphone_on) {
-            ALOGD("%s: set voicecall route: default_input", __func__);
-            set_voicecall_route_by_array(adev->mixer, default_input, 1);
-        } else {
-            ALOGD("%s: set voicecall route: default_input_disable", __func__);
-            set_voicecall_route_by_array(adev->mixer, default_input_disable, 1);
-        }
-
-        if (headset_on) {
-            ALOGD("%s: set voicecall route: headset_input", __func__);
-            set_voicecall_route_by_array(adev->mixer, headset_input, 1);
-        } else {
-            ALOGD("%s: set voicecall route: headset_input_disable", __func__);
-            set_voicecall_route_by_array(adev->mixer, headset_input_disable, 1);
-        }
-
-        if (bt_on) {
-            // bt uses a different port (PORT_BT) for playback, reopen the pcms
-            end_call(adev);
-            netmux_config();
-            start_call(adev);
-            ALOGD("%s: set voicecall route: bt_input", __func__);
-            set_voicecall_route_by_array(adev->mixer, bt_input, 1);
-            ALOGD("%s: set voicecall route: bt_output", __func__);
-            set_voicecall_route_by_array(adev->mixer, bt_output, 1);
-        } else {
-            ALOGD("%s: set voicecall route: bt_disable", __func__);
-            set_voicecall_route_by_array(adev->mixer, bt_disable, 1);
-        }
-*/
-
     }
-
 }
 
 static void select_input_device(struct m0_audio_device *adev)

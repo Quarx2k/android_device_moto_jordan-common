@@ -21,10 +21,13 @@
 /* ALSA cards for WM1811 */
 #define CARD_DEFAULT  0
 
-#define PORT_PLAYBACK 0
-#define PORT_CAPTURE  1
-#define PORT_BT       3
-#define PORT_MODEM    2 // Voice stream   
+#define PORT_PLAYBACK    0 // Music.
+#define PORT_CAPTURE     1 // Mic
+#define PORT_MODEM       2 // Voice stream   
+#define PORT_FM          3 // FM -Radio
+#define PORT_BT          4 // BT-SOC
+#define PORT_BT_CAPTURE  5 // BT-SOC mic
+#define PORT_BP          6 // ???
 
 #define PCM_WRITE pcm_write
 
@@ -206,6 +209,10 @@ struct route_setting voicecall_bluetooth[] = {
     { .ctl_name = "EPCDC Switch", .intval = 0, },
     { .ctl_name = "HSRCDC Switch", .intval = 0, },
     { .ctl_name = "HSLCDC Switch", .intval = 0, },
+    { .ctl_name = "Analog Left Capture Route", .strval = "Off", },
+    { .ctl_name = "Analog Right Capture Route", .strval = "Off", },
+    { .ctl_name = "MIC1 Gain", .intval = 0, },
+    { .ctl_name = "MIC2 Gain", .intval = 0, },
     { .ctl_name = NULL, },
 };
 
@@ -214,15 +221,6 @@ struct route_setting bt_input[] = {
 };
 
 struct route_setting bt_disable[] = {
-    { .ctl_name = NULL, },
-};
-
-struct route_setting noise_suppression[] = {
-    { .ctl_name = NULL, },
-};
-
-struct route_setting noise_suppression_disable[] = {
-
     { .ctl_name = NULL, },
 };
 
