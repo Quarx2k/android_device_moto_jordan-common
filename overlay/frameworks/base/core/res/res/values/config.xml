@@ -308,4 +308,5 @@ Some kernels use names like CAR and DESK.
 
     <!-- Disable lockscreen translucent decor by default -->
     <bool name="config_enableLockScreenTranslucentDecor">true</bool>
+
 </resources>
