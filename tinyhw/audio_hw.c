@@ -19,7 +19,7 @@
  */
 
 #define LOG_TAG "audio_hw_primary"
-#define LOG_NDEBUG 0
+//#define LOG_NDEBUG 0
 
 #include <errno.h>
 #include <pthread.h>
@@ -27,6 +27,8 @@
 #include <sys/time.h>
 #include <stdlib.h>
 #include <expat.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
 
 #include <cutils/log.h>
 #include <cutils/str_parms.h>
@@ -106,9 +108,6 @@ struct m0_audio_device {
     bool bluetooth_nrec;
     int wb_amr;
     bool screen_off;
-
-    /* RIL */
-    struct ril_handle ril;
 };
 
 struct m0_stream_out {
@@ -310,11 +309,10 @@ static int set_route_by_array(struct mixer *mixer, struct route_setting *route,
 void update_devices(struct m0_audio_device *adev)
 {
     int i;
-    ALOGE("Update device %x => %x\n", adev->active_out_device, adev->out_device);
     for (i = 0; i < adev->num_dev_cfgs; i++)
     {
    	 if ((adev->out_device & adev->dev_cfgs[i].mask) && (adev->active_out_device != 6) &&
-       		 (adev->active_out_device & adev->dev_cfgs[i].mask)) 
+            (adev->active_out_device & adev->dev_cfgs[i].mask)) 
 	{
         	set_route_by_array(adev->mixer, adev->dev_cfgs[i].on,
         	           adev->dev_cfgs[i].on_len);
@@ -338,9 +336,8 @@ void select_devices(struct m0_audio_device *adev)
     for (i = 0; i < adev->num_dev_cfgs; i++)
     {
    	 if ((adev->out_device & adev->dev_cfgs[i].mask) &&
-       		 !(adev->active_out_device & adev->dev_cfgs[i].mask)) 
+            !(adev->active_out_device & adev->dev_cfgs[i].mask)) 
   	{
-   		ALOGE("Enable Output: %d", i);
         	set_route_by_array(adev->mixer, adev->dev_cfgs[i].on,
         	           adev->dev_cfgs[i].on_len);
     	}
@@ -349,9 +346,8 @@ void select_devices(struct m0_audio_device *adev)
     for (i = 0; i < adev->num_dev_cfgs; i++)
     {
    	 if ((adev->in_device & adev->dev_cfgs[i].mask) &&
-       		 !(adev->active_in_device & adev->dev_cfgs[i].mask))
+            !(adev->active_in_device & adev->dev_cfgs[i].mask))
   	{
-   		ALOGE("Enable Input: %d", i);
         	set_route_by_array(adev->mixer, adev->dev_cfgs[i].on,
         	           adev->dev_cfgs[i].on_len);
     	}
@@ -361,9 +357,8 @@ void select_devices(struct m0_audio_device *adev)
     for (i = 0; i < adev->num_dev_cfgs; i++)
     {
    	 if (!(adev->out_device & adev->dev_cfgs[i].mask) &&
-       		 (adev->active_out_device & adev->dev_cfgs[i].mask))
+            (adev->active_out_device & adev->dev_cfgs[i].mask))
   	{
-        	ALOGE("Dsiable Output: %d", i);;
         	set_route_by_array(adev->mixer, adev->dev_cfgs[i].off,
         	           adev->dev_cfgs[i].off_len);
         }
@@ -372,9 +367,8 @@ void select_devices(struct m0_audio_device *adev)
     for (i = 0; i < adev->num_dev_cfgs; i++)
     {
    	 if (!(adev->in_device & adev->dev_cfgs[i].mask) &&
-       		 (adev->active_in_device & adev->dev_cfgs[i].mask))
+            (adev->active_in_device & adev->dev_cfgs[i].mask))
   	{
-        	ALOGE("Dsiable Input: %d", i);
         	set_route_by_array(adev->mixer, adev->dev_cfgs[i].off,
         	           adev->dev_cfgs[i].off_len);
         }
@@ -391,7 +385,10 @@ static int start_call(struct m0_audio_device *adev)
     bt_on = adev->out_device & AUDIO_DEVICE_OUT_ALL_SCO;
     pcm_config_vx.rate = adev->wb_amr ? VX_WB_SAMPLING_RATE : VX_NB_SAMPLING_RATE;
 
-    ALOGE("Opening OUTPUT modem PCMs");
+    /* Open Netmux Audio channel */
+    if (ril_open() < 0)
+        return -ENOMEM;
+
     /* Open modem PCM channels */
     if (adev->pcm_modem_dl == NULL) {
         if (bt_on)
@@ -403,19 +400,17 @@ static int start_call(struct m0_audio_device *adev)
             goto err_open_dl;
         }
     }
-    ALOGE("Opening INPUT modem PCMs");
     if (adev->pcm_modem_ul == NULL) {
-        adev->pcm_modem_ul = pcm_open(CARD_DEFAULT, PORT_MODEM, PCM_IN, &pcm_config_vx);
+            adev->pcm_modem_ul = pcm_open(CARD_DEFAULT, PORT_MODEM, PCM_IN, &pcm_config_vx);
         if (!pcm_is_ready(adev->pcm_modem_ul)) {
             ALOGE("cannot open PCM modem UL stream: %s", pcm_get_error(adev->pcm_modem_ul));
             goto err_open_ul;
         }
     }
-    ALOGE("Starting OUTPUT modem PCMs");
-    pcm_start(adev->pcm_modem_dl);
-    ALOGE("Starting INPUT modem PCMs");
+
     pcm_start(adev->pcm_modem_ul);
- 
+    pcm_start(adev->pcm_modem_ul);
+
     return 0;
 
 err_open_ul:
@@ -430,14 +425,15 @@ err_open_dl:
 
 static void end_call(struct m0_audio_device *adev)
 {
-    ALOGE("Closing modem PCMs");
-
+    ALOGD("Closing modem PCMs");
+    ril_close();
     pcm_stop(adev->pcm_modem_dl);
     pcm_stop(adev->pcm_modem_ul);
     pcm_close(adev->pcm_modem_dl);
     pcm_close(adev->pcm_modem_ul);
     adev->pcm_modem_dl = NULL;
     adev->pcm_modem_ul = NULL;
+    
 }
 
 static void set_eq_filter(struct m0_audio_device *adev)
@@ -455,50 +451,11 @@ void audio_set_wb_amr_callback(void *data, int enable)
         /* reopen the modem PCMs at the new rate */
         if (adev->in_call) {
             end_call(adev);
-            select_output_device(adev);
             start_call(adev);
+            select_output_device(adev);
         }
     }
     pthread_mutex_unlock(&adev->lock);
-}
-
-static void set_incall_device(struct m0_audio_device *adev)
-{
-    int device_type;
-
-    switch(adev->out_device) {
-        case AUDIO_DEVICE_OUT_EARPIECE:
-            device_type = SOUND_AUDIO_PATH_HANDSET;
-            break;
-        case AUDIO_DEVICE_OUT_SPEAKER:
-        case AUDIO_DEVICE_OUT_ANLG_DOCK_HEADSET: 
-        case AUDIO_DEVICE_OUT_DGTL_DOCK_HEADSET:
-        case AUDIO_DEVICE_OUT_AUX_DIGITAL:
-            device_type = SOUND_AUDIO_PATH_SPEAKER;
-            break;
-        case AUDIO_DEVICE_OUT_WIRED_HEADSET:
-            device_type = SOUND_AUDIO_PATH_HEADSET;
-            break;
-        case AUDIO_DEVICE_OUT_WIRED_HEADPHONE:
-            device_type = SOUND_AUDIO_PATH_HEADPHONE;
-            break;
-        case AUDIO_DEVICE_OUT_BLUETOOTH_SCO:
-        case AUDIO_DEVICE_OUT_BLUETOOTH_SCO_HEADSET:
-        case AUDIO_DEVICE_OUT_BLUETOOTH_SCO_CARKIT:
-            if (adev->bluetooth_nrec) {
-                device_type = SOUND_AUDIO_PATH_BLUETOOTH;
-            } else {
-                device_type = SOUND_AUDIO_PATH_BLUETOOTH_NO_NR;
-            }
-            break;
-        default:
-            device_type = SOUND_AUDIO_PATH_HANDSET;
-            break;
-    }
-
-    /* if output device isn't supported, open modem side to handset by default */
-    ALOGE("%s: ril_set_call_audio_path(%d)", __func__, device_type);
-    //ril_set_call_audio_path(&adev->ril, device_type);
 }
 
 static void set_input_volumes(struct m0_audio_device *adev, int main_mic_on,
@@ -536,7 +493,7 @@ static void force_all_standby(struct m0_audio_device *adev)
 static void select_mode(struct m0_audio_device *adev)
 {
     if (adev->mode == AUDIO_MODE_IN_CALL) {
-        ALOGE("Entering IN_CALL state, in_call=%d", adev->in_call);
+        ALOGI("Entering IN_CALL state, in_call=%d", adev->in_call);
         if (!adev->in_call) {
             force_all_standby(adev);
             /* force earpiece route for in call state if speaker is the
@@ -552,16 +509,16 @@ static void select_mode(struct m0_audio_device *adev)
             if (adev->out_device == AUDIO_DEVICE_OUT_SPEAKER) {
                 adev->out_device = AUDIO_DEVICE_OUT_EARPIECE;
                 adev->in_device = AUDIO_DEVICE_IN_BUILTIN_MIC & ~AUDIO_DEVICE_BIT_IN;
-            } else
+            } else {
                 adev->out_device &= ~AUDIO_DEVICE_OUT_SPEAKER;
-            select_output_device(adev);
+            }
             start_call(adev);
-           // ril_set_call_clock_sync(&adev->ril, SOUND_CLOCK_START);
+            select_output_device(adev);
             adev_set_voice_volume(&adev->hw_device, adev->voice_volume);
             adev->in_call = 1;
         }
     } else {
-        ALOGE("Leaving IN_CALL state, in_call=%d, mode=%d",
+        ALOGD("Leaving IN_CALL state, in_call=%d, mode=%d",
              adev->in_call, adev->mode);
         if (adev->in_call) {
             adev->in_call = 0;
@@ -639,70 +596,28 @@ static void select_output_device(struct m0_audio_device *adev)
     set_eq_filter(adev);
 
     if (adev->mode == AUDIO_MODE_IN_CALL) {
-        if (!bt_on) {
-            /* force tx path according to TTY mode when in call */
-            switch(adev->tty_mode) {
-                case TTY_MODE_FULL:
-                case TTY_MODE_HCO:
-                    /* tx path from headset mic */
-                    headphone_on = 0;
-                    headset_on = 1;
-                    speaker_on = 0;
-                    earpiece_on = 0;
-                    break;
-                case TTY_MODE_VCO:
-                    /* tx path from device sub mic */
-                    headphone_on = 0;
-                    headset_on = 0;
-                    speaker_on = 1;
-                    earpiece_on = 0;
-                    break;
-                case TTY_MODE_OFF:
-                default:
-                    break;
-            }
-        }
-
-        if (headset_on || headphone_on || speaker_on || earpiece_on) {
-            ALOGD("%s: set voicecall route: voicecall_default", __func__);
-            set_voicecall_route_by_array(adev->mixer, voicecall_default, 1);
-        } else {
-            ALOGD("%s: set voicecall route: voicecall_default_disable", __func__);
-            set_voicecall_route_by_array(adev->mixer, voicecall_default_disable, 1);
-        }
-
-        if (speaker_on || earpiece_on || headphone_on) {
-            ALOGD("%s: set voicecall route: default_input", __func__);
-            set_voicecall_route_by_array(adev->mixer, default_input, 1);
-        } else {
-            ALOGD("%s: set voicecall route: default_input_disable", __func__);
-            set_voicecall_route_by_array(adev->mixer, default_input_disable, 1);
-        }
-
-        if (headset_on) {
-            ALOGD("%s: set voicecall route: headset_input", __func__);
+        if (earpiece_on) {
+            set_voicecall_route_by_array(adev->mixer, voicecall_earpice, 1);
+            set_voicecall_route_by_array(adev->mixer, earpice_input, 1);
+            ALOGD("In-Call Earpiece Enabled!!!");
+	}
+        if (speaker_on) {
+            ALOGD("In-Call Speaker Enabled!!!");
+            set_voicecall_route_by_array(adev->mixer, voicecall_speaker, 1);
+            set_voicecall_route_by_array(adev->mixer, speaker_input, 1);
+	}
+        if (headset_on || headphone_on) {
+            ALOGD("In-Call Headset Enabled!!!");
+            set_voicecall_route_by_array(adev->mixer, voicecall_headset, 1);
             set_voicecall_route_by_array(adev->mixer, headset_input, 1);
-        } else {
-            ALOGD("%s: set voicecall route: headset_input_disable", __func__);
-            set_voicecall_route_by_array(adev->mixer, headset_input_disable, 1);
-        }
-
+	}
         if (bt_on) {
-            // bt uses a different port (PORT_BT) for playback, reopen the pcms
+            ALOGD("In-Call Bluetooth Enabled!!!");
             end_call(adev);
             start_call(adev);
-            ALOGD("%s: set voicecall route: bt_input", __func__);
-            set_voicecall_route_by_array(adev->mixer, bt_input, 1);
-            ALOGD("%s: set voicecall route: bt_output", __func__);
-            set_voicecall_route_by_array(adev->mixer, bt_output, 1);
-        } else {
-            ALOGD("%s: set voicecall route: bt_disable", __func__);
-            set_voicecall_route_by_array(adev->mixer, bt_disable, 1);
-        }
-
-        set_incall_device(adev);
+            set_voicecall_route_by_array(adev->mixer, voicecall_bluetooth, 1);
+	}
     }
-
 }
 
 static void select_input_device(struct m0_audio_device *adev)
@@ -1129,7 +1044,6 @@ static int out_set_parameters(struct audio_stream *stream, const char *kvpairs)
             }
             if (out != adev->outputs[OUTPUT_HDMI]) {
                 adev->out_device = val;
-		ALOGE("VAL %d", val);
                 select_output_device(adev);
             }
         }
@@ -2573,18 +2487,22 @@ static int adev_set_parameters(struct audio_hw_device *dev, const char *kvpairs)
             adev->screen_off = true;
     }
 
-    ret = str_parms_get_str(parms, "noise_suppression", value, sizeof(value));
+    ret = str_parms_get_str(parms, "voiceQualityConfig", value, sizeof(value));
     if (ret >= 0) {
-        if (strcmp(value, "true") == 0) {
-            ALOGE("%s: enabling two mic control", __func__);
-       //     ril_set_two_mic_control(&adev->ril, AUDIENCE, TWO_MIC_SOLUTION_ON);
-            /* sub mic */
-            set_voicecall_route_by_array(adev->mixer, noise_suppression, 1);
-        } else {
-            ALOGE("%s: disabling two mic control", __func__);
-       //    ril_set_two_mic_control(&adev->ril, AUDIENCE, TWO_MIC_SOLUTION_OFF);
-            /* sub mic */
-            set_voicecall_route_by_array(adev->mixer, noise_suppression_disable, 1);
+        if (strcmp(value, "Normal") == 0) {
+            ALOGI("%s: Voice quality config received with value = %s", __func__,value);
+            ril_set_voice_quality(NORMAL_VOICE);
+        } else if (strcmp(value, "Clear") == 0) {
+            ALOGI("%s: Voice quality config received with value = %s", __func__,value);
+            ril_set_voice_quality(CLEAR_VOICE);
+        } else if (strcmp(value, "Crisp") == 0) {
+            ALOGI("%s: Voice quality config received with value = %s", __func__,value);
+            ril_set_voice_quality(CRISP_VOICE);
+        } else if (strcmp(value, "Bright") == 0) {
+            ALOGI("%s: Voice quality config received with value = %s", __func__,value);
+            ril_set_voice_quality(BRIGHT_VOICE);
+        } else  {
+            ALOGE("%s: Voice quality config received with unknown value = %s", __func__,value);
         }
     }
 
@@ -2606,13 +2524,11 @@ static int adev_init_check(const struct audio_hw_device *dev)
 static int adev_set_voice_volume(struct audio_hw_device *dev, float volume)
 {
     struct m0_audio_device *adev = (struct m0_audio_device *)dev;
+    int ret;
 
     adev->voice_volume = volume;
 
-    //if (adev->mode == AUDIO_MODE_IN_CALL)
-     //   ril_set_call_volume(&adev->ril, SOUND_TYPE_VOICE, volume);
-
-    return 0;
+    return ril_set_call_volume(volume);
 }
 
 static int adev_set_master_volume(struct audio_hw_device *dev, float volume)
@@ -2782,9 +2698,6 @@ static int adev_dump(const audio_hw_device_t *device, int fd)
 static int adev_close(hw_device_t *device)
 {
     struct m0_audio_device *adev = (struct m0_audio_device *)device;
-
-    /* RIL */
-   // ril_close(&adev->ril);
 
     mixer_close(adev->mixer);
     free(device);
@@ -3074,14 +2987,8 @@ static int adev_open(const hw_module_t* module, const char* name,
     adev->bluetooth_nrec = true;
     adev->wb_amr = 0;
 
-    /* RIL */
-   // ril_open(&adev->ril);
     pthread_mutex_unlock(&adev->lock);
-    /* register callback for wideband AMR setting */
-    //ril_register_set_wb_amr_callback(audio_set_wb_amr_callback, (void *)adev);
-
     *device = &adev->hw_device.common;
-
     return 0;
 
 err_mixer:
@@ -3101,7 +3008,7 @@ struct audio_module HAL_MODULE_INFO_SYM = {
         .hal_api_version = HARDWARE_HAL_API_VERSION,
         .id = AUDIO_HARDWARE_MODULE_ID,
         .name = "M0 audio HW HAL",
-        .author = "The CyanogenMod Project",
+        .author = "",
         .methods = &hal_module_methods,
     },
 };
