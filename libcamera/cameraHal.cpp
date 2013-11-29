@@ -233,8 +233,10 @@ static void Yuv422iToYV12 (unsigned char* dest, unsigned char* src, int width, i
            looks good enough and the speed-up of the conversion
            is significant enough to justify such simplification.
         */
-            *udest++ = src[1];
-            *vdest++ = src[3];
+//Fix camera colors. Picked from mielstone2 repo.
+            *udest++ = src[3];
+            *vdest++ = src[1];
+//
             src += 4;
         }
         src += doubleWidth;
