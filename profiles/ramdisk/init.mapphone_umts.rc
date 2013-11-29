@@ -78,6 +78,9 @@ on post-fs
     # Power Management
     write /sys/power/sr_vdd1_autocomp 1
     write /sys/power/sr_vdd2_autocomp 1
+    # Disable green led
+    write /sys/class/leds/green/brightness 0
+
 # Change ownership for vibrators
     chown system system /sys/class/timed_output/vibrator/enable
     chown system system /sys/class/timed_output/vibrator/sweep
