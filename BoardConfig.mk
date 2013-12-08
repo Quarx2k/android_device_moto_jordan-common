@@ -68,7 +68,7 @@ WIFI_DRIVER_MODULE_NAME          := "wl12xx_sdio"
 BOARD_HAVE_BLUETOOTH := true
 TARGET_CUSTOM_BLUEDROID := ../../../device/moto/jordan-common/bluedroid.c
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/moto/jordan-common/bluetooth
-BOARD_WPAN_DEVICE := true
+BOARD_HAVE_BLUETOOTH_TI := true
 # Usb Specific
 BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
 
