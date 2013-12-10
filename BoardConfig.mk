@@ -52,6 +52,7 @@ TARGET_SPECIFIC_HEADER_PATH := device/moto/jordan-common/include
 # Conserve memory in the Dalvik heap
 # Details: https://github.com/CyanogenMod/android_dalvik/commit/15726c81059b74bf2352db29a3decfc4ea9c1428
 TARGET_ARCH_LOWMEM := true
+TARGET_ARCH_HAVE_NEON := true
 
 # Wifi related defines
 USES_TI_MAC80211 := true
