@@ -144,6 +144,9 @@ BOARD_USES_LEGACY_RIL :=true
 BOARD_USE_LEGACY_SENSORS_FUSION := false
 BOARD_HARDWARE_CLASS := device/moto/jordan-common/cmhw/
 
+# Override healthd HAL to use charge_counter for 1%
+BOARD_HAL_STATIC_LIBRARIES := libhealthd.omap3
+
 # Release tool
 TARGET_PROVIDES_RELEASETOOLS := true
 TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := device/moto/jordan-common/releasetools/common_ota_from_target_files
