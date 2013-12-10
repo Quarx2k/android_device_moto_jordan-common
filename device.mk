@@ -18,8 +18,17 @@
 # This is the product configuration for a generic Motorola Defy (jordan)
 #
 
-# The gps config appropriate for this device
+# The gps/telephony config appropriate for this device
 $(call inherit-product, device/common/gps/gps_eu_supl.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/telephony.mk)	
+# Blobs and bootmenu stuff
+$(call inherit-product, device/moto/jordan-common/jordan-blobs.mk)
+$(call inherit-product, device/moto/jordan-common/bootmenu/bootmenu.mk)
+$(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
+# Get some sounds
+$(call inherit-product-if-exists, frameworks/base/data/sounds/AllAudio.mk)
+# Get everything else from the parent package
+$(call inherit-product, $(SRC_TARGET_DIR)/product/generic_no_telephony.mk)
 
 ifeq ($(TARGET_PRODUCT),$(filter $(TARGET_PRODUCT),cm_mb525 cm_mb526))
 $(call inherit-product, vendor/motorola/jordan-common/jordan-vendor.mk)
@@ -82,8 +91,8 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
 	com.android.future.usb.accessory
 
-# FIXME in repo 
-PRODUCT_PACKAGES += rild Dialer
+RODUCT_PACKAGES := \
+    VoiceDialer
 
 # ICS sound
 PRODUCT_PACKAGES += \
@@ -143,14 +152,11 @@ PRODUCT_COPY_FILES += \
     $(OUT)/kernel:system/bootmenu/2nd-boot/zImage \
     $(OUT)/utilities/lsof:system/bootmenu/binary/lsof \
 
-# Blobs and bootmenu stuff
-$(call inherit-product, device/moto/jordan-common/jordan-blobs.mk)
-$(call inherit-product, device/moto/jordan-common/bootmenu/bootmenu.mk)
-$(call inherit-product, build/target/product/full_base.mk)
-$(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
-
 # Should be after the full_base include, which loads languages_full
-PRODUCT_LOCALES += hdpi
+PRODUCT_LOCALES := en_US en_GB en_IN fr_FR it_IT de_DE es_ES hu_HU uk_UA zh_CN zh_TW ru_RU nl_NL se_SV cs_CZ pl_PL pt_BR da_DK ko_KR  
+
+# Include drawables for all densities
+PRODUCT_AAPT_CONFIG := hdpi
 
 PRODUCT_NAME := full_jordan
 PRODUCT_DEVICE := MB52x
