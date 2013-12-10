@@ -25,5 +25,6 @@ LOCAL_SHARED_LIBRARIES := \
 	liblog
 
 LOCAL_MODULE := libbluedroid
+LOCAL_MODULE_TAGS := optional
 
 include $(BUILD_SHARED_LIBRARY)

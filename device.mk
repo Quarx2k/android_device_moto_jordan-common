@@ -129,7 +129,7 @@ PRODUCT_PACKAGES += librs_jni
 PRODUCT_PACKAGES += Torch HwaSettings make_ext4fs
 
 # Experimental TI OpenLink
-PRODUCT_PACKAGES += libnl_2 iw libbt-vendor uim-sysfs
+PRODUCT_PACKAGES += libnl_2 iw libbt-vendor uim-sysfs libbluedroid
 
 # Wifi
 PRODUCT_PACKAGES += \
