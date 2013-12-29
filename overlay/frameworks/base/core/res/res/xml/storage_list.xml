@@ -33,9 +33,15 @@
 -->
 
 <StorageList xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- external sdcard -->
     <storage android:mountPoint="/storage/sdcard0"
              android:storageDescription="@string/storage_sd_card"
              android:primary="true"
              android:removable="false"
              android:allowMassStorage="true" />
+    <!-- external usb storage -->
+    <storage android:mountPoint="/storage/usbdisk"
+             android:storageDescription="@string/storage_usb"
+             android:primary="false"
+             android:removable="true" />
 </StorageList>
