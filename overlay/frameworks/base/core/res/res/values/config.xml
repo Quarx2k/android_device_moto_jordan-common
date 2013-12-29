@@ -305,4 +305,7 @@ Some kernels use names like CAR and DESK.
 
     <bool name="config_ui_enableFadingMarquee">false</bool>
 
+    <!-- Device supports LED flashlight -->
+    <bool name="config_enableTorch">true</bool>
+
 </resources>
