@@ -91,6 +91,25 @@ void ril_close()
 	close(netmux_fd);
 }
 
+/* AUDMGR_setMuteState called directly by libril-moto-umts-1.so */
+/* TODO: Need share netmux audio device with other processes*/
+int AUDMGR_setMuteState(int mic_spkr, int mute_state)
+{
+    int ret;
+
+    unsigned char am_aipcm_mic_mute_req[] = "\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x12\x02\x00\x03\x01\x04\x00\x00\x00\x01\x02\x00\x03\x00\x04\x00\x00\x00\x00";
+    ALOGI("am_aipcm_mic_mute_req, ID=5; mic_spkr=%d, mute_state=%d", mic_spkr, mute_state);
+    am_aipcm_mic_mute_req[28] = mute_state;
+    if (netmux_fd > 0) {
+        ret = write(netmux_fd, &am_aipcm_mic_mute_req, sizeof(am_aipcm_mic_mute_req)-1);
+        if (ret < 0) {
+            ALOGE("playback_mix_req error: %d", ret);
+        }
+    }
+
+    return mute_state;
+}
+
 int ril_set_call_volume(float volume)
 {
     
@@ -153,3 +172,54 @@ bright:00000002000000000000001B0200050004000000090200050104000000030200050204000
     return 0;
 }
 
+
+/* Stubs for Motorola RIL lib */
+
+int AUDMGR_setTty()
+{
+    ALOGW(__func__);
+    return 0;
+}
+
+int AUDMGR_stopTone()
+{
+    ALOGW(__func__);
+    return 0;
+}
+
+int AUDMGR_playTone()
+{
+    ALOGW(__func__);
+    return 0;
+}
+
+int AUDMGR_disableVoicePath()
+{
+    ALOGW(__func__);
+    return 0;
+}
+
+int AUDMGR_enableVoicePath()
+{
+    ALOGW(__func__);
+    return 0;
+}
+
+int AUDMGR_stopDtmf()
+{
+    ALOGW(__func__);
+    return 0;
+}
+
+int AUDMGR_playDtmf()
+{
+    ALOGW(__func__);
+    return 0;
+}
+
+int AUDMGR_getMuteState()
+{
+    ALOGW(__func__);
+    return 0;
+}
+/* End of stubs */
