@@ -106,9 +106,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     libskia_legacy
 
-# TO FIX for ICS
-PRODUCT_PACKAGES += power.omap3
-
 # OMX stuff
 PRODUCT_PACKAGES += dspexec libbridge libLCML libOMX_Core libstagefrighthw
 PRODUCT_PACKAGES += libOMX.TI.AAC.encode libOMX.TI.AAC.decode libOMX.TI.AMR.decode libOMX.TI.AMR.encode
