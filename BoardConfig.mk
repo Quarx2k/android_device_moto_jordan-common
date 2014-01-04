@@ -67,7 +67,6 @@ WIFI_DRIVER_MODULE_NAME          := "wl12xx_sdio"
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
-TARGET_CUSTOM_BLUEDROID := ../../../device/moto/jordan-common/bluedroid.c
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/moto/jordan-common/bluetooth
 BOARD_HAVE_BLUETOOTH_TI := true
 # Usb Specific
@@ -149,11 +148,6 @@ BOARD_HAL_STATIC_LIBRARIES := libhealthd.omap3
 # Release tool
 TARGET_PROVIDES_RELEASETOOLS := true
 TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := device/moto/jordan-common/releasetools/common_ota_from_target_files
-
-# adb root
-ADDITIONAL_DEFAULT_PROPERTIES += ro.adb.secure=0
-ADDITIONAL_DEFAULT_PROPERTIES += ro.secure=0
-ADDITIONAL_DEFAULT_PROPERTIES += ro.allow.mock.location=1
 
 ext_modules:
 	make -C $(TARGET_KERNEL_MODULES_EXT) modules KERNEL_DIR=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE="arm-eabi-"
