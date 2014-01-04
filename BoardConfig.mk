@@ -125,7 +125,6 @@ BOARD_UMS_LUNFILE := /sys/class/android_usb/f_mass_storage/lun/file
 
 # Egl Specific
 USE_OPENGL_RENDERER := true
-BOARD_EGL_CFG := device/moto/jordan-common/egl.cfg
 ENABLE_WEBGL := true
 COMMON_GLOBAL_CFLAGS += -DSYSTEMUI_PBSIZE_HACK=1
 COMMON_GLOBAL_CFLAGS += -DWORKAROUND_BUG_10194508=1
