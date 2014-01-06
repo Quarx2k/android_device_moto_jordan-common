@@ -26,8 +26,8 @@
 #define BRIGHT_VOICE 4
 
 /* Function prototypes */
-int ril_open();
-void ril_close();
+int netmux_open(int need_config);
+void netmux_close();
 int ril_set_call_volume(float volume);
 int ril_set_voice_quality(int voice_type);
 

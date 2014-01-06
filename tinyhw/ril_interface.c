@@ -27,32 +27,30 @@
 
 #include "ril_interface.h"
  
-void ril_config();
+void netmux_config();
 
 static int netmux_fd = -1;
 
 /* Function pointers */
 
-int ril_open()
+int netmux_open(int need_config)
 {    
-    ALOGD("Open Audio Netmux");
-
     netmux_fd = open(RIL_NETMUX_AUDIO_PATH, O_RDWR | O_NONBLOCK);
 
     if (netmux_fd <= 0) {
      	ALOGE("%s: failed, errno=%d\n", __func__, errno);
 	return errno;
     }
-
-    ALOGI("Netmux Opened!");
-
-    ril_config();
+    
+    if (need_config == 1) {
+        netmux_config();
+    }
 
     return 0;
     
 }
 
-void ril_config()
+void netmux_config()
 {    
     int ret;
 
@@ -77,36 +75,37 @@ void ril_config()
     if (ret < 0) {
     	ALOGE("playback_mix_req error: %d", ret);
     }
-
+    close(netmux_fd);
 }
 
-void ril_close()
+void netmux_close()
 {
     if (netmux_fd < 0) {
-        ALOGE("Netmux already closed!");
+        ALOGI("Netmux already closed!");
         return;
     }
-    	ALOGI("Netmux closed");
+    close(netmux_fd);
+    ALOGI("Netmux closed");
 
-	close(netmux_fd);
 }
 
 /* AUDMGR_setMuteState called directly by libril-moto-umts-1.so */
-/* TODO: Need share netmux audio device with other processes*/
 int AUDMGR_setMuteState(int mic_spkr, int mute_state)
 {
     int ret;
 
+    netmux_open(0);
+
     unsigned char am_aipcm_mic_mute_req[] = "\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x12\x02\x00\x03\x01\x04\x00\x00\x00\x01\x02\x00\x03\x00\x04\x00\x00\x00\x00";
     ALOGI("am_aipcm_mic_mute_req, ID=5; mic_spkr=%d, mute_state=%d", mic_spkr, mute_state);
-    am_aipcm_mic_mute_req[28] = mute_state;
+    am_aipcm_mic_mute_req[29] = mute_state;
     if (netmux_fd > 0) {
         ret = write(netmux_fd, &am_aipcm_mic_mute_req, sizeof(am_aipcm_mic_mute_req)-1);
         if (ret < 0) {
             ALOGE("playback_mix_req error: %d", ret);
         }
     }
-
+    close(netmux_fd);
     return mute_state;
 }
 
@@ -118,6 +117,8 @@ int ril_set_call_volume(float volume)
     unsigned char set_volume_req[] = "\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x12\x02\x00\x02\x00\x04\x00\x00\x00\x07\x02\x00\x02\x01\x04\x00\x00\x00\x02";
 
     int vol = 0;
+
+    netmux_open(0);
 
     if (volume == (float) 0.0) {
         vol = 0;
@@ -142,7 +143,8 @@ int ril_set_call_volume(float volume)
             return -1;
         }
     }
-
+    ALOGI("Set call volume: %f", volume);
+    close(netmux_fd);
     return 0;
 }
 /* Crystal Talk */
@@ -159,6 +161,8 @@ bright:00000002000000000000001B0200050004000000090200050104000000030200050204000
     unsigned char set_voice_quality[] = "\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x1B\x02\x00\x05\x00\x04\x00\x00\x00\x09\x02\x00\x05\x01\x04\x00\x00\x00\x03\x02\x00\x05\x02\x04\x00\x00\x00\x01";
     int ret;
 
+    netmux_open(0);
+
     if (voice_type > 0)
         set_voice_quality[38] = voice_type;
 
@@ -169,6 +173,8 @@ bright:00000002000000000000001B0200050004000000090200050104000000030200050204000
             return -1;
         }
     }
+
+    close(netmux_fd);
     return 0;
 }
 

@@ -386,7 +386,7 @@ static int start_call(struct m0_audio_device *adev)
     pcm_config_vx.rate = adev->wb_amr ? VX_WB_SAMPLING_RATE : VX_NB_SAMPLING_RATE;
 
     /* Open Netmux Audio channel */
-    if (ril_open() < 0)
+    if (netmux_open(1) < 0)
         return -ENOMEM;
 
     /* Open modem PCM channels */
@@ -427,7 +427,7 @@ err_open_dl:
 static void end_call(struct m0_audio_device *adev)
 {
     ALOGD("Closing modem PCMs");
-    ril_close();
+    netmux_close();
     pcm_stop(adev->pcm_modem_dl);
     pcm_stop(adev->pcm_modem_ul);
     pcm_close(adev->pcm_modem_dl);
