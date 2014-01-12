@@ -709,9 +709,7 @@ static int camera_set_parameters(struct camera_device * device, const char *para
 static char* camera_get_parameters(struct camera_device * device)
 {
     struct legacy_camera_device *lcdev = to_lcdev(device);
-    CameraParameters params(lcdev->hwif->getParameters());
-
-    
+    CameraParameters params(lcdev->hwif->getParameters()); 
 
 #ifdef LOG_FULL_PARAMS
     ALOGV("%s: Parameters");
@@ -875,7 +873,7 @@ camera_module_t HAL_MODULE_INFO_SYM = {
         version_major: 1,
         version_minor: 1,
         id: CAMERA_HARDWARE_MODULE_ID,
-        name: "Camera HAL for ICS/CM9",
+        name: "Mapphone Camera HAL for CM11",
         author: "Won-Kyu Park, Raviprasad V Mummidi, Ivan Zupan, Epsylon3, rondoval",
         methods: &camera_module_methods,
         dso: NULL,

@@ -23,12 +23,25 @@
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <cutils/properties.h>
 #include <camera/Camera.h>
 #include "JordanCameraWrapper.h"
 
 namespace android {
 
 wp<JordanCameraWrapper> JordanCameraWrapper::singleton;
+
+bool deviceIsKobe(void)
+{
+    char mDeviceName[PROPERTY_VALUE_MAX];
+    property_get("ro.product.device", mDeviceName, NULL);
+
+    if (!strcmp(mDeviceName, "MB520") == 0) {
+	return true;
+    } else {
+	return false;
+    }
+}
 
 static bool
 deviceCardMatches(const char *device, const char *matchCard)
@@ -104,7 +117,11 @@ sp<JordanCameraWrapper> JordanCameraWrapper::createInstance(int cameraId)
     if (deviceCardMatches("/dev/video3", "camise")) {
         ALOGI("Detected SOC device\n");
         /* entry point of SOC driver is android::CameraHalSocImpl::createInstance() */
-        motoInterface = openMotoInterface("libsoccamera.so", "_ZN7android16CameraHalSocImpl14createInstanceEv");
+	if (!deviceIsKobe()) {
+        	motoInterface = openMotoInterface("libsoccamera.so", "_ZN7android16CameraHalSocImpl14createInstanceEv");
+	} else {
+        	motoInterface = openMotoInterface("libkobecamera.so", "_ZN7android16CameraHalSocImpl14createInstanceEv");
+	}
         type = CAM_SOC;
     } else if (deviceCardMatches("/dev/video0", "mt9p012")) {
         ALOGI("Detected BAYER device\n");
@@ -134,14 +151,14 @@ JordanCameraWrapper::JordanCameraWrapper(sp<CameraHardwareInterface>& motoInterf
     mDataCbTimestamp(NULL),
     mCbUserData(NULL)
 {
-    if (type == CAM_SOC) {
+    if (type == CAM_SOC  && !deviceIsKobe()) {
         mTorchThread = new TorchEnableThread(this);
     }
 }
 
 JordanCameraWrapper::~JordanCameraWrapper()
 {
-    if (mCameraType == CAM_SOC) {
+    if (mCameraType == CAM_SOC && !deviceIsKobe()) {
         setSocTorchMode(false);
         mTorchThread->cancelAndWait();
         mTorchThread.clear();
@@ -197,10 +214,11 @@ JordanCameraWrapper::notifyCb(int32_t msgType, int32_t ext1, int32_t ext2, void*
 {
     JordanCameraWrapper *_this = (JordanCameraWrapper *) user;
     user = _this->mCbUserData;
-
+/*
     if (msgType == CAMERA_MSG_FOCUS) {
         _this->toggleTorchIfNeeded();
     }
+*/
     _this->mNotifyCb(msgType, ext1, ext2, user);
 }
 
@@ -213,15 +231,17 @@ JordanCameraWrapper::dataCb(int32_t msgType, const sp<IMemory>& dataPtr, void* u
     if (msgType == CAMERA_MSG_COMPRESSED_IMAGE) {
         _this->fixUpBrokenGpsLatitudeRef(dataPtr);
     }
-
     _this->mDataCb(msgType, dataPtr, user);
 
-    if (msgType == CAMERA_MSG_RAW_IMAGE || msgType == CAMERA_MSG_COMPRESSED_IMAGE) {
-        if (_this->mTorchThread != NULL) {
-            _this->mTorchThread->scheduleTorch();
+    if (!deviceIsKobe()) {
+        if ((msgType == CAMERA_MSG_RAW_IMAGE || msgType == CAMERA_MSG_COMPRESSED_IMAGE)) {
+           if (_this->mTorchThread != NULL) {
+               _this->mTorchThread->scheduleTorch();
+           }
         }
+
     }
- }
+}
 
 void
 JordanCameraWrapper::dataCbTimestamp(nsecs_t timestamp, int32_t msgType,
@@ -324,14 +344,18 @@ JordanCameraWrapper::previewEnabled()
 status_t
 JordanCameraWrapper::startRecording()
 {
-    toggleTorchIfNeeded();
+    if (!deviceIsKobe()) {	
+        toggleTorchIfNeeded();
+    }
     return mMotoInterface->startRecording();
 }
 
 void
 JordanCameraWrapper::stopRecording()
 {
-    toggleTorchIfNeeded();
+    if (!deviceIsKobe()) {	
+        toggleTorchIfNeeded();
+    }
     mMotoInterface->stopRecording();
 }
 
@@ -386,6 +410,7 @@ JordanCameraWrapper::setParameters(const CameraParameters& params)
      * getInt returns -1 if the value isn't present and 0 on parse failure,
      * so if it's larger than 0, we can be sure the value was parsed properly
      */
+
     mVideoMode = pars.getInt("cam-mode") > 0;
     pars.remove("cam-mode");
 
@@ -399,23 +424,25 @@ JordanCameraWrapper::setParameters(const CameraParameters& params)
         pars.setPreviewFrameRate(24);
     }
 
-    sceneMode = pars.get(CameraParameters::KEY_SCENE_MODE);
-    if (sceneMode != CameraParameters::SCENE_MODE_AUTO) {
-        /* The lib doesn't seem to update the flash mode correctly when a scene
+    if (!deviceIsKobe()) {
+        sceneMode = pars.get(CameraParameters::KEY_SCENE_MODE);
+        if (sceneMode != CameraParameters::SCENE_MODE_AUTO && !deviceIsKobe()) {
+           /* The lib doesn't seem to update the flash mode correctly when a scene
            mode is set, so we need to do it here. Also do focus mode, just do
            be on the safe side. */
-        pars.set(CameraParameters::KEY_FOCUS_MODE, CameraParameters::FOCUS_MODE_AUTO);
+           pars.set(CameraParameters::KEY_FOCUS_MODE, CameraParameters::FOCUS_MODE_AUTO);
 
-        if (sceneMode == CameraParameters::SCENE_MODE_PORTRAIT ||
-            sceneMode == CameraParameters::SCENE_MODE_NIGHT_PORTRAIT)
-        {
-            pars.set(CameraParameters::KEY_FLASH_MODE, CameraParameters::FLASH_MODE_AUTO);
-        } else {
-            pars.set(CameraParameters::KEY_FLASH_MODE, CameraParameters::FLASH_MODE_OFF);
-        }
+           if (sceneMode == CameraParameters::SCENE_MODE_PORTRAIT ||
+               sceneMode == CameraParameters::SCENE_MODE_NIGHT_PORTRAIT)
+           {
+               pars.set(CameraParameters::KEY_FLASH_MODE, CameraParameters::FLASH_MODE_AUTO);
+           } else {
+               pars.set(CameraParameters::KEY_FLASH_MODE, CameraParameters::FLASH_MODE_OFF);
+           }
+       }
+           mFlashMode = pars.get(CameraParameters::KEY_FLASH_MODE);
     }
 
-    mFlashMode = pars.get(CameraParameters::KEY_FLASH_MODE);
     float exposure = pars.getFloat(CameraParameters::KEY_EXPOSURE_COMPENSATION);
     /* exposure-compensation comes multiplied in the -9...9 range, while
        we need it in the -3...3 range -> adjust for that */
@@ -431,8 +458,10 @@ JordanCameraWrapper::setParameters(const CameraParameters& params)
 
     retval = mMotoInterface->setParameters(pars);
 
-    if (oldFlashMode != mFlashMode) {
-        toggleTorchIfNeeded();
+    if (!deviceIsKobe()) {	
+        if (oldFlashMode != mFlashMode) {
+           toggleTorchIfNeeded();
+        }
     }
 
     return retval;
@@ -443,7 +472,7 @@ JordanCameraWrapper::getParameters() const
 {
     CameraParameters ret = mMotoInterface->getParameters();
 
-    if (mCameraType == CAM_SOC) {
+    if (mCameraType == CAM_SOC && !deviceIsKobe()) {
         /* the original zoom ratio string is '100,200,300,400,500,600',
            but 500 and 600 are broken for the SOC camera, so limiting
            it here */
@@ -470,7 +499,12 @@ JordanCameraWrapper::getParameters() const
     ret.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE,
             "(10000,30000),(10000,25000),(10000,20000),(10000,24000),(10000,15000),(10000,10000)");
     ret.set(CameraParameters::KEY_PREVIEW_FPS_RANGE, "10000, 30000");
-    ret.set(CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES, "176x144,320x240,352x288,640x480,848x480,1280x720");
+    if (!deviceIsKobe()) {
+    	ret.set(CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES, "176x144,320x240,352x288,640x480,848x480,1280x720");
+    } else {
+        ret.set(CameraParameters::KEY_SUPPORTED_PICTURE_SIZES, "320x240,640x480,1280x960,1600x1200,2048x1536");
+    }
+
     ret.set(CameraParameters::KEY_SUPPORTED_VIDEO_SIZES, "");
 
     ret.set("cam-mode", mVideoMode ? "1" : "0");
