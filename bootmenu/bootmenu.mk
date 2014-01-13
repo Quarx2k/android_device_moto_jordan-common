@@ -14,7 +14,6 @@ PRODUCT_PACKAGES += \
 # config
 PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/config/bootmenu_bypass:system/bootmenu/config/bootmenu_bypass \
-	${bm_device}/bootmenu/config/default.prop:system/bootmenu/config/default.prop \
 	${bm_device}/bootmenu/config/default_bootmode.conf:system/bootmenu/config/default_bootmode.conf \
 	${bm_device}/bootmenu/config/overclock.conf:system/bootmenu/config/overclock.conf \
 	${bm_device}/bootmenu/script/_config.sh:system/bootmenu/script/_config.sh \

@@ -99,6 +99,9 @@ on post-fs
     # DSS - disable tearing elimination
     write /sys/devices/omapdss/display0/tear_elim 0  
 
+# 4.4 requires this
+    chmod 0644 /proc/cmdline
+
 on post-fs-data
 
     mount rootfs rootfs / ro remount

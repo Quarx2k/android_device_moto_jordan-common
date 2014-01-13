@@ -92,9 +92,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
 	com.android.future.usb.accessory
 
-RODUCT_PACKAGES := \
-    VoiceDialer
-
 # ICS sound
 PRODUCT_PACKAGES += \
 	hcitool hciattach hcidump \
@@ -119,9 +116,6 @@ PRODUCT_PACKAGES += libfnc DefyParts MotoFM MotoFMService
 # Core stuff
 PRODUCT_PACKAGES += charge_only_mode mot_boot_mode
 
-# Publish that we support the live wallpaper feature.
-PRODUCT_PACKAGES += librs_jni
-
 # CM9 apps
 PRODUCT_PACKAGES += Torch HwaSettings make_ext4fs
 
@@ -136,7 +130,6 @@ PRODUCT_PACKAGES += \
     wpa_supplicant.conf \
     TQS_D_1.7.ini \
     TQS_D_1.7_127x.ini \
-    crda \
     regulatory.bin \
     calibrator 
 
@@ -147,8 +140,7 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_COPY_FILES += \
     $(OUT)/ramdisk.img:system/bootmenu/2nd-boot/ramdisk \
-    $(OUT)/kernel:system/bootmenu/2nd-boot/zImage \
-    $(OUT)/utilities/lsof:system/bootmenu/binary/lsof \
+    $(OUT)/kernel:system/bootmenu/2nd-boot/zImage
 
 # Should be after the full_base include, which loads languages_full
 PRODUCT_LOCALES := en_US en_GB en_IN fr_FR it_IT de_DE es_ES hu_HU uk_UA zh_CN zh_TW ru_RU nl_NL se_SV cs_CZ pl_PL pt_BR da_DK ko_KR el_GR ro_RO
