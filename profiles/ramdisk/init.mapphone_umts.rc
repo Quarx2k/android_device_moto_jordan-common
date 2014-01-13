@@ -92,6 +92,9 @@ on post-fs
     chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/state
     chmod 0660 /sys/class/rfkill/rfkill0/state
 
+# 4.4 requires this
+    chmod 0644 /proc/cmdline
+
 on post-fs-data
 
     mkdir /cache/dalvik-cache 0771 system system
