@@ -91,7 +91,7 @@ BOARD_DATA_DEVICE   := /dev/block/mmcblk1p25
 
 # Recovery
 BOARD_HAS_NO_SELECT_BUTTON := true
-TARGET_RECOVERY_FSTAB := device/moto/jordan-common/recovery.fstab
+TARGET_RECOVERY_FSTAB := device/moto/jordan-common/recovery_twrp.fstab
 RECOVERY_FSTAB_VERSION := 2
 TARGET_RECOVERY_INITRC := device/moto/jordan-common/profiles/ramdisk/init-recovery.rc
 BOARD_HAS_LARGE_FILESYSTEM := true
