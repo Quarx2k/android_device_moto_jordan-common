@@ -75,4 +75,6 @@ PRODUCT_COPY_FILES += \
 	$(bm_device)/temp/busybox:system/bootmenu/binary/busybox \
 	$(bm_device)/temp/bootmenu:system/bin/bootmenu \
 	$(OUT)/ramdisk-recovery.img:system/bootmenu/2nd-boot/ramdisk-recovery \
+	$(bm_device)/twrp.fstab:recovery/root/etc/twrp.fstab \
+
 
