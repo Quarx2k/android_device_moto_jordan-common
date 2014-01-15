@@ -29,17 +29,19 @@
 
 namespace android {
 
+static int deviceIsKobe = 0;
+
 wp<JordanCameraWrapper> JordanCameraWrapper::singleton;
 
-bool deviceIsKobe(void)
+void checkDeviceName(void)
 {
     char mDeviceName[PROPERTY_VALUE_MAX];
     property_get("ro.product.device", mDeviceName, NULL);
 
-    if (!strcmp(mDeviceName, "MB520") == 0) {
-	return true;
+    if (strcmp(mDeviceName, "mb520") == 0) {
+	deviceIsKobe = 1;
     } else {
-	return false;
+	deviceIsKobe = 0;
     }
 }
 
@@ -113,13 +115,15 @@ sp<JordanCameraWrapper> JordanCameraWrapper::createInstance(int cameraId)
     CameraType type = CAM_SOC;
     sp<CameraHardwareInterface> motoInterface;
     sp<JordanCameraWrapper> hardware;
+    checkDeviceName();
 
     if (deviceCardMatches("/dev/video3", "camise")) {
-        ALOGI("Detected SOC device\n");
         /* entry point of SOC driver is android::CameraHalSocImpl::createInstance() */
-	if (!deviceIsKobe()) {
+	if (!deviceIsKobe) {
+        	ALOGI("Detected Defy SOC device\n");
         	motoInterface = openMotoInterface("libsoccamera.so", "_ZN7android16CameraHalSocImpl14createInstanceEv");
 	} else {
+        	ALOGI("Detected Bravo SOC device\n");
         	motoInterface = openMotoInterface("libkobecamera.so", "_ZN7android16CameraHalSocImpl14createInstanceEv");
 	}
         type = CAM_SOC;
@@ -151,14 +155,14 @@ JordanCameraWrapper::JordanCameraWrapper(sp<CameraHardwareInterface>& motoInterf
     mDataCbTimestamp(NULL),
     mCbUserData(NULL)
 {
-    if (type == CAM_SOC  && !deviceIsKobe()) {
+    if (type == CAM_SOC  && !deviceIsKobe) {
         mTorchThread = new TorchEnableThread(this);
     }
 }
 
 JordanCameraWrapper::~JordanCameraWrapper()
 {
-    if (mCameraType == CAM_SOC && !deviceIsKobe()) {
+    if (mCameraType == CAM_SOC && !deviceIsKobe) {
         setSocTorchMode(false);
         mTorchThread->cancelAndWait();
         mTorchThread.clear();
@@ -233,7 +237,7 @@ JordanCameraWrapper::dataCb(int32_t msgType, const sp<IMemory>& dataPtr, void* u
     }
     _this->mDataCb(msgType, dataPtr, user);
 
-    if (!deviceIsKobe()) {
+    if (!deviceIsKobe) {
         if ((msgType == CAMERA_MSG_RAW_IMAGE || msgType == CAMERA_MSG_COMPRESSED_IMAGE)) {
            if (_this->mTorchThread != NULL) {
                _this->mTorchThread->scheduleTorch();
@@ -344,7 +348,7 @@ JordanCameraWrapper::previewEnabled()
 status_t
 JordanCameraWrapper::startRecording()
 {
-    if (!deviceIsKobe()) {	
+    if (!deviceIsKobe) {	
         toggleTorchIfNeeded();
     }
     return mMotoInterface->startRecording();
@@ -353,7 +357,7 @@ JordanCameraWrapper::startRecording()
 void
 JordanCameraWrapper::stopRecording()
 {
-    if (!deviceIsKobe()) {	
+    if (!deviceIsKobe) {	
         toggleTorchIfNeeded();
     }
     mMotoInterface->stopRecording();
@@ -424,9 +428,9 @@ JordanCameraWrapper::setParameters(const CameraParameters& params)
         pars.setPreviewFrameRate(24);
     }
 
-    if (!deviceIsKobe()) {
+    if (!deviceIsKobe) {
         sceneMode = pars.get(CameraParameters::KEY_SCENE_MODE);
-        if (sceneMode != CameraParameters::SCENE_MODE_AUTO && !deviceIsKobe()) {
+        if (sceneMode != CameraParameters::SCENE_MODE_AUTO && !deviceIsKobe) {
            /* The lib doesn't seem to update the flash mode correctly when a scene
            mode is set, so we need to do it here. Also do focus mode, just do
            be on the safe side. */
@@ -458,7 +462,7 @@ JordanCameraWrapper::setParameters(const CameraParameters& params)
 
     retval = mMotoInterface->setParameters(pars);
 
-    if (!deviceIsKobe()) {	
+    if (!deviceIsKobe) {	
         if (oldFlashMode != mFlashMode) {
            toggleTorchIfNeeded();
         }
@@ -472,7 +476,7 @@ JordanCameraWrapper::getParameters() const
 {
     CameraParameters ret = mMotoInterface->getParameters();
 
-    if (mCameraType == CAM_SOC && !deviceIsKobe()) {
+    if (mCameraType == CAM_SOC && !deviceIsKobe) {
         /* the original zoom ratio string is '100,200,300,400,500,600',
            but 500 and 600 are broken for the SOC camera, so limiting
            it here */
@@ -499,7 +503,7 @@ JordanCameraWrapper::getParameters() const
     ret.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE,
             "(10000,30000),(10000,25000),(10000,20000),(10000,24000),(10000,15000),(10000,10000)");
     ret.set(CameraParameters::KEY_PREVIEW_FPS_RANGE, "10000, 30000");
-    if (!deviceIsKobe()) {
+    if (!deviceIsKobe) {
     	ret.set(CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES, "176x144,320x240,352x288,640x480,848x480,1280x720");
     } else {
         ret.set(CameraParameters::KEY_SUPPORTED_PICTURE_SIZES, "320x240,640x480,1280x960,1600x1200,2048x1536");
