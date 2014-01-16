@@ -150,6 +150,7 @@ BOARD_HAL_STATIC_LIBRARIES := libhealthd.omap3
 # Release tool
 TARGET_PROVIDES_RELEASETOOLS := true
 TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := build/tools/releasetools/ota_from_target_files --device_specific device/moto/jordan-common/releasetools/jordan-common_ota_from_target_files.py
+TARGET_SYSTEMIMAGE_USE_SQUISHER := true
 
 ext_modules:
 	make -C $(TARGET_KERNEL_MODULES_EXT) modules KERNEL_DIR=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE="arm-eabi-"
