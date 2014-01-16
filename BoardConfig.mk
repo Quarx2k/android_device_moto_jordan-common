@@ -64,6 +64,7 @@ BOARD_WLAN_DEVICE                := wl12xx_mac80211
 BOARD_SOFTAP_DEVICE              := wl12xx_mac80211
 WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/wl12xx_sdio.ko"
 WIFI_DRIVER_MODULE_NAME          := "wl12xx_sdio"
+BOARD_WIFI_SKIP_CAPABILITIES     := true
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
