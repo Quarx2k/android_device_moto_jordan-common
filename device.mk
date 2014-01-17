@@ -49,6 +49,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	ro.bq.gpu_to_cpu_unsupported=1 \
 	dalvik.vm.debug.alloc=0 \
 	ro.hwui.disable_scissor_opt=true \
+	cm.updater.uri=http://defy.cm-for.us/api \
 
 # wifi props
 PRODUCT_PROPERTY_OVERRIDES += \
