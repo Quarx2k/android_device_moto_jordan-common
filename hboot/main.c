@@ -55,22 +55,23 @@ int main()
 	if (image_find(IMG_LINUX, &image) != NULL)
 	{
 		atags = atag_build();
-		
+#if 0
 		/* Reset MPU Interrupt controller */
 		write32(0x2, BOARD_MPU_INTC_BASE + 0x10);
 		while (!(read32(BOARD_MPU_INTC_BASE + 0x14) & 0x1));
-		
+
 		/* Reinit board */
 		board_init();
+#endif
 		printf("Board initialized.\n");
-		
+#if 0
 		/* Disable Watchdog (seqeunce taken from MBM) */
 		write32(0xAAAA, BOARD_WDTIMER2_BASE + 0x48);
 		delay(500);
 		
 		write32(0x5555, BOARD_WDTIMER2_BASE + 0x48);
 		delay(500);
-		
+#endif
 		printf("Booting kernel.\n");
 		l2cache_enable();
 		enter_kernel(0, ARCH_NUMBER, atags, (unsigned long) image.data);
