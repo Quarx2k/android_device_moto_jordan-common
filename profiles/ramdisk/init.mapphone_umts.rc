@@ -25,7 +25,7 @@ on fs
 # Mount mmc partitions
 
     mount_all ./fstab.mapphone_umts
-    swapon_all /fstab.mapphone_umts
+    #swapon_all /fstab.mapphone_umts
 
     mkdir /pds 0775 system system
     exec /system/bootmenu/script/pdsbackup.sh
