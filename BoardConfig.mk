@@ -115,6 +115,10 @@ TW_ALWAYS_RMRF := true
 TARGET_RECOVERY_PRE_COMMAND := "/system/bootmenu/script/reboot_command.sh"
 TARGET_RECOVERY_PRE_COMMAND_CLEAR_REASON := true
 BOARD_UMS_LUNFILE := /sys/class/android_usb/f_mass_storage/lun/file
+TW_NO_SCREEN_BLANK := true
+TW_HAS_NO_RECOVERY_PARTITION :=true
+TW_HAS_NO_BOOT_PARTITION :=true
+TW_NO_SCREEN_TIMEOUT :=true
 
 # Egl Specific
 USE_OPENGL_RENDERER := true
