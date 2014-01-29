@@ -12,7 +12,6 @@ on init
     export EXTERNAL_STORAGE /storage/sdcard0
 
     mkdir /storage/sdcard0 0000 system system
-    mkdir /storage/sdcard0 0700 root root
     mkdir /storage/usbdisk 0700 root root
     symlink /storage/sdcard0 /sdcard
     symlink /storage/sdcard0 /mnt/sdcard
