@@ -1,3 +1,9 @@
+def InstallEnd_SetBootmenuPermissions(self, *args, **kwargs):
+  self.script.SetPermissionsRecursive("/system/bootmenu/config", 0, 0, 0755, 0664, None, None)
+  self.script.SetPermissionsRecursive("/system/bootmenu/binary", 0, 0, 0755, 0755, None, None)
+  self.script.SetPermissionsRecursive("/system/bootmenu/script", 0, 0, 0755, 0755, None, None)
+  self.script.SetPermissionsRecursive("/system/bootmenu/recovery/sbin", 0, 0, 0755, 0755, None, None)
+
 def FullOTA_InstallBegin(self, *args, **kwargs):
   self.script.AppendExtra('run_program("/sbin/tune2fs", "-O has_journal /dev/block/mmcblk1p24");')
   self.script.AppendExtra('run_program("/sbin/tune2fs", "-O has_journal /dev/block/mmcblk1p25");')
@@ -11,12 +17,10 @@ def FullOTA_InstallEnd(self, *args, **kwargs):
   self.script.AppendExtra('delete_recursive("/data/dalvik-cache");')
 
 # Bootmenu
+  InstallEnd_SetBootmenuPermissions(self, args, kwargs)
+
   self.script.SetPermissionsRecursive("/system/etc/init.d", 0, 0, 0755, 0555, None, None)
   self.script.SetPermissionsRecursive("/system/addon.d", 0, 0, 0755, 0755, None, None)
-  self.script.SetPermissionsRecursive("/system/bootmenu/config", 0, 0, 0755, 0664, None, None)
-  self.script.SetPermissionsRecursive("/system/bootmenu/binary", 0, 0, 0755, 0755, None, None)
-  self.script.SetPermissionsRecursive("/system/bootmenu/script", 0, 0, 0755, 0755, None, None)
-  self.script.SetPermissionsRecursive("/system/bootmenu/recovery/sbin", 0, 0, 0755, 0755, None, None)
   self.script.SetPermissions("/system/etc/motorola/comm_drv/commdrv_fs.sh", 0, 0, 0755, None, None)
   self.script.UnpackPackageDir("system/bin/bootmenu", "/system/bootmenu/binary/bootmenu")
 
@@ -50,3 +54,6 @@ def FullOTA_FormatSystemPartition(self, *args, **kwargs):
 
 def IncrementalOTA_DisableRecoveryUpdate(self, *args, **kwargs):
   return True
+
+def IncrementalOTA_InstallEnd(self, *args, **kwargs):
+  InstallEnd_SetBootmenuPermissions(self, args, kwargs)
