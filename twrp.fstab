@@ -2,5 +2,5 @@
 
 /cache ext4 /dev/block/mmcblk1p24
 /data ext4 /dev/block/mmcblk1p25
-/system ext3 /dev/block/mmcblk1p21
+/system ext3 /dev/block/mmcblk1p21 flags=usermrf
 /sdcard auto /dev/block/mmcblk0p1 /dev/block/mmcblk0p2
