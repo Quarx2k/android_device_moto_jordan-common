@@ -22,7 +22,7 @@ PRODUCT_COPY_FILES += \
 # 2nd-boot profiles
 PRODUCT_COPY_FILES += \
 	${bm_device}/profiles/2nd-boot/hbootmod.ko:system/bootmenu/2nd-boot/hbootmod.ko \
-	${bm_device}/profiles/2nd-boot/hboot.cfg:system/bootmenu/2nd-boot/hboot.cfg \s
+	${bm_device}/profiles/2nd-boot/hboot.cfg:system/bootmenu/2nd-boot/hboot.cfg \
 
 # Ramdisk
 PRODUCT_COPY_FILES += \
