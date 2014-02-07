@@ -1,0 +1,48 @@
+mainmenu "Linux Backports from $BACKPORTED_KERNEL_NAME $BACKPORTED_KERNEL_VERSION (with backports $BACKPORTS_VERSION)"
+
+config BACKPORTS_VERSION
+	string
+	option env="BACKPORTS_VERSION"
+config BACKPORTED_KERNEL_VERSION
+	string
+	option env="BACKPORTED_KERNEL_VERSION"
+config BACKPORTED_KERNEL_NAME
+	string
+	option env="BACKPORTED_KERNEL_NAME"
+
+# these will be generated
+source Kconfig.kernel
+source Kconfig.versions
+
+# some hacks ...
+config WIRELESS
+	def_bool y
+config NET_CORE
+	def_bool y
+config EXPERT
+	def_bool y
+
+# this has the configuration for the backport code
+source compat/Kconfig
+
+# these are copied from the kernel
+source net/wireless/Kconfig
+source net/mac80211/Kconfig
+source net/bluetooth/Kconfig
+source drivers/net/wireless/Kconfig
+source drivers/net/ethernet/Kconfig
+source drivers/net/usb/Kconfig
+
+source drivers/ssb/Kconfig
+source drivers/bcma/Kconfig
+
+source net/nfc/Kconfig
+
+source drivers/regulator/Kconfig
+source drivers/media/Kconfig
+
+source net/ieee802154/Kconfig
+source net/mac802154/Kconfig
+source drivers/net/ieee802154/Kconfig
+
+source drivers/usb/class/Kconfig

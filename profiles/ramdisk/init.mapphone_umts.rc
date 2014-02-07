@@ -1,3 +1,5 @@
+#import /init.bluetooth.rc
+
 on init 
 
     export DSP_PATH /system/lib/dsp
@@ -36,17 +38,26 @@ on fs
 
 on post-fs
 
-    # Load kernel modules
-    insmod /system/lib/modules/netmux.ko
-    insmod /system/lib/modules/netmux_linkdriver.ko
-    insmod /system/lib/modules/modem_pm_driver.ko
+# Load generic modules
+    insmod /system/lib/modules/compat.ko
     insmod /system/lib/modules/nls_utf8.ko
     insmod /system/lib/modules/cifs.ko
 
-# Load wifi drivers (all except wl12xx_sdio)
-    insmod /system/lib/modules/compat.ko
+# Load Motorola Modem modules
+    insmod /system/lib/modules/netmux.ko
+    insmod /system/lib/modules/netmux_linkdriver.ko
+    insmod /system/lib/modules/modem_pm_driver.ko
+
+# Load Bluetooth drivers 
+#    insmod /system/lib/modules/bluetooth.ko
+#    insmod /system/lib/modules/hci_uart.ko
+#    insmod /system/lib/modules/rfcomm.ko
+#    insmod /system/lib/modules/bnep.ko
+
+# Load WiFi drivers
     insmod /system/lib/modules/cfg80211.ko
     insmod /system/lib/modules/mac80211.ko
+    insmod /system/lib/modules/wlcore.ko
     insmod /system/lib/modules/wl12xx.ko
 
 # Backward compatibility
@@ -91,6 +102,7 @@ on post-fs
     chown system system /sys/class/timed_output/vibrator/sweep
     chmod 0660 /sys/class/timed_output/vibrator/enable
     chmod 0660 /sys/class/timed_output/vibrator/sweep
+
 # bluetooth power up/down interface (wl127x Bluetooth and hci0)
     chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/type
     chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/state
@@ -143,6 +155,9 @@ on post-fs-data
     chmod 0770 /pds/security
     chmod 0770 /data/tmp/battd
     chmod 0775 /data/local/hwui.deny
+
+    mkdir /data/misc/hcid 0770 bluetooth bluetooth
+
 
     setprop vold.post_fs_data_done 1
 
@@ -272,6 +287,7 @@ service wifi_calibrator /system/bin/sh /system/bin/wifical.sh
     class main
     group wifi
     oneshot
+
 service wpa_supplicant /system/bin/wpa_supplicant \
     -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf \
     -I/system/etc/wifi/wpa_supplicant_overlay.conf \
@@ -364,3 +380,66 @@ service fuse_sdcard0 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/sdcard0
 service fuse_usbdisk /system/bin/sdcard -u 1023 -g 1023 /mnt/media_rw/usbdisk /storage/usbdisk
     class late_start
     disabled
+
+
+########## Bluez 4 Services #############
+# Bluetooth services.
+#service hciattach /system/bin/hciattach -n -t 10 /dev/ttyS1 texasalt 3000000 flow
+#    class main
+#    user bluetooth
+#    group bluetooth net_bt_admin
+#    disabled
+
+#service dbus /system/bin/dbus-daemon --system --nofork
+#    class main
+#    socket dbus stream 660 bluetooth bluetooth
+#    user bluetooth
+#    group bluetooth net_bt_admin
+
+#service bluetoothd /system/bin/bluetoothd -n
+#    class main
+#    socket bluetooth stream 660 bluetooth bluetooth
+#    socket dbus_bluetooth stream 660 bluetooth bluetooth
+#    # init.rc does not yet support applying capabilities, so run as root and
+#    # let bluetoothd drop uid to bluetooth with the right linux capabilities
+#    group bluetooth net_bt_admin misc
+#    disabled
+########## End Bluez 4 Services #############
+
+########## Bluez 5 Services #############
+#service bluetoothd /system/bin/logwrapper /system/bin/bluetoothd
+#    class main
+#    socket bluetooth stream 660 bluetooth bluetooth
+#    socket dbus_bluetooth stream 660 bluetooth bluetooth
+    # init.rc does not yet support applying capabilities, so run as root and
+    # let bluetoothd drop uid to bluetooth with the right linux capabilities
+#    group bluetooth net_bt_admin misc net_admin radio
+#    disabled
+#    oneshot
+
+#service bluetoothd-snoop /system/bin/logwrapper /system/bin/bluetoothd-snoop
+#    class main
+    # init does not yet support setting capabilities so run as root,
+    # bluetoothd-snoop drops unneeded linux capabilities
+#    group nobody
+#    disabled
+#    oneshot
+
+#on property:bluetooth.start=daemon
+#    setprop bluetooth.start none
+#    start bluetoothd
+
+#on property:bluetooth.stop=daemon
+#    setprop bluetooth.stop none
+#    stop bluetoothd
+
+#on property:bluetooth.start=snoop
+#    setprop bluetooth.start none
+#    start bluetoothd-snoop
+
+#on property:bluetooth.stop=snoop
+#    setprop bluetooth.stop none
+#    stop bluetoothd-snoop
+########## End Bluez 5 #############
+
+

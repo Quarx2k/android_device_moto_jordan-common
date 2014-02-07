@@ -1,0 +1,47 @@
+config MWIFIEX
+	depends on !BACKPORT_KERNEL_2_6_27
+	tristate "Marvell WiFi-Ex Driver"
+	depends on m
+	depends on CFG80211
+	---help---
+	  This adds support for wireless adapters based on Marvell
+	  802.11n/ac chipsets.
+
+	  If you choose to build it as a module, it will be called
+	  mwifiex.
+
+config MWIFIEX_SDIO
+	tristate "Marvell WiFi-Ex Driver for SD8786/SD8787/SD8797/SD8897"
+	depends on m
+	depends on MWIFIEX && MMC
+	select BACKPORT_FW_LOADER
+	---help---
+	  This adds support for wireless adapters based on Marvell
+	  8786/8787/8797 chipsets with SDIO interface.
+
+	  If you choose to build it as a module, it will be called
+	  mwifiex_sdio.
+
+config MWIFIEX_PCIE
+	tristate "Marvell WiFi-Ex Driver for PCIE 8766/8897"
+	depends on m
+	depends on MWIFIEX && PCI
+	select BACKPORT_FW_LOADER
+	---help---
+	  This adds support for wireless adapters based on Marvell
+	  8766/8897 chipsets with PCIe interface.
+
+	  If you choose to build it as a module, it will be called
+	  mwifiex_pcie.
+
+config MWIFIEX_USB
+	tristate "Marvell WiFi-Ex Driver for USB8797"
+	depends on m
+	depends on MWIFIEX && USB
+	select BACKPORT_FW_LOADER
+	---help---
+	  This adds support for wireless adapters based on Marvell
+	  Avastar 88W8797 chipset with USB interface.
+
+	  If you choose to build it as a module, it will be called
+	  mwifiex_usb.

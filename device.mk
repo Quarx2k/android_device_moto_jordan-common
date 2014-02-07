@@ -43,7 +43,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	net.dns2=8.8.4.4 \
 	ro.opengles.version = 131072 \
 	persist.sys.usb.config=mass_storage,adb \
-	ro.product.use_charge_counter=1 \
 	hwui.use.blacklist=true \
 	ro.sf.lcd_density=240 \
 	ro.bq.gpu_to_cpu_unsupported=1 \
@@ -128,13 +127,8 @@ PRODUCT_PACKAGES += \
     dhcpcd.conf \
     hostapd.conf \
     wpa_supplicant.conf \
-    TQS_D_1.7.ini \
-    TQS_D_1.7_127x.ini \
     regulatory.bin \
-    calibrator 
-
-# Wifi Direct and WPAN
-PRODUCT_PACKAGES += \
+    calibrator \
     ti_wfd_libs \
     ti-wpan-fw
 

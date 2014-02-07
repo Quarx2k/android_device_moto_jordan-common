@@ -62,14 +62,18 @@ BOARD_HOSTAPD_PRIVATE_LIB        := lib_driver_cmd_wl12xx
 PRODUCT_WIRELESS_TOOLS           := true
 BOARD_WLAN_DEVICE                := wl12xx_mac80211
 BOARD_SOFTAP_DEVICE              := wl12xx_mac80211
-WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/wl12xx_sdio.ko"
-WIFI_DRIVER_MODULE_NAME          := "wl12xx_sdio"
+WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/wlcore_sdio.ko"
+WIFI_DRIVER_MODULE_NAME          := "wlcore_sdio"
 BOARD_WIFI_SKIP_CAPABILITIES     := true
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/moto/jordan-common/bluetooth
-BOARD_HAVE_BLUETOOTH_TI := true
+TARGET_USE_BLUEDROID_STACK := true
+ifeq ($(TARGET_USE_BLUEDROID_STACK),true)
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/moto/jordan-common/bluetooth_bluedroid
+#BOARD_HAVE_BLUETOOTH_TI := true  # We use own libs.
+endif
+
 # Usb Specific
 BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
 
@@ -161,15 +165,25 @@ ext_modules:
 	find $(TARGET_KERNEL_MODULES_EXT)/ -name "*.ko" -exec mv {} \
 		$(KERNEL_MODULES_OUT) \; || true
 
-WLAN_MODULES:
-	make clean -C hardware/ti/wlan/mac80211/compat_wl12xx
-	make -C hardware/ti/wlan/mac80211/compat_wl12xx KERNEL_DIR=$(KERNEL_OUT) KLIB=$(KERNEL_OUT) KLIB_BUILD=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE="arm-eabi-"
-	mv hardware/ti/wlan/mac80211/compat_wl12xx/compat/compat.ko $(KERNEL_MODULES_OUT)
-	mv hardware/ti/wlan/mac80211/compat_wl12xx/net/mac80211/mac80211.ko $(KERNEL_MODULES_OUT)
-	mv hardware/ti/wlan/mac80211/compat_wl12xx/net/wireless/cfg80211.ko $(KERNEL_MODULES_OUT)
-	mv hardware/ti/wlan/mac80211/compat_wl12xx/drivers/net/wireless/wl12xx/wl12xx.ko $(KERNEL_MODULES_OUT)
-	mv hardware/ti/wlan/mac80211/compat_wl12xx/drivers/net/wireless/wl12xx/wl12xx_sdio.ko $(KERNEL_MODULES_OUT)
+COMPAT_MODULES:
+	make mrproper -C device/moto/jordan-common/modules/backports
+	make -C device/moto/jordan-common/modules/backports KERNEL_DIR=$(KERNEL_OUT) KLIB=$(KERNEL_OUT) KLIB_BUILD=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE="arm-eabi-" defconfig-mapphone
+	make -C device/moto/jordan-common/modules/backports KERNEL_DIR=$(KERNEL_OUT) KLIB=$(KERNEL_OUT) KLIB_BUILD=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE="arm-eabi-"
+	mv device/moto/jordan-common/modules/backports/compat/compat.ko $(KERNEL_MODULES_OUT)
+ifeq ($(TARGET_USE_BLUEDROID_STACK),false)
+	mv device/moto/jordan-common/modules/backports/net/bluetooth/bluetooth.ko $(KERNEL_MODULES_OUT)
+	mv device/moto/jordan-common/modules/backports/net/bluetooth/bnep/bnep.ko $(KERNEL_MODULES_OUT)
+	mv device/moto/jordan-common/modules/backports/net/bluetooth/rfcomm/rfcomm.ko $(KERNEL_MODULES_OUT)
+	mv device/moto/jordan-common/modules/backports/drivers/bluetooth/btwilink.ko $(KERNEL_MODULES_OUT)
+	mv device/moto/jordan-common/modules/backports/drivers/bluetooth/hci_uart.ko $(KERNEL_MODULES_OUT)
+endif
+	mv device/moto/jordan-common/modules/backports/net/mac80211/mac80211.ko $(KERNEL_MODULES_OUT)
+	mv device/moto/jordan-common/modules/backports/net/wireless/cfg80211.ko $(KERNEL_MODULES_OUT)
+	mv device/moto/jordan-common/modules/backports/drivers/net/wireless/ti/wlcore/wlcore.ko $(KERNEL_MODULES_OUT)
+	mv device/moto/jordan-common/modules/backports/drivers/net/wireless/ti/wl12xx/wl12xx.ko $(KERNEL_MODULES_OUT)
+	mv device/moto/jordan-common/modules/backports/drivers/net/wireless/ti/wlcore/wlcore_sdio.ko $(KERNEL_MODULES_OUT)
 	arm-linux-androideabi-strip --strip-unneeded $(KERNEL_MODULES_OUT)/*
+
 hboot:
 	mkdir -p $(PRODUCT_OUT)/system/bootmenu/2nd-boot   
 	echo "$(BOARD_KERNEL_CMDLINE)" > $(PRODUCT_OUT)/system/bootmenu/2nd-boot/cmdline  
@@ -184,5 +198,5 @@ BOARD_KERNEL_CMDLINE := console=/dev/null mem=500M init=/init omapfb.vram=0:4M u
 #TARGET_PREBUILT_KERNEL := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/kernel
 # Extra : external modules sources
 TARGET_KERNEL_MODULES_EXT := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/modules/sources/
-TARGET_KERNEL_MODULES := ext_modules hboot WLAN_MODULES
+TARGET_KERNEL_MODULES := ext_modules hboot COMPAT_MODULES
 
