@@ -2,5 +2,4 @@
 #
 # Remove battd stats
 
-# set touchnum
 rm -rf /data/battd

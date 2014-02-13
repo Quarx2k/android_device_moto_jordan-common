@@ -36,7 +36,7 @@ PRODUCT_COPY_FILES += \
 	$(device_path)/prebuilt/etc/init.d/02baseband:system/etc/init.d/02baseband \
 	$(device_path)/prebuilt/etc/init.d/08backlight:system/etc/init.d/08backlight \
 	$(device_path)/prebuilt/etc/init.d/90multitouch:system/etc/init.d/90multitouch \
-	$(device_path)/prebuilt/etc/init.d/90multitouch:system/etc/init.d/080battd \
+	$(device_path)/prebuilt/etc/init.d/80battd:system/etc/init.d/80battd \
 	$(device_path)/prebuilt/etc/sysctl.conf:system/etc/sysctl.conf \
 	$(device_path)/prebuilt/etc/busybox.fstab:system/etc/fstab \
 	$(device_path)/prebuilt/etc/gpsconfig.xml:system/etc/gpsconfig.xml \
