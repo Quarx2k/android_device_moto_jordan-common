@@ -31,16 +31,12 @@ PRODUCT_COPY_FILES += \
 	$(device_path)/prebuilt/usr/cpcap-key.kl:system/usr/keylayout/cpcap-key.kl \
 	$(device_path)/prebuilt/usr/keychars/cpcap-key.kcm:system/usr/keychars/cpcap-key.kcm \
 
-# scripts
 PRODUCT_COPY_FILES += \
 	${device_path}/prebuilt/bin/handle_bp_panic.sh:system/bin/handle_bp_panic.sh \
-	${device_path}/prebuilt/bin/wifical.sh:system/bin/wifical.sh \
-
-PRODUCT_COPY_FILES += \
 	$(device_path)/prebuilt/etc/init.d/02baseband:system/etc/init.d/02baseband \
-	$(device_path)/prebuilt/etc/init.d/05mountsd:system/etc/init.d/05mountsd \
 	$(device_path)/prebuilt/etc/init.d/08backlight:system/etc/init.d/08backlight \
 	$(device_path)/prebuilt/etc/init.d/90multitouch:system/etc/init.d/90multitouch \
+	$(device_path)/prebuilt/etc/init.d/90multitouch:system/etc/init.d/080battd \
 	$(device_path)/prebuilt/etc/sysctl.conf:system/etc/sysctl.conf \
 	$(device_path)/prebuilt/etc/busybox.fstab:system/etc/fstab \
 	$(device_path)/prebuilt/etc/gpsconfig.xml:system/etc/gpsconfig.xml \
@@ -49,22 +45,28 @@ PRODUCT_COPY_FILES += \
 	$(device_path)/prebuilt/etc/audio_policy.conf:system/etc/audio_policy.conf \
 
 # WLAN/WPAN firmware
+ifeq ($(TARGET_USE_KERNEL_BACKPORTS),true)
 PRODUCT_COPY_FILES += \
     $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-5-mr.bin:system/etc/firmware/ti-connectivity/wl127x-fw-5-mr.bin \
     $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-5-plt.bin:system/etc/firmware/ti-connectivity/wl127x-fw-5-plt.bin \
     $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-5-sr.bin:system/etc/firmware/ti-connectivity/wl127x-fw-5-sr.bin \
+    $(device_path)/temp/hostapd:system/bin/hostapd
+else 
+PRODUCT_COPY_FILES += \
+    $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-5-mr.bin:system/etc/firmware/ti-connectivity/wl127x-fw-4-mr.bin \
+    $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-5-plt.bin:system/etc/firmware/ti-connectivity/wl127x-fw-4-plt.bin \
+    $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-5-sr.bin:system/etc/firmware/ti-connectivity/wl127x-fw-4-sr.bin
+endif
+PRODUCT_COPY_FILES += \
     $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl1271-nvs.bin:system/etc/firmware/ti-connectivity/wl1271-nvs.bin \
     $(device_path)/prebuilt/etc/firmware/TIInit_7.2.31.bts:system/etc/firmware/TIInit_7.2.31.bts \
     $(device_path)/prebuilt/etc/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf \
     $(device_path)/prebuilt/etc/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf \
-    $(device_path)/prebuilt/etc/wifi/TQS_D_1.7.ini:system/etc/wifi/TQS_D_1.7.ini \
-    $(device_path)/prebuilt/etc/wifi/TQS_D_1.7_127x.ini:system/etc/wifi/TQS_D_1.7_127x.ini \
-    $(device_path)/temp/hostapd:system/bin/hostapd \
+    ${device_path}/prebuilt/bin/wifical.sh:system/bin/wifical.sh \
 
-# New CM9 backup list system (addon.d)
+# Backup list system (addon.d)
 PRODUCT_COPY_FILES += \
 	${device_path}/releasetools/addon.d/60-baseband.sh:system/addon.d/60-baseband.sh \
-	${device_path}/releasetools/addon.d/70-gapps.sh:system/addon.d/70-gapps.sh \
 	${device_path}/releasetools/addon.d/80-battd.sh:system/addon.d/80-battd.sh \
 	${device_path}/releasetools/addon.d/70-bootmenu.sh:system/addon.d/70-bootmenu.sh \
 

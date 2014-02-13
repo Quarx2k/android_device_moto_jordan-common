@@ -1,7 +1,7 @@
 ######## BootMenu Script Env
 ######## common variables for scripts
 
-export PATH=/sbin:/system/xbin:/system/bin
+export PATH=/sbin
 
 PART_SYSTEM=/dev/block/mmcblk1p21
 PART_CACHE=/dev/block/mmcblk1p24

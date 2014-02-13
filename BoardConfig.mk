@@ -51,6 +51,8 @@ TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 TARGET_ARCH_LOWMEM := true
 TARGET_ARCH_HAVE_NEON := true
 
+TARGET_USE_KERNEL_BACKPORTS      := false
+
 # Wifi related defines
 USES_TI_MAC80211 := true
 COMMON_GLOBAL_CFLAGS += -DUSES_TI_MAC80211
@@ -62,8 +64,13 @@ BOARD_HOSTAPD_PRIVATE_LIB        := lib_driver_cmd_wl12xx
 PRODUCT_WIRELESS_TOOLS           := true
 BOARD_WLAN_DEVICE                := wl12xx_mac80211
 BOARD_SOFTAP_DEVICE              := wl12xx_mac80211
+ifeq ($(TARGET_USE_KERNEL_BACKPORTS),true)
 WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/wlcore_sdio.ko"
 WIFI_DRIVER_MODULE_NAME          := "wlcore_sdio"
+else
+WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/wl12xx_sdio.ko"
+WIFI_DRIVER_MODULE_NAME          := "wl12xx_sdio"
+endif
 BOARD_WIFI_SKIP_CAPABILITIES     := true
 
 # Bluetooth
@@ -184,6 +191,16 @@ endif
 	mv device/moto/jordan-common/modules/backports/drivers/net/wireless/ti/wlcore/wlcore_sdio.ko $(KERNEL_MODULES_OUT)
 	arm-linux-androideabi-strip --strip-unneeded $(KERNEL_MODULES_OUT)/*
 
+WLAN_MODULES:
+	make clean -C hardware/ti/wlan/mac80211/compat_wl12xx
+	make -C hardware/ti/wlan/mac80211/compat_wl12xx KERNEL_DIR=$(KERNEL_OUT) KLIB=$(KERNEL_OUT) KLIB_BUILD=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE="arm-eabi-"
+	mv hardware/ti/wlan/mac80211/compat_wl12xx/compat/compat.ko $(KERNEL_MODULES_OUT)
+	mv hardware/ti/wlan/mac80211/compat_wl12xx/net/mac80211/mac80211.ko $(KERNEL_MODULES_OUT)
+	mv hardware/ti/wlan/mac80211/compat_wl12xx/net/wireless/cfg80211.ko $(KERNEL_MODULES_OUT)
+	mv hardware/ti/wlan/mac80211/compat_wl12xx/drivers/net/wireless/wl12xx/wl12xx.ko $(KERNEL_MODULES_OUT)
+	mv hardware/ti/wlan/mac80211/compat_wl12xx/drivers/net/wireless/wl12xx/wl12xx_sdio.ko $(KERNEL_MODULES_OUT)
+	arm-linux-androideabi-strip --strip-unneeded $(KERNEL_MODULES_OUT)/*
+
 hboot:
 	mkdir -p $(PRODUCT_OUT)/system/bootmenu/2nd-boot   
 	echo "$(BOARD_KERNEL_CMDLINE)" > $(PRODUCT_OUT)/system/bootmenu/2nd-boot/cmdline  
@@ -198,5 +215,10 @@ BOARD_KERNEL_CMDLINE := console=/dev/null mem=500M init=/init omapfb.vram=0:4M u
 #TARGET_PREBUILT_KERNEL := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/kernel
 # Extra : external modules sources
 TARGET_KERNEL_MODULES_EXT := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/modules/sources/
-TARGET_KERNEL_MODULES := ext_modules hboot COMPAT_MODULES
+
+ifeq ($(TARGET_USE_KERNEL_BACKPORTS),true)
+TARGET_KERNEL_MODULES := ext_modules hboot WLAN_MODULES COMPAT_MODULES
+else
+TARGET_KERNEL_MODULES := ext_modules hboot WLAN_MODULES
+endif
 

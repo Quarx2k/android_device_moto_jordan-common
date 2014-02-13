@@ -14,6 +14,8 @@ def FullOTA_InstallEnd(self, *args, **kwargs):
   self.script.Print("Wiping dalvik-cache...")
   self.script.Mount("/data")
   self.script.AppendExtra('delete_recursive("/data/dalvik-cache");')
+  self.script.Print("Wiping battd stats...")
+  self.script.AppendExtra('delete_recursive("/data/battd");')
 
 # Bootmenu
   InstallEnd_SetBootmenuPermissions(self, args, kwargs)

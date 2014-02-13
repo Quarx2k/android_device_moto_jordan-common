@@ -27,7 +27,7 @@ on fs
 # Mount mmc partitions
 
     mount_all ./fstab.mapphone_umts
-    #swapon_all /fstab.mapphone_umts
+    #swapon_all /fstab.mapphone_umts # For enable zRam
 
     mkdir /pds 0775 system system
     exec /system/bootmenu/script/pdsbackup.sh
@@ -57,8 +57,10 @@ on post-fs
 # Load WiFi drivers
     insmod /system/lib/modules/cfg80211.ko
     insmod /system/lib/modules/mac80211.ko
-    insmod /system/lib/modules/wlcore.ko
+    insmod /system/lib/modules/cfg80211.ko
+    insmod /system/lib/modules/mac80211.ko
     insmod /system/lib/modules/wl12xx.ko
+#   insmod /system/lib/modules/wlcore.ko #For Kernel backports
 
 # Backward compatibility
     symlink /dev /dev/netmux
@@ -69,12 +71,6 @@ on post-fs
 
 # Overclock after 2ndboot.
     exec /system/bootmenu/script/overclock.sh
-
-# Busybox
-    mkdir /data/local/tmp 0777 system shell
-    export HISTFILE /data/local/tmp/.ash_history
-    export HISTFILESIZE 1000
-    export ENV /system/etc/profile
 
 # Mount tmp, we dont have swap, use ramfs which can grow if required
     mkdir /tmp
@@ -88,9 +84,6 @@ on post-fs
     write /sys/devices/platform/ehci-omap.0/usb1/power/autosuspend 0
     write /sys/devices/platform/ehci-omap.0/usb1/1-3/power/level auto
     write /sys/devices/platform/ehci-omap.0/usb1/1-3/power/autosuspend 0
-    # Disable a system-wide task dump on OOM in default
-    write /proc/sys/vm/oom_dump_tasks 0
-    write /proc/sys/fs/suid_dumpable 2
     # Power Management
     write /sys/power/sr_vdd1_autocomp 1
     write /sys/power/sr_vdd2_autocomp 1
@@ -111,9 +104,6 @@ on post-fs
 # Tweaks
     # DSS - disable tearing elimination
     write /sys/devices/omapdss/display0/tear_elim 0  
-
-# 4.4 requires this
-    chmod 0644 /proc/cmdline
 
 on post-fs-data
 
@@ -137,6 +127,7 @@ on post-fs-data
     mkdir /data/misc/dhcp 0770 dhcp dhcp
     mkdir /tmp/commdrv 0770 radio radio
     mkdir /data/local/hwui.deny
+    mkdir /data/misc/hcid 0770 bluetooth bluetooth
 
     chown radio radio /data/bp_nvm
     chown radio radio /pds/bp_nvm
@@ -155,9 +146,6 @@ on post-fs-data
     chmod 0770 /pds/security
     chmod 0770 /data/tmp/battd
     chmod 0775 /data/local/hwui.deny
-
-    mkdir /data/misc/hcid 0770 bluetooth bluetooth
-
 
     setprop vold.post_fs_data_done 1
 
@@ -275,12 +263,6 @@ service panic_daemon /system/bin/panic_daemon
     group radio system graphics sdcard_rw
     socket panic_daemon stream 660 radio radio
     onrestart exec /system/bin/handle_bp_panic.sh
-
-service secclkd /system/bin/secclkd
-    class main
-    user system
-    group system radio
-    oneshot
 
 # Ecompass daemon
 service akmd2 /system/bin/akmd2
