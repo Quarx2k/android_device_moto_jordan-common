@@ -57,9 +57,14 @@ PRODUCT_COPY_FILES += \
     $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-5-plt.bin:system/etc/firmware/ti-connectivity/wl127x-fw-4-plt.bin \
     $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-5-sr.bin:system/etc/firmware/ti-connectivity/wl127x-fw-4-sr.bin
 endif
+
+#TIInit_7.2.31Voice.bts - Bt-headset works, but handset mic, earphone and speaker muted during calls if BT enabled even when not connected to any BT device;
+#TIInit_7.2.31NoVoice.bts - Bt-headset not works, but handset mic, earphone and speaker NOT muted during calls 
+
 PRODUCT_COPY_FILES += \
     $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl1271-nvs.bin:system/etc/firmware/ti-connectivity/wl1271-nvs.bin \
-    $(device_path)/prebuilt/etc/firmware/TIInit_7.2.31.bts:system/etc/firmware/TIInit_7.2.31.bts \
+    $(device_path)/prebuilt/etc/firmware/TIInit_7.2.31Voice.bts:system/etc/firmware/TIInit_7.2.31Voice.bts \
+    $(device_path)/prebuilt/etc/firmware/TIInit_7.2.31NoVoice.bts:system/etc/firmware/TIInit_7.2.31NoVoice.bts \
     $(device_path)/prebuilt/etc/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf \
     $(device_path)/prebuilt/etc/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf \
     ${device_path}/prebuilt/bin/wifical.sh:system/bin/wifical.sh \

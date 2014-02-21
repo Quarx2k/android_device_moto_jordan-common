@@ -38,6 +38,9 @@ def FullOTA_InstallEnd(self, *args, **kwargs):
   # libaudio link fix
   symlinks.append(("/system/lib/hw/audio.a2dp.default.so", "/system/lib/liba2dp.so"))
 
+  # BT-Headset fix
+  symlinks.append(("/system/etc/firmware/TIInit_7.2.31Voice.bts", "/system/etc/firmware/TIInit_7.2.31.bt"))
+
   self.script.MakeSymlinks(symlinks)
   self.script.ShowProgress(0.2, 0)
 
