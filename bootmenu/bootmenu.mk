@@ -54,6 +54,7 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/modules/symsearch.ko:system/bootmenu/modules/symsearch.ko \
 	${bm_device}/bootmenu/modules/jbd2.ko:system/bootmenu/modules/jbd2.ko \
 	${bm_device}/bootmenu/modules/ext4.ko:system/bootmenu/modules/ext4.ko \
+	${bm_device}/bootmenu/modules/ext4.ko:system/bootmenu/modules/cpcap-battery.ko \
 
 # prebuilt binaries (to clean...)
 PRODUCT_COPY_FILES += \

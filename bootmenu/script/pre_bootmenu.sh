@@ -9,6 +9,7 @@
 #Insmod ext4 modules 
 /system/bootmenu/binary/busybox insmod /system/bootmenu/modules/jbd2.ko
 /system/bootmenu/binary/busybox insmod /system/bootmenu/modules/ext4.ko
+/system/bootmenu/binary/busybox insmod /system/bootmenu/modules/cpcap-battery.ko
 
 source /system/bootmenu/script/_config.sh
 
