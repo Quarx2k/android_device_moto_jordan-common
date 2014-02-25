@@ -27,7 +27,6 @@ def FullOTA_InstallEnd(self, *args, **kwargs):
 
   symlinks = []
 
-  symlinks.append(("/system/bin/bootmenu", "/system/bin/logwrapper"))
   symlinks.append(("indeterminate.png", "/system/bootmenu/images/indeterminate1.png"))
   symlinks.append(("indeterminate.png", "/system/bootmenu/images/indeterminate2.png"))
   symlinks.append(("indeterminate.png", "/system/bootmenu/images/indeterminate3.png"))

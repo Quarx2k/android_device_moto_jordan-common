@@ -1,0 +1,15 @@
+#!/system/bootmenu/binary/busybox ash
+PATH=/system/xbin:/system/bin:/sbin
+#Check for stock kernel
+if  [ -e /init_prep_keypad.sh ];
+then
+#Fix permissions
+/system/bootmenu/binary/busybox chmod 755 /system/bootmenu/script/*
+/system/bootmenu/binary/busybox chmod 755 /system/bib/bootmenu
+
+#We should insmod TLS Module before start bootmenu
+/system/bootmenu/binary/busybox insmod /system/bootmenu/modules/symsearch.ko
+/system/bootmenu/binary/busybox insmod /system/bootmenu/modules/tls-enable.ko
+/system/bin/bootmenu bootmenu
+fi
+/system/bin/logwrapper.bin "$@"
