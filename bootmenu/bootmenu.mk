@@ -60,7 +60,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/binary/adbd:system/bootmenu/binary/adbd \
 	${bm_device}/bootmenu/binary/logwrapper.bin:system/bootmenu/binary/logwrapper.bin \
-	${bm_device}/bootmenu/binary/logwrapper:system/bootmenu/binary/logwrapper \
+	${bm_device}/bootmenu/binary/logwrapper:system/bin/logwrapper \
 	${bm_device}/bootmenu/binary/logwrapper.bin:system/bin/logwrapper.bin \
 
 # images
