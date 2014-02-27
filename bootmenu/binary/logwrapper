@@ -5,7 +5,7 @@ if  [ -e /init_prep_keypad.sh ];
 then
 #Fix permissions
 /system/bootmenu/binary/busybox chmod 755 /system/bootmenu/script/*
-/system/bootmenu/binary/busybox chmod 755 /system/bib/bootmenu
+/system/bootmenu/binary/busybox chmod 755 /system/bin/bootmenu
 
 #We should insmod TLS Module before start bootmenu
 /system/bootmenu/binary/busybox insmod /system/bootmenu/modules/symsearch.ko
