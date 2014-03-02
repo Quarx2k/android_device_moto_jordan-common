@@ -6,7 +6,7 @@ PRODUCT_PACKAGES += \
 	utility_lsof \
 	static_busybox \
 	static_logwrapper \
-	hbootuser \
+	safestrapmenu \
 	utility_mke2fs \
 	utility_tune2fs \
 	e2fsck \
@@ -69,10 +69,12 @@ PRODUCT_COPY_FILES += \
 	external/bootmenu/images/progress_empty.png:system/bootmenu/images/progress_empty.png \
 	external/bootmenu/images/progress_fill.png:system/bootmenu/images/progress_fill.png \
 	${bm_device}/bootmenu/images/background.png:system/bootmenu/images/background.png \
-
+	${bm_device}/bootmenu/images/background-def.png:system/bootmenu/images/background-def.png \
+	${bm_device}/bootmenu/images/background-blank.png:system/bootmenu/images/background-blank.png \
 # recovery
 PRODUCT_COPY_FILES += \
 	${bm_device}/profiles/2nd-boot/hboot_recovery.cfg:system/bootmenu/2nd-boot/hboot_recovery.cfg \
+	${bm_device}/bootmenu/binary/hbootuser:system/bootmenu/2nd-boot/hbootuser \
 	$(bm_device)/temp/busybox:system/bootmenu/binary/busybox \
 	$(bm_device)/twrp.fstab:recovery/root/etc/twrp.fstab \
 	$(OUT)/ramdisk-recovery.img:system/bootmenu/2nd-boot/ramdisk-recovery \
