@@ -1,5 +1,5 @@
 #!/system/bootmenu/binary/busybox ash
-PATH=/system/xbin:/system/bin:/sbin
+export PATH=/sbin
 #Check for stock kernel
 if  [ -e /init_prep_keypad.sh ];
 then
