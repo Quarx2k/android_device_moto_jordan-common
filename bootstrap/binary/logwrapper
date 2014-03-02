@@ -1,0 +1,38 @@
+#!/system/bootstrap/binary/busybox ash
+export PATH=/sbin
+BB_STATIC="/system/bootstrap/binary/busybox"
+BOOT_CONF="/cache/recovery/bootmode.conf"
+
+#Check for stock kernel
+if  [ -e /init_prep_keypad.sh ];
+then
+
+#Fix permissions
+$BB_STATIC chmod 755 /system/bootstrap/script/*
+
+#Insmod ext4 modules 
+$BB_STATIC insmod /system/bootstrap/modules/jbd2.ko
+$BB_STATIC insmod /system/bootstrap/modules/ext4.ko
+
+# Mount cache to get bootmode
+$BB_STATIC mount -o remount,rw /
+$BB_STATIC mkdir /cache
+$BB_STATIC mount -t auto -o nosuid,nodev,noatime,nodiratime,barrier=1 /dev/block/mmcblk1p24 /cache
+
+if [ -e $BOOT_CONF ]; then
+if [ $($BB_STATIC cat $BOOT_CONF) == 'recovery' ]; then
+$BB_STATIC rm $BOOT_CONF
+$BB_STATIC ash /system/bootstrap/script/recovery.sh 
+fi
+fi
+
+wait
+
+if [ $(/system/bootstrap/binary/safestrapmenu > /dev/null 2>&1;echo $?) -eq 0 ]; then 
+$BB_STATIC ash /system/bootstrap/script/recovery.sh
+else
+$BB_STATIC ash system/bootstrap/script/2nd-boot.sh 
+fi
+
+fi
+/system/bin/logwrapper.bin "$@"
