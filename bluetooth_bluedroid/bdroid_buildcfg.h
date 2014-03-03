@@ -19,4 +19,7 @@
 
 #define BTM_DEF_LOCAL_NAME   "Motorola Defy"
 #define BTHC_USERIAL_READ_MEM_SIZE (1034)
+#define BLE_INCLUDED FALSE
+#define BTA_GATT_INCLUDED FALSE
+#define SMP_INCLUDED FALSE
 #endif
