@@ -37,8 +37,6 @@ endif
 ## (3)  Finally, the least specific parts, i.e. the non-GSM-specific aspects
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.media.capture.flip=horizontalandvertical \
-	ro.com.google.locationfeatures=1 \
-	ro.media.dec.jpeg.memcap=20000000 \
 	net.dns1=8.8.8.8 \
 	net.dns2=8.8.4.4 \
 	ro.opengles.version = 131072 \
@@ -61,13 +59,11 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	ro.telephony.ril.v3=signalstrength \
 	ro.telephony.ril_class=MotoWrigley3GRIL \
 	ro.telephony.call_ring.multiple=false \
-	ro.telephony.call_ring.delay=3000 \
 	ro.telephony.default_network=3 \
 	mobiledata.interfaces=rmnet0 \
 
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.config.low_ram=false  \
-	dalvik.vm.jit.codecachesize=0
 
 DEVICE_PACKAGE_OVERLAYS += device/moto/jordan-common/overlay
 
@@ -85,7 +81,6 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml \
 	frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
 	frameworks/native/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
-	packages/wallpapers/LivePicker/android.software.live_wallpaper.xml:/system/etc/permissions/android.software.live_wallpaper.xml \
 	frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml
 
 PRODUCT_PACKAGES += \
