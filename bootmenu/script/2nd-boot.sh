@@ -6,14 +6,15 @@
 source /system/bootmenu/script/_config.sh
 
 ######## Main Script
+BB_STATIC="/system/bootmenu/binary/busybox"
 
-toolbox mount -o remount,rw rootfs /
-mkdir /2ndboot
-cp -f /system/bootmenu/2nd-boot/* /2ndboot
-chmod 755 /2ndboot/*
+$BB_STATIC mount -o remount,rw rootfs /
+$BB_STATIC mkdir /2ndboot
+$BB_STATIC cp -f /system/bootmenu/2nd-boot/* /2ndboot
+$BB_STATIC chmod 755 /2ndboot/*
 
 ## unmount devices
-sync
+$BB_STATIC sync
 umount /acct
 umount /dev/cpuctl
 umount /dev/pts
@@ -23,16 +24,16 @@ umount /cache
 umount /data
 
 ## reduce lcd backlight to save battery
-echo 18 > /sys/class/leds/lcd-backlight/brightness
+$BB_STATIC echo 18 > /sys/class/leds/lcd-backlight/brightness
 
 cd /2ndboot
 
-echo inserting hbootmod.ko
-insmod ./hbootmod.ko kill_dss=1
+$BB_STATIC echo inserting hbootmod.ko
+$BB_STATIC insmod ./hbootmod.ko kill_dss=1
 
-echo making node 
-mknod /dev/hbootctrl c `cat /proc/devices | grep hboot | awk '{print $1}' ` 0
+$BB_STATIC echo making node 
+$BB_STATIC mknod /dev/hbootctrl c `$BB_STATIC cat /proc/devices | $BB_STATIC grep hboot | $BB_STATIC awk '{print $1}' ` 0
 
-echo starting hboot 
+$BB_STATIC echo starting hboot 
 ./hbootuser ./hboot.cfg
 	

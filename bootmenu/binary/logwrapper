@@ -1,15 +1,46 @@
 #!/system/bootmenu/binary/busybox ash
-PATH=/system/xbin:/system/bin:/sbin
+export PATH=/sbin
+BB_STATIC="/system/bootmenu/binary/busybox"
+BOOT_CONF="/cache/recovery/bootmode.conf"
+
 #Check for stock kernel
 if  [ -e /init_prep_keypad.sh ];
 then
+
 #Fix permissions
-/system/bootmenu/binary/busybox chmod 755 /system/bootmenu/script/*
-/system/bootmenu/binary/busybox chmod 755 /system/bin/bootmenu
+$BB_STATIC chmod 755 /system/bootmenu/script/*
+$BB_STATIC chmod 755 /system/bin/bootmenu
 
 #We should insmod TLS Module before start bootmenu
-/system/bootmenu/binary/busybox insmod /system/bootmenu/modules/symsearch.ko
-/system/bootmenu/binary/busybox insmod /system/bootmenu/modules/tls-enable.ko
-/system/bin/bootmenu bootmenu
+$BB_STATIC insmod /system/bootmenu/modules/symsearch.ko
+$BB_STATIC insmod /system/bootmenu/modules/tls-enable.ko
+#Insmod ext4 modules 
+$BB_STATIC insmod /system/bootmenu/modules/jbd2.ko
+$BB_STATIC insmod /system/bootmenu/modules/ext4.ko
+
+# Mount cache to get bootmode
+$BB_STATIC mount -o remount,rw /
+$BB_STATIC mkdir /cache
+$BB_STATIC mount -t auto -o nosuid,nodev,noatime,nodiratime,barrier=1 /dev/block/mmcblk1p24 /cache
+
+if [ -e $BOOT_CONF ]; then
+if [ $($BB_STATIC cat $BOOT_CONF) == 'recovery' ]; then
+$BB_STATIC rm $BOOT_CONF
+$BB_STATIC ash /system/bootmenu/script/recovery.sh 
+fi
+if [ $($BB_STATIC cat $BOOT_CONF) == 'bootmenu' ]; then
+$BB_STATIC rm $BOOT_CONF
+/system/bin/bootmenu
+fi
+fi
+
+wait
+
+if [ $(/system/bootmenu/binary/safestrapmenu > /dev/null 2>&1;echo $?) -eq 0 ]; then 
+/system/bin/bootmenu
+else
+$BB_STATIC ash system/bootmenu/script/2nd-boot.sh 
+fi
+
 fi
 /system/bin/logwrapper.bin "$@"
