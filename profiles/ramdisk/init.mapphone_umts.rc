@@ -30,7 +30,7 @@ on fs
     #swapon_all /fstab.mapphone_umts # For enable zRam
 
     mkdir /pds 0775 system system
-    exec /system/bootmenu/script/pdsbackup.sh
+    exec /system/bootstrap/script/pdsbackup.sh
 
     symlink /dev/block/mmcblk1p21 /dev/block/system
     symlink /dev/block/mmcblk1p24 /dev/block/cache
@@ -69,9 +69,6 @@ on post-fs
 
     mount rootfs rootfs / rw remount
 
-# Overclock after 2ndboot.
-    exec /system/bootmenu/script/overclock.sh
-
 # Mount tmp, we dont have swap, use ramfs which can grow if required
     mkdir /tmp
     mount ramfs ramfs /tmp size=512k relatime
@@ -104,6 +101,8 @@ on post-fs
 # Tweaks
     # DSS - disable tearing elimination
     write /sys/devices/omapdss/display0/tear_elim 0  
+    # GPU to 266mhz
+    write /proc/gpu/max_rate 266666666
 
 on post-fs-data
 

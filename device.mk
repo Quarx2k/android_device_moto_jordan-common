@@ -23,7 +23,7 @@ $(call inherit-product, device/common/gps/gps_eu_supl.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/telephony.mk)	
 # Blobs and bootmenu stuff
 $(call inherit-product, device/moto/jordan-common/jordan-blobs.mk)
-$(call inherit-product, device/moto/jordan-common/bootmenu/bootmenu.mk)
+$(call inherit-product, device/moto/jordan-common/bootstrap/bootstrap.mk)
 $(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
 # Get some sounds
 $(call inherit-product-if-exists, frameworks/base/data/sounds/AllAudio.mk)
@@ -92,7 +92,7 @@ PRODUCT_PACKAGES += \
 	libaudioutils audio.a2dp.default  \
 	libaudiohw_legacy \
 
-#	 OMX stuff
+# OMX stuff
 PRODUCT_PACKAGES += dspexec libbridge libLCML libOMX_Core libstagefrighthw
 PRODUCT_PACKAGES += libOMX.TI.AAC.encode libOMX.TI.AAC.decode libOMX.TI.AMR.decode libOMX.TI.AMR.encode
 PRODUCT_PACKAGES += libOMX.TI.WBAMR.encode libOMX.TI.MP3.decode libOMX.TI.WBAMR.decode
@@ -118,12 +118,7 @@ PRODUCT_PACKAGES += \
     hostapd.conf \
     wpa_supplicant.conf \
     regulatory.bin \
-    calibrator \
     ti_wfd_libs \
-
-PRODUCT_COPY_FILES += \
-    $(OUT)/ramdisk.img:system/bootmenu/2nd-boot/ramdisk \
-    $(OUT)/kernel:system/bootmenu/2nd-boot/zImage
 
 # Should be after the full_base include, which loads languages_full
 PRODUCT_LOCALES := en_US en_GB

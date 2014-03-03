@@ -91,16 +91,6 @@ TARGET_USE_OMAP_COMPAT  := true
 BUILD_WITH_TI_AUDIO := 1
 BUILD_PV_VIDEO_ENCODERS := 1
 
-# Bootmenu
-BOARD_USES_BOOTMENU := true
-BOARD_WITH_CPCAP    := true
-BOARD_MMC_DEVICE    := /dev/block/mmcblk1
-BOARD_SDCARD_DEVICE_PRIMARY   := /dev/block/mmcblk0p1
-BOARD_SDCARD_DEVICE_SECONDARY := /dev/block/mmcblk0
-BOARD_SDEXT_DEVICE  := /dev/block/mmcblk0p2
-BOARD_SYSTEM_DEVICE := /dev/block/mmcblk1p21
-BOARD_DATA_DEVICE   := /dev/block/mmcblk1p25
-
 # Recovery
 BOARD_HAS_NO_SELECT_BUTTON := true
 TARGET_RECOVERY_FSTAB := device/moto/jordan-common/recovery.fstab
@@ -123,7 +113,7 @@ TW_NO_BATT_PERCENT := false
 TW_NO_REBOOT_RECOVERY := false
 TW_NO_REBOOT_BOOTLOADER := false
 TW_ALWAYS_RMRF := true
-TARGET_RECOVERY_PRE_COMMAND := "/system/bootmenu/script/reboot_command.sh"
+TARGET_RECOVERY_PRE_COMMAND := "/system/bootstrap/script/reboot_command.sh"
 TARGET_RECOVERY_PRE_COMMAND_CLEAR_REASON := true
 BOARD_UMS_LUNFILE := /sys/class/android_usb/f_mass_storage/lun/file
 TW_NO_SCREEN_BLANK := true
@@ -206,7 +196,8 @@ hboot:
 	mkdir -p $(PRODUCT_OUT)/system/bootmenu/2nd-boot   
 	echo "$(BOARD_KERNEL_CMDLINE)" > $(PRODUCT_OUT)/system/bootmenu/2nd-boot/cmdline  
 	make -C  $(ANDROID_BUILD_TOP)/device/moto/jordan-common/hboot ARCH=arm CROSS_COMPILE="arm-eabi-"
-	cp $(ANDROID_BUILD_TOP)/device/moto/jordan-common/hboot/hboot.bin $(PRODUCT_OUT)/system/bootmenu/2nd-boot/
+	mv $(ANDROID_BUILD_TOP)/device/moto/jordan-common/bootstrap/hboot/hboot.bin $(PRODUCT_OUT)/system/bootstrap/2nd-boot/
+	make clean -C $(ANDROID_BUILD_TOP)/device/moto/jordan-common/hboot
 
 # If kernel sources are present in repo, here is the location
 TARGET_KERNEL_SOURCE := $(ANDROID_BUILD_TOP)/jordan-kernel

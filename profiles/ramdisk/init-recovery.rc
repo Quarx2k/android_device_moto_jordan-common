@@ -17,7 +17,6 @@ on init
     mkdir /system
     mkdir /data
     mkdir /cache
-    mkdir /pds 0775 system system
 
 # Mount tmp, we dont have swap, use ramfs which can grow if required
     mkdir /tmp
@@ -26,24 +25,12 @@ on init
     chown system shell /tmp
 
 # Configure kernel options
-    # Enable automatic power control for EHCI USB IPC
-    write /sys/devices/platform/ehci-omap.0/usb1/power/level auto
-    write /sys/devices/platform/ehci-omap.0/usb1/power/autosuspend 0
-    write /sys/devices/platform/ehci-omap.0/usb1/1-3/power/level auto
-    write /sys/devices/platform/ehci-omap.0/usb1/1-3/power/autosuspend 0
-    # Disable a system-wide task dump on OOM in default
-    write /proc/sys/vm/oom_dump_tasks 0
-    write /proc/sys/fs/suid_dumpable 2
-    # Power Management
-    write /sys/power/sr_vdd1_autocomp 1
-    write /sys/power/sr_vdd2_autocomp 1 
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor performance
 
     write /sys/class/android_usb/android0/enable 0
     write /sys/class/android_usb/android0/idVendor 22b8
     write /sys/class/android_usb/android0/idProduct 4366
     write /sys/class/android_usb/android0/functions mass_storage,adb
-
 
 on boot
 
@@ -72,6 +59,4 @@ on property:service.adb.root=1
     write /sys/class/android_usb/android0/enable 0
     restart adbd
     write /sys/class/android_usb/android0/enable 1
-
-
 
