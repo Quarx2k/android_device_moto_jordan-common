@@ -64,7 +64,7 @@ int main()
 		board_init();
 		printf("Board initialized.\n");
 		
-		/* Disable Watchdog (seqeunce taken from MBM) */
+		/* Disable Watchdog (sequence taken from MBM) */
 		write32(0xAAAA, BOARD_WDTIMER2_BASE + 0x48);
 		delay(500);
 		
