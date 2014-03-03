@@ -202,6 +202,9 @@ WLAN_MODULES:
 	arm-linux-androideabi-strip --strip-unneeded $(KERNEL_MODULES_OUT)/*
 
 hboot:
+#	echo "console=ttyS2,115200n8 rw mem=244M@0x80C00000 init=/init ip=off motobldlabel=none mtdparts=omap2-nand.0:128k(mbr),128k(mbmloader),256k(unused0),512k(mbm),512k(mbmbackup),512k(ebr),512k(bploader),512k(cdt),4m(pds),512k(lbl),512k(lbl_backup),1m(logo),2m(sp),512k(devtree),512k(devtree_backup),4m(bpsw),8m(boot),8m(recovery),14m(cdrom),512k(misc),512k(cid),4m(kpanic),334464k(system),384k(unused1),512k(prek),512k(pkbackup),200m(cache),445m(userdata)" > $(PRODUCT_OUT)/system/bootmenu/2nd-boot/cmdline.oldkernel
+# console=/dev/null rw mem=498M@0x80C00000 init=/init ip=off brdrev=P3A omap3_die_id androidboot.bootloader=0x0000 mmcparts=mmcblk1:p7(pds),p15(boot),p16(recovery),p17(cdrom),p18(misc),p19(cid),p20(kpanic),p21(system),p22(prek),p23(pkbackup),p24(cache),p25(userdata)
+	echo "console=/dev/null rw mem=498M@0x80C00000 init=/init ip=off brdrev=P3A omap3_die_id androidboot.bootloader=0x0000 mmcparts=mmcblk1:p7(pds),p15(boot),p16(recovery),p17(cdrom),p18(misc),p19(cid),p20(kpanic),p21(system),p22(prek),p23(pkbackup),p24(cache),p25(userdata)" > $(PRODUCT_OUT)/system/bootmenu/2nd-boot/cmdline.oldkernel  
 	mkdir -p $(PRODUCT_OUT)/system/bootmenu/2nd-boot   
 	echo "$(BOARD_KERNEL_CMDLINE)" > $(PRODUCT_OUT)/system/bootmenu/2nd-boot/cmdline  
 	make -C  $(ANDROID_BUILD_TOP)/device/moto/jordan-common/hboot ARCH=arm CROSS_COMPILE="arm-eabi-"
