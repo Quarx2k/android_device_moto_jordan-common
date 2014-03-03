@@ -37,6 +37,7 @@ chmod 755 $BB
 $BB chown 0.0 $BB
 $BB chmod 4755 $BB
 
+# wait, shouldn't this be -l ?
 if [ -f /sbin/chmod ]; then
     # job already done...
     exit 0
