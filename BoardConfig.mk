@@ -120,8 +120,8 @@ BOARD_USE_CUSTOM_RECOVERY_FONT:= \"roboto_10x18.h\"
 TW_BRIGHTNESS_PATH := /sys/class/leds/lcd-backlight/brightness
 TW_MAX_BRIGHTNESS := 255
 TW_NO_BATT_PERCENT := false
-TW_NO_REBOOT_RECOVERY := true
-TW_NO_REBOOT_BOOTLOADER := true
+TW_NO_REBOOT_RECOVERY := false
+TW_NO_REBOOT_BOOTLOADER := false
 TW_ALWAYS_RMRF := true
 TARGET_RECOVERY_PRE_COMMAND := "/system/bootmenu/script/reboot_command.sh"
 TARGET_RECOVERY_PRE_COMMAND_CLEAR_REASON := true
@@ -165,7 +165,7 @@ BOARD_HAL_STATIC_LIBRARIES := libhealthd.omap3
 # Release tool
 TARGET_PROVIDES_RELEASETOOLS := true
 TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := build/tools/releasetools/ota_from_target_files --device_specific device/moto/jordan-common/releasetools/jordan-common_ota_from_target_files.py
-TARGET_SYSTEMIMAGE_USE_SQUISHER := true
+TARGET_SYSTEMIMAGE_USE_SQUISHER := false
 
 ext_modules:
 	make -C $(TARGET_KERNEL_MODULES_EXT) modules KERNEL_DIR=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE="arm-eabi-"
