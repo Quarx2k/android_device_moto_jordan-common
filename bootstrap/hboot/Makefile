@@ -26,7 +26,7 @@ C_OBJS := $(O)/main.o $(O)/board.o $(O)/images.o $(O)/common.o $(O)/vsprintf.o $
 LIB_OBJS := $(O)/lib/_ashldi3.o $(O)/lib/_ashrdi3.o  $(O)/lib/_div0.o $(O)/lib/_divsi3.o $(O)/lib/_lshrdi3.o $(O)/lib/_modsi3.o  $(O)/lib/_udivsi3.o $(O)/lib/_umodsi3.o  
 OBJS := $(A_OBJS) $(C_OBJS) $(LIB_OBJS)
 
-# Attempt to create a output directory.
+# Attempt to create an output directory.
 $(shell [ -d ${O} ] || mkdir -p ${O})
 
 # Verify if it was successful.
