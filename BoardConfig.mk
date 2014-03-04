@@ -95,7 +95,7 @@ BUILD_PV_VIDEO_ENCODERS := 1
 BOARD_HAS_NO_SELECT_BUTTON := true
 TARGET_RECOVERY_FSTAB := device/moto/jordan-common/recovery.fstab
 RECOVERY_FSTAB_VERSION := 2
-TARGET_RECOVERY_INITRC := device/moto/jordan-common/profiles/ramdisk/init-recovery.rc
+TARGET_RECOVERY_INITRC := device/moto/jordan-common/ramdisk/init-recovery.rc
 BOARD_HAS_LARGE_FILESYSTEM := true
 BOARD_HAS_NO_MISC_PARTITION := true
 BOARD_USES_MMCUTILS := true
@@ -192,11 +192,11 @@ WLAN_MODULES:
 	arm-linux-androideabi-strip --strip-unneeded $(KERNEL_MODULES_OUT)/*
 
 hboot:
-	mkdir -p $(PRODUCT_OUT)/system/bootmenu/2nd-boot   
-	echo "$(BOARD_KERNEL_CMDLINE)" > $(PRODUCT_OUT)/system/bootmenu/2nd-boot/cmdline  
-	make -C  $(ANDROID_BUILD_TOP)/device/moto/jordan-common/hboot ARCH=arm CROSS_COMPILE="arm-eabi-"
+	mkdir -p $(PRODUCT_OUT)/system/bootstrap/2nd-boot   
+	echo "$(BOARD_KERNEL_CMDLINE)" > $(PRODUCT_OUT)/system//bootstrap/2nd-boot/cmdline  
+	make -C  $(ANDROID_BUILD_TOP)/device/moto/jordan-common/bootstrap/hboot ARCH=arm CROSS_COMPILE="arm-eabi-"
 	mv $(ANDROID_BUILD_TOP)/device/moto/jordan-common/bootstrap/hboot/hboot.bin $(PRODUCT_OUT)/system/bootstrap/2nd-boot/
-	make clean -C $(ANDROID_BUILD_TOP)/device/moto/jordan-common/hboot
+	make clean -C $(ANDROID_BUILD_TOP)/device/moto/jordan-common/bootstrap/hboot
 
 # If kernel sources are present in repo, here is the location
 TARGET_KERNEL_SOURCE := $(ANDROID_BUILD_TOP)/jordan-kernel

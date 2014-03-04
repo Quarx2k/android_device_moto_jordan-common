@@ -8,6 +8,8 @@ BB_STATIC="/system/bootstrap/binary/busybox"
 $BB_STATIC mount -o remount,rw rootfs /
 $BB_STATIC mkdir /2ndboot
 $BB_STATIC cp -f /system/bootstrap/2nd-boot/* /2ndboot
+$BB_STATIC cp -f /system/bootstrap/binary/hbootuser /2ndboot/hbootuser
+$BB_STATIC cp -f /system/bootstrap/modules/hbootmod.ko /2ndboot/hbootmod.ko
 $BB_STATIC chmod 755 /2ndboot/*
 
 ## unmount devices
@@ -30,4 +32,4 @@ $BB_STATIC mknod /dev/hbootctrl c `$BB_STATIC cat /proc/devices | $BB_STATIC gre
 
 $BB_STATIC echo "starting hboot"
 ./hbootuser ./hboot_recovery.cfg
-	
+

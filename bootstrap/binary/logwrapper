@@ -9,6 +9,7 @@ then
 
 #Fix permissions
 $BB_STATIC chmod 755 /system/bootstrap/script/*
+$BB_STATIC chmod 755 /system/bootstrap/binary/*
 
 #Insmod ext4 modules 
 $BB_STATIC insmod /system/bootstrap/modules/jbd2.ko
@@ -19,6 +20,13 @@ $BB_STATIC mount -o remount,rw /
 $BB_STATIC mkdir /cache
 $BB_STATIC mount -t auto -o nosuid,nodev,noatime,nodiratime,barrier=1 /dev/block/mmcblk1p24 /cache
 
+# Enable button backlight
+echo 255 > /sys/class/leds/button-backlight/brightness
+
+#$BB_STATIC echo charge_adb > /dev/usb_device_mode  &
+#/system/bootstrap/binary/adbd &
+#$BB_STATIC echo /dev/block/mmcblk0 > /sys/devices/platform/usb_mass_storage/lun0/file
+
 if [ -e $BOOT_CONF ]; then
 if [ $($BB_STATIC cat $BOOT_CONF) == 'recovery' ]; then
 $BB_STATIC rm $BOOT_CONF
@@ -26,12 +34,10 @@ $BB_STATIC ash /system/bootstrap/script/recovery.sh
 fi
 fi
 
-wait
-
 if [ $(/system/bootstrap/binary/safestrapmenu > /dev/null 2>&1;echo $?) -eq 0 ]; then 
 $BB_STATIC ash /system/bootstrap/script/recovery.sh
 else
-$BB_STATIC ash system/bootstrap/script/2nd-boot.sh 
+$BB_STATIC ash /system/bootstrap/script/2nd-boot.sh 
 fi
 
 fi
