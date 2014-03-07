@@ -124,6 +124,7 @@ PRODUCT_PACKAGES += \
     wpa_supplicant.conf \
     regulatory.bin \
     ti_wfd_libs \
+    calibrator \
 
 # Should be after the full_base include, which loads languages_full
 PRODUCT_LOCALES := en_US en_GB en_IN fr_FR it_IT de_DE es_ES hu_HU uk_UA zh_CN zh_TW ru_RU nl_NL se_SV cs_CZ pl_PL pt_BR da_DK ko_KR el_GR ro_RO iw_IL ar_EG
