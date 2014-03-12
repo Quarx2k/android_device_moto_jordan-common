@@ -67,7 +67,7 @@ int ev_get(struct input_event *ev, unsigned dont_wait);
 
 // Resources
 #ifndef RES_IMAGES_FOLDER
-#define RES_IMAGES_FOLDER "/system/bootmenu/images"
+#define RES_IMAGES_FOLDER "/system/bootstrap/images"
 #endif
 
 // Returns 0 if no error, else negative.
