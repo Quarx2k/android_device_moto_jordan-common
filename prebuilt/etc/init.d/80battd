@@ -2,4 +2,13 @@
 #
 # Remove battd stats
 
-rm -rf /data/battd
+battd_dir=/data/battd
+battd_uid=$(ps $(pidof battd)|tail -1|cut -d ' ' -f 1)
+
+if [ -d $battd_dir ]; then
+   rm -rf $battd_dir/*
+else
+   mkdir $battd_dir
+   chown $battd_uid $battd_dir
+   chmod 0770 $battd_dir
+fi
