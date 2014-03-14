@@ -1,5 +1,4 @@
 #!/system/bootstrap/binary/busybox ash
-export PATH=/sbin
 BB_STATIC="/system/bootstrap/binary/busybox"
 BOOT_CONF="/cache/recovery/bootmode.conf"
 
