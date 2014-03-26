@@ -113,13 +113,14 @@ TW_NO_BATT_PERCENT := false
 TW_NO_REBOOT_RECOVERY := true
 TW_NO_REBOOT_BOOTLOADER := true
 TW_ALWAYS_RMRF := true
-TARGET_RECOVERY_PRE_COMMAND := "/system/bootstrap/script/reboot_command.sh"
-TARGET_RECOVERY_PRE_COMMAND_CLEAR_REASON := true
 BOARD_UMS_LUNFILE := /sys/class/android_usb/f_mass_storage/lun/file
 TW_NO_SCREEN_BLANK := true
 TW_HAS_NO_RECOVERY_PARTITION :=true
 TW_HAS_NO_BOOT_PARTITION :=true
 TW_NO_SCREEN_TIMEOUT :=true
+TARGET_RECOVERY_PRE_COMMAND :=  "echo recovery > /cache/recovery/bootmode.conf; sync; \#"
+TARGET_RECOVERY_PRE_COMMAND_CLEAR_REASON := true
+BOARD_ALWAYS_INSECURE := true #to debug bootloops 
 
 # Egl Specific
 USE_OPENGL_RENDERER := true
