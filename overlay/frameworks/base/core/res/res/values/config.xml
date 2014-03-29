@@ -262,4 +262,5 @@ Some kernels use names like CAR and DESK.
     <!-- WiFi Display -->
     <bool name="config_enableWifiDisplay">false</bool>
 
+    <bool name="config_fmSeparateVolumeControl">true</bool>
 </resources>
