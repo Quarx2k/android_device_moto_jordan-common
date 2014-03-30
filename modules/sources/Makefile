@@ -5,8 +5,8 @@
 # list of modules to build :
 obj-m += symsearch/
 obj-m += backlight/
+obj-m += overclock/
 
-#obj-m += overclock/
 #obj-m += multitouch/
 #obj-m += mmcfix/
 #obj-m += gpiofix/
