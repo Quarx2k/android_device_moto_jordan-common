@@ -22,4 +22,6 @@
 #define BLE_INCLUDED FALSE
 #define BTA_GATT_INCLUDED FALSE
 #define SMP_INCLUDED FALSE
+#define BTA_DISABLE_DELAY 1000 /* in milliseconds */	23
+#define BTM_DEFAULT_SCO_MODE 0s
 #endif
