@@ -53,3 +53,17 @@ LOCAL_FORCE_STATIC_EXECUTABLE := true
 LOCAL_MODULE_PATH := $(PRODUCT_OUT)/system/bootmenu/binary
 
 include $(BUILD_EXECUTABLE)
+
+# Camera_detect
+include $(CLEAR_VARS)
+
+LOCAL_SRC_FILES := camera_detect.c
+LOCAL_CFLAGS := -Os
+LOCAL_MODULE := camera_detect
+LOCAL_MODULE_TAGS := optional
+LOCAL_STATIC_LIBRARIES += libc libcutils
+LOCAL_FORCE_STATIC_EXECUTABLE := true
+LOCAL_MODULE_PATH := $(PRODUCT_OUT)/recovery/root/sbin
+
+include $(BUILD_EXECUTABLE)
+

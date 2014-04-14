@@ -112,7 +112,7 @@ PRODUCT_PACKAGES += libOMX.TI.Video.Decoder libOMX.TI.Video.encoder
 PRODUCT_PACKAGES += libOMX.TI.JPEG.Encoder
 
 # Defy stuff
-PRODUCT_PACKAGES += libfnc DefyParts MotoFM MotoFMService
+PRODUCT_PACKAGES += libfnc DefyParts MotoFM MotoFMService camera_detect
 
 # Core stuff
 PRODUCT_PACKAGES += charge_only_mode mot_boot_mode
