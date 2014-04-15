@@ -1,12 +1,18 @@
-def InstallEnd_SetBootstrapPermissions(self, *args, **kwargs):
+def InstallEnd_SetSpecificDeviceConfigs(self, *args, **kwargs):
+  # Fix Scripts permissions
   self.script.SetPermissionsRecursive("/system/bootstrap/config", 0, 0, 0755, 0664, None, None)
   self.script.SetPermissionsRecursive("/system/bootstrap/binary", 0, 0, 0755, 0755, None, None)
   self.script.SetPermissionsRecursive("/system/bootstrap/script", 0, 0, 0755, 0755, None, None)
+  # Install correct Media-Profiles
+  self.script.AppendExtra('run_program("/sbin/camera_detect");')
+  self.script.AppendExtra('ifelse(is_substring("mt9p012", getprop("ro.camera.type")), run_program("/sbin/sh", "-c", "busybox mv /system/etc/media_profiles_mb526.xml /system/etc/media_profiles.xml"));')
+  self.script.AppendExtra('ifelse(is_substring("camise", getprop("ro.camera.type")), run_program("/sbin/sh", "-c", "busybox mv /system/etc/media_profiles_mb525.xml /system/etc/media_profiles.xml"));')
+  self.script.AppendExtra('delete("/system/etc/media_profiles_mb526.xml");')
+  self.script.AppendExtra('delete("/system/etc/media_profiles_mb525.xml");')
 
 def FullOTA_InstallBegin(self, *args, **kwargs):
   self.script.AppendExtra('run_program("/sbin/tune2fs", "-O has_journal /dev/block/mmcblk1p24");')
   self.script.AppendExtra('run_program("/sbin/tune2fs", "-O has_journal /dev/block/mmcblk1p25");')
-  self.script.AppendExtra('run_program("/sbin/camera_detect");')
 
 def FullOTA_InstallEnd(self, *args, **kwargs):
   self.script.Print("Wiping cache...")
@@ -30,12 +36,6 @@ def FullOTA_InstallEnd(self, *args, **kwargs):
   # libaudio link fix
   symlinks.append(("/system/lib/hw/audio.a2dp.default.so", "/system/lib/liba2dp.so"))
   
-  # Install correct Media-Profiles
-  self.script.AppendExtra('ifelse(is_substring("mt9p012", getprop("ro.camera.type")), run_program("/sbin/sh", "-c", "busybox mv /system/etc/media_profiles_mb526.xml /system/etc/media_profiles.xml"));')
-  self.script.AppendExtra('ifelse(is_substring("camise", getprop("ro.camera.type")), run_program("/sbin/sh", "-c", "busybox mv /system/etc/media_profiles_mb525.xml /system/etc/media_profiles.xml"));')
-  self.script.AppendExtra('delete("/system/etc/media_profiles_mb526.xml");')
-  self.script.AppendExtra('delete("/system/etc/media_profiles_mb525.xml");')
-
   self.script.MakeSymlinks(symlinks)
   self.script.ShowProgress(0.2, 0)
 
@@ -55,4 +55,4 @@ def IncrementalOTA_DisableRecoveryUpdate(self, *args, **kwargs):
   return True
 
 def IncrementalOTA_InstallEnd(self, *args, **kwargs):
-  InstallEnd_SetBootstrapPermissions(self, args, kwargs)
+  InstallEnd_SetSpecificDeviceConfigs(self, args, kwargs)
