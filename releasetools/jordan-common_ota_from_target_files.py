@@ -7,8 +7,9 @@ def InstallEnd_SetSpecificDeviceConfigs(self, *args, **kwargs):
   self.script.AppendExtra('package_extract_file("system/bin/camera_detect", "/tmp/camera_detect");')
   self.script.AppendExtra('set_perm(0, 0, 0777, "/tmp/camera_detect");')
   self.script.AppendExtra('run_program("/tmp/camera_detect");')
-  self.script.AppendExtra('ifelse(is_substring("mt9p012", getprop("ro.camera.type")), run_program("/sbin/sh", "-c", "busybox mv /system/etc/media_profiles_mb526.xml /system/etc/media_profiles.xml"));')
-  self.script.AppendExtra('ifelse(is_substring("camise", getprop("ro.camera.type")), run_program("/sbin/sh", "-c", "busybox mv /system/etc/media_profiles_mb525.xml /system/etc/media_profiles.xml"));')
+#  self.script.AppendExtra('ifelse(is_substring("mt9p012", getprop("ro.camera.type")), run_program("/sbin/sh", "-c", "busybox mv /system/etc/media_profiles_mb526.xml /system/etc/media_profiles.xml"));')
+#  self.script.AppendExtra('ifelse(is_substring("camise", getprop("ro.camera.type")), run_program("/sbin/sh", "-c", "busybox mv /system/etc/media_profiles_mb525.xml /system/etc/media_profiles.xml"));')
+  self.script.AppendExtra('package_extract_file("system/etc/media_profiles_mb526.xml", "/system/etc/media_profiles.xml");')
   self.script.AppendExtra('delete("/system/etc/media_profiles_mb526.xml");')
   self.script.AppendExtra('delete("/system/etc/media_profiles_mb525.xml");')
 
