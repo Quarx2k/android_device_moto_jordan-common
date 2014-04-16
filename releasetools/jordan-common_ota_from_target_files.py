@@ -4,11 +4,14 @@ def InstallEnd_SetSpecificDeviceConfigs(self, *args, **kwargs):
   self.script.SetPermissionsRecursive("/system/bootstrap/binary", 0, 0, 0755, 0755, None, None)
   self.script.SetPermissionsRecursive("/system/bootstrap/script", 0, 0, 0755, 0755, None, None)
   # Install correct Media-Profiles
-  self.script.AppendExtra('run_program("/sbin/camera_detect");')
+  self.script.AppendExtra('package_extract_file("system/bin/camera_detect", "/tmp/camera_detect");')
+  self.script.AppendExtra('set_perm(0, 0, 0777, "/tmp/camera_detect");')
+  self.script.AppendExtra('run_program("/tmp/camera_detect");')
   self.script.AppendExtra('ifelse(is_substring("mt9p012", getprop("ro.camera.type")), run_program("/sbin/sh", "-c", "busybox mv /system/etc/media_profiles_mb526.xml /system/etc/media_profiles.xml"));')
   self.script.AppendExtra('ifelse(is_substring("camise", getprop("ro.camera.type")), run_program("/sbin/sh", "-c", "busybox mv /system/etc/media_profiles_mb525.xml /system/etc/media_profiles.xml"));')
   self.script.AppendExtra('delete("/system/etc/media_profiles_mb526.xml");')
   self.script.AppendExtra('delete("/system/etc/media_profiles_mb525.xml");')
+
 
 def FullOTA_InstallBegin(self, *args, **kwargs):
   self.script.AppendExtra('run_program("/sbin/tune2fs", "-O has_journal /dev/block/mmcblk1p24");')

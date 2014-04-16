@@ -63,7 +63,7 @@ LOCAL_MODULE := camera_detect
 LOCAL_MODULE_TAGS := optional
 LOCAL_STATIC_LIBRARIES += libc libcutils
 LOCAL_FORCE_STATIC_EXECUTABLE := true
-LOCAL_MODULE_PATH := $(PRODUCT_OUT)/recovery/root/sbin
+LOCAL_MODULE_PATH := $(PRODUCT_OUT)/system/bin
 
 include $(BUILD_EXECUTABLE)
 
