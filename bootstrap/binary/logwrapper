@@ -1,6 +1,7 @@
 #!/system/bootstrap/binary/busybox ash
 BB_STATIC="/system/bootstrap/binary/busybox"
 BOOT_CONF="/cache/recovery/bootmode.conf"
+BP_PANIC="/cache/bp_panic"
 
 #Check for stock kernel
 if  [ -e /init_prep_keypad.sh ];
@@ -26,6 +27,13 @@ echo 255 > /sys/class/leds/button-backlight/brightness
 #/system/bootstrap/binary/adbd &
 #$BB_STATIC echo /dev/block/mmcblk0 > /sys/devices/platform/usb_mass_storage/lun0/file
 
+# Check if device rebooted due BP-panic
+if [ -e $BP_PANIC ]; then
+$BB_STATIC rm $BP_PANIC
+$BB_STATIC ash /system/bootstrap/script/2nd-boot.sh
+fi
+
+# Check if device rebooted in recovery mode
 if [ -e $BOOT_CONF ]; then
 if [ $($BB_STATIC cat $BOOT_CONF) == 'recovery' ]; then
 $BB_STATIC rm $BOOT_CONF
