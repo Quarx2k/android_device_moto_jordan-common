@@ -146,6 +146,13 @@ on post-fs-data
     chmod 0770 /data/tmp/battd
     chmod 0775 /data/local/hwui.deny
 
+    write /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 90
+    write /sys/devices/system/cpu/cpufreq/interactive/io_is_busy 1
+    write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 40000
+    write /sys/devices/system/cpu/cpufreq/interactive/timer_rate 30000
+    write /sys/devices/system/cpu/cpufreq/interactive/timer_slack 30000
+    write /sys/devices/system/cpu/cpufreq/interactive/up_threshold_any_cpu_load 50
+
     setprop vold.post_fs_data_done 1
 
 on boot
