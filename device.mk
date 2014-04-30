@@ -18,11 +18,11 @@
 # This is the product configuration for a generic Motorola Defy (jordan)
 #
 # Inherit from those products. Most specific first.
+$(call inherit-product, device/moto/jordan-common/bootstrap/bootstrap.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 $(call inherit-product, device/common/gps/gps_eu_supl.mk)
 # Blobs and bootmenu stuff
 $(call inherit-product, device/moto/jordan-common/jordan-blobs.mk)
-$(call inherit-product, device/moto/jordan-common/bootstrap/bootstrap.mk)
 $(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
 ifeq ($(TARGET_PRODUCT),$(filter $(TARGET_PRODUCT),cm_mb525 cm_mb526))
 $(call inherit-product, vendor/motorola/jordan-common/jordan-vendor.mk)
