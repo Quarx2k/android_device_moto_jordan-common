@@ -91,7 +91,7 @@ TARGET_USE_OMAP_COMPAT  := true
 BUILD_WITH_TI_AUDIO := 1
 BUILD_PV_VIDEO_ENCODERS := 1
 
-# Recovery
+# TWRP Recovery
 BOARD_HAS_NO_SELECT_BUTTON := true
 TARGET_RECOVERY_FSTAB := device/moto/jordan-common/recovery.fstab
 RECOVERY_FSTAB_VERSION := 2
@@ -115,12 +115,12 @@ TW_NO_REBOOT_BOOTLOADER := true
 TW_ALWAYS_RMRF := true
 BOARD_UMS_LUNFILE := /sys/class/android_usb/f_mass_storage/lun/file
 TW_NO_SCREEN_BLANK := true
-TW_HAS_NO_RECOVERY_PARTITION :=true
-TW_HAS_NO_BOOT_PARTITION :=true
-TW_NO_SCREEN_TIMEOUT :=true
+TW_HAS_NO_RECOVERY_PARTITION := true
+TW_HAS_NO_BOOT_PARTITION := true
+TW_NO_SCREEN_TIMEOUT := true
+
 TARGET_RECOVERY_PRE_COMMAND :=  "echo recovery > /cache/recovery/bootmode.conf; sync; \#"
 TARGET_RECOVERY_PRE_COMMAND_CLEAR_REASON := true
-BOARD_ALWAYS_INSECURE := true #to debug bootloops 
 
 # Egl Specific
 USE_OPENGL_RENDERER := true
@@ -139,14 +139,18 @@ TARGET_RUNNING_WITHOUT_SYNC_FRAMEWORK := true
 USE_CAMERA_STUB := false
 BOARD_OVERLAY_BASED_CAMERA_HAL := true
 
+# Boot animation
+TARGET_BOOTANIMATION_PRELOAD := true
+TARGET_BOOTANIMATION_TEXTURE_CACHE := true
+TARGET_BOOTANIMATION_USE_RGB565 := true
+TARGET_CONTINUOUS_SPLASH_ENABLED := true
+
 # Other..
 BOARD_USES_AUDIO_LEGACY := true
 TARGET_PROVIDES_LIBAUDIO := true
 BOARD_USE_KINETO_COMPATIBILITY := true
-TARGET_BOOTANIMATION_USE_RGB565 := true
-TARGET_BOOTANIMATION_PRELOAD := true
 BOARD_USE_HARDCODED_FAST_TRACK_LATENCY_WHEN_DENIED := 160
-BOARD_USES_LEGACY_RIL :=true
+BOARD_USES_LEGACY_RIL := true
 BOARD_USE_LEGACY_SENSORS_FUSION := false
 BOARD_HARDWARE_CLASS := device/moto/jordan-common/cmhw/
 
@@ -202,9 +206,8 @@ hboot:
 # If kernel sources are present in repo, here is the location
 TARGET_KERNEL_SOURCE := $(ANDROID_BUILD_TOP)/jordan-kernel
 TARGET_KERNEL_CUSTOM_TOOLCHAIN := arm-eabi-4.4.3
-BOARD_KERNEL_CMDLINE := console=/dev/null mem=500M init=/init omapfb.vram=0:4M usbcore.old_scheme_first=Y
-#TARGET_PREBUILT_KERNEL := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/kernel
-# Extra : external modules sources
+BOARD_KERNEL_CMDLINE := console=/dev/null mem=500M init=/init omapfb.vram=0:4M usbcore.old_scheme_first=y
+# Extra: external modules sources
 TARGET_KERNEL_MODULES_EXT := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/modules/sources/
 
 ifeq ($(TARGET_USE_KERNEL_BACKPORTS),true)

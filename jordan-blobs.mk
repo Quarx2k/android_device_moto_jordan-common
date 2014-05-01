@@ -24,12 +24,11 @@ PRODUCT_COPY_FILES += \
 	$(device_path)/prebuilt/usr/idc/sholes-keypad.idc:system/usr/idc/sholes-keypad.idc \
 	$(device_path)/prebuilt/usr/idc/cpcap-key.idc:system/usr/idc/cpcap-key.idc \
 	$(device_path)/prebuilt/usr/idc/qtouch-touchscreen.idc:system/usr/idc/qtouch-touchscreen.idc \
-	$(device_path)/prebuilt/usr/qwerty.kl:system/usr/keylayout/qwerty.kl \
 	$(device_path)/prebuilt/usr/qwerty.kl:system/usr/keylayout/qtouch-touchscreen.kl \
 	$(device_path)/prebuilt/usr/keypad.kl:system/usr/keylayout/sholes-keypad.kl \
 	$(device_path)/prebuilt/usr/keypad.kl:system/usr/keylayout/umts_jordan-keypad.kl \
 	$(device_path)/prebuilt/usr/cpcap-key.kl:system/usr/keylayout/cpcap-key.kl \
-	$(device_path)/prebuilt/usr/keychars/cpcap-key.kcm:system/usr/keychars/cpcap-key.kcm \
+	$(device_path)/prebuilt/usr/keychars/cpcap-key.kcm:system/usr/keychars/cpcap-key.kcm
 
 PRODUCT_COPY_FILES += \
 	${device_path}/prebuilt/bin/handle_bp_panic.sh:system/bin/handle_bp_panic.sh \
@@ -42,7 +41,7 @@ PRODUCT_COPY_FILES += \
 	$(device_path)/prebuilt/etc/gpsconfig.xml:system/etc/gpsconfig.xml \
 	$(device_path)/prebuilt/etc/location.cfg:system/etc/location.cfg \
 	$(device_path)/prebuilt/etc/media_codecs.xml:system/etc/media_codecs.xml \
-	$(device_path)/prebuilt/etc/audio_policy.conf:system/etc/audio_policy.conf \
+	$(device_path)/prebuilt/etc/audio_policy.conf:system/etc/audio_policy.conf
 
 # WLAN/WPAN firmware
 ifeq ($(TARGET_USE_KERNEL_BACKPORTS),true)
@@ -53,16 +52,16 @@ PRODUCT_COPY_FILES += \
     $(device_path)/temp/hostapd:system/bin/hostapd
 else 
 PRODUCT_COPY_FILES += \
-    $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-5-mr.bin:system/etc/firmware/ti-connectivity/wl127x-fw-4-mr.bin \
-    $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-5-plt.bin:system/etc/firmware/ti-connectivity/wl127x-fw-4-plt.bin \
-    $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-5-sr.bin:system/etc/firmware/ti-connectivity/wl127x-fw-4-sr.bin
+    $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-4-mr.bin:system/etc/firmware/ti-connectivity/wl127x-fw-4-mr.bin \
+    $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-4-plt.bin:system/etc/firmware/ti-connectivity/wl127x-fw-4-plt.bin \
+    $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-4-sr.bin:system/etc/firmware/ti-connectivity/wl127x-fw-4-sr.bin
 endif
 PRODUCT_COPY_FILES += \
     $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl1271-nvs.bin:system/etc/firmware/ti-connectivity/wl1271-nvs.bin \
     $(device_path)/prebuilt/etc/firmware/TIInit_7.2.31.bts:system/etc/firmware/TIInit_7.2.31.bts \
     $(device_path)/prebuilt/etc/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf \
     $(device_path)/prebuilt/etc/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf \
-    ${device_path}/prebuilt/bin/wifical.sh:system/bin/wifical.sh \
+    ${device_path}/prebuilt/bin/wifical.sh:system/bin/wifical.sh
 
 # Backup list system (addon.d)
 PRODUCT_COPY_FILES += \

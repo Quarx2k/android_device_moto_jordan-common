@@ -10,3 +10,4 @@ fi
 
 # set touchnum
 echo $MAX_TOUCH > /proc/multitouch/num
+

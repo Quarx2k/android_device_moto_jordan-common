@@ -17,26 +17,26 @@
 #
 # This is the product configuration for a generic Motorola Defy (jordan)
 #
+# Bootanimation
+TARGET_SCREEN_HEIGHT := 854
+TARGET_SCREEN_WIDTH := 480
+
 # Inherit from those products. Most specific first.
 $(call inherit-product, device/moto/jordan-common/bootstrap/bootstrap.mk)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 $(call inherit-product, device/common/gps/gps_eu_supl.mk)
-# Blobs and bootmenu stuff
+$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 $(call inherit-product, device/moto/jordan-common/jordan-blobs.mk)
 $(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
-ifeq ($(TARGET_PRODUCT),$(filter $(TARGET_PRODUCT),cm_mb525 cm_mb526))
-$(call inherit-product, vendor/motorola/jordan-common/jordan-vendor.mk)
-endif
 
-## (3)  Finally, the least specific parts, i.e. the non-GSM-specific aspects
+DEVICE_PACKAGE_OVERLAYS += device/moto/jordan-common/overlay
+
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.media.capture.flip=horizontalandvertical \
 	ro.com.google.locationfeatures=1 \
 	ro.media.dec.jpeg.memcap=20000000 \
 	net.dns1=8.8.8.8 \
 	net.dns2=8.8.4.4 \
-	ro.opengles.version = 131072 \
-	persist.sys.usb.config=mass_storage,adb \
+	ro.opengles.version=131072 \
 	hwui.use.blacklist=true \
 	ro.sf.lcd_density=240 \
 	ro.bq.gpu_to_cpu_unsupported=1 \
@@ -54,6 +54,10 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	debug.sf.no_hw_vsync=1 \
 	persist.sys.force_highendgfx=true
 
+# Set default USB interface
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+	persist.sys.usb.config=mass_storage \
+
 # wifi props
 PRODUCT_PROPERTY_OVERRIDES += \
 	wifi.interface=wlan0 \
@@ -65,11 +69,9 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	ro.telephony.ril.v3=signalstrength \
 	ro.telephony.ril_class=MotoWrigley3GRIL \
 	ro.telephony.call_ring.multiple=false \
-	ro.telephony.call_ring.delay=3000 \
+	ro.telephony.call_ring.delay=500 \
 	ro.telephony.default_network=3 \
 	mobiledata.interfaces=rmnet0 \
-
-DEVICE_PACKAGE_OVERLAYS += device/moto/jordan-common/overlay
 
 # Permissions files
 PRODUCT_COPY_FILES += \
@@ -93,9 +95,8 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
 	com.android.future.usb.accessory
 
-# ICS sound
+# Legacy Sound
 PRODUCT_PACKAGES += \
-	hcitool hciattach hcidump \
 	libaudioutils audio.a2dp.default  \
 	libaudiohw_legacy \
 
@@ -103,17 +104,11 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += dspexec libbridge libLCML libOMX_Core libstagefrighthw
 PRODUCT_PACKAGES += libOMX.TI.AAC.encode libOMX.TI.AAC.decode libOMX.TI.AMR.decode libOMX.TI.AMR.encode
 PRODUCT_PACKAGES += libOMX.TI.WBAMR.encode libOMX.TI.MP3.decode libOMX.TI.WBAMR.decode
-PRODUCT_PACKAGES += libOMX.TI.Video.Decoder libOMX.TI.Video.encoder
-PRODUCT_PACKAGES += libOMX.TI.JPEG.Encoder
+PRODUCT_PACKAGES += libOMX.TI.Video.Decoder libOMX.TI.Video.encoder libOMX.TI.JPEG.Encoder
 
 # Defy stuff
-PRODUCT_PACKAGES += libfnc DefyParts MotoFM MotoFMService camera_detect
-
-# Core stuff
+PRODUCT_PACKAGES += libfnc DefyParts MotoFM MotoFMService camera_detect HwaSettings
 PRODUCT_PACKAGES += charge_only_mode mot_boot_mode
-
-# CM9 apps
-PRODUCT_PACKAGES += Torch HwaSettings make_ext4fs
 
 # Experimental TI OpenLink
 PRODUCT_PACKAGES += libnl_2 iw libbt-vendor uim-sysfs libbluedroid
@@ -130,11 +125,7 @@ PRODUCT_PACKAGES += \
 
 # Should be after the full_base include, which loads languages_full
 PRODUCT_LOCALES := en_US en_GB en_IN fr_FR it_IT de_DE es_ES hu_HU uk_UA zh_CN zh_TW ru_RU nl_NL se_SV cs_CZ pl_PL pt_BR da_DK ko_KR el_GR ro_RO iw_IL ar_EG
-
-# Include drawables for all densities
+# Include drawables for hdpi densities
 PRODUCT_AAPT_CONFIG := hdpi
 PRODUCT_AAPT_PREF_CONFIG := hdpi
-
-PRODUCT_NAME := full_jordan
-PRODUCT_DEVICE := MB52x
 
