@@ -1,0 +1,83 @@
+<!-- TinyHAL configuration file for Motorola Defy-->
+<tinyhal>
+<!--
+We are able to have most of our routing static so do that
+-->
+<path>
+
+    <!-- Default all outputs off -->
+    <ctl name="CPCAP Mixer Stereo DAC" val="0"/>
+    <ctl name="CPCAP Mixer Voice Codec" val="0"/>
+    <ctl name="STDac Volume" val="0"/>
+
+    <!-- Default all inputs off -->
+    <ctl name="MIC1 Gain" val="0"/>
+    <ctl name="MIC2 Gain" val="0"/>
+    <ctl name="Analog External Left Capture Route" val="Off"/>
+    <ctl name="Analog External Right Capture Route" val="Off"/>
+    <ctl name="Analog Left Capture Route" val="Off"/>
+    <ctl name="Analog Right Capture Route" val="Off"/>
+
+
+</path>
+
+<device name="speaker">
+    <path name="on">
+    	<ctl name="CPCAP Mixer Stereo DAC" val="1"/>
+    	<ctl name="DAI Mode" val="Audio"/>
+        <ctl name="STDac Volume" val="15"/>
+        <ctl name="LDSPLDAC Switch" val="1"/> <!-- Speakerphone  -->
+    </path>
+    <path name="off">
+        <ctl name="LDSPLDAC Switch" val="0"/>
+    </path>
+</device>
+
+<device name="headphone">
+    <path name="on">
+    	<ctl name="DAI Mode" val="Audio"/>
+    	<ctl name="CPCAP Mixer Stereo DAC" val="1"/>
+        <ctl name="STDac Volume" val="15"/>
+	<ctl name="HSLDAC Switch" val="1"/> <!-- Left headphone  -->
+	<ctl name="HSRDAC Switch" val="1"/> <!-- Right headphone -->
+    </path>
+    <path name="off">
+	<ctl name="HSLDAC Switch" val="0"/>
+	<ctl name="HSRDAC Switch" val="0"/>
+    </path>
+</device>
+
+<device name="builtin-mic">
+   <path name="on">
+	<ctl name="Analog Left Capture Route" val="Mic2"/>
+	<ctl name="Analog Right Capture Route" val="Mic1"/>
+	<ctl name="MIC1 Gain" val="31"/>
+	<ctl name="MIC2 Gain" val="31"/>
+    </path>
+    <path name="off">
+	<ctl name="MIC1 Gain" val="0"/>
+	<ctl name="MIC2 Gain" val="0"/>
+	<ctl name="Analog Left Capture Route" val="Off"/>
+	<ctl name="Analog Right Capture Route" val="Off"/>
+    </path>
+</device>
+
+<device name="headset-in">
+    <path name="on">
+	<ctl name="Analog Right Capture Route" val="HS Mic"/> <!-- Only Right Capture can be configured to HeadSet mic" -->
+	<ctl name="Analog Left Capture Route" val="Off"/>
+	<ctl name="MIC1 Gain" val="31"/>
+	<ctl name="MIC2 Gain" val="31"/>
+    </path>
+    <path name="off">
+	<ctl name="Analog Right Capture Route" val="Off"/>
+	<ctl name="Analog Left Capture Route" val="Off"/>
+	<ctl name="MIC1 Gain" val="0"/>
+	<ctl name="MIC2 Gain" val="0"/>
+    </path>
+</device>
+
+
+</tinyhal>
+
+

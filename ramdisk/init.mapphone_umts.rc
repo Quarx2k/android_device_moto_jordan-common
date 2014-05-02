@@ -26,8 +26,8 @@ on fs
 
 # Mount mmc partitions
 
-    mount_all ./fstab.mapphone_umts
-    #swapon_all /fstab.mapphone_umts # For enable zRam
+    mount_all ./fstab.mapphone_
+    #swapon_all /fstab.mapphone_
 
     mkdir /pds 0775 system system
     exec /system/bootstrap/script/pdsbackup.sh
@@ -77,13 +77,12 @@ on post-fs
 
 # Configure kernel options
     # Enable automatic power control for EHCI USB IPC
-    write /sys/devices/platform/ehci-omap.0/usb1/power/level auto
-    write /sys/devices/platform/ehci-omap.0/usb1/power/autosuspend 0
-    write /sys/devices/platform/ehci-omap.0/usb1/1-3/power/level auto
-    write /sys/devices/platform/ehci-omap.0/usb1/1-3/power/autosuspend 0
-    # Power Management
-    write /sys/power/sr_vdd1_autocomp 1
-    write /sys/power/sr_vdd2_autocomp 1
+    write /sys/devices/platform/omap/usbhs_omap/ehci-omap.0/usb1/power/level auto
+    write /sys/devices/platform/omap/usbhs_omap/ehci-omap.0/usb1/power/autosuspend 0
+    write /sys/devices/platform/omap/usbhs_omap/ehci-omap.0/usb1/1-3/power/level auto
+    write /sys/devices/platform/omap/usbhs_omap/ehci-omap.0/usb1/1-3/power/autosuspend 0
+    # Disable a system-wide task dump on OOM in default
+    write /proc/sys/fs/suid_dumpable 2
     # Disable green led
     write /sys/class/leds/green/brightness 0
 

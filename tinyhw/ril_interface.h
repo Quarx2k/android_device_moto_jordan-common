@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 The Android Open Source Project
+ * Copyright (C) 2011 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-#include <stdint.h>
-#include <sys/types.h>
-#include <utils/Timers.h>
-#include <utils/Errors.h>
-#include <utils/KeyedVector.h>
-#include <hardware_legacy/AudioPolicyManagerBase.h>
+#ifndef RIL_INTERFACE_H
+#define RIL_INTERFACE_H
 
+#define RIL_NETMUX_AUDIO_PATH "/dev/netmux/audio"
 
-namespace android_audio_legacy {
+/* Voice quality */
+#define NORMAL_VOICE 1
+#define CLEAR_VOICE 2
+#define CRISP_VOICE 3
+#define BRIGHT_VOICE 4
 
-class AudioPolicyManager: public AudioPolicyManagerBase
-{
+/* Function prototypes */
+int netmux_open(int need_config);
+void netmux_close();
+int ril_set_call_volume(float volume);
+int ril_set_voice_quality(int voice_type);
 
-public:
-                AudioPolicyManager(AudioPolicyClientInterface *clientInterface)
-                : AudioPolicyManagerBase(clientInterface) {}
+#endif
 
-        virtual ~AudioPolicyManager() {}
-
-};
-};

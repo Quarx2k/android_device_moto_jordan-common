@@ -95,16 +95,51 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
 	com.android.future.usb.accessory
 
-# Legacy Sound
+# Sound
 PRODUCT_PACKAGES += \
-	libaudioutils audio.a2dp.default  \
-	libaudiohw_legacy \
+	audio.a2dp.default  \
+	audio_policy.default \
+	audio.primary.omap3
+
+PRODUCT_PACKAGES += hwcomposer.jordan
 
 # OMX stuff
-PRODUCT_PACKAGES += dspexec libbridge libLCML libOMX_Core libstagefrighthw
-PRODUCT_PACKAGES += libOMX.TI.AAC.encode libOMX.TI.AAC.decode libOMX.TI.AMR.decode libOMX.TI.AMR.encode
-PRODUCT_PACKAGES += libOMX.TI.WBAMR.encode libOMX.TI.MP3.decode libOMX.TI.WBAMR.decode
-PRODUCT_PACKAGES += libOMX.TI.Video.Decoder libOMX.TI.Video.encoder libOMX.TI.JPEG.Encoder
+PRODUCT_PACKAGES += \
+    libstagefrighthw \
+    libbridge \
+    cexec.out \
+    libPERF \
+    libOMX_Core \
+    libLCML \
+    libOMX.TI.Video.Decoder \
+    libOMX.TI.Video.encoder \
+    libOMX.TI.WBAMR.decode \
+    libOMX.TI.AAC.encode \
+    libOMX.TI.G722.decode \
+    libOMX.TI.MP3.decode \
+    libOMX.TI.WMA.decode \
+    libOMX.TI.Video.encoder \
+    libOMX.TI.WBAMR.encode \
+    libOMX.TI.G729.encode \
+    libOMX.TI.AAC.decode \
+    libOMX.TI.VPP \
+    libOMX.TI.G711.encode \
+    libOMX.TI.JPEG.encoder \
+    libOMX.TI.G711.decode \
+    libOMX.TI.ILBC.decode \
+    libOMX.TI.ILBC.encode \
+    libOMX.TI.AMR.encode \
+    libOMX.TI.G722.encode \
+    libOMX.TI.JPEG.decoder \
+    libOMX.TI.G726.encode \
+    libOMX.TI.G729.decode \
+    libOMX.TI.Video.Decoder \
+    libOMX.TI.AMR.decode \
+    libOMX.TI.G726.decode \
+    libion \
+    libaudioutils \
+    libtiutils \
+    libomap_mm_library_jni 
 
 # Defy stuff
 PRODUCT_PACKAGES += libfnc DefyParts MotoFM MotoFMService camera_detect HwaSettings
