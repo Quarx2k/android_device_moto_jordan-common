@@ -352,7 +352,7 @@ service pvrsrvctl /system/bin/pvrsrvctl --start --no-module
     group root
     oneshot
 
-service baseimage /system/bin/dspexec -T /system/lib/dsp/baseimage.dof
+service baseimage /system/bin/cexec.out /system/lib/dsp/baseimage.dof
     class main
     user media
     group media graphics

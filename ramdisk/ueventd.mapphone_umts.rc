@@ -84,15 +84,17 @@
 /dev/akm8973_aot          0660   compass    compass
 /dev/kxtf9                0660   compass    compass
 /dev/isl29030             0660   compass    compass
-/dev/ttyS0                0640   radio      radio
+/dev/ttyO0                0640   radio      radio
 # bluetooth uart
-/dev/ttyS1                0660   bluetooth  bluetooth
+/dev/ttyO1                0660   bluetooth  bluetooth
 /dev/tcmd_driver          0660   root       system
 # bluetooth dun
 /dev/rfcomm0              0600   system     system
 /dev/hci_tty              0666   bluetooth  bluetooth
 
 /dev/graphics/fb0         0660   media      graphics
+/dev/dsscomp              0666   system     system
+/dev/ion                  0666   system     system
 
 # sysfs properties
 /sys/devices/virtual/input/input*   enable      0660  root   input
