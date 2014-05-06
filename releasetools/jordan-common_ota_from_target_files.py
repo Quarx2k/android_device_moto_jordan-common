@@ -39,7 +39,8 @@ def FullOTA_InstallEnd(self, *args, **kwargs):
 
   # libaudio link fix
   symlinks.append(("/system/lib/hw/audio.a2dp.default.so", "/system/lib/liba2dp.so"))
-  
+  symlinks.append(("/system/lib/hw/audio.primary.omap3.so", "/system/lib/libaudio.so"))
+
   self.script.MakeSymlinks(symlinks)
   self.script.ShowProgress(0.2, 0)
 
