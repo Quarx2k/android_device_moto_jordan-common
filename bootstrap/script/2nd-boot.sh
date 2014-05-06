@@ -28,7 +28,11 @@ $BB_STATIC echo 18 > /sys/class/leds/lcd-backlight/brightness
 cd /2ndboot
 
 $BB_STATIC echo "inserting hbootmod.ko"
+if [ -e /cache/uart_en ]; then
+$BB_STATIC insmod ./hbootmod.ko kill_dss=1 emu_uart=115200
+else
 $BB_STATIC insmod ./hbootmod.ko kill_dss=1
+fi
 
 $BB_STATIC echo "making node"
 $BB_STATIC mknod /dev/hbootctrl c `$BB_STATIC cat /proc/devices | $BB_STATIC grep hboot | $BB_STATIC awk '{print $1}' ` 0
