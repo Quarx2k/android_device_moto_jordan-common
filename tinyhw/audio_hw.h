@@ -124,7 +124,7 @@ struct route_setting
 /* CDC - CPCAP Mixer Voice Code - Codec Volume*/
 
 struct route_setting voicecall_earpice[] = {
-    { .ctl_name = "Codec Volume", .intval = 15, },
+    { .ctl_name = "Codec Volume", .intval = 10, },
     { .ctl_name = "CPCAP Mixer Voice Codec", .intval = 1, },
     { .ctl_name = "LDSPLCDC Switch", .intval = 0, },
     { .ctl_name = "EPCDC Switch", .intval = 1, },
@@ -165,8 +165,8 @@ struct route_setting voicecall_default_disable[] = {
 struct route_setting earpice_input[] = {
     { .ctl_name = "Analog Left Capture Route", .strval = "Mic2", },
     { .ctl_name = "Analog Right Capture Route", .strval = "Mic1", },
-    { .ctl_name = "MIC1 Gain", .intval = 31, },
-    { .ctl_name = "MIC2 Gain", .intval = 31, },
+    { .ctl_name = "MIC1 Gain", .intval = 20, },
+    { .ctl_name = "MIC2 Gain", .intval = 20, },
     { .ctl_name = NULL, },
 };
 
@@ -174,7 +174,7 @@ struct route_setting speaker_input[] = {
     { .ctl_name = "Analog Left Capture Route", .strval = "Off", }, //Mic2 cays whistle.
     { .ctl_name = "Analog Right Capture Route", .strval = "Mic1", },
     { .ctl_name = "MIC1 Gain", .intval = 0, },
-    { .ctl_name = "MIC2 Gain", .intval = 31, },
+    { .ctl_name = "MIC2 Gain", .intval = 20, },
     { .ctl_name = NULL, },
 };
 
