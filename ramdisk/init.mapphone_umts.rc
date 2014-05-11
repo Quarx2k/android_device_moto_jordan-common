@@ -66,7 +66,7 @@ on post-fs
     symlink /dev /dev/netmux
     symlink /dev/ttyGS0 /dev/acm0
     symlink /dev/hp3a-omap /dev/hp3A-omap
-    symlink /dev/video1 /video3
+    symlink /dev/video1 /dev/video3
     symlink /dev/ttyO0 /dev/ttyS0
     symlink /dev/ttyO1 /dev/ttyS1
     symlink /dev/ttyO2 /dev/ttyS2
