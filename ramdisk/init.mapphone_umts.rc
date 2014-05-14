@@ -1,5 +1,10 @@
 #import /init.bluetooth.rc
 
+on early-init
+    # cap max CPU frequency to 1 GHz as soon as possible
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1000000
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor performance
+
 on init 
 
     export DSP_PATH /system/lib/dsp
@@ -375,6 +380,8 @@ service fuse_usbdisk /system/bin/sdcard -u 1023 -g 1023 /mnt/media_rw/usbdisk /s
     class late_start
     disabled
 
+on property:sys.boot_completed=1
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor interactive
 
 ########## Bluez 4 Services #############
 # Bluetooth services.
@@ -435,5 +442,4 @@ service fuse_usbdisk /system/bin/sdcard -u 1023 -g 1023 /mnt/media_rw/usbdisk /s
 #    setprop bluetooth.stop none
 #    stop bluetoothd-snoop
 ########## End Bluez 5 #############
-
 
