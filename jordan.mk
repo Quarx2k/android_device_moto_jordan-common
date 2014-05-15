@@ -104,6 +104,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += hwcomposer.jordan
 
 # OMX stuff
+#libOMX.TI.JPEG.encoder
 PRODUCT_PACKAGES += \
     libstagefrighthw \
     libbridge \
@@ -124,7 +125,6 @@ PRODUCT_PACKAGES += \
     libOMX.TI.AAC.decode \
     libOMX.TI.VPP \
     libOMX.TI.G711.encode \
-    libOMX.TI.JPEG.encoder \
     libOMX.TI.G711.decode \
     libOMX.TI.ILBC.decode \
     libOMX.TI.ILBC.encode \

@@ -44,6 +44,11 @@ PRODUCT_COPY_FILES += \
 	$(device_path)/prebuilt/etc/audio_policy.conf:system/etc/audio_policy.conf \
 	$(device_path)/tinyhw/tiny_hw.xml:system/etc/tiny_hw.xml
 
+# Use prebuilt Jpeg encoder. Fix for https://github.com/CyanogenMod/android_hardware_ti_omap3 in /prebuilt/lib/fix_upstream.txt
+PRODUCT_COPY_FILES += \
+	$(device_path)/prebuilt/lib/libOMX_Core.so:system/lib/libOMX_Core.so \
+	$(device_path)/prebuilt/lib/libOMX.TI.JPEG.Encoder.so:system/lib/libOMX.TI.JPEG.Encoder.so \
+
 # WLAN/WPAN firmware
 ifeq ($(TARGET_USE_KERNEL_BACKPORTS),true)
 PRODUCT_COPY_FILES += \
