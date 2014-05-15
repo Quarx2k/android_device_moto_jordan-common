@@ -143,7 +143,7 @@ PRODUCT_PACKAGES += \
 
 # Defy stuff
 PRODUCT_PACKAGES += libfnc DefyParts MotoFM MotoFMService camera_detect HwaSettings
-PRODUCT_PACKAGES += charge_only_mode mot_boot_mode
+PRODUCT_PACKAGES += charge_only_mode mot_boot_mode mkfs.f2fs
 
 # Experimental TI OpenLink
 PRODUCT_PACKAGES += libnl_2 iw libbt-vendor uim-sysfs libbluedroid
