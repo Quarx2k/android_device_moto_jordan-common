@@ -1,1 +1,0 @@
-console=/dev/null mem=500M omapfb.vram=0:4M

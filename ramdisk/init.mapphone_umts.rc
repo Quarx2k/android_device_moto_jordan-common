@@ -27,16 +27,12 @@ on init
     symlink /storage/usbdisk /usbdisk
     symlink /storage/usbdisk /mnt/usbdisk
 
-    chmod 755 /f2fscheck.sh
-    chmod 755 /sbin/bbx
-    exec  /f2fscheck.sh
-
 on fs
 
 # Mount mmc partitions
 
     mount_all ./fstab.mapphone_
-    #swapon_all ./fstab.mapphone_
+    #swapon_all /fstab.mapphone_
 
     mkdir /pds 0775 system system
     exec /system/bootstrap/script/pdsbackup.sh
