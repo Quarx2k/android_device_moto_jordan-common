@@ -50,31 +50,69 @@ int netmux_open(int need_config)
     
 }
 
+/*  Commands used for initialize Motorola Wrigley Modem. Reversed from closed libaudio.so */
+
 void netmux_config()
 {    
     int ret;
 
-    unsigned char codec_req[] = "\x00\x00\x00\x11\x00\x00\x00\x00\x00\x00\x00\x09\x02\x00\x0F\x00\x04\x00\x00\x00\x01";
-    unsigned char request_msg_ack[] ="\x00\x00\x00\x0F\x00\x00\x00\x00\x00\x00\x00\x1B\x02\x00\x0D\x00\x04\x00\x00\x80\x09\x02\x00\x0D\x01\x04\x00\x00\x00\x01\x02\x00\x0D\x02\x04\x00\x00\x00\x00";
-    unsigned char playback_mix_req[] = "\x00\x00\x00\x0A\x00\x00\x00\x00\x00\x00\x00\x12\x02\x00\x09\x00\x04\x00\x00\x00\x00\x02\x00\x09\x01\x04\x00\x00\x00\x01";
-  
-    ALOGI("codec_req msg, ID=11");
-    ret = write(netmux_fd, &codec_req, sizeof(codec_req)-1);
+    unsigned char command_id_5[] = "\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x12\x02\x00\x03\x01\x04\x00\x00\x00\x01\x02\x00\x03\x00\x04\x00\x00\x00\x00";
+    unsigned char am_aipcm_codec_req[] = "\x00\x00\x00\x11\x00\x00\x00\x00\x00\x00\x00\x09\x02\x00\x0F\x00\x04\x00\x00\x00\x01";
+    unsigned char am_aipcm_request_msg_ack[] ="\x00\x00\x00\x0F\x00\x00\x00\x00\x00\x00\x00\x1B\x02\x00\x0D\x00\x04\x00\x00\x80\x09\x02\x00\x0D\x01\x04\x00\x00\x00\x01\x02\x00\x0D\x02\x04\x00\x00\x00\x00";
+    unsigned char am_aipcm_playback_mix_req[] ="\x00\x00\x00\x0B\x00\x00\x00\x00\x00\x00\x07\x87\x02\x00\x0A\x00\x82\x07\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\00\x00\x00\x00x\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00";
+    unsigned char command_id_10[] = "\x00\x00\x00\x0A\x00\x00\x00\x00\x00\x00\x00\x12\x02\x00\x09\x00\x04\x00\x00\x00\x00\x02\x00\x09\x01\x04\x00\x00\x00\x01";
+    unsigned char command_id_10_2[] = "\x00\x00\x00\x0A\x00\x00\x00\x00\x00\x00\x00\x12\x02\x00\x09\x00\x04\x00\x00\x00\x02\x02\x00\x09\x01\x04\x00\x00\x00\x01";
+
+    // ??????????? 
+    ALOGI("command_id_5");
+    ret = write(netmux_fd, &command_id_5, sizeof(command_id_5)-1);
     if (ret < 0) {
-    	ALOGE("codec_req error: %d", ret);
+    	ALOGE("command_id_5 error: %d", ret);
     }
 
-    ALOGI("request_msg_ack, ID=15");
-    ret = write(netmux_fd, &request_msg_ack, sizeof(request_msg_ack)-1);
+   // am_aipcm_codec_req() called with enable_disable = 1
+   // Message sent for message id 17
+    ALOGI("am_aipcm_codec_req, ID=17");
+    ret = write(netmux_fd, &am_aipcm_codec_req, sizeof(am_aipcm_codec_req)-1);
     if (ret < 0) {
-    	ALOGE("request_msg_ack error: %d", ret);
+    	ALOGE("am_aipcm_codec_req error: %d", ret);
     }
 
-    ALOGI("playback_mix_req, ID=10");
-    ret = write(netmux_fd, &playback_mix_req, sizeof(playback_mix_req)-1);
+    // AMR - codec rate change to 8K
+    // am_aipcm_request_msg_ack() called with msg_id = 32777, value0 = 0, value1 = 0
+    // Message sent for message id 15
+    ALOGI("am_aipcm_request_msg_ack, ID=15");
+    ret = write(netmux_fd, &am_aipcm_request_msg_ack, sizeof(am_aipcm_request_msg_ack)-1);
     if (ret < 0) {
-    	ALOGE("playback_mix_req error: %d", ret);
+    	ALOGE("am_aipcm_request_msg_ack: %d", ret);
     }
+
+    // am_aipcm_playback_mix_req() called with command = 0, mode = 1
+    // Starting playback
+    // Message sent for message id 10
+    ALOGI("command_id_10, ID=10");
+    ret = write(netmux_fd, &command_id_10, sizeof(command_id_10)-1);
+    if (ret < 0) {
+    	ALOGE("command_id_10 error: %d", ret);
+    }
+
+    // Sent n PCM data messages (ID 11)
+    //am_aipcm_playback_mix_req() called with command = 0, mode = 1
+    ALOGI("am_aipcm_playback_mix_req, ID=11");
+    ret = write(netmux_fd, &am_aipcm_playback_mix_req, sizeof(am_aipcm_playback_mix_req)-1);
+    if (ret < 0) {
+    	ALOGE("am_aipcm_playback_mix_req error: %d", ret);
+    }
+
+    //am_aipcm_playback_mix_req() called with command = 2, mode = 1
+    //Stopping playback
+    //Message sent for message id 10
+    ALOGI("command_id_10_2, ID=10");
+    ret = write(netmux_fd, &command_id_10_2, sizeof(command_id_10_2)-1);
+    if (ret < 0) {
+    	ALOGE("command_id_10_2 error: %d", ret);
+    }
+
     close(netmux_fd);
 }
 
