@@ -133,7 +133,7 @@ int handle_file(FILE *fp, int tag, int *buf) {
 	fscanf(fp, "%" STR(PATH_MAX) "s", fname);
 	if ((fd = try_file(fname, &filesize)) < 0) {
 		perror("open()");
-		return -1;
+		return 0;// ignore error-1;
 	}
 
 	if ((tag == 0) || (filesize < 4*4096)) {
