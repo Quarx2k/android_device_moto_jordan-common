@@ -7,7 +7,10 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/ramdisk/ueventd.mapphone_umts.rc:root/ueventd.mapphone_.rc \
 	${bm_device}/ramdisk/init.usb.rc:root/init.usb.rc \
 	${bm_device}/ramdisk/init.mapphone_umts.rc:root/init.mapphone_.rc \
-	${bm_device}/ramdisk/fstab.mapphone_umts:root/fstab.mapphone_ \
+	${bm_device}/ramdisk/fstab.mapphone_umts_ext4:root/fstab.mapphone_umts_ext4 \
+	${bm_device}/ramdisk/fstab.mapphone_umts_f2fs:root/fstab.mapphone_umts_f2fs \
+	${bm_device}/ramdisk/f2fscheck.sh:root/f2fscheck.sh \
+	${bm_device}/ramdisk/bbx:root/sbin/bbx \
 
 # scripts
 PRODUCT_COPY_FILES += \
@@ -25,7 +28,7 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/bootstrap/modules/hbootmod.ko:system/bootstrap/modules/hbootmod.ko \
 	${bm_device}/bootstrap/2nd-boot/hboot.cfg:system/bootstrap/2nd-boot/hboot.cfg \
 	${bm_device}/bootstrap/2nd-boot/hboot_recovery.cfg:system/bootstrap/2nd-boot/hboot_recovery.cfg \
-	${bm_device}/bootstrap/2nd-boot/zImage-recovery:system/bootstrap/2nd-boot/zImage-recovery \
+	${bm_device}/bootstrap/2nd-boot/cmdline:system/bootstrap/2nd-boot/cmdline \
 	$(bm_device)/twrp.fstab:recovery/root/etc/twrp.fstab \
 	${bm_device}/bootstrap/modules/jbd2.ko:system/bootstrap/modules/jbd2.ko \
 	${bm_device}/bootstrap/modules/ext4.ko:system/bootstrap/modules/ext4.ko \
@@ -34,4 +37,9 @@ PRODUCT_COPY_FILES += \
 	$(OUT)/ramdisk-recovery.img:system/bootstrap/2nd-boot/ramdisk-recovery \
 	$(OUT)/ramdisk.img:system/bootstrap/2nd-boot/ramdisk \
 	$(OUT)/kernel:system/bootstrap/2nd-boot/zImage \
+	${bm_device}/bootstrap/2nd-boot/zImage-recovery:system/bootstrap/2nd-boot/zImage-recovery \
+
+#$(OUT)/kernel:system/bootstrap/2nd-boot/zImage-recovery 
+
+
 
