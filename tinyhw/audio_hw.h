@@ -224,3 +224,11 @@ struct route_setting bt_disable[] = {
     { .ctl_name = NULL, },
 };
 
+struct route_setting fm_radio[] = {
+    { .ctl_name = "Codec Volume", .intval = 10, },
+    { .ctl_name = "CPCAP Mixer Voice Codec", .intval = 1, },
+    { .ctl_name = "LDSPLCDC Switch", .intval = 0, },
+    { .ctl_name = "EPCDC Switch", .intval = 1, },
+    { .ctl_name = "DAI Mode", .strval = "Audio", },
+    { .ctl_name = NULL, },
+};

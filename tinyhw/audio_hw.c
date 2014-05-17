@@ -108,6 +108,7 @@ struct m0_audio_device {
     bool bluetooth_nrec;
     int wb_amr;
     bool screen_off;
+    bool fm_radio_on;
 };
 
 struct m0_stream_out {
@@ -596,6 +597,11 @@ static void select_output_device(struct m0_audio_device *adev)
     update_devices(adev);
     set_eq_filter(adev);
 
+    if (adev->fm_radio_on) {
+            set_voicecall_route_by_array(adev->mixer, fm_radio, 1);
+            ALOGD("Select FM Routing!!!");
+    }
+    
     if (adev->mode == AUDIO_MODE_IN_CALL) {
         if (earpiece_on) {
             set_voicecall_route_by_array(adev->mixer, voicecall_earpice, 1);
@@ -619,6 +625,8 @@ static void select_output_device(struct m0_audio_device *adev)
             set_voicecall_route_by_array(adev->mixer, voicecall_bluetooth, 1);
 	}
     }
+
+
 }
 
 static void select_input_device(struct m0_audio_device *adev)
@@ -718,8 +726,17 @@ static int start_output_stream_deep_buffer(struct m0_stream_out *out)
 
     out->config[PCM_NORMAL] = pcm_config_mm;
     out->config[PCM_NORMAL].rate = MM_FULL_POWER_SAMPLING_RATE;
-    out->pcm[PCM_NORMAL] = pcm_open(CARD_DEFAULT, PORT_PLAYBACK,
-                                        PCM_OUT | PCM_MMAP | PCM_NOIRQ, &out->config[PCM_NORMAL]);
+
+   // if (!adev->fm_radio_on) {
+        ALOGE("PORT_PLAYBACK");
+    	out->pcm[PCM_NORMAL] = pcm_open(CARD_DEFAULT, PORT_PLAYBACK,
+       	                                 PCM_OUT | PCM_MMAP | PCM_NOIRQ, &out->config[PCM_NORMAL]);
+    //} else { 
+    //	out->pcm[PCM_NORMAL] = pcm_open(CARD_DEFAULT, PORT_FM,
+    //   	                                 PCM_OUT | PCM_MMAP | PCM_NOIRQ, &out->config[PCM_NORMAL]);
+    //    ALOGE("PORT_FM");
+   // }
+
     if (out->pcm[PCM_NORMAL] && !pcm_is_ready(out->pcm[PCM_NORMAL])) {
         ALOGE("%s: cannot open pcm_out driver: %s", __func__, pcm_get_error(out->pcm[PCM_NORMAL]));
         pcm_close(out->pcm[PCM_NORMAL]);
@@ -2446,7 +2463,7 @@ static int adev_set_parameters(struct audio_hw_device *dev, const char *kvpairs)
     char *str;
     char value[32];
     int ret;
-
+    ALOGE("Param: %s",kvpairs);
     parms = str_parms_create_str(kvpairs);
     ret = str_parms_get_str(parms, AUDIO_PARAMETER_KEY_TTY_MODE, value, sizeof(value));
     if (ret >= 0) {
@@ -2486,6 +2503,18 @@ static int adev_set_parameters(struct audio_hw_device *dev, const char *kvpairs)
             adev->screen_off = false;
         else
             adev->screen_off = true;
+    }
+
+    ret = str_parms_get_str(parms, "FM_launch", value, sizeof(value));
+    if (ret >= 0) {
+        if (strcmp(value, "on") == 0)
+	    adev->fm_radio_on = true;
+            ALOGE("FM Radio on: %d", adev->fm_radio_on);
+            select_output_device(adev);
+        } else if (strcmp(value, "off") == 0) {
+	    adev->fm_radio_on = false;
+            ALOGE("FM Radio on: %d", adev->fm_radio_on);
+            select_output_device(adev);
     }
 
     ret = str_parms_get_str(parms, "voiceQualityConfig", value, sizeof(value));
