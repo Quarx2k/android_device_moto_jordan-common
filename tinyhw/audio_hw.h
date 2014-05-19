@@ -128,7 +128,7 @@ struct route_setting voicecall_earpice[] = {
     { .ctl_name = "CPCAP Mixer Voice Codec", .intval = 1, },
     { .ctl_name = "LDSPLCDC Switch", .intval = 0, },
     { .ctl_name = "EPCDC Switch", .intval = 1, },
-    { .ctl_name = "DAI Mode", .strval = "Audio", },
+    { .ctl_name = "DAI Mode", .strval = "Voice Call Handset", },
     { .ctl_name = NULL, },
 };
 
@@ -139,7 +139,7 @@ struct route_setting voicecall_speaker[] = {
     { .ctl_name = "HSRCDC Switch", .intval = 0, },
     { .ctl_name = "HSLCDC Switch", .intval = 0, },
     { .ctl_name = "LDSPLCDC Switch", .intval = 1, },
-    { .ctl_name = "DAI Mode", .strval = "Audio", },  
+    { .ctl_name = "DAI Mode", .strval = "Voice Call Handset", },  
     { .ctl_name = NULL, },
 };
 struct route_setting voicecall_headset[] = {
@@ -149,7 +149,7 @@ struct route_setting voicecall_headset[] = {
     { .ctl_name = "EPCDC Switch", .intval = 0, },
     { .ctl_name = "HSRCDC Switch", .intval = 1, },
     { .ctl_name = "HSLCDC Switch", .intval = 1, },
-    { .ctl_name = "DAI Mode", .strval = "Audio", },  
+    { .ctl_name = "DAI Mode", .strval = "Voice Call Headset", },  
     { .ctl_name = NULL, },
 };
 struct route_setting voicecall_default_disable[] = {
