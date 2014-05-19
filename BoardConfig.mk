@@ -213,7 +213,6 @@ hboot:
 
 # If kernel sources are present in repo, here is the location
 TARGET_KERNEL_SOURCE := $(ANDROID_BUILD_TOP)/jordan-kernel
-TARGET_KERNEL_CUSTOM_TOOLCHAIN := arm-eabi-4.4.3
 BOARD_KERNEL_CMDLINE := console=/dev/null mem=500M omapfb.vram=0:4M
 # Extra: external modules sources
 TARGET_KERNEL_MODULES_EXT := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/modules/sources/
