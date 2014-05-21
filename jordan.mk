@@ -17,6 +17,7 @@
 #
 # This is the product configuration for a generic Motorola Defy (jordan)
 #
+
 # Bootanimation
 TARGET_SCREEN_HEIGHT := 854
 TARGET_SCREEN_WIDTH := 480
@@ -95,11 +96,10 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
 	com.android.future.usb.accessory
 
-# Sound
+# Audio
 PRODUCT_PACKAGES += \
 	audio.a2dp.default  \
 	audio_policy.default \
-	audio.primary.omap3
 
 PRODUCT_PACKAGES += hwcomposer.jordan
 

@@ -14,6 +14,8 @@
 
 LOCAL_PATH := $(call my-dir)
 
+ifeq ($(BOARD_USES_AUDIO_LEGACY),false)
+
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := audio.primary.omap3
@@ -31,3 +33,5 @@ LOCAL_C_INCLUDES += \
 LOCAL_SHARED_LIBRARIES := liblog libcutils libtinyalsa libaudioutils libdl libexpat
 
 include $(BUILD_SHARED_LIBRARY)
+
+endif

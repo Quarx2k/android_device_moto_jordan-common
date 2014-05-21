@@ -50,6 +50,7 @@ PRODUCT_COPY_FILES += \
 	$(device_path)/prebuilt/lib/libOMX.TI.JPEG.Encoder.so:system/lib/libOMX.TI.JPEG.Encoder.so \
 
 # WLAN/WPAN firmware
+TARGET_USE_KERNEL_BACKPORTS := false
 ifeq ($(TARGET_USE_KERNEL_BACKPORTS),true)
 PRODUCT_COPY_FILES += \
     $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-5-mr.bin:system/etc/firmware/ti-connectivity/wl127x-fw-5-mr.bin \
