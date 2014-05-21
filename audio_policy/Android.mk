@@ -5,6 +5,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE_TAGS := eng debug
 LOCAL_MODULE_CLASS := SHARED_LIBRARIES
 LOCAL_MODULE:= libaudio.so
+LOCAL_SRC_FILES := libaudio.so
 include $(BUILD_PREBUILT)
 
 include $(CLEAR_VARS)
