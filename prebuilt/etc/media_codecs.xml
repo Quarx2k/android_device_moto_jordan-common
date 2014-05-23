@@ -90,6 +90,7 @@ Only the three quirks included above are recognized at this point:
             <Type name="video/mp4v-es" />
             <Type name="video/3gpp" />
             <Type name="video/avc" />
+            <Quirk name="input-buffer-sizes-are-bogus" />
             <Quirk name="requires-allocate-on-input-ports" />
             <Quirk name="requires-allocate-on-output-ports" />
         </MediaCodec>
@@ -131,53 +132,11 @@ Only the three quirks included above are recognized at this point:
         <MediaCodec name="OMX.google.g711.mlaw.decoder" type="audio/g711-mlaw" />
         <MediaCodec name="OMX.google.vorbis.decoder" type="audio/vorbis" />
 
-        <MediaCodec name="OMX.google.mpeg4.decoder" type="video/mp4v-es" />
-        <MediaCodec name="OMX.google.h263.decoder" type="video/3gpp" />
+        <MediaCodec name="OMX.google.vp8.decoder" type="video/x-vnd.on2.vp8" />
+        <MediaCodec name="OMX.google.vp9.decoder" type="video/x-vnd.on2.vp9" />
         <MediaCodec name="OMX.google.h264.decoder" type="video/avc" />
-        <MediaCodec name="OMX.google.vpx.decoder" type="video/x-vnd.on2.vp8" />
-  
-    </Decoders>
-
-    <Encoders>
-        <MediaCodec name="OMX.TI.Video.encoder" >
-            <Type name="video/mp4v-es" />
-            <Type name="video/3gpp" />
-            <Type name="video/avc" />
-            <Quirk name="requires-allocate-on-input-ports" />
-            <Quirk name="requires-allocate-on-output-ports" />
-            <Quirk name="avoid-memcopy-input-recording-frames" />
-        </MediaCodec>
-
-        <MediaCodec name="OMX.TI.720P.Encoder" >
-            <Type name="video/mp4v-es" />
-            <Type name="video/3gpp" />
-            <Type name="video/avc" />
-            <Quirk name="requires-allocate-on-input-ports" />
-            <Quirk name="requires-allocate-on-output-ports" />
-        </MediaCodec>
-
-        <MediaCodec name="OMX.TI.AAC.encode" >
-            <Type name="audio/mp4a-latm" />
-            <Quirk name="requires-allocate-on-input-ports" />
-            <Quirk name="requires-allocate-on-output-ports" />
-        </MediaCodec>
-
-        <MediaCodec name="OMX.TI.AMR.encode" >
-            <Type name="audio/3gpp" />
-            <Quirk name="requires-allocate-on-input-ports" />
-            <Quirk name="requires-allocate-on-output-ports" />
-        </MediaCodec>
-
-        <MediaCodec name="OMX.TI.WBAMR.encode" >
-            <Type name="audio/amr-wb" />
-            <Quirk name="requires-allocate-on-input-ports" />
-            <Quirk name="requires-allocate-on-output-ports" />
-        </MediaCodec>
-
-        <MediaCodec name="OMX.google.amrnb.encoder" type="audio/3gpp" />
-        <MediaCodec name="OMX.google.amrwb.encoder" type="audio/amr-wb" />
-        <MediaCodec name="OMX.google.aac.encoder" type="audio/mp4a-latm" />
-        <MediaCodec name="OMX.google.flac.encoder" type="audio/flac" />
+        <MediaCodec name="OMX.google.h263.decoder" type="video/3gpp" />
+        <MediaCodec name="OMX.google.mpeg4.decoder" type="video/mp4v-es" />
 
         <!--  ffmpeg audio codecs  -->
         <MediaCodec name="OMX.ffmpeg.ra.decoder" type="audio/vnd.rn-realaudio"/>
@@ -200,6 +159,51 @@ Only the three quirks included above are recognized at this point:
         <MediaCodec name="OMX.ffmpeg.divx.decoder" type="video/divx"/>
         <MediaCodec name="OMX.ffmpeg.hevc.decoder" type="video/hevc"/>
         <MediaCodec name="OMX.ffmpeg.vtrial.decoder" type="video/ffmpeg"/>
+
+    </Decoders>
+
+    <Encoders>
+        <MediaCodec name="OMX.TI.Video.encoder" >
+            <Type name="video/mp4v-es" />
+            <Type name="video/3gpp" />
+            <Type name="video/avc" />
+            <Quirk name="requires-allocate-on-input-ports" />
+            <Quirk name="requires-allocate-on-output-ports" />
+            <Quirk name="avoid-memcopy-input-recording-frames" />
+        </MediaCodec>
+
+        <MediaCodec name="OMX.TI.720P.Encoder" >
+            <Type name="video/mp4v-es" />
+            <Type name="video/3gpp" />
+            <Type name="video/avc" />
+            <Quirk name="requires-allocate-on-input-ports" />
+            <Quirk name="requires-allocate-on-output-ports" />
+            <Quirk name="avoid-memcopy-input-recording-frames" />
+        </MediaCodec>
+ <!-- 
+        <MediaCodec name="OMX.TI.AAC.encode" >
+            <Type name="audio/mp4a-latm" />
+            <Quirk name="requires-allocate-on-input-ports" />
+            <Quirk name="requires-allocate-on-output-ports" />
+        </MediaCodec>  -->
+
+        <MediaCodec name="OMX.TI.AMR.encode" >
+            <Type name="audio/3gpp" />
+            <Quirk name="requires-allocate-on-input-ports" />
+            <Quirk name="requires-allocate-on-output-ports" />
+        </MediaCodec> 
+
+        <MediaCodec name="OMX.TI.WBAMR.encode" >
+            <Type name="audio/amr-wb" />
+            <Quirk name="requires-allocate-on-input-ports" />
+            <Quirk name="requires-allocate-on-output-ports" />
+        </MediaCodec>
+
+        <MediaCodec name="OMX.google.amrnb.encoder" type="audio/3gpp" />
+        <MediaCodec name="OMX.google.aac.encoder" type="audio/mp4a-latm" />
+        <MediaCodec name="OMX.google.amrwb.encoder" type="audio/amr-wb" />
+        <MediaCodec name="OMX.google.flac.encoder" type="audio/flac" />
+        <MediaCodec name="OMX.google.vp8.encoder" type="video/x-vnd.on2.vp8" />
 
     </Encoders>
 </MediaCodecs>
