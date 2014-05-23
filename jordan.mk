@@ -53,7 +53,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	debug.egl.hw=1 \
 	debug.sf.hw=1 \
 	debug.sf.no_hw_vsync=1 \
-	persist.sys.force_highendgfx=true
+	persist.sys.force_highendgfx=true \
+	ro.ksm.default=1
 
 # Set default USB interface
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
