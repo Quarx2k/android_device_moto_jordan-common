@@ -113,6 +113,15 @@ static inline struct legacy_camera_device * to_lcdev(struct camera_device *dev)
     return reinterpret_cast<struct legacy_camera_device *>(dev);
 }
 
+static void boostDspSpeed(bool enable) {
+    int fd = ::open("/sys/power/dsp_freq", O_WRONLY);
+    if (fd >= 0) {
+        const char *value = enable ? "800000" : "260000";
+        write(fd, value, strlen(value));
+        close(fd);
+    }
+}
+
 //
 // http://code.google.com/p/android/issues/detail?id=823#c4
 //
@@ -614,6 +623,7 @@ static int camera_store_meta_data_in_buffers(struct camera_device * device, int 
 static int camera_start_recording(struct camera_device * device) 
 {
     struct legacy_camera_device *lcdev = to_lcdev(device);
+    boostDspSpeed(true);
     mNumVideoFramesDropped = 0;
     mPreviousVideoFrameDropped = false;
     mThrottlePreview = false;
@@ -627,6 +637,7 @@ static void camera_stop_recording(struct camera_device * device)
 {
     struct legacy_camera_device *lcdev = to_lcdev(device);
     ALOGI("%s: Number of frames dropped by CameraHAL: %d", __FUNCTION__, mNumVideoFramesDropped);
+    boostDspSpeed(false);
     mThrottlePreview = false;
     boostInteractiveGovernor(false);
     lcdev->hwif->stopRecording();
@@ -879,4 +890,7 @@ camera_module_t HAL_MODULE_INFO_SYM = {
     },
     get_number_of_cameras: android::get_number_of_cameras,
     get_camera_info: android::get_camera_info,
+    set_callbacks: 0,
+    get_vendor_tag_ops: 0,
+    reserved: {0},
 };

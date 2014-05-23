@@ -111,6 +111,9 @@ on post-fs
     chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/state
     chmod 0660 /sys/class/rfkill/rfkill0/state
 
+# Permissions for setting the DSP Frequency
+    chown media root /sys/power/dsp_freq
+
 # Tweaks
     # DSS - disable tearing elimination
     write /sys/devices/omapdss/display0/tear_elim 0  
