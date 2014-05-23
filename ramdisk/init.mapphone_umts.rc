@@ -115,7 +115,7 @@ on post-fs
     # DSS - disable tearing elimination
     write /sys/devices/omapdss/display0/tear_elim 0  
     # GPU to 266mhz
-    write /proc/gpu/max_rate 266666666
+    write /sys/devices/platform/omap/pvrsrvkm.0/sgx_fck_rate 266666666
     # zRAAM only read one page at a time
     write /proc/sys/vm/page-cluster 0
 
