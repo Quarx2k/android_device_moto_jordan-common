@@ -140,6 +140,9 @@ TARGET_RUNNING_WITHOUT_SYNC_FRAMEWORK := false
 # Increase EGL cache size to 2MB
 #MAX_EGL_CACHE_SIZE := 2097152
 #MAX_EGL_CACHE_KEY_SIZE := 4096
+# OMAP3 HWC: disable use of YUV overlays
+# Prevents stuttering/compositing artifacts and sync loss during video playback
+TARGET_OMAP3_HWC_DISABLE_YUV_OVERLAY := true
 
 # Camera
 USE_CAMERA_STUB := false
