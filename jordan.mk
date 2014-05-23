@@ -131,6 +131,7 @@ PRODUCT_PACKAGES += \
     libOMX.TI.AMR.encode \
     libOMX.TI.G722.encode \
     libOMX.TI.JPEG.decoder \
+    libOMX.TI.JPEG.Encoder \
     libOMX.TI.G726.encode \
     libOMX.TI.G729.decode \
     libOMX.TI.Video.Decoder \
