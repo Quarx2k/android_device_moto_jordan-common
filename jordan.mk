@@ -102,7 +102,7 @@ PRODUCT_PACKAGES += \
 	audio.a2dp.default  \
 	audio_policy.default \
 
-PRODUCT_PACKAGES += hwcomposer.jordan
+PRODUCT_PACKAGES += hwcomposer.omap3
 
 # OMX stuff
 #libOMX.TI.JPEG.encoder
