@@ -107,7 +107,7 @@ on post-fs
     # DSS - disable tearing elimination
     write /sys/devices/omapdss/display0/tear_elim 0  
     # GPU to 266mhz
-    write /proc/gpu/max_rate 266666666
+    # write /proc/gpu/max_rate 266666666
 
 on post-fs-data
 
