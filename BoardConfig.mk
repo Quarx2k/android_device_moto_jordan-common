@@ -219,15 +219,17 @@ WLAN_MODULES:
 
 hboot:
 	mkdir -p $(PRODUCT_OUT)/system/bootstrap/2nd-boot
-	make -C  $(ANDROID_BUILD_TOP)/device/moto/jordan-common/bootstrap/hboot ARCH=$(TARGET_ARCH) $(ARM_CROSS_COMPILE)
+	make -C  $(ANDROID_BUILD_TOP)/device/moto/jordan-common/bootstrap/hboot ARCH=$(TARGET_ARCH) CROSS_COMPILE=$(TARGET_4_4_TOOLCHAIN)
 	mv $(ANDROID_BUILD_TOP)/device/moto/jordan-common/bootstrap/hboot/hboot.bin $(PRODUCT_OUT)/system/bootstrap/2nd-boot/
-	make -C $(ANDROID_BUILD_TOP)/device/moto/jordan-common/bootstrap/hboot ARCH=$(TARGET_ARCH) $(ARM_CROSS_COMPILE) clean
+	make -C $(ANDROID_BUILD_TOP)/device/moto/jordan-common/bootstrap/hboot ARCH=$(TARGET_ARCH) CROSS_COMPILE=$(TARGET_4_4_TOOLCHAIN) clean
 
 # If kernel sources are present in repo, here is the location
 TARGET_KERNEL_SOURCE := $(ANDROID_BUILD_TOP)/jordan-kernel
 BOARD_KERNEL_CMDLINE := console=/dev/null mem=500M omapfb.vram=0:4M
 # Extra: external modules sources
 TARGET_KERNEL_MODULES_EXT := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/modules/sources/
+
+TARGET_4_4_TOOLCHAIN := $(ANDROID_BUILD_TOP)/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
 
 ifeq ($(TARGET_USE_KERNEL_BACKPORTS),true)
 TARGET_KERNEL_MODULES := ext_modules hboot WLAN_MODULES COMPAT_MODULES

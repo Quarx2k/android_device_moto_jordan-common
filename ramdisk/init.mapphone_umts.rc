@@ -224,13 +224,11 @@ on boot
 
     # Charge only mode services.
     exec /system/bin/mot_boot_mode
-    class_start charger
-
-on charger
+   
 on property:sys.chargeonly.mode=1
     class_reset main
     class_reset late_start
-    start charge
+    class_start charger
     start battd
 
 service bp-ptc /system/bin/bp_ptc
@@ -245,12 +243,12 @@ service uim /system/bin/uim-sysfs
     oneshot
 
 service charge /system/bin/charge_only_mode
+    class charger
     group root
     oneshot
-    disabled
 
 service nvm-daemon /system/bin/nvm_daemon
-    class main
+    class core
     user root
     group radio
 
@@ -261,7 +259,7 @@ service start_commdrv /system/bin/sh /system/etc/motorola/comm_drv/commdrv_fs.sh
     group radio system cache
 
 service gkisystem /system/bin/gkisystem
-    class main
+    class core
     socket location_shim stream 660 radio system
     socket gpshal_socket stream 660 radio system
     socket opprofdaemon stream 660 radio system
@@ -269,7 +267,7 @@ service gkisystem /system/bin/gkisystem
     onrestart exec /system/bin/gki_pd_notifier
 
 service battd /system/bin/battd
-    class charger
+    class core
     socket battdsock stream 660 root system
     user root
     group system 9001
@@ -374,7 +372,7 @@ service baseimage /system/bin/cexec.out /system/lib/dsp/baseimage.dof
     oneshot
 
 service locDrv /system/bin/brcm_guci_drv -config /system/etc/gpsconfig.xml
-    class main
+    class core
     user radio
     group radio inet sdcard_rw
 
