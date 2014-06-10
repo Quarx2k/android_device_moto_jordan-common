@@ -220,13 +220,17 @@ WLAN_MODULES:
 
 hboot:
 	mkdir -p $(PRODUCT_OUT)/system/bootstrap/2nd-boot
+	echo "$(BOARD_KERNEL_CMDLINE)" > $(PRODUCT_OUT)/system//bootstrap/2nd-boot/cmdline
+	echo "$(BOARD_RECOVERY_KERNEL_CMDLINE)" > $(PRODUCT_OUT)/system/bootstrap/2nd-boot/cmdline-recovery
 	make -C  $(ANDROID_BUILD_TOP)/device/moto/jordan-common/bootstrap/hboot ARCH=$(TARGET_ARCH) CROSS_COMPILE=$(TARGET_4_4_TOOLCHAIN)
 	mv $(ANDROID_BUILD_TOP)/device/moto/jordan-common/bootstrap/hboot/hboot.bin $(PRODUCT_OUT)/system/bootstrap/2nd-boot/
 	make -C $(ANDROID_BUILD_TOP)/device/moto/jordan-common/bootstrap/hboot ARCH=$(TARGET_ARCH) CROSS_COMPILE=$(TARGET_4_4_TOOLCHAIN) clean
 
 # If kernel sources are present in repo, here is the location
 TARGET_KERNEL_SOURCE := $(ANDROID_BUILD_TOP)/jordan-kernel
-BOARD_KERNEL_CMDLINE := console=/dev/null mem=500M omapfb.vram=0:4M
+BOARD_KERNEL_CMDLINE := console=/dev/null mem=500M omapfb.vram=0:4M cpcap_charger_enabled=n
+BOARD_RECOVERY_KERNEL_CMDLINE := console=/dev/null mem=500M omapfb.vram=0:4M  cpcap_charger_enabled=y
+
 # Extra: external modules sources
 TARGET_KERNEL_MODULES_EXT := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/modules/sources/
 
