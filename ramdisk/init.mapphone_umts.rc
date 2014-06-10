@@ -233,7 +233,6 @@ service charge /system/bin/charge_only_mode
     class charger
     group root
     oneshot
-    disabled
 
 service nvm-daemon /system/bin/nvm_daemon
     class core
