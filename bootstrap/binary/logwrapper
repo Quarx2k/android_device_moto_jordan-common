@@ -20,12 +20,9 @@ $BB_STATIC mount -o remount,rw /
 $BB_STATIC mkdir /cache
 $BB_STATIC mount -t auto -o nosuid,nodev,noatime,nodiratime,barrier=1 /dev/block/mmcblk1p24 /cache
 
-# Enable button backlight
-echo 255 > /sys/class/leds/button-backlight/brightness
-
-#$BB_STATIC echo charge_adb > /dev/usb_device_mode  &
-#/system/bootstrap/binary/adbd &
-#$BB_STATIC echo /dev/block/mmcblk0 > /sys/devices/platform/usb_mass_storage/lun0/file
+# Set cpu to 1ghz
+echo 1000000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 
+echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 
 # Check if device rebooted due BP-panic
 if [ -e $BP_PANIC ]; then
@@ -41,10 +38,31 @@ $BB_STATIC ash /system/bootstrap/script/recovery.sh
 fi
 fi
 
-if [ $(/system/bootstrap/binary/safestrapmenu > /dev/null 2>&1;echo $?) -eq 0 ]; then 
+# Disable button backlight
+echo 0 > /sys/class/leds/button-backlight/brightness
+
+BOOT_MODE="$(/system/bootstrap/binary/safestrapmenu > /dev/null 2>&1;echo $?)"
+
+if [ $BOOT_MODE -eq 0 ]; then 
+echo 0 > /sys/class/leds/button-backlight/brightness
 $BB_STATIC ash /system/bootstrap/script/recovery.sh
-else
+elif [ $BOOT_MODE -eq 1 ]; then 
+echo 0 > /sys/class/leds/button-backlight/brightness
 $BB_STATIC ash /system/bootstrap/script/2nd-boot.sh 
+elif [ $BOOT_MODE -eq 2 ]; then 
+echo 0 > /sys/class/leds/lcd-backlight/brightness
+echo 0 > /sys/class/leds/button-backlight/brightness
+# busybox sym link..
+for cmd in $($BB_STATIC --list); do
+    $BB_STATIC ln -s $BB_STATIC /sbin/$cmd
+done
+
+$BB_STATIC mount -o remount,rw /system
+echo charge_adb > /dev/usb_device_mode
+PATH=/sbin /system/bootstrap/binary/adbd &
+rm /init_prep_keypad.sh
+exit
+
 fi
 
 fi

@@ -137,6 +137,8 @@ int main(int argc, char **argv) {
   int keyp = wait_key(SPLASH_RECOVERY_KEY, SPLASH_CONTINUE_KEY, SPLASH_DISABLE_KEY);
   if (keyp == SPLASH_RECOVERY_KEY)
     result = 0;
+  else if (keyp == SPLASH_CONTINUE_KEY)
+    result = 1;
   else if (keyp == SPLASH_DISABLE_KEY)
     result = 2;
 
