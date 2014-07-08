@@ -118,6 +118,7 @@ PRODUCT_PACKAGES += dspexec libbridge libLCML libOMX_Core libstagefrighthw
 PRODUCT_PACKAGES += libOMX.TI.AAC.encode libOMX.TI.AAC.decode libOMX.TI.AMR.decode libOMX.TI.AMR.encode
 PRODUCT_PACKAGES += libOMX.TI.WBAMR.encode libOMX.TI.MP3.decode libOMX.TI.WBAMR.decode
 PRODUCT_PACKAGES += libOMX.TI.Video.Decoder libOMX.TI.Video.encoder libOMX.TI.JPEG.Encoder
+PRODUCT_PACKAGES += libOMX.TI.720P.Encoder
 
 # Defy stuff
 PRODUCT_PACKAGES += libfnc DefyParts MotoFM MotoFMService camera_detect HwaSettings
