@@ -3,6 +3,8 @@ BB_STATIC="/system/bootstrap/binary/busybox"
 BOOT_CONF="/cache/recovery/bootmode.conf"
 BP_PANIC="/cache/bp_panic"
 
+DEVICE_MODEL = "$(cat /proc/device-tree/Chosen@0/usb_id_prod_name)"
+
 #Check for stock kernel
 if  [ -e /init_prep_keypad.sh ];
 then
