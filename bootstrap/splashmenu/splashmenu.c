@@ -55,7 +55,7 @@ static void ui_finish(void) {
  * wait_key()
  *
  */
-static int wait_key(int key, int skipkey, int disablekey) {
+static int wait_key(int recovery_key, int boot_key, int adb_key, int uart_key) {
   int i;
   int result = 0;
   int keyp = 0;
@@ -63,7 +63,7 @@ static int wait_key(int key, int skipkey, int disablekey) {
 
 //  evt_init();
   for(i=0; i < 400; i++) {
-    keyp = ui_key_pressed(key, skipkey, disablekey);
+    keyp = ui_key_pressed(recovery_key, boot_key, adb_key, uart_key);
     if(keyp != 0) {
       result = keyp;
       break;
@@ -134,13 +134,15 @@ int main(int argc, char **argv) {
 
   ui_show_text(1);
 
-  int keyp = wait_key(SPLASH_RECOVERY_KEY, SPLASH_CONTINUE_KEY, SPLASH_DISABLE_KEY);
+  int keyp = wait_key(SPLASH_RECOVERY_KEY, SPLASH_BOOT_KEY, SPLASH_ADB_KEY, SPLASH_UART_KEY);
   if (keyp == SPLASH_RECOVERY_KEY)
     result = 0;
-  else if (keyp == SPLASH_CONTINUE_KEY)
+  else if (keyp == SPLASH_BOOT_KEY)
     result = 1;
-  else if (keyp == SPLASH_DISABLE_KEY)
+  else if (keyp == SPLASH_ADB_KEY)
     result = 2;
+  else if (keyp == SPLASH_UART_KEY)
+    result = 3;
 
   ui_set_background(BACKGROUND_BLANK);
   ui_finish();

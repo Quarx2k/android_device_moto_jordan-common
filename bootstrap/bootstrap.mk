@@ -12,7 +12,6 @@ PRODUCT_COPY_FILES += \
 # scripts
 PRODUCT_COPY_FILES += \
 	${bm_device}/bootstrap/script/2nd-boot.sh:system/bootstrap/script/2nd-boot.sh \
-	${bm_device}/bootstrap/script/recovery.sh:system/bootstrap/script/recovery.sh \
 	${bm_device}/bootstrap/script/pdsbackup.sh:system/bootstrap/script/pdsbackup.sh \
 
 # prebuilt binaries

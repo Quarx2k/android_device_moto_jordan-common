@@ -27,14 +27,14 @@ echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 # Check if device rebooted due BP-panic
 if [ -e $BP_PANIC ]; then
 $BB_STATIC rm $BP_PANIC
-$BB_STATIC ash /system/bootstrap/script/2nd-boot.sh
+$BB_STATIC ash /system/bootstrap/script/2nd-boot.sh boot
 fi
 
 # Check if device rebooted in recovery mode
 if [ -e $BOOT_CONF ]; then
 if [ $($BB_STATIC cat $BOOT_CONF) == 'recovery' ]; then
 $BB_STATIC rm $BOOT_CONF
-$BB_STATIC ash /system/bootstrap/script/recovery.sh 
+$BB_STATIC ash /system/bootstrap/script/2nd-boot.sh recovery
 fi
 fi
 
@@ -45,10 +45,10 @@ BOOT_MODE="$(/system/bootstrap/binary/safestrapmenu > /dev/null 2>&1;echo $?)"
 
 if [ $BOOT_MODE -eq 0 ]; then 
 echo 0 > /sys/class/leds/button-backlight/brightness
-$BB_STATIC ash /system/bootstrap/script/recovery.sh
+$BB_STATIC ash /system/bootstrap/script/2nd-boot.sh recovery
 elif [ $BOOT_MODE -eq 1 ]; then 
 echo 0 > /sys/class/leds/button-backlight/brightness
-$BB_STATIC ash /system/bootstrap/script/2nd-boot.sh 
+$BB_STATIC ash /system/bootstrap/script/2nd-boot.sh boot
 elif [ $BOOT_MODE -eq 2 ]; then 
 echo 0 > /sys/class/leds/lcd-backlight/brightness
 echo 0 > /sys/class/leds/button-backlight/brightness
@@ -56,13 +56,14 @@ echo 0 > /sys/class/leds/button-backlight/brightness
 for cmd in $($BB_STATIC --list); do
     $BB_STATIC ln -s $BB_STATIC /sbin/$cmd
 done
-
 $BB_STATIC mount -o remount,rw /system
 echo charge_adb > /dev/usb_device_mode
 PATH=/sbin /system/bootstrap/binary/adbd &
 rm /init_prep_keypad.sh
 exit
-
+elif [ $BOOT_MODE -eq 3 ]; then 
+echo 0 > /sys/class/leds/button-backlight/brightness
+$BB_STATIC ash /system/bootstrap/script/2nd-boot.sh uart
 fi
 
 fi

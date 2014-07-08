@@ -31,7 +31,7 @@ void evt_init();
 void evt_exit();
 
 // Use KEY_* codes from <linux/input.h> or KEY_DREAM_* from "minui/minui.h code
-int ui_key_pressed(int key, int skipkey, int disablekey);  // returns >0 if the code is currently pressed
+int ui_key_pressed(int recovery_key, int boot_key, int adb_key, int uart_key);  // returns >0 if the code is currently pressed
 int ui_text_visible();        // returns >0 if text log is currently visible
 void ui_show_text(int visible);
 void ui_clear_key_queue();

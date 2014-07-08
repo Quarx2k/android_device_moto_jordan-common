@@ -359,17 +359,20 @@ void ui_show_text(int visible)
     pthread_mutex_unlock(&gUpdateMutex);
 }
 
-int ui_key_pressed(int key, int skipkey, int disablekey)
+int ui_key_pressed(int recovery_key, int boot_key, int adb_key, int uart_key)
 {
     // This is a volatile static array, don't bother locking
-    if (key_pressed[key] != 0) {
-        return key;
+    if (key_pressed[recovery_key] != 0) {
+        return recovery_key;
     }
-    else if (key_pressed[skipkey] != 0) {
-        return skipkey;
+    else if (key_pressed[boot_key] != 0) {
+        return boot_key;
     }
-    else if (disablekey > -1) {
-        if (key_pressed[disablekey] != 0) return disablekey;
+    else if (key_pressed[adb_key] != 0) {
+        return adb_key;
+    }
+    else if (key_pressed[uart_key] != 0) {
+        return uart_key;
     }
     return 0;
 }
