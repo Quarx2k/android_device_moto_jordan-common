@@ -210,7 +210,7 @@ TARGET_KERNEL_SOURCE := $(ANDROID_BUILD_TOP)/jordan-kernel
 TARGET_KERNEL_CUSTOM_TOOLCHAIN := arm-eabi-4.4.3
 TARGET_KERNEL_MODULES_TOOLCHAIN := $(ANDROID_BUILD_TOP)/prebuilt/linux-x86/toolchain/$(TARGET_KERNEL_CUSTOM_TOOLCHAIN)/bin/arm-eabi-
 BOARD_RECOVERY_KERNEL_CMDLINE := console=/dev/null mem=500M init=/init omapfb.vram=0:4M usbcore.old_scheme_first=y
-BOARD_KERNEL_CMDLINE := $(BOARD_RECOVERY_KERNEL_CMDLINE) panic=30 mmcparts=mmcblk1:p20(kpanic)
+BOARD_KERNEL_CMDLINE := $(BOARD_RECOVERY_KERNEL_CMDLINE) panic=30 mmcparts=mmcblk1:p20(kpanic) cpcap_charger_enabled=n
 # Extra: external modules sources
 TARGET_KERNEL_MODULES_EXT := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/modules/sources/
 
