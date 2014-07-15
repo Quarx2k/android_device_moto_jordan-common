@@ -101,7 +101,8 @@ on post-fs
     write /sys/devices/omapdss/display0/tear_elim 0  
     # GPU to 266mhz
     # write /proc/gpu/max_rate 266666666
-
+    # Set min free memory to 10240
+    write /proc/sys/vm/min_free_kbytes 10240
 on post-fs-data
 
     mount rootfs rootfs / ro remount
