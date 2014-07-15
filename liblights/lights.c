@@ -129,7 +129,7 @@ set_light_backlight(struct light_device_t* dev,
             break;
         case BRIGHTNESS_MODE_USER:
         default:
-            als_mode = MANUAL_SENSOR;
+            als_mode = AUTOMATIC;//MANUAL_SENSOR;
             break;
     }
 
