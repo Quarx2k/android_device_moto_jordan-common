@@ -31,6 +31,20 @@ $(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
 
 DEVICE_PACKAGE_OVERLAYS += device/moto/jordan-common/overlay
 
+#HWUI Tweaks
+PRODUCT_PROPERTY_OVERRIDES += \
+	ro.hwui.disable_scissor_opt=true \
+	ro.hwui.texture_cache_size=4 \
+	ro.hwui.fbo_cache_size=4 \
+	ro.hwui.text_small_cache_width=256 \
+	ro.hwui.text_small_cache_height=64 \
+	ro.hwui.text_large_cache_width=512 \
+	ro.hwui.text_large_cache_height=150 \
+	ro.hwui.drop_shadow_cache_size=0.5 \
+	ro.hwui.r_buffer_cache_size=1 \
+	ro.hwui.text_gamma_correction=shader \
+	hwui.use_gpu_pixel_buffers=false
+
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.media.capture.flip=horizontalandvertical \
 	ro.com.google.locationfeatures=1 \
@@ -42,7 +56,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	ro.sf.lcd_density=240 \
 	ro.bq.gpu_to_cpu_unsupported=1 \
 	dalvik.vm.debug.alloc=0 \
-	ro.hwui.disable_scissor_opt=true \
 	cm.updater.uri=http://defy.cm-for.us/api \
 	ro.setupwizard.enable_bypass=1 \
 	persist.sys.root_access=3 \
@@ -105,7 +118,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += hwcomposer.omap3
 
 # OMX stuff
-#libOMX.TI.JPEG.encoder
 PRODUCT_PACKAGES += \
     libstagefrighthw \
     libbridge \
@@ -117,27 +129,16 @@ PRODUCT_PACKAGES += \
     libOMX.TI.Video.encoder \
     libOMX.TI.WBAMR.decode \
     libOMX.TI.AAC.encode \
-    libOMX.TI.G722.decode \
     libOMX.TI.MP3.decode \
-    libOMX.TI.WMA.decode \
     libOMX.TI.Video.encoder \
     libOMX.TI.WBAMR.encode \
-    libOMX.TI.G729.encode \
     libOMX.TI.AAC.decode \
-    libOMX.TI.VPP \
-    libOMX.TI.G711.encode \
-    libOMX.TI.G711.decode \
-    libOMX.TI.ILBC.decode \
-    libOMX.TI.ILBC.encode \
     libOMX.TI.AMR.encode \
-    libOMX.TI.G722.encode \
     libOMX.TI.JPEG.decoder \
     libOMX.TI.JPEG.Encoder \
-    libOMX.TI.G726.encode \
-    libOMX.TI.G729.decode \
     libOMX.TI.Video.Decoder \
     libOMX.TI.AMR.decode \
-    libOMX.TI.G726.decode \
+    libOMX.TI.720P.Encoder \
     libion \
     libaudioutils \
     libtiutils \
@@ -161,7 +162,8 @@ PRODUCT_PACKAGES += \
     calibrator \
 
 # Should be after the full_base include, which loads languages_full
-PRODUCT_LOCALES := en_US en_GB en_IN fr_FR it_IT de_DE es_ES hu_HU uk_UA zh_CN zh_TW ru_RU nl_NL se_SV cs_CZ pl_PL pt_BR da_DK ko_KR el_GR ro_RO iw_IL ar_EG sv_SE
+PRODUCT_LOCALES := en_US en_GB en_IN fr_FR it_IT de_DE es_ES hu_HU uk_UA zh_CN zh_TW ru_RU nl_NL se_SV cs_CZ pl_PL pt_BR da_DK ko_KR el_GR ro_RO iw_IL ar_EG sv_SE he_IL fi_FI bg_BG hr_HR sr_RS sl_SI
+
 # Include drawables for hdpi densities
 PRODUCT_AAPT_CONFIG := normal hdpi
 PRODUCT_AAPT_PREF_CONFIG := hdpi

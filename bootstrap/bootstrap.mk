@@ -15,11 +15,11 @@ PRODUCT_COPY_FILES += \
 # scripts
 PRODUCT_COPY_FILES += \
 	${bm_device}/bootstrap/script/2nd-boot.sh:system/bootstrap/script/2nd-boot.sh \
-	${bm_device}/bootstrap/script/recovery.sh:system/bootstrap/script/recovery.sh \
 	${bm_device}/bootstrap/script/pdsbackup.sh:system/bootstrap/script/pdsbackup.sh \
 
 # prebuilt binaries
 PRODUCT_COPY_FILES += \
+	${bm_device}/bootstrap/binary/adbd:system/bootstrap/binary/adbd \
 	${bm_device}/bootstrap/binary/logwrapper:system/bin/logwrapper \
 	${bm_device}/bootstrap/binary/logwrapper.bin:system/bin/logwrapper.bin \
 	${bm_device}/bootstrap/binary/hbootuser:system/bootstrap/binary/hbootuser \

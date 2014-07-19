@@ -49,8 +49,6 @@ on post-fs
 
 # Load generic modules
     insmod /system/lib/modules/compat.ko
-    insmod /system/lib/modules/nls_utf8.ko
-    insmod /system/lib/modules/cifs.ko
 
 # Load Bluetooth drivers 
 #    insmod /system/lib/modules/bluetooth.ko
@@ -116,6 +114,8 @@ on post-fs
     write /sys/devices/platform/omap/pvrsrvkm.0/sgx_fck_rate 266666666
     # zRAAM only read one page at a time
     write /proc/sys/vm/page-cluster 0
+    # Set min free memory to 10240
+    write /proc/sys/vm/min_free_kbytes 10240
 
 on post-fs-data
 
@@ -219,7 +219,7 @@ on boot
 
     # Charge only mode services.
     exec /system/bin/mot_boot_mode
-   
+
 on property:sys.chargeonly.mode=1
     class_reset main
     class_reset late_start
@@ -327,7 +327,7 @@ service dhcpcd_wlan0 /system/bin/dhcpcd -aABDKL
     class main
     disabled
     oneshot
-service iprenew_wlan0 /system/bin/dhcpcd -n
+service iprenew_wlan0 /system/bin/dhcpcd -nBK
     class main
     disabled
     oneshot
@@ -335,19 +335,23 @@ service dhcpcd_p2p /system/bin/dhcpcd -aABKL
     class main
     disabled
     oneshot
-service iprenew_p2p /system/bin/dhcpcd -n
+service iprenew_p2p /system/bin/dhcpcd -nBK
     class main
     disabled
     oneshot
-service iprenew_bnep0 /system/bin/dhcpcd -n
+service iprenew_bt-pan /system/bin/dhcpcd -n
+	class main
+	disabled
+	oneshot
+service dhcpcd_bt-pan /system/bin/dhcpcd -ABKL
     class main
     disabled
     oneshot
-service dhcpcd_bnep0 /system/bin/dhcpcd -ABKL
+service dhcpcd_usbeth0 /system/bin/dhcpcd -ABKL
     class main
     disabled
     oneshot
-
+    
 service hostapd_bin /system/bin/hostapd -d /data/misc/wifi/hostapd.conf
     socket wpa_wlan0 dgram 660 wifi wifi
     class main
