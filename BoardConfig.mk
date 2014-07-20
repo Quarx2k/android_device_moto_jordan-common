@@ -128,6 +128,8 @@ TARGET_RECOVERY_PRE_COMMAND_CLEAR_REASON := true
 TARGET_NO_SEPARATE_RECOVERY := true
 TARGET_USERIMAGES_USE_F2FS := true
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/virtual/android_usb/android0/f_mass_storage/lun%d/file"
+TW_EXCLUDE_SUPERSU := true
+TW_EXCLUDE_ENCRYPTED_BACKUPS := true
 
 # Egl Specific
 USE_OPENGL_RENDERER := true
