@@ -1,7 +1,0 @@
-0x00000000	PVRGetDisplayClassJTable2	/home/quarx/Android/ics/device/motorola/jordan_plus/modules/pvr/pvrsrvkm	EXPORT_SYMBOL
-0x00000000	lookup_symbol_address	/media/quarx/home/trees/4.4-cm/device/moto/jordan-common/modules/sources/symsearch/symsearch	EXPORT_SYMBOL
-0x00000000	cpufreq_stats_freq_update	/media/quarx/home/trees/4.4-cm/device/moto/jordan-common/modules/sources/overclock/cpufreq_stats	EXPORT_SYMBOL
-0x00000000	PVRGetBufferClassJTable2	/home/quarx/Android/ics/device/motorola/jordan_plus/modules/pvr/pvrsrvkm	EXPORT_SYMBOL
-0x00000000	qtaguid_get_debug_mask	/home/quarx/Android/ics/device/motorola/jordan_plus/modules/netfilter/xt_owner2	EXPORT_SYMBOL
-0x00000000	capcap_dumpnames	/home/quarx/Android/ics/device/motorola/jordan_plus/modules/logcap/logcap	EXPORT_SYMBOL
-0x00000000	capcap_regname	/home/quarx/Android/ics/device/motorola/jordan_plus/modules/logcap/logcap	EXPORT_SYMBOL
