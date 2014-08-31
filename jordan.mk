@@ -64,7 +64,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	ro.telephony.ril.v3=signalstrength \
 	ro.telephony.ril_class=MotoWrigley3GRIL \
 	ro.telephony.call_ring.multiple=false \
-	ro.telephony.call_ring.delay=500 \
+	ro.telephony.call_ring.delay=50 \
 	ro.telephony.default_network=3 \
 	mobiledata.interfaces=rmnet0 \
 
