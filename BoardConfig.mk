@@ -182,6 +182,7 @@ BOARD_HAL_STATIC_LIBRARIES := libhealthd.omap3
 # Release tool
 TARGET_PROVIDES_RELEASETOOLS := true
 TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := build/tools/releasetools/ota_from_target_files --device_specific device/moto/jordan-common/releasetools/jordan-common_ota_from_target_files.py
+TARGET_INCREMENTAL_OTA_VERBATIM_FILES := system/app/Provision.apk
 TARGET_SYSTEMIMAGE_USE_SQUISHER := true
 
 ext_modules:
