@@ -1,7 +1,7 @@
 #!/system/bootstrap/binary/busybox ash
 BB_STATIC="/system/bootstrap/binary/busybox"
-BOOT_CONF="/cache/recovery/bootmode.conf"
-BP_PANIC="/cache/bp_panic"
+BOOT_CONF="/system/bootmode.conf"
+BP_PANIC="/system/bp_panic"
 
 DEVICE_MODEL = "$(cat /proc/device-tree/Chosen@0/usb_id_prod_name)"
 
@@ -17,10 +17,9 @@ $BB_STATIC chmod 755 /system/bootstrap/binary/*
 $BB_STATIC insmod /system/bootstrap/modules/jbd2.ko
 $BB_STATIC insmod /system/bootstrap/modules/ext4.ko
 
-# Mount cache to get bootmode
+# Remount as rw / and /system for bootmode
 $BB_STATIC mount -o remount,rw /
-$BB_STATIC mkdir /cache
-$BB_STATIC mount -t auto -o nosuid,nodev,noatime,nodiratime,barrier=1 /dev/block/mmcblk1p24 /cache
+$BB_STATIC mount -w -o remount /dev/block/mmcblk1p21 /system
 
 # Set cpu to 1ghz
 echo 1000000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 
@@ -58,7 +57,6 @@ echo 0 > /sys/class/leds/button-backlight/brightness
 for cmd in $($BB_STATIC --list); do
     $BB_STATIC ln -s $BB_STATIC /sbin/$cmd
 done
-$BB_STATIC mount -o remount,rw /system
 echo charge_adb > /dev/usb_device_mode
 PATH=/sbin /system/bootstrap/binary/adbd &
 rm /init_prep_keypad.sh

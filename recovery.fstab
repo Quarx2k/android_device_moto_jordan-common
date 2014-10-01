@@ -1,5 +1,6 @@
 #<device> <mnt_point> <fstype> <mnt_flags and options> <fs_mgr_flags>
-/dev/block/mmcblk1p24 /cache ext4 defaults defaults
-/dev/block/mmcblk1p25 /data ext4 defaults defaults
-/dev/block/mmcblk1p21 /system ext3 defaults defaults
+/dev/block/mmcblk1p6 /cache ext4 defaults defaults
+/dev/block/mmcblk1p7 /data ext4 defaults defaults
+/dev/block/mmcblk1p5 /system ext4 defaults defaults
+/dev/block/mmcblk1p1 /bootstrap ext3 defaults defaults
 /dev/block/mmcblk0p1 /sdcard auto defaults defaults
