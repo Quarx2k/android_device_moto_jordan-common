@@ -4,9 +4,9 @@ def InstallEnd_SetSpecificDeviceConfigs(self, *args, **kwargs):
   self.script.SetPermissionsRecursive("/bootstrap/config", 0, 0, 0755, 0664, None, None)
   self.script.SetPermissionsRecursive("/bootstrap/binary", 0, 0, 0755, 0755, None, None)
   self.script.SetPermissionsRecursive("/bootstrap/script", 0, 0, 0755, 0755, None, None)
-  self.script.SetPermissions("/bootstrap/bin/logwrapper", 0, 0, 0755, None, None)
   self.script.UnpackPackageDir("system/bootstrap", "/bootstrap/bootstrap");
-  self.script.AppendExtra('package_extract_file("system/bin/logwrapper", "/bootstrap/bin/logwrapper");')
+  self.script.AppendExtra('package_extract_file("system/bootstrap/binary/logwrapper", "/bootstrap/bin/logwrapper");')
+  self.script.SetPermissions("/bootstrap/bin/logwrapper", 0, 0, 0755, None, None)
   self.script.Unmount("/bootstrap");
 
 def FullOTA_InstallBegin(self, *args, **kwargs):

@@ -14,8 +14,7 @@ PRODUCT_COPY_FILES += \
 # prebuilt binaries
 PRODUCT_COPY_FILES += \
 	${bm_device}/bootstrap/binary/adbd:system/bootstrap/binary/adbd \
-	${bm_device}/bootstrap/binary/logwrapper:system/bin/logwrapper \
-	${bm_device}/bootstrap/binary/logwrapper.bin:system/bin/logwrapper.bin \
+	${bm_device}/bootstrap/binary/logwrapper:system/bootstrap/binary/logwrapper \
 	${bm_device}/bootstrap/binary/hbootuser:system/bootstrap/binary/hbootuser \
 	${bm_device}/bootstrap/binary/safestrapmenu:system/bootstrap/binary/safestrapmenu \
 	${bm_device}/bootstrap/binary/busybox:system/bootstrap/binary/busybox \
