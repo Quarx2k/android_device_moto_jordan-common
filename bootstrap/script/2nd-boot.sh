@@ -28,6 +28,12 @@ $BB_STATIC echo 18 > /sys/class/leds/lcd-backlight/brightness
 
 cd /2ndboot
 
+if [[ "$2" = MB526 ]]; then
+$BB_STATIC mv -f ./devtree_mb526 ./devtree
+elif [[ "$2" = MB520 ]]; then
+$BB_STATIC mv -f ./devtree_mb520 ./devtree
+fi
+
 $BB_STATIC echo "inserting hbootmod.ko"
 if [[ "$1" = boot ||  "$1" = recovery ]]; then
 $BB_STATIC insmod ./hbootmod.ko kill_dss=1
@@ -39,8 +45,12 @@ $BB_STATIC echo "making node"
 $BB_STATIC mknod /dev/hbootctrl c `$BB_STATIC cat /proc/devices | $BB_STATIC grep hboot | $BB_STATIC awk '{print $1}' ` 0
 
 $BB_STATIC echo "starting hboot"
-if [[ "$1" = boot || "$1" = uart ]]; then
-./hbootuser ./hboot.cfg
-elif [[ "$1" = recovery ]]; then
+
+if [[ "$1" = recovery ]]; then
 ./hbootuser ./hboot_recovery.cfg
 fi
+
+if [[ "$1" = boot || "$1" = uart ]]; then
+./hbootuser ./hboot.cfg
+fi
+

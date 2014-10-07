@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-ifeq ($(TARGET_USE_JORDAN_COMMON),true)
+ifneq ($(filter mb52x,$(TARGET_DEVICE)),)
 include $(all-subdir-makefiles)
 endif
 

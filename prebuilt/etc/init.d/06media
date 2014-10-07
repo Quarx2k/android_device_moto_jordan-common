@@ -1,0 +1,27 @@
+#!/system/bin/sh
+
+/system/bin/camera_detect
+
+cam_model=`getprop ro.camera.type`
+device_model=`getprop ro.product.device`
+mount -o remount,rw /system
+
+rm /system/etc/media_profiles.xml
+rm /system/etc/mot_ise_imager_cfg.bin
+
+if [ "$cam_model" = "camise" ]; then
+	ln -s /system/etc/media_profiles_mb525.xml /system/etc/media_profiles.xml
+
+if [ "$device_model" = "mb526" ]; then
+	ln -s /system/etc/mot_ise_imager_cfg_mb526.bin /system/etc/mot_ise_imager_cfg.bin
+elif [ "$device_model" = "mb520" ]; then
+	ln -s /system/etc/mot_ise_imager_cfg_mb520.bin /system/etc/mot_ise_imager_cfg.bin
+fi
+
+else
+	ln -s /system/etc/media_profiles_mb526.xml /system/etc/media_profiles.xml
+fi
+
+mount -o remount,ro /system
+
+

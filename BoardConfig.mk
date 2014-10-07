@@ -31,6 +31,7 @@ TARGET_NO_PREINSTALL := true
 TARGET_BOOTLOADER_BOARD_NAME := jordan
 
 DISABLE_DEXPREOPT =: false
+TARGET_INIT_VENDOR_LIB := libinit_omap3
 
 # Board properties
 TARGET_ARCH := arm
@@ -125,7 +126,6 @@ TW_EXCLUDE_ENCRYPTED_BACKUPS := true
 
 TARGET_RECOVERY_PRE_COMMAND :=  "echo recovery > /bootstrap/bootmode.conf;sync"
 TARGET_NO_SEPARATE_RECOVERY := true
-TARGET_RECOVERY_PRE_COMMAND_CLEAR_REASON := true
 
 # Egl Specific
 USE_OPENGL_RENDERER := true
@@ -220,9 +220,9 @@ BOARD_KERNEL_CMDLINE := console=/dev/null mem=500M init=/init omapfb.vram=0:4M u
 # Extra: external modules sources
 TARGET_KERNEL_MODULES_EXT := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/modules/sources/
 
-#ifeq ($(TARGET_USE_KERNEL_BACKPORTS),true)
-#TARGET_KERNEL_MODULES := ext_modules hboot WLAN_MODULES COMPAT_MODULES
-#else
+ifeq ($(TARGET_USE_KERNEL_BACKPORTS),true)
+TARGET_KERNEL_MODULES := ext_modules hboot WLAN_MODULES COMPAT_MODULES
+else
 TARGET_KERNEL_MODULES := ext_modules hboot WLAN_MODULES
-#endif
+endif
 
