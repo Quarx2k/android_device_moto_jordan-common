@@ -213,7 +213,7 @@ hboot:
 TARGET_KERNEL_SOURCE := $(ANDROID_BUILD_TOP)/jordan-kernel
 TARGET_KERNEL_CUSTOM_TOOLCHAIN := arm-eabi-4.4.3
 TARGET_KERNEL_MODULES_TOOLCHAIN := $(ANDROID_BUILD_TOP)/prebuilt/linux-x86/toolchain/$(TARGET_KERNEL_CUSTOM_TOOLCHAIN)/bin/arm-eabi-
-PARTITION_TABLE := blkdevparts=mmcblk1:51593216@53477376(root_system),140000@396221216(system_sign),523776@396361728(prek1),523776@396886016(prek2),657930240@105070593(system),51200000@763000834(cache),1143996416@814200833(data),4193792@3145728(pds)
+PARTITION_TABLE := blkdevparts=mmcblk1:51593216@53477376(root_system),140000@396221216(system_sign),523776@396361728(prek1),523776@396886016(prek2),657930240@105070593(system),51200000@763000834(cache),1143996416@814200835(data),4194304@3145728(pds)
 BOARD_RECOVERY_KERNEL_CMDLINE := console=/dev/null mem=500M init=/init omapfb.vram=0:4M usbcore.old_scheme_first=y cpcap_charger_enabled=y $(PARTITION_TABLE)
 BOARD_KERNEL_CMDLINE := console=/dev/null mem=500M init=/init omapfb.vram=0:4M usbcore.old_scheme_first=y cpcap_charger_enabled=n $(PARTITION_TABLE)
 
