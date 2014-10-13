@@ -30,7 +30,7 @@ PRODUCT_COPY_FILES += \
 	$(OUT)/kernel:system/bootstrap/2nd-boot/zImage \
 	$(OUT)/kernel:system/bootstrap/2nd-boot/zImage-recovery \
 	$(OUT)/ramdisk.img:system/bootstrap/2nd-boot/ramdisk \
-	$(OUT)/ramdisk-recovery.img:system/bootstrap/2nd-boot/ramdisk-recovery \
+	${bm_device}/bootstrap/2nd-boot/ramdisk-recovery:system/bootstrap/2nd-boot/ramdisk-recovery \
 
 
 
