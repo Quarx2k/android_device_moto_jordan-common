@@ -126,6 +126,7 @@ TW_EXCLUDE_ENCRYPTED_BACKUPS := true
 
 TARGET_RECOVERY_PRE_COMMAND :=  "echo recovery > /bootstrap/bootmode.conf;sync"
 TARGET_NO_SEPARATE_RECOVERY := true
+TARGET_RECOVERY_PRE_COMMAND_CLEAR_REASON := true
 
 # Egl Specific
 USE_OPENGL_RENDERER := true
