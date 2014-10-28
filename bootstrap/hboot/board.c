@@ -2,8 +2,31 @@
 #include "board.h"
 #include "string.h"
 #include "memory.h"
+#include "mux.h"
 
 char cmdline_buffer[1024];
+
+#define writew(v,a) (*(volatile unsigned short *)(a) = (v))
+
+#define MUX_VAL(OFFSET, VALUE)\
+	writew((VALUE), OMAP34XX_CTRL_BASE + (OFFSET));
+
+#define	CP(x)	(CONTROL_PADCONF_##x)
+
+/*
+ * IEN  - Input Enable
+ * IDIS - Input Disable
+ * PTD  - Pull type Down
+ * PTU  - Pull type Up
+ * DIS  - Pull type selection is inactive
+ * EN   - Pull type selection is active
+ * M0   - Mode 0
+ * The commented string gives the final mux configuration for that pin
+ */
+
+#define MUX_MAPPHONE() \
+	MUX_VAL(CP(MCSPI1_CS0),     (IEN | PTU | EN  | M0)) /*McSPI1_CS0*/
+
 
 #ifdef BOARD_UMTS_SHOLES
 
@@ -205,6 +228,13 @@ void board_init()
 	/* Unlock DPPL5 */
 	modify_register32(CM_CLKEN2_PLL, 0x7, 0x1);
 	while((read32(CM_IDLEST2_CKGEN) & 1) != 0);
+
+}
+
+void muxing() 
+{
+	/* Muxing */
+	MUX_MAPPHONE();
 }
 
 #else
