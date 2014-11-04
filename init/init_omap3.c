@@ -80,7 +80,7 @@ void vendor_load_properties()
                 property_set("ro.product.model", "MB520");
                 property_set("ro.build.description", "ro.build.description=mb520-user 4.4.4 KTU84Q 20141001 release-keys");
                 property_set("ro.build.fingerprint", "ro.build.fingerprint=motorola/mb520_umts/mb520:4.4.4/KTU84Q/20141001:user/release-keys");
-                property_set("ro.media.capture.maxres", "53m");
+                property_set("ro.media.capture.maxres", "3m");
                 property_set("ro.media.capture.classification", "classA");
        } else if (!strcmp(model, "MB526")) { //Motorola Defy
                 property_set("ro.product.device", "mb526");
