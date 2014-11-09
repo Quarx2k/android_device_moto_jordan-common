@@ -30,6 +30,9 @@ TARGET_NO_PREINSTALL := true
 
 TARGET_BOOTLOADER_BOARD_NAME := jordan
 
+DISABLE_DEXPREOPT =: false
+TARGET_INIT_VENDOR_LIB := libinit_omap3
+
 # Board properties
 TARGET_ARCH := arm
 TARGET_BOARD_PLATFORM := omap3
@@ -183,7 +186,6 @@ BOARD_HAL_STATIC_LIBRARIES := libhealthd.omap3
 TARGET_PROVIDES_RELEASETOOLS := true
 TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := build/tools/releasetools/ota_from_target_files --device_specific device/moto/jordan-common/releasetools/jordan-common_ota_from_target_files.py
 TARGET_INCREMENTAL_OTA_VERBATIM_FILES := system/app/Provision.apk
-TARGET_SYSTEMIMAGE_USE_SQUISHER := true
 
 ext_modules:
 	make -C $(TARGET_KERNEL_MODULES_EXT) modules KERNEL_DIR=$(KERNEL_OUT) ARCH=$(TARGET_ARCH) $(ARM_CROSS_COMPILE)
@@ -229,8 +231,10 @@ hboot:
 
 # If kernel sources are present in repo, here is the location
 TARGET_KERNEL_SOURCE := $(ANDROID_BUILD_TOP)/jordan-kernel
-BOARD_KERNEL_CMDLINE := console=/dev/null mem=500M omapfb.vram=0:4M cpcap_charger_enabled=n
-BOARD_RECOVERY_KERNEL_CMDLINE := console=/dev/null mem=500M omapfb.vram=0:4M  cpcap_charger_enabled=y
+PARTITION_TABLE := blkdevparts=mmcblk1:51593216@53477376(root_system),140000@396221216(system_sign),523776@396361728(prek1),523776@396886016(prek2),657930240@105070593(system),51200000@763000834(cache),1143996416@814200835(data),4194304@3145728(pds)
+BOARD_RECOVERY_KERNEL_CMDLINE := console=/dev/null mem=500M init=/init omapfb.vram=0:4M usbcore.old_scheme_first=y cpcap_charger_enabled=y $(PARTITION_TABLE)
+BOARD_KERNEL_CMDLINE := console=/dev/null mem=500M init=/init omapfb.vram=0:4M usbcore.old_scheme_first=y cpcap_charger_enabled=n $(PARTITION_TABLE)
+
 # Extra: external modules sources
 TARGET_KERNEL_MODULES_EXT := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/modules/sources/
 TARGET_4_4_TOOLCHAIN := $(ANDROID_BUILD_TOP)/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
