@@ -26,6 +26,7 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/bootstrap/images/background-def.png:system/bootstrap/images/background-def.png \
 	${bm_device}/bootstrap/images/background-blank.png:system/bootstrap/images/background-blank.png \
 	${bm_device}/bootstrap/script/2nd-boot.sh:system/bootstrap/script/2nd-boot.sh \
+	${bm_device}/bootstrap/script/upd_bootstrap.sh:system/bootstrap/script/upd_bootstrap.sh \
 	$(bm_device)/twrp.fstab:recovery/root/etc/twrp.fstab \
 	$(OUT)/kernel:system/bootstrap/2nd-boot/zImage \
 	$(OUT)/kernel:system/bootstrap/2nd-boot/zImage-recovery \

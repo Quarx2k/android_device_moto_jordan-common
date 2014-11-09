@@ -1,12 +1,11 @@
 def InstallEnd_SetSpecificDeviceConfigs(self, *args, **kwargs):
-  # Fix Scripts permissions
+  # Update bootstrap partition.
   self.script.Mount("/bootstrap")
+  self.script.Mount("/system")
+  self.script.AppendExtra("run_program("/system/bootstrap/scripts/upd_bootstrap.sh");")
   self.script.SetPermissionsRecursive("/bootstrap/config", 0, 0, 0755, 0664, None, None)
   self.script.SetPermissionsRecursive("/bootstrap/binary", 0, 0, 0755, 0755, None, None)
   self.script.SetPermissionsRecursive("/bootstrap/script", 0, 0, 0755, 0755, None, None)
-  self.script.UnpackPackageDir("system/bootstrap", "/bootstrap/bootstrap");
-  self.script.AppendExtra('package_extract_file("system/bootstrap/binary/logwrapper", "/bootstrap/bin/logwrapper");')
-  self.script.SetPermissions("/bootstrap/bin/logwrapper", 0, 0, 0755, None, None)
   self.script.Unmount("/bootstrap");
 
 def FullOTA_InstallBegin(self, *args, **kwargs):
