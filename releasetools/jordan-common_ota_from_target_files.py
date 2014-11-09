@@ -1,22 +1,17 @@
 def InstallEnd_SetSpecificDeviceConfigs(self, *args, **kwargs):
   # Fix Scripts permissions
-  self.script.SetPermissionsRecursive("/system/bootstrap/config", 0, 0, 0755, 0664, None, None)
-  self.script.SetPermissionsRecursive("/system/bootstrap/binary", 0, 0, 0755, 0755, None, None)
-  self.script.SetPermissionsRecursive("/system/bootstrap/script", 0, 0, 0755, 0755, None, None)
-  # Install correct Media-Profiles
-#  self.script.AppendExtra('package_extract_file("system/bin/camera_detect", "/tmp/camera_detect");')
-#  self.script.AppendExtra('set_perm(0, 0, 0777, "/tmp/camera_detect");')
-#  self.script.AppendExtra('run_program("/tmp/camera_detect");')
-#  self.script.AppendExtra('ifelse(is_substring("mt9p012", getprop("ro.camera.type")), run_program("/sbin/sh", "-c", "busybox mv /system/etc/media_profiles_mb526.xml /system/etc/media_profiles.xml"));')
-#  self.script.AppendExtra('ifelse(is_substring("camise", getprop("ro.camera.type")), run_program("/sbin/sh", "-c", "busybox mv /system/etc/media_profiles_mb525.xml /system/etc/media_profiles.xml"));')
-#  self.script.AppendExtra('package_extract_file("system/etc/media_profiles_mb526.xml", "/system/etc/media_profiles.xml");')
-#  self.script.AppendExtra('delete("/system/etc/media_profiles_mb526.xml");')
- # self.script.AppendExtra('delete("/system/etc/media_profiles_mb525.xml");')
-
+  self.script.Mount("/bootstrap")
+  self.script.SetPermissionsRecursive("/bootstrap/config", 0, 0, 0755, 0664, None, None)
+  self.script.SetPermissionsRecursive("/bootstrap/binary", 0, 0, 0755, 0755, None, None)
+  self.script.SetPermissionsRecursive("/bootstrap/script", 0, 0, 0755, 0755, None, None)
+  self.script.UnpackPackageDir("system/bootstrap", "/bootstrap/bootstrap");
+  self.script.AppendExtra('package_extract_file("system/bootstrap/binary/logwrapper", "/bootstrap/bin/logwrapper");')
+  self.script.SetPermissions("/bootstrap/bin/logwrapper", 0, 0, 0755, None, None)
+  self.script.Unmount("/bootstrap");
 
 def FullOTA_InstallBegin(self, *args, **kwargs):
-  self.script.AppendExtra('run_program("/sbin/tune2fs", "-O has_journal /dev/block/mmcblk1p24");')
-  self.script.AppendExtra('run_program("/sbin/tune2fs", "-O has_journal /dev/block/mmcblk1p25");')
+  self.script.AppendExtra('ifelse((run_program("/sbin/busybox", "ls", "/dev/block/mmcblk1p21") == "0"),  abort("Please resize partition before install CM11.0!"), ui_print("Compatible bootstrap! We can continue!"));')
+  self.script.Print("Start install CM-11.0...")
 
 def FullOTA_InstallEnd(self, *args, **kwargs):
   self.script.Print("Wiping cache...")

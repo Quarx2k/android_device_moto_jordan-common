@@ -19,6 +19,9 @@ on init
     mkdir /storage/sdcard0 0700 root root
     mkdir /storage/usbdisk 0700 root root
 
+    mkdir /bootstrap 0775 system system
+    mkdir /pds 0775 system system
+
     export EXTERNAL_STORAGE /storage/sdcard0
 
     # for backwards compatibility
@@ -35,15 +38,8 @@ on fs
 
 # Mount mmc partitions
 
-    mount_all ./fstab.mapphone_
-    swapon_all ./fstab.mapphone_
-
-    mkdir /pds 0775 system system
-    exec /system/bootstrap/script/pdsbackup.sh
-
-    symlink /dev/block/mmcblk1p21 /dev/block/system
-    symlink /dev/block/mmcblk1p24 /dev/block/cache
-    symlink /dev/block/mmcblk1p25 /dev/block/userdata
+    mount_all ./fstab.mapphone_umts
+    #swapon_all /fstab.mapphone_umts # For enable zRam
 
 on post-fs
 
