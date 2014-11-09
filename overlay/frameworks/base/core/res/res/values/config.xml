@@ -148,14 +148,14 @@
         <item>30</item>
     </integer-array>
 
-    <!-- Is the notification LED intrusive? Used to decide if there should be a disable option -->
-    <bool name="config_intrusiveNotificationLed">true</bool>
+     <!-- Is the notification LED intrusive? Used to decide if there should be a disable option -->
+     <!--  <bool name="config_intrusiveNotificationLed">true</bool> -->
 
     <!-- Is the battery LED intrusive? Used to decide if there should be a disable option -->
-    <bool name="config_intrusiveBatteryLed">true</bool>
+    <!--   <bool name="config_intrusiveBatteryLed">true</bool> -->
 
     <!-- Does the battery LED support multiple colors? Used to decide if the user can change the colors -->
-    <bool name="config_multiColorBatteryLed">true</bool>
+     <!--  <bool name="config_multiColorBatteryLed">true</bool> -->
 
     <!-- Array of light sensor LUX values to define our levels for auto backlight brightness support.
          The N entries of this array define N + 1 zones as follows:
@@ -226,7 +226,7 @@ Some kernels use names like CAR and DESK.
     <integer name="config_screenBrightnessDim">2</integer>
 
     <!-- We dont have different firmware for wifi modes, prevent reloading it -->
-    <bool name="config_wifiApFirmwareReload">false</bool>
+  <!--  <bool name="config_wifiApFirmwareReload">false</bool> -->
 
     <!-- Boolean indicating whether the wifi chipset has dual frequency band support -->
     <bool translatable="false" name="config_wifi_dual_band_support">false</bool>
@@ -257,6 +257,6 @@ Some kernels use names like CAR and DESK.
     <!-- WiFi Display -->
     <bool name="config_enableWifiDisplay">false</bool>
 
-    <bool name="config_fmSeparateVolumeControl">true</bool>
+  <!--  <bool name="config_fmSeparateVolumeControl">true</bool>-->
 
 </resources>

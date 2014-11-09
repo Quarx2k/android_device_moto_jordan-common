@@ -45,7 +45,7 @@ else
 LOCAL_SRC_FILES += SensorISL29030Separate.cpp
 endif
 
-LOCAL_SHARED_LIBRARIES := liblog libcutils
+LOCAL_SHARED_LIBRARIES := liblog
 LOCAL_PRELINK_MODULE := false
 
 include $(BUILD_SHARED_LIBRARY)

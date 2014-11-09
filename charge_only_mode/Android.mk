@@ -12,9 +12,8 @@ LOCAL_SRC_FILES:= \
 	screen.c \
 	main.c
 
-LOCAL_STATIC_LIBRARIES := libunz libcutils libc
-
-LOCAL_SHARED_LIBRARIES := libhardware liblog
+LOCAL_STATIC_LIBRARIES += libunz
+LOCAL_SHARED_LIBRARIES += libhardware liblog libc libcutils
 
 LOCAL_C_INCLUDES := external/zlib
 LOCAL_MODULE_TAGS := eng debug

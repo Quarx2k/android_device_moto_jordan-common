@@ -35,7 +35,7 @@ include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := cpcap.c
 LOCAL_C_INCLUDES := bionic/libc/kernel/common
-LOCAL_STATIC_LIBRARIES = libc
+LOCAL_FORCE_STATIC_EXECUTABLE := true
 LOCAL_MODULE := cpcap
 LOCAL_MODULE_TAGS := optional
 
@@ -48,7 +48,6 @@ LOCAL_SRC_FILES := 2nd-init.c
 LOCAL_CFLAGS := -Os
 LOCAL_MODULE := 2nd-init
 LOCAL_MODULE_TAGS := optional
-LOCAL_STATIC_LIBRARIES += libc
 LOCAL_FORCE_STATIC_EXECUTABLE := true
 LOCAL_MODULE_PATH := $(PRODUCT_OUT)/system/bootmenu/binary
 
@@ -61,8 +60,8 @@ LOCAL_SRC_FILES := camera_detect.c
 LOCAL_CFLAGS := -Os
 LOCAL_MODULE := camera_detect
 LOCAL_MODULE_TAGS := optional
-LOCAL_STATIC_LIBRARIES += libc libcutils
-LOCAL_FORCE_STATIC_EXECUTABLE := true
+LOCAL_STATIC_LIBRARIES += libcutils
+LOCAL_SHARED_LIBRARIES += libc
 LOCAL_MODULE_PATH := $(PRODUCT_OUT)/system/bin
 
 include $(BUILD_EXECUTABLE)

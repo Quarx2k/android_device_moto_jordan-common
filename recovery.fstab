@@ -4,3 +4,6 @@
 /dev/block/mmcblk1p5 /system ext4 defaults defaults
 /dev/block/mmcblk1p1 /bootstrap ext3 defaults defaults
 /dev/block/mmcblk0p1 /sdcard auto defaults defaults
+/dev/block/fake  /boot     emmc defaults  defaults
+/dev/block/fake  /recovery emmc defaults  defaults
+

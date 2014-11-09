@@ -10,7 +10,7 @@ def InstallEnd_SetSpecificDeviceConfigs(self, *args, **kwargs):
   self.script.Unmount("/bootstrap");
 
 def FullOTA_InstallBegin(self, *args, **kwargs):
-  self.script.AppendExtra('ifelse((run_program("/sbin/busybox", "ls", "/dev/block/mmcblk1p21") == "0"),  abort("Please resize partition before install CM11.0!"), ui_print("Compatible bootstrap! We can continue!"));')
+  self.script.AppendExtra('ifelse((run_program("/sbin/busybox", "ls", "/dev/block/mmcblk1p21") == "0"),  abort("Please resize partition before install CM12.0!"), ui_print("Compatible bootstrap! We can continue!"));')
   self.script.Print("Start install CM-11.0...")
 
 def FullOTA_InstallEnd(self, *args, **kwargs):
@@ -38,7 +38,7 @@ def FullOTA_InstallEnd(self, *args, **kwargs):
   self.script.MakeSymlinks(symlinks)
   self.script.ShowProgress(0.2, 0)
 
-  self.script.Print("Finished installing KitKat for OMAP3 devices, Enjoy!")
+  self.script.Print("Finished installing Lollipop for OMAP3 devices, Enjoy!")
 
 def FullOTA_DisableBootImageInstallation(self, *args, **kwargs):
   return True

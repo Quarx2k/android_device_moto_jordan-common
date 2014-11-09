@@ -17,7 +17,7 @@
 
 <resources>
     <!-- Camera Preferences Picture size dialog box entries -->
-    <string-array name="pref_camera_picturesize_entries" translatable="false">
+    <!--    <string-array name="pref_camera_picturesize_entries" translatable="false">
         <item>@string/pref_camera_picturesize_entry_5mp</item>
         <item>@string/pref_camera_picturesize_entry_3_7mp_wide</item>
         <item>@string/pref_camera_picturesize_entry_3mp</item>
@@ -26,11 +26,11 @@
         <item>@string/pref_camera_picturesize_entry_vga</item>
         <item>@string/pref_camera_picturesize_entry_qvga</item>
     </string-array>
-
+ -->
     <!-- When launching the camera app first time, we will set the picture
          size to the first one in the list that is also supported by the
          driver -->
-    <string-array name="pref_camera_picturesize_entryvalues" translatable="false">
+      <!--  <string-array name="pref_camera_picturesize_entryvalues" translatable="false">
         <item>2592x1936</item>
         <item>2592x1456</item>
         <item>2048x1536</item>
@@ -38,6 +38,6 @@
         <item>1280x960</item>
         <item>640x480</item>
         <item>320x240</item>
-    </string-array>
+    </string-array>-->
 
 </resources>

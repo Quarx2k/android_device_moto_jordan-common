@@ -11,6 +11,9 @@
 /devices/platform/mmci-omap-hs.0/mmc_host/mmc0   auto      vfat defaults                                                    voldmanaged=sdcard0:auto,noemulatedsd
 /devices/platform/musb_hdrc/usb2                 auto      vfat defaults                                                    voldmanaged=usbdisk:auto
 
+/dev/block/fake         /boot           emmc    defaults                                                        defaults
+/dev/block/fake 	/recovery emmc defaults  defaults
+
 # zRAM
 /dev/block/zram0         none                     swap	    defaults	zramsize=134217728
 
