@@ -2,7 +2,7 @@ def InstallEnd_SetSpecificDeviceConfigs(self, *args, **kwargs):
   # Update bootstrap partition.
   self.script.Mount("/bootstrap")
   self.script.Mount("/system")
-  self.script.SetPermissionsRecursive("/system/bootstrap/script", 0, 0, 0755, 0664, None, None)
+  self.script.SetPermissionsRecursive("/system/bootstrap/script", 0, 0, 0755, 0755, None, None)
   self.script.AppendExtra('run_program("/system/bootstrap/script/upd_bootstrap.sh");')
   self.script.SetPermissionsRecursive("/bootstrap/config", 0, 0, 0755, 0664, None, None)
   self.script.SetPermissionsRecursive("/bootstrap/binary", 0, 0, 0755, 0755, None, None)
