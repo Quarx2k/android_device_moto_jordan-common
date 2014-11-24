@@ -49,7 +49,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	ro.input.noresample=1 \
 	persist.sys.force_highendgfx=true \
 	ro.ksm.default=1 \
-	persist.call_recording.enabled=1
+	persist.call_recording.enabled=1 \
+	persist.sys.media.use-awesome=true
 
 # Set default USB interface
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
