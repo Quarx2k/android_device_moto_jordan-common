@@ -79,10 +79,17 @@ on post-fs
 
 # Configure kernel options
     # Enable automatic power control for EHCI USB IPC
+    # 3.x.x
     write /sys/devices/platform/omap/usbhs_omap/ehci-omap.0/usb1/power/level auto
     write /sys/devices/platform/omap/usbhs_omap/ehci-omap.0/usb1/power/autosuspend 0
     write /sys/devices/platform/omap/usbhs_omap/ehci-omap.0/usb1/1-3/power/level auto
     write /sys/devices/platform/omap/usbhs_omap/ehci-omap.0/usb1/1-3/power/autosuspend 0
+
+    # 2.6.32
+    write /sys/devices/platform/ehci-omap.0/usb1/power/level auto
+    write /sys/devices/platform/ehci-omap.0/usb1/power/autosuspend 0
+    write /sys/devices/platform/ehci-omap.0/usb1/1-3/power/level auto
+
     # Disable a system-wide task dump on OOM in default
     write /proc/sys/fs/suid_dumpable 2
     # Disable green led
@@ -104,9 +111,14 @@ on post-fs
 
 # Tweaks
     # DSS - disable tearing elimination
-    write /sys/devices/omapdss/display0/tear_elim 0  
+    write /sys/devices/omapdss/display0/tear_elim 0 
+ 
     # GPU to 266mhz
+    # 3.x.x
     write /sys/devices/platform/omap/pvrsrvkm.0/sgx_fck_rate 266666666
+    # 2.6.32
+    write /proc/gpu/max_rate 266666666
+
     # zRAAM only read one page at a time
     write /proc/sys/vm/page-cluster 0
     # Set min free memory to 10240
