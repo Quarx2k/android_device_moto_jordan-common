@@ -264,6 +264,7 @@ BOARD_KERNEL_CMDLINE := console=/dev/null mem=500M init=/init omapfb.vram=0:4M u
 # Extra: external modules sources
 TARGET_KERNEL_MODULES_EXT := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/modules/sources/
 TARGET_4_4_TOOLCHAIN := $(ANDROID_BUILD_TOP)/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
+TARGET_KERNEL_CUSTOM_TOOLCHAIN := $(TARGET_4_4_TOOLCHAIN)
 
 ifeq ($(TARGET_USE_KERNEL_BACKPORTS),true)
 TARGET_KERNEL_MODULES := ext_modules hboot WLAN_MODULES COMPAT_MODULES
