@@ -211,6 +211,7 @@ BOARD_HAL_STATIC_LIBRARIES := libhealthd.omap3
 TARGET_PROVIDES_RELEASETOOLS := true
 TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := build/tools/releasetools/ota_from_target_files --device_specific device/moto/jordan-common/releasetools/jordan-common_ota_from_target_files.py
 TARGET_INCREMENTAL_OTA_VERBATIM_FILES := system/app/Provision.apk
+TARGET_USES_BLOCK_BASED_OTA := false
 
 ext_modules:
 	make -C $(TARGET_KERNEL_MODULES_EXT) modules KERNEL_DIR=$(KERNEL_OUT) ARCH=$(TARGET_ARCH) $(ARM_CROSS_COMPILE)
