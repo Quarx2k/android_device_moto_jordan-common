@@ -38,28 +38,16 @@ PRODUCT_COPY_FILES += \
 	$(device_path)/prebuilt/etc/init.d/09overclock:system/etc/init.d/09overclock \
 	$(device_path)/prebuilt/etc/init.d/06media:system/etc/init.d/06media \
 	$(device_path)/prebuilt/etc/sysctl.conf:system/etc/sysctl.conf \
-	$(device_path)/prebuilt/etc/busybox.fstab:system/etc/fstab \
 	$(device_path)/prebuilt/etc/gpsconfig.xml:system/etc/gpsconfig.xml \
 	$(device_path)/prebuilt/etc/location.cfg:system/etc/location.cfg \
 	$(device_path)/prebuilt/etc/media_codecs.xml:system/etc/media_codecs.xml \
 	$(device_path)/prebuilt/etc/audio_policy.conf:system/etc/audio_policy.conf \
 	$(device_path)/tinyhw/tiny_hw.xml:system/etc/tiny_hw.xml
 
-# WLAN/WPAN firmware
-TARGET_USE_KERNEL_BACKPORTS := false
-ifeq ($(TARGET_USE_KERNEL_BACKPORTS),true)
-PRODUCT_COPY_FILES += \
-    $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-5-mr.bin:system/etc/firmware/ti-connectivity/wl127x-fw-5-mr.bin \
-    $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-5-plt.bin:system/etc/firmware/ti-connectivity/wl127x-fw-5-plt.bin \
-    $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-5-sr.bin:system/etc/firmware/ti-connectivity/wl127x-fw-5-sr.bin \
-    $(device_path)/temp/hostapd:system/bin/hostapd
-else 
 PRODUCT_COPY_FILES += \
     $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-4-mr.bin:system/etc/firmware/ti-connectivity/wl127x-fw-4-mr.bin \
     $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-4-plt.bin:system/etc/firmware/ti-connectivity/wl127x-fw-4-plt.bin \
-    $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-4-sr.bin:system/etc/firmware/ti-connectivity/wl127x-fw-4-sr.bin
-endif
-PRODUCT_COPY_FILES += \
+    $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-4-sr.bin:system/etc/firmware/ti-connectivity/wl127x-fw-4-sr.bin \
     $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl1271-nvs.bin:system/etc/firmware/ti-connectivity/wl1271-nvs.bin \
     $(device_path)/prebuilt/etc/firmware/TIInit_7.2.31.bts:system/etc/firmware/TIInit_7.2.31.bts \
     $(device_path)/prebuilt/etc/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf \
