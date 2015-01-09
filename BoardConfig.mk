@@ -30,7 +30,6 @@ TARGET_NO_PREINSTALL := true
 
 TARGET_BOOTLOADER_BOARD_NAME := jordan
 
-DISABLE_DEXPREOPT =: false
 TARGET_INIT_VENDOR_LIB := libinit_omap3
 
 # Board properties
@@ -43,7 +42,6 @@ TARGET_ARCH_VARIANT_CPU := cortex-a8
 TARGET_CPU_VARIANT := cortex-a8
 TARGET_ARCH_VARIANT_FPU := neon
 TARGET_OMAP3 := true
-ARCH_ARM_HAVE_TLS_REGISTER := true
 COMMON_GLOBAL_CFLAGS += -DTARGET_OMAP3 -DOMAP_COMPAT -DBINDER_COMPAT -DUSES_AUDIO_LEGACY
 COMMON_GLOBAL_CFLAGS += -DNEEDS_VECTORIMPL_SYMBOLS
 TARGET_GLOBAL_CFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
@@ -53,8 +51,6 @@ TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 # Details: https://github.com/CyanogenMod/android_dalvik/commit/15726c81059b74bf2352db29a3decfc4ea9c1428
 TARGET_ARCH_LOWMEM := true
 TARGET_ARCH_HAVE_NEON := true
-
-TARGET_USE_KERNEL_BACKPORTS      := false
 
 # Wifi related defines
 USES_TI_MAC80211 := true
@@ -78,11 +74,8 @@ BOARD_WIFI_SKIP_CAPABILITIES     := true
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
-TARGET_USE_BLUEDROID_STACK := true
-ifeq ($(TARGET_USE_BLUEDROID_STACK),true)
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/moto/jordan-common/bluetooth_bluedroid
-#BOARD_HAVE_BLUETOOTH_TI := true  # We use own libs.
-endif
+TARGET_USE_BLUEDROID_STACK := true
 
 # Usb Specific
 BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
@@ -138,8 +131,8 @@ COMMON_GLOBAL_CFLAGS += -DHAS_CONTEXT_PRIORITY -DDONT_USE_FENCE_SYNC
 TARGET_DISABLE_TRIPLE_BUFFERING := true
 TARGET_RUNNING_WITHOUT_SYNC_FRAMEWORK := true
 # Increase EGL cache size to 2MB
-#MAX_EGL_CACHE_SIZE := 2097152
-#MAX_EGL_CACHE_KEY_SIZE := 4096
+MAX_EGL_CACHE_SIZE := 2097152
+MAX_EGL_CACHE_KEY_SIZE := 4096
 
 # Camera
 USE_CAMERA_STUB := false
@@ -173,25 +166,6 @@ ext_modules:
 	find $(TARGET_KERNEL_MODULES_EXT)/ -name "*.ko" -exec mv {} \
 		$(KERNEL_MODULES_OUT) \; || true
 
-COMPAT_MODULES:
-	make mrproper -C device/moto/jordan-common/modules/backports
-	make -C device/moto/jordan-common/modules/backports KERNEL_DIR=$(KERNEL_OUT) KLIB=$(KERNEL_OUT) KLIB_BUILD=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(TARGET_KERNEL_MODULES_TOOLCHAIN) defconfig-mapphone
-	make -C device/moto/jordan-common/modules/backports KERNEL_DIR=$(KERNEL_OUT) KLIB=$(KERNEL_OUT) KLIB_BUILD=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(TARGET_KERNEL_MODULES_TOOLCHAIN)
-	mv device/moto/jordan-common/modules/backports/compat/compat.ko $(KERNEL_MODULES_OUT)
-ifeq ($(TARGET_USE_BLUEDROID_STACK),false)
-	mv device/moto/jordan-common/modules/backports/net/bluetooth/bluetooth.ko $(KERNEL_MODULES_OUT)
-	mv device/moto/jordan-common/modules/backports/net/bluetooth/bnep/bnep.ko $(KERNEL_MODULES_OUT)
-	mv device/moto/jordan-common/modules/backports/net/bluetooth/rfcomm/rfcomm.ko $(KERNEL_MODULES_OUT)
-	mv device/moto/jordan-common/modules/backports/drivers/bluetooth/btwilink.ko $(KERNEL_MODULES_OUT)
-	mv device/moto/jordan-common/modules/backports/drivers/bluetooth/hci_uart.ko $(KERNEL_MODULES_OUT)
-endif
-	mv device/moto/jordan-common/modules/backports/net/mac80211/mac80211.ko $(KERNEL_MODULES_OUT)
-	mv device/moto/jordan-common/modules/backports/net/wireless/cfg80211.ko $(KERNEL_MODULES_OUT)
-	mv device/moto/jordan-common/modules/backports/drivers/net/wireless/ti/wlcore/wlcore.ko $(KERNEL_MODULES_OUT)
-	mv device/moto/jordan-common/modules/backports/drivers/net/wireless/ti/wl12xx/wl12xx.ko $(KERNEL_MODULES_OUT)
-	mv device/moto/jordan-common/modules/backports/drivers/net/wireless/ti/wlcore/wlcore_sdio.ko $(KERNEL_MODULES_OUT)
-	arm-linux-androideabi-strip --strip-unneeded $(KERNEL_MODULES_OUT)/*
-
 WLAN_MODULES:
 	make clean -C hardware/ti/wlan/mac80211/compat_wl12xx
 	make -C hardware/ti/wlan/mac80211/compat_wl12xx KERNEL_DIR=$(KERNEL_OUT) KLIB=$(KERNEL_OUT) KLIB_BUILD=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(TARGET_KERNEL_MODULES_TOOLCHAIN)
@@ -215,15 +189,10 @@ TARGET_KERNEL_SOURCE := $(ANDROID_BUILD_TOP)/jordan-kernel
 TARGET_KERNEL_CUSTOM_TOOLCHAIN := arm-eabi-4.4.3
 TARGET_KERNEL_MODULES_TOOLCHAIN := $(ANDROID_BUILD_TOP)/prebuilt/linux-x86/toolchain/$(TARGET_KERNEL_CUSTOM_TOOLCHAIN)/bin/arm-eabi-
 PARTITION_TABLE := blkdevparts=mmcblk1:51593216@53477376(root_system),140000@396221216(system_sign),523776@396361728(prek1),523776@396886016(prek2),657930240@105070593(system),51200000@763000834(cache),1143996416@814200835(data),4194304@3145728(pds)
-BOARD_RECOVERY_KERNEL_CMDLINE := console=/dev/null mem=500M init=/init omapfb.vram=0:4M usbcore.old_scheme_first=y cpcap_charger_enabled=y $(PARTITION_TABLE)
-BOARD_KERNEL_CMDLINE := console=/dev/null mem=500M init=/init omapfb.vram=0:4M usbcore.old_scheme_first=y cpcap_charger_enabled=n $(PARTITION_TABLE)
+BOARD_RECOVERY_KERNEL_CMDLINE := console=/dev/null mem=499M init=/init omapfb.vram=0:4M usbcore.old_scheme_first=y cpcap_charger_enabled=y $(PARTITION_TABLE)
+BOARD_KERNEL_CMDLINE := console=/dev/null mem=499M init=/init omapfb.vram=0:4M usbcore.old_scheme_first=y cpcap_charger_enabled=n $(PARTITION_TABLE)
 
 # Extra: external modules sources
 TARGET_KERNEL_MODULES_EXT := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/modules/sources/
-
-ifeq ($(TARGET_USE_KERNEL_BACKPORTS),true)
-TARGET_KERNEL_MODULES := ext_modules hboot WLAN_MODULES COMPAT_MODULES
-else
 TARGET_KERNEL_MODULES := ext_modules hboot WLAN_MODULES
-endif
 

@@ -41,10 +41,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	ro.sf.lcd_density=240 \
 	dalvik.vm.debug.alloc=0 \
 	cm.updater.uri=http://defy.cm-for.us/api \
-	ro.setupwizard.enable_bypass=1 \
 	persist.sys.root_access=3 \
-	ro.config.low_ram=true  \
-	dalvik.vm.jit.codecachesize=0 \
 	ro.input.noresample=1 \
 	persist.sys.force_highendgfx=true \
 	persist.call_recording.enabled=1
@@ -64,7 +61,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	ro.telephony.ril.v3=signalstrength \
 	ro.telephony.ril_class=MotoWrigley3GRIL \
 	ro.telephony.call_ring.multiple=false \
-	ro.telephony.call_ring.delay=50 \
+	ro.telephony.call_ring.delay=30 \
 	ro.telephony.default_network=3 \
 	mobiledata.interfaces=rmnet0 \
 
@@ -92,7 +89,8 @@ PRODUCT_PACKAGES += \
 
 # Legacy Sound
 PRODUCT_PACKAGES += \
-	libaudioutils audio.a2dp.default audio.r_submix.default  \
+	libaudioutils audio.a2dp.default \
+	audio.r_submix.default  \
 	libaudiohw_legacy \
 
 # OMX stuff
