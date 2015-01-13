@@ -29,9 +29,9 @@ $BB_STATIC echo 18 > /sys/class/leds/lcd-backlight/brightness
 cd /2ndboot
 
 if [[ "$2" = MB526 ]]; then
-$BB_STATIC mv -f ./devtree_mb526 ./devtree
+$BB_STATIC ln -s ./devtree_mb526 ./devtree
 elif [[ "$2" = MB520 ]]; then
-$BB_STATIC mv -f ./devtree_mb520 ./devtree
+$BB_STATIC ln -s ./devtree_mb520 ./devtree
 fi
 
 $BB_STATIC echo "inserting hbootmod.ko"
