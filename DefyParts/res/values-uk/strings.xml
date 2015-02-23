@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Налаштування Defy</string>
+
+    <string name="general_settings_title">Основні налаштування</string>
+
+    <string name="charge_led_mode_title">Колір індикатора зарядки</string>
+    <string name="charge_led_mode_summary">Задати колір світлодіода при зарядці</string>
+    <string name="charge_led_mode_white">Білий</string>
+    <string name="charge_led_mode_rgb">Змішаний колір (червоний+зелений)</string>
+    <string name="charge_led_mode_off">Виключити</string>
+
+    <string name="button_brightness_scale_title">Button brightness</string>
+    <string name="button_brightness_scale_summary">Доволяє знизити яскравість кнопок, особливо корисно при використанні ручної яскравості</string>
+
+    <string name="touch_points_title">Мультитач</string>
+    <string name="touch_points_summary">Задати максимальне число одночасних дотиків</string>
+    <string name="touch_point_entry_2points">2 дотики (по замовчуванню)</string>
+    <string name="touch_point_entry_3points">3 дотики</string>
+    <string name="touch_point_entry_4points">4 дотики</string>
+    <string name="touch_point_entry_5points">5 дотиків</string>
+    <string name="touch_point_entry_8points">8 дотиків</string>
+    <string name="touch_point_entry_10points">10 дотиків</string>
+
+    <string name="touch_point_warning_title">Попередження</string>
+    <string name="touch_point_warning_message">Збільшення числа одночасних натискань може призвести до погіршення чутливості тачськріна.\nВи впевнені, що хочете продовжити?</string>
+
+    <string name="audio_settings_title">Налаштування звуку</string>
+    <string name="audio_effects">Аудіо-ефекти</string>
+
+    <string name="other_settings_title">Інші налаштування</string>
+    <string name="compass_calibrate">Калібрування компасу</string>
+
+    <string name="reboot_prompt_title">Необхідне перезавантаження</string>
+    <string name="yes">Так</string>
+    <string name="no">Ні</string>
+
+</resources>
