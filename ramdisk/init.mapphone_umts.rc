@@ -37,6 +37,11 @@ on init
     symlink /storage/usbdisk /usbdisk
     symlink /storage/usbdisk /mnt/usbdisk
 
+# Backward compatibility
+    symlink /dev /dev/netmux
+    symlink /dev/ttyGS0 /dev/acm0
+    symlink /dev/hp3a-omap /dev/hp3A-omap
+
 on fs
 
 # Mount mmc partitions
@@ -47,26 +52,12 @@ on post-fs
 
 # Load generic modules
     insmod /system/lib/modules/compat.ko
-
-# Load Bluetooth drivers 
-#    insmod /system/lib/modules/bluetooth.ko
-#    insmod /system/lib/modules/hci_uart.ko
-#    insmod /system/lib/modules/rfcomm.ko
-#    insmod /system/lib/modules/bnep.ko
-
 # Load WiFi drivers
     insmod /system/lib/modules/cfg80211.ko
     insmod /system/lib/modules/mac80211.ko
     insmod /system/lib/modules/cfg80211.ko
     insmod /system/lib/modules/mac80211.ko
     insmod /system/lib/modules/wl12xx.ko
-#   insmod /system/lib/modules/wlcore.ko #For Kernel backports
-
-# Backward compatibility
-    symlink /dev /dev/netmux
-    symlink /dev/ttyGS0 /dev/acm0
-    symlink /dev/hp3a-omap /dev/hp3A-omap
-
     mount rootfs rootfs / rw remount
 
 # Mount tmp, we dont have swap, use ramfs which can grow if required
