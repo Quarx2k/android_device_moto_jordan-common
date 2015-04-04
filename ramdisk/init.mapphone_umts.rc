@@ -223,7 +223,6 @@ service uim /system/bin/uim-sysfs
 service charge /system/bin/charge_only_mode
     class charger
     group root
-    oneshot
 
 service nvm-daemon /system/bin/nvm_daemon
     class core
@@ -249,7 +248,6 @@ service battd /system/bin/battd
     socket battdsock stream 660 root system
     user root
     group system 9001
-    oneshot
 
 service ssmgrd /system/bin/ssmgrd
     class main
