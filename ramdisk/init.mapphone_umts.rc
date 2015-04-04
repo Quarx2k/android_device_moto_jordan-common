@@ -2,8 +2,15 @@
 
 on early-init
     # cap max CPU frequency to 1 GHz as soon as possible
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1000000
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor performance
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1000000
+on property:init.svc.bootanim=running
+    write /sys/block/mmcblk0/queue/scheduler noop
+    write /sys/block/mmcblk1/queue/scheduler noop
+on property:init.svc.bootanim=stopped
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor interactive
+    write /sys/block/mmcblk0/queue/scheduler deadline
+    write /sys/block/mmcblk1/queue/scheduler deadline
 
 on init 
 
@@ -33,9 +40,6 @@ on init
 on fs
 
 # Mount mmc partitions
-
-
-
     mount_all ./fstab.mapphone_umts
     #swapon_all /fstab.mapphone_umts # For enable zRam
 
@@ -67,7 +71,7 @@ on post-fs
 
 # Mount tmp, we dont have swap, use ramfs which can grow if required
     mkdir /tmp
-    mount ramfs ramfs /tmp size=512k relatime
+    mount ramfs ramfs /tmp size=128k relatime
     chmod 0777 /tmp
     chown system shell /tmp
 
@@ -98,7 +102,7 @@ on post-fs
     # DSS - disable tearing elimination
     write /sys/devices/omapdss/display0/tear_elim 0  
     # GPU to 266mhz
-    # write /proc/gpu/max_rate 266666666
+    write /proc/gpu/max_rate 266666666
     # Set min free memory to 10240
     write /proc/sys/vm/min_free_kbytes 10240
 on post-fs-data
@@ -142,13 +146,6 @@ on post-fs-data
     chmod 0770 /pds/security
     chmod 0770 /data/tmp/battd
     chmod 0775 /data/local/hwui.deny
-
-    write /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 90
-    write /sys/devices/system/cpu/cpufreq/interactive/io_is_busy 1
-    write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 40000
-    write /sys/devices/system/cpu/cpufreq/interactive/timer_rate 30000
-    write /sys/devices/system/cpu/cpufreq/interactive/timer_slack 30000
-    write /sys/devices/system/cpu/cpufreq/interactive/up_threshold_any_cpu_load 50
 
     setprop vold.post_fs_data_done 1
 
@@ -195,11 +192,13 @@ on boot
     chown system system /sys/devices/system/cpu/cpufreq/interactive/input_boost
     chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/input_boost
 
-    # Interactive Tunables
-    #chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/target_loads
-    #chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
-    #write /sys/devices/system/cpu/cpufreq/interactive/target_loads "95 600000:50"
-    #write /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay "20000 600000:40000" 
+    # To prevent out of order acknowledgements from making
+    # connection tracking to treat them as not belonging to
+    # the connection they belong to.
+    # Otherwise, a weird issue happens in which some long
+    # connections on high-throughput links get dropped when
+    # an ack packet comes out of order
+    write /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal 1
 
     # Charge only mode services.
     exec /system/bin/mot_boot_mode
@@ -373,67 +372,4 @@ service fuse_sdcard0 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/sdcard0
 service fuse_usbdisk /system/bin/sdcard -u 1023 -g 1023 /mnt/media_rw/usbdisk /storage/usbdisk
     class late_start
     disabled
-
-on property:sys.boot_completed=1
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor interactive
-
-########## Bluez 4 Services #############
-# Bluetooth services.
-#service hciattach /system/bin/hciattach -n -t 10 /dev/ttyS1 texasalt 3000000 flow
-#    class main
-#    user bluetooth
-#    group bluetooth net_bt_admin
-#    disabled
-
-#service dbus /system/bin/dbus-daemon --system --nofork
-#    class main
-#    socket dbus stream 660 bluetooth bluetooth
-#    user bluetooth
-#    group bluetooth net_bt_admin
-
-#service bluetoothd /system/bin/bluetoothd -n
-#    class main
-#    socket bluetooth stream 660 bluetooth bluetooth
-#    socket dbus_bluetooth stream 660 bluetooth bluetooth
-#    # init.rc does not yet support applying capabilities, so run as root and
-#    # let bluetoothd drop uid to bluetooth with the right linux capabilities
-#    group bluetooth net_bt_admin misc
-#    disabled
-########## End Bluez 4 Services #############
-
-########## Bluez 5 Services #############
-#service bluetoothd /system/bin/logwrapper /system/bin/bluetoothd
-#    class main
-#    socket bluetooth stream 660 bluetooth bluetooth
-#    socket dbus_bluetooth stream 660 bluetooth bluetooth
-    # init.rc does not yet support applying capabilities, so run as root and
-    # let bluetoothd drop uid to bluetooth with the right linux capabilities
-#    group bluetooth net_bt_admin misc net_admin radio
-#    disabled
-#    oneshot
-
-#service bluetoothd-snoop /system/bin/logwrapper /system/bin/bluetoothd-snoop
-#    class main
-    # init does not yet support setting capabilities so run as root,
-    # bluetoothd-snoop drops unneeded linux capabilities
-#    group nobody
-#    disabled
-#    oneshot
-
-#on property:bluetooth.start=daemon
-#    setprop bluetooth.start none
-#    start bluetoothd
-
-#on property:bluetooth.stop=daemon
-#    setprop bluetooth.stop none
-#    stop bluetoothd
-
-#on property:bluetooth.start=snoop
-#    setprop bluetooth.start none
-#    start bluetoothd-snoop
-
-#on property:bluetooth.stop=snoop
-#    setprop bluetooth.stop none
-#    stop bluetoothd-snoop
-########## End Bluez 5 #############
 
