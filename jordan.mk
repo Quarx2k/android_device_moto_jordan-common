@@ -44,7 +44,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	persist.sys.root_access=3 \
 	ro.input.noresample=1 \
 	persist.sys.force_highendgfx=true \
-	persist.call_recording.enabled=1
+	persist.call_recording.enabled=1 \
+	rol.ril.ext.ecclist=112,911,999,110,122,119,120,000,08,118
 
 # Set default USB interface
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
